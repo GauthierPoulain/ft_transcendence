@@ -6,11 +6,17 @@ export class UsersService {
 	public users: User[] = [
 		{
 			id: 0,
-			username: "Azerty"
+			username: "Azerty",
+			achievements: {
+				reverse_engineer: 0
+			}
 		},
 		{
 			id: 1,
-			username: "Qwerty"
+			username: "Qwerty",
+			achievements: {
+				reverse_engineer: 0
+			}
 		}
 	]
 
