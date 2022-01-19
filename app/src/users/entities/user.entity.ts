@@ -1,9 +1,10 @@
-import { Achievements } from "../../achievements/entities/achievements.entity";
+import { Entity, Column, PrimaryGeneratedColumn } from "typeorm"
 
+@Entity()
 export class User {
-    id: number;
+    @PrimaryGeneratedColumn()
+    id: number
 
-    username: string;
-
-    achievements: Achievements;
+    @Column()
+    intra_id: string
 }

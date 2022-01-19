@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import Button from './components/Button.vue'
+import Cbutton from './components/Cbutton.vue'
 
 </script>
 
@@ -10,6 +11,7 @@ import Button from './components/Button.vue'
     <Button/>
     <Button/>
     <Button/>
+    <Cbutton>Hey!</Cbutton>
   </div>
 
 </template>
