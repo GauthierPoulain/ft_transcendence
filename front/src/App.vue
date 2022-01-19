@@ -1,21 +1,39 @@
 <script setup lang="ts">
-import Count from './components/Count.vue'
+
+import Button from './components/Button.vue'
 
 </script>
 
 <template>
   <h1>FT_PONG</h1>
-  <Count/>
+  <div class="button">
+    <Button/>
+    <Button/>
+    <Button/>
+  </div>
+
 </template>
 
 <style>
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
+
+h1
+{
+  color: white;
+  text-align: center;
+}
+
+.button
+{
+  text-align: center;
+}
+
+body
+{
+  background: rgb(68, 68, 68);
+}
+
 </style>
