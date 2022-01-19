@@ -1,10 +1,15 @@
 <script setup lang="ts">
 
-var isHidden = false;
+import Button from './components/Button.vue';
+import Cbutton from './components/Cbutton.vue';
 
-import Button from './components/Button.vue'
-import Cbutton from './components/Cbutton.vue'
-
+export default {
+	data() {
+		return {
+			isHidden: false
+		}
+	}
+}
 </script>
 
 <template>
