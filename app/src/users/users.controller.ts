@@ -1,13 +1,12 @@
-import { Controller, Get, Session } from "@nestjs/common"
-import { UsersService } from "./users.service"
+import { Controller, Get, Request, UseGuards } from "@nestjs/common"
 import { User } from "./entities/user.entity"
+import { ConnectedGuard } from "src/auth/guards/connected.guard"
 
 @Controller("users")
 export class UsersController {
-    constructor(private usersService: UsersService) {}
-
+    @UseGuards(ConnectedGuard)
 	@Get("me")
-	me(@Session() session: Record<string, any>): Promise<User> {
-		return this.usersService.find(session.user)
+	me(@Request() request: any): Promise<User> {
+		return request.user
 	}
 }

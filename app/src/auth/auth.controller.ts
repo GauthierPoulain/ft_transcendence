@@ -10,19 +10,12 @@ import {
 import { UsersService } from "../users/users.service"
 import { OAuth2AuthGuard } from "./guards/oauth2-auth.guard";
 
-function waitSession(req: any): Promise<void> {
-    return new Promise((resolve) => {
-        req.session.save(() => {
-            resolve();
-        });
-    });
-}
+import { promisify } from "util"
 
 @Controller("auth")
 export class AuthController {
-    constructor(
-        private usersService: UsersService,
-    ) {}
+    constructor(private usersService: UsersService) {
+    }
 
     @UseGuards(OAuth2AuthGuard)
     @Get()
@@ -31,10 +24,7 @@ export class AuthController {
     @UseGuards(OAuth2AuthGuard)
     @Get("callback")
     @Redirect("/users/me")
-    async login_callback(
-        @Session() session: Record<string, any>,
-        @Request() req: any
-    ) {
+    async login_callback(@Request() req: any) {
         const { id, login, image_url } = req.user;
 
         let user = await this.usersService.findIntra(id);
@@ -48,10 +38,7 @@ export class AuthController {
             });
         }
 
-        console.log(session)
-        session.user = user.id;
-        await waitSession(req);
-        return;
+        await promisify(req.logIn.bind(req))(user)
     }
 
     @Get("debug")
@@ -62,12 +49,10 @@ export class AuthController {
         return `session id : ${req.sessionID}<br>${JSON.stringify(session)}`;
     }
 
-
     @Get("logout")
     @Redirect("/auth/debug")
-    async logout(@Session() session: Record<string, any>, @Request() req: Request) {
-        delete session.user;
-        await waitSession(req);
-        return;
+    async logout(@Request() req: any) {
+        req.logOut()
+        await promisify(req.session.destroy.bind(req.session))()
     }
 }

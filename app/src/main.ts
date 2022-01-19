@@ -5,6 +5,7 @@ import { AppModule } from "./app.module";
 import { WsAdapter } from "@nestjs/platform-ws";
 import * as session from "express-session";
 import * as PGStore from "connect-pg-simple";
+import * as passport from "passport";
 
 const port = 3000;
 const PGCon = {
@@ -29,6 +30,8 @@ async function bootstrap() {
             cookie: { maxAge: 2592000 }, // 30 days
         }),
     );
+    app.use(passport.initialize())
+    app.use(passport.session())
     await app.listen(port, () => {
         console.info(`Listening on http://localhost:${port}`);
     });
