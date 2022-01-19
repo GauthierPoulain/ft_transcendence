@@ -1,19 +1,22 @@
 <script setup lang="ts">
 
+var isHidden = false;
+
 import Button from './components/Button.vue'
 import Cbutton from './components/Cbutton.vue'
 
 </script>
 
 <template>
-  <h1>FT_PONG</h1>
-  <div class="button">
-    <Button/>
-    <Button/>
-    <Button/>
-    <Cbutton>Hey!</Cbutton>
-  </div>
-
+    <h1>FT_PONG</h1>
+    <div class="button" v-if="!isHidden">
+        <Button/>
+        <Button/>
+        <Button/>
+    </div>
+    <div>
+        <Cbutton  v-on:click="isHidden = !isHidden">Hey!</Cbutton>
+    </div>
 </template>
 
 <style>
