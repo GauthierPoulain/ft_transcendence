@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Res, Session } from "@nestjs/common";
+import { Controller, Get, Query, Res, Session, Redirect } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import axios, { AxiosResponse } from "axios";
 import session from "express-session";
@@ -21,20 +21,18 @@ function api42request(
   });
 }
 
+const oauth_url = new URL("/oauth/authorize", "https://api.intra.42.fr")
+oauth_url.searchParams.set("client_id", api42Config.uid)
+oauth_url.searchParams.set("redirect_uri", api42Config.redirect_uri)
+oauth_url.searchParams.set("response_type", "code")
+
 @Controller("auth")
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Get()
-  redirect(@Res() res) {
-    return res.redirect(
-      `https://api.intra.42.fr/oauth/authorize?client_id=${
-        api42Config.uid
-      }&redirect_uri=${encodeURIComponent(
-        api42Config.redirect_uri,
-      )}&response_type=code`,
-    );
-  }
+  @Redirect(oauth_url.toString())
+  redirect() { }
 
   @Get("debug")
   debug(@Session() session: Record<string, any>): string {
