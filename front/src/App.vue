@@ -3,12 +3,10 @@
 import Button from './components/Button.vue';
 import Cbutton from './components/Cbutton.vue';
 
-export default {
-	data() {
-		return {
-			isHidden: false
-		}
-	}
+var isHidden = false;
+function test() {
+	console.log(isHidden);
+	isHidden = !isHidden;
 }
 </script>
 
@@ -20,7 +18,7 @@ export default {
         <Button/>
     </div>
     <div>
-        <Cbutton  v-on:click="isHidden = !isHidden">Hey!</Cbutton>
+        <Cbutton  v-on:click="test()">Hey!</Cbutton>
     </div>
 </template>
 
