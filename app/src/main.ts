@@ -1,4 +1,5 @@
-require("dotenv").config();
+import { config } from "dotenv";
+config();
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { WsAdapter } from "@nestjs/platform-ws";
@@ -6,7 +7,6 @@ import * as session from "express-session";
 import * as PGStore from "connect-pg-simple";
 
 const port = 3000;
-const sessionStored = false;
 const PGCon = {
     user: "postgres",
     password: "postgres",
@@ -17,32 +17,18 @@ const PGCon = {
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
-
     app.useWebSocketAdapter(new WsAdapter(app));
-
-    const sessionSecret = "OwO";
-    if (sessionStored) {
-        app.use(
-            session({
-                secret: sessionSecret,
-                resave: true,
-                saveUninitialized: false,
-                store: new (PGStore(session))({
-                    conString: `pg://${PGCon.user}:${PGCon.password}@${PGCon.host}:${PGCon.port}/${PGCon.database}`,
-                }),
-                cookie: { maxAge: 2592000 }, // 30 days
+    app.use(
+        session({
+            secret: "OwO",
+            resave: true,
+            saveUninitialized: false,
+            store: new (PGStore(session))({
+                conString: `pg://${PGCon.user}:${PGCon.password}@${PGCon.host}:${PGCon.port}/${PGCon.database}`,
             }),
-        );
-    } else {
-        app.use(
-            session({
-                secret: sessionSecret,
-                resave: false,
-                saveUninitialized: false,
-            }),
-        );
-    }
-
+            cookie: { maxAge: 2592000 }, // 30 days
+        }),
+    );
     await app.listen(port, () => {
         console.info(`Listening on http://localhost:${port}`);
     });
