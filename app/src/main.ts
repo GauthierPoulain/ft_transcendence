@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useWebSocketAdapter(new WsAdapter(app));
   await app.listen(port, () => {
-    console.info("Listening on http://localhost:3000");
+    console.info(`Listening on http://localhost:${port}`);
   });
 }
 bootstrap();
