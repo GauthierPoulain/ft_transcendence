@@ -12,6 +12,7 @@ import { AxiosResponse } from "axios";
 import { AuthService } from "./auth.service";
 import { firstValueFrom } from "rxjs";
 import { Response } from "express";
+import { UsersService } from "../users/users.service"
 
 const client_id = process.env.API42UID;
 const client_secret = process.env.API42SECRET;
@@ -42,6 +43,7 @@ export class AuthController {
     constructor(
         private authService: AuthService,
         private httpService: HttpService,
+        private usersService: UsersService,
     ) {}
 
     @Get()
@@ -56,7 +58,7 @@ export class AuthController {
         return JSON.stringify(session);
     }
 
-    @Redirect("/auth/debug")
+    @Redirect("/users/me")
     @Get("callback")
     async callback(
         @Session() session: Record<string, any>,
@@ -66,6 +68,7 @@ export class AuthController {
         if (!code) {
             throw new BadRequestException();
         }
+
         const { data } = await firstValueFrom(
             this.httpService.post("https://api.intra.42.fr/oauth/token", {
                 grant_type: "authorization_code",
@@ -75,13 +78,19 @@ export class AuthController {
                 redirect_uri,
             }),
         );
-        const {
-            data: { id, login, first_name, last_name, image_url },
-        } = await api42request(this.httpService, "me", data.access_token);
-        session.user = { id, login, first_name, last_name, image_url };
 
-        console.log("auth");
-        return;
+        const {
+            data: { id, login, image_url },
+        } = await api42request(this.httpService, "me", data.access_token);
+
+        let user = await this.usersService.findIntra(id)
+
+        // In case no user with this intra exists, create it.
+        if (!user) {
+            user = await this.usersService.create({ intra_id: id, intra_login: login, intra_image_url: image_url })
+        }
+
+        session.user = user.id;
     }
 
     @Get("logout")
@@ -90,6 +99,5 @@ export class AuthController {
         delete session.user;
 
         console.log("logout");
-        return;
     }
 }
