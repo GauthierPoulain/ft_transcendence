@@ -1,80 +1,84 @@
-import { Controller, Get, Query, Res, Session } from "@nestjs/common";
+import {
+    Controller,
+    Get,
+    Query,
+    Res,
+    Session,
+    Redirect,
+    BadRequestException,
+} from "@nestjs/common";
+import { HttpService } from "@nestjs/axios";
+import { AxiosResponse } from "axios";
 import { AuthService } from "./auth.service";
-import axios, { AxiosResponse } from "axios";
 import session from "express-session";
+import { Observable, firstValueFrom } from "rxjs";
 
-const api42Config = {
-  uid: "fa0f13e6daf52c3590217ebadc4c2cd9e757fac12b997d6abf3ac7d089af7254",
-  secret: "d92778332ac24fcfdafd152a871246f1b6c99e0fe28f555c3277106c60b9fdbb",
-  redirect_uri: "http://localhost:3000/auth/callback",
-  endpoint: "https://api.intra.42.fr/v2",
-};
+const client_id = process.env.API42UID;
+const client_secret = process.env.API42SECRET;
+const redirect_uri = "http://localhost:3000/auth/callback";
+const api_endpoint = "https://api.intra.42.fr/v2/";
 
 function api42request(
-  path: string,
-  token: string,
+    httpService: HttpService,
+    path: string,
+    token: string,
 ): Promise<AxiosResponse<any, any>> {
-  return axios.get(api42Config.endpoint + path, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+    return firstValueFrom(
+        httpService.get(new URL(path, api_endpoint).toString(), {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }),
+    );
 }
+
+const oauth_url = new URL("/oauth/authorize", "https://api.intra.42.fr");
+oauth_url.searchParams.set("client_id", client_id);
+oauth_url.searchParams.set("redirect_uri", redirect_uri);
+oauth_url.searchParams.set("response_type", "code");
 
 @Controller("auth")
 export class AuthController {
-  constructor(private authService: AuthService) {}
+    constructor(
+        private authService: AuthService,
+        private httpService: HttpService,
+    ) {}
 
-  @Get()
-  redirect(@Res() res) {
-    return res.redirect(
-      `https://api.intra.42.fr/oauth/authorize?client_id=${
-        api42Config.uid
-      }&redirect_uri=${encodeURIComponent(
-        api42Config.redirect_uri,
-      )}&response_type=code`,
-    );
-  }
+    @Get()
+    @Redirect(oauth_url.toString())
+    redirect() {}
 
-  @Get("debug")
-  debug(@Session() session: Record<string, any>): string {
-    return JSON.stringify(session);
-  }
-
-  @Get("callback")
-  async callback(
-    @Session() session: Record<string, any>,
-    @Query("code") code,
-    @Res() res,
-  ): Promise<string> {
-    if (!code) return "Error: missing code in get params";
-    try {
-      const data = (
-        await axios.post(
-          "https://api.intra.42.fr/oauth/token",
-          {
-            grant_type: "authorization_code",
-            client_id: api42Config.uid,
-            client_secret: api42Config.secret,
-            code: code,
-            redirect_uri: api42Config.redirect_uri,
-          },
-          { headers: { "content-type": "application/json" } },
-        )
-      ).data;
-      const userRaw = (await api42request("/me", data.access_token)).data;
-      const user = {
-        id: userRaw.id,
-        login: userRaw.login,
-        first_name: userRaw.first_name,
-        last_name: userRaw.last_name,
-        image_url: userRaw.image_url,
-      };
-      session.user = user;
-      return res.redirect("/auth/debug");
-    } catch (error) {
-      console.error(error);
-      return "Interal error";
+    @Get("debug")
+    debug(@Session() session: Record<string, any>): string {
+        return JSON.stringify(session);
     }
-  }
+
+    @Get("callback")
+    async callback(
+        @Session() session: Record<string, any>,
+        @Query("code") code: string,
+        @Res() res,
+    ): Promise<string> {
+        if (!code) {
+            throw new BadRequestException();
+        }
+
+        const { data } = await firstValueFrom(
+            this.httpService.post("https://api.intra.42.fr/oauth/token", {
+                grant_type: "authorization_code",
+                client_id,
+                client_secret,
+                code,
+                redirect_uri,
+            }),
+        );
+
+        const {
+            data: { id, login, first_name, last_name, image_url },
+        } = await api42request(this.httpService, "me", data.access_token);
+
+        session.user = { id, login, first_name, last_name, image_url };
+
+        return res.redirect("/auth/debug");
+    }
 }
