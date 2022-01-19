@@ -1,7 +1,7 @@
-import { Module } from "@nestjs/common"
-import { AchievementsService } from "./achievements.service"
+import { Module } from "@nestjs/common";
+import { AchievementsService } from "./achievements.service";
 
 @Module({
-	providers: [AchievementsService],
+    providers: [AchievementsService],
 })
 export class AchievementsModule {}

@@ -1,9 +1,9 @@
-import { Achievements } from "../../achievements/entities/achievements.entity"
+import { Achievements } from "../../achievements/entities/achievements.entity";
 
 export class User {
-	id: number
+    id: number;
 
-	username: string
+    username: string;
 
-	achievements: Achievements
+    achievements: Achievements;
 }
