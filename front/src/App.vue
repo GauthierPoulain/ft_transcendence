@@ -3,22 +3,29 @@
 import Button from './components/Button.vue';
 import Cbutton from './components/Cbutton.vue';
 
-var isHidden = false;
-function test() {
-	console.log(isHidden);
-	isHidden = !isHidden;
+export default {
+	components: {
+		Cbutton
+	},
+
+	data () {
+		return {
+			isHidden: false
+		}
+	}
 }
+
 </script>
 
 <template>
     <h1>FT_PONG</h1>
     <div class="button" v-if="!isHidden">
-        <Button/>
-        <Button/>
-        <Button/>
+        <Cbutton v-on:click="print()">print</Cbutton>
+        <Cbutton>button</Cbutton>
+        <Cbutton>button</Cbutton>
     </div>
     <div>
-        <Cbutton  v-on:click="test()">Hey!</Cbutton>
+        <Cbutton class="switch">switch</Cbutton>
     </div>
 </template>
 
