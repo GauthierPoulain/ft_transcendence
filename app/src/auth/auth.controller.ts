@@ -1,11 +1,10 @@
 import { Controller, Get, Query, Res, Session, Redirect } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import axios, { AxiosResponse } from "axios";
-import session from "express-session";
 
 const api42Config = {
-  uid: "fa0f13e6daf52c3590217ebadc4c2cd9e757fac12b997d6abf3ac7d089af7254",
-  secret: "d92778332ac24fcfdafd152a871246f1b6c99e0fe28f555c3277106c60b9fdbb",
+  uid: process.env.API42UID,
+  secret:  process.env.API42SECRET,
   redirect_uri: "http://localhost:3000/auth/callback",
   endpoint: "https://api.intra.42.fr/v2",
 };
