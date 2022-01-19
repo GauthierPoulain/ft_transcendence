@@ -5,8 +5,8 @@ import { AuthService } from "./auth.service";
 import session from "express-session";
 import { Observable, firstValueFrom } from "rxjs"
 
-const client_id = "fa0f13e6daf52c3590217ebadc4c2cd9e757fac12b997d6abf3ac7d089af7254"
-const client_secret = "d92778332ac24fcfdafd152a871246f1b6c99e0fe28f555c3277106c60b9fdbb"
+const client_id = process.env.API42UID
+const client_secret = process.env.API42SECRET
 const redirect_uri = "http://localhost:3000/auth/callback"
 const api_endpoint = "https://api.intra.42.fr/v2/"
 
