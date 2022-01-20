@@ -24,13 +24,10 @@ export class UsersService {
         return this.usersRepository.save(user);
     }
 
-    async updateIntra(id: number, input: CreateUserDto): Promise<User> {
-        const user: User = {
-            id: id,
-            intra_id: input.intra_id,
-            intra_login: input.intra_login,
-            intra_image_url: input.intra_image_url,
-        };
+    async updateIntra(user: User, input: CreateUserDto): Promise<User> {
+        user.intra_id = input.intra_id;
+        user.intra_login = input.intra_login;
+        user.intra_image_url = input.intra_image_url;
 
         this.usersRepository.save(user);
         return this.usersRepository.save(user);

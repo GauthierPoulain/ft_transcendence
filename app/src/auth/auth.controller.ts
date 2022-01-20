@@ -21,13 +21,17 @@ export class AuthController {
 
     @UseGuards(OAuth2AuthGuard)
     @Get()
-    login() {}
+    login() {
+        console.log("/auth");
+    }
 
     @UseGuards(OAuth2AuthGuard)
     @Get("callback")
     @Redirect("/users/me")
     async login_callback(@Request() req: any) {
         const { id, login, image_url } = req.user;
+
+        console.log("callback");
 
         let user = await this.usersService.findIntra(id);
 
@@ -39,7 +43,7 @@ export class AuthController {
                 intra_image_url: image_url,
             });
         } else {
-            user = await this.usersService.updateIntra(user.id, {
+            user = await this.usersService.updateIntra(user, {
                 intra_id: id,
                 intra_login: login,
                 intra_image_url: image_url,
