@@ -36,6 +36,12 @@ function print() {
 h1 {
     color: white;
     text-align: center;
+    padding: 20px;
+    margin: 20px;
+    margin-left: 70vh;
+    margin-right: 70vh;
+    border-radius: 25px;
+    background: rgb(105, 105, 105);
 }
 
 .button {
