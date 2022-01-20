@@ -8,6 +8,16 @@ interface Props {
 const props = defineProps<Props>();
 console.log(props);
 
+declare const props: Theight
+
+// export default {
+// 	data() {
+// 		return {
+// 			test: 4
+// 		}
+// 	}
+// }
+
 var x = ref(0);
 var y = ref(0);
 function showCoords(e: any) {
