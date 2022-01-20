@@ -27,17 +27,31 @@ function drawLine(x1, x2, y1, y2) {
 }
 
 function draw(e) {
+    showCoords(e);
     let c = document.getElementById("myCanvas");
     let ctx = c.getContext("2d");
     console.log(ctx);
-    drawLine(ctx.x, ctx.y, e.offsetX, e.offsetY);
+    // drawLine(ctx.x, ctx.y, e.offsetX, e.offsetY);
+    ctx.fillStyle = 'blue';
+    ctx.fillRect(x.value, y.value, 5, 5);
     ctx.x = e.offsetX;
     ctx.y = e.offsetY;
 }
+
+function clear() {
+    console.log('Cleared !');
+    let c = document.getElementById("myCanvas");
+    let ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, props.width, props.height);
+}
+
+import Cbutton from "./Cbutton.vue";
+
 </script>
 
 <template>
     <span>{{x}}, {{y}}, {{height}}</span>
+    <Cbutton v-on:click="clear">clear</Cbutton>
     <canvas id="myCanvas" :width="width" :height="height" @mousemove="draw"/>
 </template>
 
