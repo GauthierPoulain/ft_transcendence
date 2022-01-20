@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import {ref} from 'vue';
 
+declare const props: Theight
+
+// export default {
+// 	data() {
+// 		return {
+// 			test: 4
+// 		}
+// 	}
+// }
+
 var x = ref(0);
 var y = ref(0);
 function showCoords(e) {
@@ -10,8 +20,8 @@ function showCoords(e) {
 </script>
 
 <template>
-    <span>{{x}}, {{y}}</span>
-    <canvas id="myCanvas" @mousemove="showCoords"/>
+    <span>{{x}}, {{y}}, {{height}}</span>
+    <canvas id="myCanvas" height="Theight" @mousemove="showCoords"/>
 </template>
 
 <style>
