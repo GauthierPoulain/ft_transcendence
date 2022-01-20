@@ -15,9 +15,6 @@ export class User {
     @Column()
     intra_image_url: string;
 
-    @Column({ default: false })
-    use_tfa: boolean;
-
     @Column({ default: "" })
     tfa_secret: string;
 
