@@ -1,21 +1,19 @@
 <script setup lang="ts">
+import Button from "./components/Button.vue";
+import Cbutton from "./components/Cbutton.vue";
+import Tcanvas from "./components/Tcanvas.vue";
 
-import Button from './components/Button.vue';
-import Cbutton from './components/Cbutton.vue';
-import Tcanvas from './components/Tcanvas.vue';
-
-import {ref} from 'vue';
+import { ref } from "vue";
 
 var isHidden = ref(false);
 
 function swap() {
-	isHidden.value = !isHidden.value;
+    isHidden.value = !isHidden.value;
 }
 
 function print() {
-	console.log(isHidden.value);
+    console.log(isHidden.value);
 }
-
 </script>
 
 <template>
@@ -24,7 +22,7 @@ function print() {
         <Cbutton v-on:click="print()">print</Cbutton>
         <Cbutton>button</Cbutton>
         <Cbutton>button</Cbutton>
-        <Tcanvas width="800" height="380"></Tcanvas>
+        <Tcanvas v-bind:width="800" v-bind:height="380"></Tcanvas>
     </div>
     <div>
         <Cbutton class="switch" v-on:click="swap()">switch</Cbutton>
@@ -32,25 +30,20 @@ function print() {
 </template>
 
 <style>
-
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
 }
 
-h1
-{
-  color: white;
-  text-align: center;
+h1 {
+    color: white;
+    text-align: center;
 }
 
-.button
-{
-  text-align: center;
+.button {
+    text-align: center;
 }
 
-body
-{
-  background: rgb(68, 68, 68);
+body {
+    background: rgb(68, 68, 68);
 }
-
 </style>
