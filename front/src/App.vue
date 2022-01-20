@@ -3,16 +3,16 @@
 import Button from './components/Button.vue';
 import Cbutton from './components/Cbutton.vue';
 
-export default {
-	components: {
-		Cbutton
-	},
+import {ref} from 'vue';
 
-	data () {
-		return {
-			isHidden: false
-		}
-	}
+var isHidden = ref(false);
+
+function swap() {
+	isHidden = !isHidden;
+}
+
+function print() {
+	console.log(isHidden);
 }
 
 </script>
@@ -25,7 +25,7 @@ export default {
         <Cbutton>button</Cbutton>
     </div>
     <div>
-        <Cbutton class="switch">switch</Cbutton>
+        <Cbutton class="switch" v-on:click="swap()">switch</Cbutton>
     </div>
 </template>
 
