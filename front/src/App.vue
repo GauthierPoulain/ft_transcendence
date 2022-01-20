@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Button from "./components/Button.vue";
 import Cbutton from "./components/Cbutton.vue";
 import Tcanvas from "./components/Tcanvas.vue";
 
@@ -22,7 +21,7 @@ function print() {
         <Cbutton v-on:click="print()">print</Cbutton>
         <Cbutton>button</Cbutton>
         <Cbutton>button</Cbutton>
-        <Tcanvas v-bind:width="800" v-bind:height="380"></Tcanvas>
+        <Tcanvas v-bind:width="500" v-bind:height="500"></Tcanvas>
     </div>
     <div>
         <Cbutton class="switch" v-on:click="swap()">switch</Cbutton>
