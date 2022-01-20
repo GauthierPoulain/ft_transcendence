@@ -5,7 +5,6 @@ import {
     Redirect,
     Request,
     UseGuards,
-    UnauthorizedException,
     Query,
 } from "@nestjs/common";
 
@@ -65,7 +64,6 @@ export class AuthController {
     @Get("enable2fa")
     async enable2fa(@Request() req: any) {
         let user = req.user;
-        if (!user) new UnauthorizedException();
         user = await this.usersService.enable2fa(user);
         return this.usersService.get2faQr(user);
     }
@@ -74,7 +72,6 @@ export class AuthController {
     @Get("disable2fa")
     async disable2fa(@Request() req: any) {
         let user = req.user;
-        if (!user) new UnauthorizedException();
         user = await this.usersService.disable2fa(user);
         return JSON.stringify(user);
     }
@@ -83,7 +80,6 @@ export class AuthController {
     @Get("test2fa")
     async test2fa(@Request() req: any, @Query("token") token: string) {
         let user = req.user;
-        if (!user) new UnauthorizedException();
         return await this.usersService.check2fa(user, token);
     }
 }
