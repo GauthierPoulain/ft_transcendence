@@ -2,6 +2,7 @@
 
 import Button from './components/Button.vue';
 import Cbutton from './components/Cbutton.vue';
+import Tcanvas from './components/Tcanvas.vue';
 
 import {ref} from 'vue';
 
@@ -23,6 +24,7 @@ function print() {
         <Cbutton v-on:click="print()">print</Cbutton>
         <Cbutton>button</Cbutton>
         <Cbutton>button</Cbutton>
+        <Tcanvas></Tcanvas>
     </div>
     <div>
         <Cbutton class="switch" v-on:click="swap()">switch</Cbutton>
