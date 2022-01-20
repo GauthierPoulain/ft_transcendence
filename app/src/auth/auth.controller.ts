@@ -6,6 +6,8 @@ import {
     Request,
     UseGuards,
     Query,
+    Post,
+    Body,
 } from "@nestjs/common";
 
 import { UsersService } from "../users/users.service";
@@ -18,6 +20,11 @@ import { ConnectedGuard } from "./guards/connected.guard";
 @Controller("auth")
 export class AuthController {
     constructor(private usersService: UsersService) {}
+
+    @Post("login_intra")
+    async login_intra(@Body() code: string) {
+        console.log(code)
+    }
 
     @UseGuards(OAuth2AuthGuard)
     @Get()

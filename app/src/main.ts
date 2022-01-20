@@ -20,6 +20,8 @@ async function bootstrap() {
     // To avoid conflict with frontend, move all routes inside /api/.
     app.setGlobalPrefix("api")
 
+    app.enableCors();
+
     app.useWebSocketAdapter(new WsAdapter(app));
     app.use(
         session({
