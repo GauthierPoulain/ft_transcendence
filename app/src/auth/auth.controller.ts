@@ -5,16 +5,16 @@ import {
     Redirect,
     Request,
     UseGuards,
+    UnauthorizedException,
     Query,
 } from "@nestjs/common";
 
 import { UsersService } from "../users/users.service";
 import { OAuth2AuthGuard } from "./guards/oauth2-auth.guard";
 
-import * as twoFactors from "node-2fa";
-
 import { promisify } from "util";
 import { IntraInfosDto } from "src/users/dto/intra_infos.dto";
+import { ConnectedGuard } from "./guards/connected.guard";
 
 @Controller("auth")
 export class AuthController {
@@ -22,16 +22,13 @@ export class AuthController {
 
     @UseGuards(OAuth2AuthGuard)
     @Get()
-    login() {
-        console.log("/auth");
-    }
+    login() {}
 
     @UseGuards(OAuth2AuthGuard)
     @Get("callback")
     @Redirect("/users/me")
     async login_callback(@Request() req: any) {
         const intra_user: IntraInfosDto = req.user;
-
         let user = await this.usersService.findIntra(intra_user.id);
 
         // In case no user with this intra exists, create it.
@@ -44,12 +41,15 @@ export class AuthController {
         await promisify(req.logIn.bind(req))(user);
     }
 
+    @UseGuards(ConnectedGuard)
     @Get("debug")
     debug(
         @Session() session: Record<string, any>,
         @Request() req: any,
     ): string {
-        return `session id : ${req.sessionID}<br>${JSON.stringify(session)}`;
+        return `session id : ${req.sessionID}<br>${JSON.stringify(
+            session,
+        )}<br>${req.user}`;
     }
 
     @Get("logout")
@@ -59,30 +59,31 @@ export class AuthController {
         await promisify(req.session.destroy.bind(req.session))();
     }
 
-    @Get("2fa")
-    tfa() {
-        const appName = "ft_transcendance";
-        const userName = "bite";
+	//THIS IS FOR LE TEST DONT PANIC MONSIEUR ARNAUD
 
-        let secret = twoFactors.generateSecret({
-            name: appName,
-            account: userName,
-        });
-
-        console.log(secret);
-
-        return secret.qr;
+    @UseGuards(ConnectedGuard)
+    @Get("enable2fa")
+    async enable2fa(@Request() req: any) {
+        let user = req.user;
+        if (!user) new UnauthorizedException();
+        user = await this.usersService.enable2fa(user);
+        return this.usersService.get2faQr(user);
     }
 
-    @Get("a")
-    a() {
-        return twoFactors.generateToken("W67SXM5AAQBLYUDYYWGOBWYHLUD2KYTD");
+    @UseGuards(ConnectedGuard)
+    @Get("disable2fa")
+    async disable2fa(@Request() req: any) {
+        let user = req.user;
+        if (!user) new UnauthorizedException();
+        user = await this.usersService.disable2fa(user);
+        return JSON.stringify(user);
     }
 
-    @Get("b")
-    b(@Query("code") code) {
-        return JSON.stringify(
-            twoFactors.verifyToken("W67SXM5AAQBLYUDYYWGOBWYHLUD2KYTD", code),
-        );
+    @UseGuards(ConnectedGuard)
+    @Get("test2fa")
+    async test2fa(@Request() req: any, @Query("token") token: string) {
+        let user = req.user;
+        if (!user) new UnauthorizedException();
+        return await this.usersService.check2fa(user, token);
     }
 }
