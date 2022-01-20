@@ -34,4 +34,11 @@
     align-items: center;
 }
 
+button:hover
+{
+    background-color: rgb(212, 212, 212);
+    color: rgb(73, 73, 73);
+    transition: 0.5s;
+}
+
 </style>
