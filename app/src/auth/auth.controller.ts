@@ -38,6 +38,12 @@ export class AuthController {
                 intra_login: login,
                 intra_image_url: image_url,
             });
+        } else {
+            user = await this.usersService.updateIntra(user.id, {
+                intra_id: id,
+                intra_login: login,
+                intra_image_url: image_url,
+            });
         }
 
         await promisify(req.logIn.bind(req))(user);
