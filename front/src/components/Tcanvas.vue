@@ -26,6 +26,7 @@ function drawLine(x1, x2, y1, y2) {
 }
 
 function draw(e) {
+    showCoords(e);
     this.drawLine(this.x, this.y, e.offsetX, e.offsetY);
     this.x = e.offsetX;
     this.y = e.offsetY;
@@ -34,7 +35,7 @@ function draw(e) {
 
 <template>
     <span>{{x}}, {{y}}, {{height}}</span>
-    <canvas id="myCanvas" :width="width" :height="height" @mousemove="showCoords"/>
+    <canvas id="myCanvas" :width="width" :height="height" @mousemove="draw"/>
 </template>
 
 <style>

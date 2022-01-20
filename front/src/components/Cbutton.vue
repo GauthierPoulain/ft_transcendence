@@ -1,13 +1,5 @@
-<script setup lang="ts">
-    interface Props {
-        width: number;
-        height: number;
-    }
-    const props = defineProps<Props>();
-</script>
-
 <template>
-    <button class="style" :width="width" :height="height">
+    <button class="style">
         <slot/>
     </button>
 </template>
