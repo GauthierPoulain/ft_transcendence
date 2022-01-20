@@ -1,5 +1,7 @@
+props: 'mWidth'
+
 <template>
-    <canvas id="myCanvas" width="500" height="360"/>
+    <canvas id="myCanvas"/>
 </template>
 
 <style>

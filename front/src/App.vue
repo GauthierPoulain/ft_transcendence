@@ -24,7 +24,7 @@ function print() {
         <Cbutton v-on:click="print()">print</Cbutton>
         <Cbutton>button</Cbutton>
         <Cbutton>button</Cbutton>
-        <Tcanvas></Tcanvas>
+        <Tcanvas width="500" height="380"></Tcanvas>
     </div>
     <div>
         <Cbutton class="switch" v-on:click="swap()">switch</Cbutton>
