@@ -8,7 +8,7 @@ interface Props {
 const props = defineProps<Props>();
 console.log(props);
 
-declare const props: Theight
+// declare const props: Theight
 
 // export default {
 // 	data() {
