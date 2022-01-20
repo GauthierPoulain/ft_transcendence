@@ -1,5 +1,3 @@
-import { config } from "dotenv";
-config();
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { WsAdapter } from "@nestjs/platform-ws";
@@ -18,6 +16,10 @@ const PGCon = {
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
+
+    // To avoid conflict with frontend, move all routes inside /api/.
+    app.setGlobalPrefix("api")
+
     app.useWebSocketAdapter(new WsAdapter(app));
     app.use(
         session({

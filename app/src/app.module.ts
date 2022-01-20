@@ -11,9 +11,13 @@ import { User } from "./users/entities/user.entity";
 import { ChannelsModule } from './channels/channels.module';
 import { Channel } from "./channels/entities/channel.entity";
 import { Message } from "./channels/entities/message.entity";
+import { ConfigModule } from "@nestjs/config";
 
 @Module({
     imports: [
+        ConfigModule.forRoot({
+            isGlobal: true
+        }),
         TypeOrmModule.forRoot({
             // TODO: Make them configurable.
             type: "postgres",
