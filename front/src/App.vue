@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Button from "./components/Button.vue";
 import Cbutton from "./components/Cbutton.vue";
 import Tcanvas from "./components/Tcanvas.vue";
 
@@ -20,9 +19,9 @@ function print() {
     <h1>FT_PONG</h1>
     <div class="button" v-show="!isHidden">
         <Cbutton v-on:click="print()">print</Cbutton>
-        <Cbutton>Leaderboard</Cbutton>
-        <Cbutton>Friend List</Cbutton>
-        <Tcanvas v-bind:width="800" v-bind:height="380"></Tcanvas>
+        <Cbutton>button</Cbutton>
+        <Cbutton>button</Cbutton>
+        <Tcanvas v-bind:width="500" v-bind:height="500"></Tcanvas>
     </div>
     <div>
         <Cbutton class="switch" v-on:click="swap()">switch</Cbutton>
