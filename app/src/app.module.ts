@@ -8,6 +8,9 @@ import { UsersModule } from "./users/users.module";
 import { AuthModule } from "./auth/auth.module";
 
 import { User } from "./users/entities/user.entity";
+import { ChannelsModule } from './channels/channels.module';
+import { Channel } from "./channels/entities/channel.entity";
+import { Message } from "./channels/entities/message.entity";
 
 @Module({
     imports: [
@@ -24,12 +27,15 @@ import { User } from "./users/entities/user.entity";
             synchronize: true,
 
             entities: [
-                User
+                User,
+                Channel,
+                Message
             ],
         }),
         EventsModule,
         UsersModule,
         AuthModule,
+        ChannelsModule,
     ],
     controllers: [AppController],
     providers: [AppService],

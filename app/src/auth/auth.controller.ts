@@ -14,6 +14,7 @@ import { OAuth2AuthGuard } from "./guards/oauth2-auth.guard";
 import * as twoFactors from "node-2fa";
 
 import { promisify } from "util";
+import { IntraInfosDto } from "src/users/dto/intra_infos.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -21,23 +22,23 @@ export class AuthController {
 
     @UseGuards(OAuth2AuthGuard)
     @Get()
-    login() {}
+    login() {
+        console.log("/auth");
+    }
 
     @UseGuards(OAuth2AuthGuard)
     @Get("callback")
     @Redirect("/users/me")
     async login_callback(@Request() req: any) {
-        const { id, login, image_url } = req.user;
+        const intra_user: IntraInfosDto = req.user;
 
-        let user = await this.usersService.findIntra(id);
+        let user = await this.usersService.findIntra(intra_user.id);
 
         // In case no user with this intra exists, create it.
         if (!user) {
-            user = await this.usersService.create({
-                intra_id: id,
-                intra_login: login,
-                intra_image_url: image_url,
-            });
+            user = await this.usersService.create(intra_user);
+        } else {
+            await this.usersService.updateIntra(user, intra_user);
         }
 
         await promisify(req.logIn.bind(req))(user);
