@@ -15,7 +15,8 @@ function showCoords(e) {
 }
 
 function drawLine(x1, x2, y1, y2) {
-    let ctx = this.canvas;
+    let c = document.getElementById("myCanvas");
+    let ctx = c.getContext("2d");
     ctx.beginPath();
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 1;
@@ -26,10 +27,12 @@ function drawLine(x1, x2, y1, y2) {
 }
 
 function draw(e) {
-    showCoords(e);
-    this.drawLine(this.x, this.y, e.offsetX, e.offsetY);
-    this.x = e.offsetX;
-    this.y = e.offsetY;
+    let c = document.getElementById("myCanvas");
+    let ctx = c.getContext("2d");
+    console.log(ctx);
+    drawLine(ctx.x, ctx.y, e.offsetX, e.offsetY);
+    ctx.x = e.offsetX;
+    ctx.y = e.offsetY;
 }
 </script>
 
