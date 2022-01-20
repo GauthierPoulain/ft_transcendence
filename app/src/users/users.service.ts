@@ -4,7 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
 import { User } from "./entities/user.entity";
-import { CreateUserDto } from "./dto/create_user.dto";
+import { IntraInfosDto } from "./dto/intra_infos.dto";
 
 @Injectable()
 export class UsersService {
@@ -13,24 +13,23 @@ export class UsersService {
         private usersRepository: Repository<User>,
     ) {}
 
-    create(input: CreateUserDto): Promise<User> {
+    create(input: IntraInfosDto): Promise<User> {
         const user = new User();
 
-        user.intra_id = input.intra_id;
-        user.intra_login = input.intra_login;
-        user.intra_image_url = input.intra_image_url;
+        user.intra_id = input.id;
+        user.intra_login = input.login;
+        user.intra_image_url = input.image_url;
 
         console.log("user", user);
         return this.usersRepository.save(user);
     }
 
-    async updateIntra(user: User, input: CreateUserDto): Promise<User> {
-        user.intra_id = input.intra_id;
-        user.intra_login = input.intra_login;
-        user.intra_image_url = input.intra_image_url;
+    async updateIntra(user: User, intra_user: IntraInfosDto) {
+        user.intra_id = intra_user.id
+        user.intra_login = intra_user.login
+        user.intra_image_url = intra_user.image_url
 
-        this.usersRepository.save(user);
-        return this.usersRepository.save(user);
+        await this.usersRepository.save(user);
     }
 
     find(id: string): Promise<User> {
