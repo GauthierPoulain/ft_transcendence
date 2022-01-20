@@ -8,18 +8,18 @@ import {ref} from 'vue';
 var isHidden = ref(false);
 
 function swap() {
-	isHidden = !isHidden;
+	isHidden.value = !isHidden.value;
 }
 
 function print() {
-	console.log(isHidden);
+	console.log(isHidden.value);
 }
 
 </script>
 
 <template>
     <h1>FT_PONG</h1>
-    <div class="button" v-if="!isHidden">
+    <div class="button" v-show="!isHidden">
         <Cbutton v-on:click="print()">print</Cbutton>
         <Cbutton>button</Cbutton>
         <Cbutton>button</Cbutton>
