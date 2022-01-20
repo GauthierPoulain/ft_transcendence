@@ -20,8 +20,8 @@ function print() {
     <h1>FT_PONG</h1>
     <div class="button" v-show="!isHidden">
         <Cbutton v-on:click="print()">print</Cbutton>
-        <Cbutton>button</Cbutton>
-        <Cbutton>button</Cbutton>
+        <Cbutton>Leaderboard</Cbutton>
+        <Cbutton>Friend List</Cbutton>
         <Tcanvas v-bind:width="800" v-bind:height="380"></Tcanvas>
     </div>
     <div>
