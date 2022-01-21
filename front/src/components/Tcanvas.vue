@@ -48,6 +48,12 @@ function draw() {
     context.fill();
 }
 
+function changeDirection(playerPos) {
+    var impact = game.ball.y - playerPos - PLAYER_H / 2;
+    var ratio = 100 / (PLAYER_H / 2);
+    game.ball.speed.y = Math.round(impact * ratio / 10);
+}
+
 function collide(player) {
     if (game.ball.y < player.y || game.ball.y > player.y + PLAYER_H) {
         game.ball.x = canvas.width / 2;
@@ -55,9 +61,11 @@ function collide(player) {
         game.player.y = canvas.height / 2 - PLAYER_H / 2;
         game.ai.y = canvas.height / 2 - PLAYER_H / 2;
         game.ball.speed.x = 2;
+        game.ball.speed.y = -2;
     }
     else
         game.ball.speed.x *= -1.2;
+        changeDirection(player.y);
 }
 
 function ballMove()
