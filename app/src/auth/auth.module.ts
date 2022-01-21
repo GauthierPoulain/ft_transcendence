@@ -4,13 +4,19 @@ import { HttpModule } from "@nestjs/axios"
 import { AuthController } from "./auth.controller";
 
 import { UsersModule } from "../users/users.module";
-import { PassportModule } from "@nestjs/passport";
-import { OAuth2Strategy } from "./strategies/oauth.strategy";
-import { UserSerializer } from "./serializers/user.serializer";
+import { AuthService } from "./auth.service";
+import { FortyTwoService } from "./fortytwo.service";
+import { JwtModule } from "@nestjs/jwt";
 
 @Module({
-  imports: [HttpModule, UsersModule, PassportModule.register({ session: true })],
-  providers: [OAuth2Strategy, UserSerializer],
-  controllers: [AuthController],
+    imports: [
+        HttpModule,
+        UsersModule,
+        JwtModule.register({
+            secret: "TODO: this should be generated with cryptogaphic random later"
+        })
+    ],
+    providers: [AuthService, FortyTwoService],
+    controllers: [AuthController],
 })
 export class AuthModule {}

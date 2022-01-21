@@ -11,14 +11,19 @@ import axios from "axios"
 
 const route = useRoute()
 
+
 onMounted(async () => {
     // This is a response code from 42 Oauth2 server.
     if (route.query.code) {
         console.log(route.query.code)
+        const redirect_uri = new URL("/auth", window.location as any)
         
-        await axios.post("http://localhost:3000/api/auth/login_intra", { code: route.query.code })
+        const response = await axios.post("http://localhost:3000/api/auth/login", {
+            code: route.query.code,
+            redirect_uri: redirect_uri.toString()
+        })
 
-        console.log("posted")
+        console.log("posted", response)
 
     }
 })

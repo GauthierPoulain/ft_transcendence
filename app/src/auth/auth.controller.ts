@@ -8,43 +8,37 @@ import {
     Query,
     Post,
     Body,
+    UnauthorizedException,
 } from "@nestjs/common";
 
 import { UsersService } from "../users/users.service";
-import { OAuth2AuthGuard } from "./guards/oauth2-auth.guard";
 
 import { promisify } from "util";
-import { IntraInfosDto } from "src/users/dto/intra_infos.dto";
 import { ConnectedGuard } from "./guards/connected.guard";
+import { AuthService } from "./auth.service";
+import { ConnectDto } from "./dto/connect.dto";
 
 @Controller("auth")
 export class AuthController {
-    constructor(private usersService: UsersService) {}
-
-    @Post("login_intra")
-    async login_intra(@Body() code: string) {
-        console.log(code)
+    constructor(private auth: AuthService, private usersService: UsersService) {
     }
 
-    @UseGuards(OAuth2AuthGuard)
-    @Get()
-    login() {}
+    @Post("login")
+    async login(@Body() payload: ConnectDto) {
+        // TODO: Make the ConnectDto class perform validation (non empty strings)
 
-    @UseGuards(OAuth2AuthGuard)
-    @Get("callback")
-    @Redirect("/users/me")
-    async login_callback(@Request() req: any) {
-        const intra_user: IntraInfosDto = req.user;
-        let user = await this.usersService.findIntra(intra_user.id);
+        const user = await this.auth.login(payload).catch(() => {
+            // If we make a request with an invalid code our server will reply with a 500.
+            // Map the error with a unauthorized response.
+            throw new UnauthorizedException()
+        })
 
-        // In case no user with this intra exists, create it.
-        if (!user) {
-            user = await this.usersService.create(intra_user);
-        } else {
-            await this.usersService.updateIntra(user, intra_user);
+        // Before creating an authentication token we could verify if the 2FA is enabled and issue
+        // another type of token.
+
+        return {
+            token: await this.auth.createToken(user)
         }
-
-        await promisify(req.logIn.bind(req))(user);
     }
 
     @UseGuards(ConnectedGuard)
@@ -87,6 +81,6 @@ export class AuthController {
     @Get("test2fa")
     async test2fa(@Request() req: any, @Query("token") token: string) {
         let user = req.user;
-        return await this.usersService.check2fa(user, token);
+        return this.usersService.check2fa(user, token);
     }
 }

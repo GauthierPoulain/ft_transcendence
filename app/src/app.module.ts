@@ -40,6 +40,7 @@ import { ConfigModule } from "@nestjs/config";
         UsersModule,
         AuthModule,
         ChannelsModule,
+        
     ],
     controllers: [AppController],
     providers: [AppService],
