@@ -47,6 +47,22 @@ function draw() {
 	context.arc(game.ball.x, game.ball.y, game.ball.r, 0, Math.PI * 2, false);
 	context.fill();
 }
+
+function test() {
+	game.ball.x += game.speed.x;
+	game.ball.y += game.speed.y;
+	draw();
+
+	requestAnimationFrame(test);
+}
+
+function playerMove(e) {
+    var canvasLoc = canvas.getBoundingClientRect();
+    var mouseLoc = event.clientY - canvasLoc.y;
+
+    game.player.y = mouseLoc - PLAYER_H / 2;
+}
+
 document.addEventListener('DOMContentLoaded', function () {
 	console.log("ready!");
     canvas = document.getElementById('myCanvas');
@@ -61,11 +77,16 @@ document.addEventListener('DOMContentLoaded', function () {
 			x: canvas.width / 2,
 			y: canvas.height / 2,
 			r: 5
+		},
+		speed: {
+			x: 2,
+			y: 2
 		}
 	}
+	canvas.addEventListener('mousemove', playerMove);
     draw();
+	test();
 });
-
 import Cbutton from "./Cbutton.vue";
 
 </script>
