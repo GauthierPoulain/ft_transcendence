@@ -48,12 +48,12 @@ function draw() {
 	context.fill();
 }
 
-function test() {
+function loop() {
 	game.ball.x += game.speed.x;
 	game.ball.y += game.speed.y;
 	draw();
 
-	requestAnimationFrame(test);
+	requestAnimationFrame(loop);
 }
 
 function playerMove(e) {
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	}
 	canvas.addEventListener('mousemove', playerMove);
     draw();
-	test();
+	loop();
 });
 import Cbutton from "./Cbutton.vue";
 
