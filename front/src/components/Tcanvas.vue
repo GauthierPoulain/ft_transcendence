@@ -36,24 +36,30 @@ function draw() {
     context.lineTo(canvas.width / 2, canvas.height);
     context.stroke();
 
-	// Draw players
-	context.fillStyle = 'white';
-	context.fillRect(0, game.player.y, PLAYER_w, PLAYER_H);
-	context.fillRect(canvas.width - PLAYER_w, game.ai.y, PLAYER_w, PLAYER_H);
+    // Draw players
+    context.fillStyle = 'white';
+    context.fillRect(0, game.player.y, PLAYER_w, PLAYER_H);
+    context.fillRect(canvas.width - PLAYER_w, game.ai.y, PLAYER_w, PLAYER_H);
 
-	// Draw ball
-	context.beginPath();
-	context.fillStyle = 'white';
-	context.arc(game.ball.x, game.ball.y, game.ball.r, 0, Math.PI * 2, false);
-	context.fill();
+    // Draw ball
+    context.beginPath();
+    context.fillStyle = 'white';
+    context.arc(game.ball.x, game.ball.y, game.ball.r, 0, Math.PI * 2, false);
+    context.fill();
+}
+
+function ballMove()
+{
+    if (game.ball.y > canvas.height || game.ball.y < 0)
+        game.ball.speed.y *= -1;
+    game.ball.x += game.ball.speed.x;
+    game.ball.y += game.ball.speed.y;
 }
 
 function loop() {
-	game.ball.x += game.speed.x;
-	game.ball.y += game.speed.y;
-	draw();
-
-	requestAnimationFrame(loop);
+    ballMove();
+    draw();
+    requestAnimationFrame(loop);
 }
 
 function playerMove(e) {
@@ -64,28 +70,28 @@ function playerMove(e) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-	console.log("ready!");
+    console.log("ready!");
     canvas = document.getElementById('myCanvas');
-	game = {
-		player: {
-			y: canvas.height / 2 - PLAYER_H / 2
-		},
-		ai: {
-			y: canvas.height / 2 - PLAYER_H / 2
-		},
-		ball: {
-			x: canvas.width / 2,
-			y: canvas.height / 2,
-			r: 5
-		},
-		speed: {
-			x: 2,
-			y: 2
-		}
-	}
-	canvas.addEventListener('mousemove', playerMove);
+    game = {
+        player: {
+            y: canvas.height / 2 - PLAYER_H / 2
+        },
+        ai: {
+            y: canvas.height / 2 - PLAYER_H / 2
+        },
+        ball: {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            r: 5,
+            speed: {
+                x: 2,
+                y: -2
+            }
+        }
+    }
+    canvas.addEventListener('mousemove', playerMove);
     draw();
-	loop();
+    loop();
 });
 import Cbutton from "./Cbutton.vue";
 
