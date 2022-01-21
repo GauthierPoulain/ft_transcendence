@@ -3,10 +3,11 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
-  server: {
-    watch: {
-      usePolling: true
+    plugins: [vue()],
+    server: {
+        port: 3005,
+        watch: {
+            usePolling: true
+        }
     }
-  }
 })

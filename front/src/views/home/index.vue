@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Cbutton from "./components/Cbutton.vue";
-import Tcanvas from "./components/Tcanvas.vue";
+import Cbutton from "../../components/Cbutton.vue";
+import Tcanvas from "../../components/Tcanvas.vue";
 
 import { ref } from "vue";
 
@@ -27,28 +27,3 @@ function print() {
         <Cbutton class="switch" v-on:click="swap()">switch</Cbutton>
     </div>
 </template>
-
-<style>
-#app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-}
-
-h1 {
-    color: white;
-    text-align: center;
-    padding: 20px;
-    margin: 20px;
-    margin-left: 70vh;
-    margin-right: 70vh;
-    border-radius: 25px;
-    background: rgb(105, 105, 105);
-}
-
-.button {
-    text-align: center;
-}
-
-body {
-    background: rgb(68, 68, 68);
-}
-</style>
