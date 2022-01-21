@@ -21,7 +21,7 @@ function print() {
         <Cbutton v-on:click="print()">print</Cbutton>
         <Cbutton>button</Cbutton>
         <Cbutton>button</Cbutton>
-        <Tcanvas v-bind:width="500" v-bind:height="500"></Tcanvas>
+        <Tcanvas v-bind:width="1000" v-bind:height="500"></Tcanvas>
     </div>
     <div>
         <Cbutton class="switch" v-on:click="swap()">switch</Cbutton>

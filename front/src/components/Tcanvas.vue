@@ -8,37 +8,13 @@ interface Props {
 const props = defineProps<Props>();
 
 var g_ctx = document.getElementById("myCanvas")
-console.log(document);
 var x = ref(0);
 var y = ref(0);
-function showCoords(e) {
-    x.value = e.offsetX;
-    y.value = e.offsetY;
-}
+var canvas;
+var game;
 
-function drawLine(x1, x2, y1, y2) {
-    let c = document.getElementById("myCanvas");
-    let ctx = c.getContext("2d");
-    ctx.beginPath();
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 1;
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-    ctx.closePath();
-}
-
-// function draw(e) {
-//     showCoords(e);
-//     let c = document.getElementById("myCanvas");
-//     let ctx = c.getContext("2d");
-//     console.log(ctx);
-//     // drawLine(ctx.x, ctx.y, e.offsetX, e.offsetY);
-//     ctx.fillStyle = 'blue';
-//     ctx.fillRect(x.value, y.value, 5, 5);
-//     ctx.x = e.offsetX;
-//     ctx.y = e.offsetY;
-// }
+const PLAYER_H = 100;
+const PLAYER_w = 5;
 
 function clear() {
     console.log('Cleared !');
@@ -48,7 +24,6 @@ function clear() {
     ctx.clearRect(0, 0, props.width, props.height);
 }
 
-var canvas;
 function draw() {
     var context = canvas.getContext('2d');
     // Draw field
@@ -60,10 +35,34 @@ function draw() {
     context.moveTo(canvas.width / 2, 0);
     context.lineTo(canvas.width / 2, canvas.height);
     context.stroke();
+
+	// Draw players
+	context.fillStyle = 'white';
+	context.fillRect(0, game.player.y, PLAYER_w, PLAYER_H);
+	context.fillRect(canvas.width - PLAYER_w, game.ai.y, PLAYER_w, PLAYER_H);
+
+	// Draw ball
+	context.beginPath();
+	context.fillStyle = 'white';
+	context.arc(game.ball.x, game.ball.y, game.ball.r, 0, Math.PI * 2, false);
+	context.fill();
 }
 document.addEventListener('DOMContentLoaded', function () {
 	console.log("ready!");
     canvas = document.getElementById('myCanvas');
+	game = {
+		player: {
+			y: canvas.height / 2 - PLAYER_H / 2
+		},
+		ai: {
+			y: canvas.height / 2 - PLAYER_H / 2
+		},
+		ball: {
+			x: canvas.width / 2,
+			y: canvas.height / 2,
+			r: 5
+		}
+	}
     draw();
 });
 
@@ -74,7 +73,7 @@ import Cbutton from "./Cbutton.vue";
 <template>
     <span>{{x}}, {{y}}, {{height}}</span>
     <Cbutton v-on:click="clear">clear</Cbutton>
-    <canvas id="myCanvas"/>
+    <canvas id="myCanvas"  :width="width" :height="height"/>
 </template>
 
 <style>
