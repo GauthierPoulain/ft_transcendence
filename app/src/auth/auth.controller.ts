@@ -1,8 +1,6 @@
 import {
     Controller,
     Get,
-    Session,
-    Redirect,
     Request,
     UseGuards,
     Query,
@@ -13,14 +11,13 @@ import {
 
 import { UsersService } from "../users/users.service";
 
-import { promisify } from "util";
 import { ConnectedGuard } from "./connected.guard";
 import { AuthService } from "./auth.service";
 import { ConnectDto } from "./dto/connect.dto";
 
 @Controller("auth")
 export class AuthController {
-    constructor(private auth: AuthService, private usersService: UsersService) {
+    constructor(private auth: AuthService, private users: UsersService) {
     }
 
     @Post("login")
@@ -41,46 +38,28 @@ export class AuthController {
         }
     }
 
-    @UseGuards(ConnectedGuard)
-    @Get("debug")
-    debug(
-        @Session() session: Record<string, any>,
-        @Request() req: any,
-    ): string {
-        return `session id : ${req.sessionID}<br>${JSON.stringify(
-            session,
-        )}<br>${req.user}`;
-    }
-
-    @Get("logout")
-    @Redirect("/auth/debug")
-    async logout(@Request() req: any) {
-        req.logOut();
-        await promisify(req.session.destroy.bind(req.session))();
-    }
-
 	//THIS IS FOR LE TEST DONT PANIC MONSIEUR ARNAUD
 
     @UseGuards(ConnectedGuard)
     @Get("enable2fa")
     async enable2fa(@Request() req: any) {
-        let user = req.user;
-        user = await this.usersService.enable2fa(user);
-        return this.usersService.get2faQr(user);
+        let user = await this.users.find(req.user.id);
+        user = await this.users.enable2fa(user);
+        return this.users.get2faQr(user);
     }
 
     @UseGuards(ConnectedGuard)
     @Get("disable2fa")
     async disable2fa(@Request() req: any) {
-        let user = req.user;
-        user = await this.usersService.disable2fa(user);
+        let user = await this.users.find(req.user.id);
+        user = await this.users.disable2fa(user);
         return JSON.stringify(user);
     }
 
     @UseGuards(ConnectedGuard)
     @Get("test2fa")
     async test2fa(@Request() req: any, @Query("token") token: string) {
-        let user = req.user;
-        return this.usersService.check2fa(user, token);
+        const user = await this.users.find(req.user.id);
+        return this.users.check2fa(user, token);
     }
 }
