@@ -14,7 +14,7 @@ import {
 import { UsersService } from "../users/users.service";
 
 import { promisify } from "util";
-import { ConnectedGuard } from "./guards/connected.guard";
+import { ConnectedGuard } from "./connected.guard";
 import { AuthService } from "./auth.service";
 import { ConnectDto } from "./dto/connect.dto";
 
