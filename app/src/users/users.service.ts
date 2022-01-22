@@ -66,4 +66,37 @@ export class UsersService {
         const result = tfa.verifyToken(user.tfa_secret, token);
         return result != null && result.delta > -2;
     }
+
+    use42Image(user: User) {
+        user.image_seed = "";
+        return this.usersRepository.save(user);
+    }
+
+    useIdenticon(user: User) {
+        user.image_seed = Math.floor(Math.random() * 0xffffff)
+            .toString(16)
+            .padEnd(6, "0");
+        return this.usersRepository.save(user);
+    }
+
+    getImage(user: User) {
+        if (user.image_seed == "") return user.intra_image_url;
+        else
+            return `https://avatars.dicebear.com/api/identicon/${user.image_seed}.svg`;
+    }
+
+    user42Login(user: User) {
+        user.nickname = "";
+        return this.usersRepository.save(user);
+    }
+
+    userCustomNickname(user: User, nickname: string) {
+        user.nickname = nickname;
+        return this.usersRepository.save(user);
+    }
+
+    getNickname(user: User) {
+        if (user.nickname == "") return user.intra_login;
+        else return user.nickname;
+    }
 }

@@ -37,29 +37,4 @@ export class AuthController {
             token: await this.auth.createToken(user)
         }
     }
-
-	//THIS IS FOR LE TEST DONT PANIC MONSIEUR ARNAUD
-
-    @UseGuards(ConnectedGuard)
-    @Get("enable2fa")
-    async enable2fa(@Request() req: any) {
-        let user = await this.users.find(req.user.id);
-        user = await this.users.enable2fa(user);
-        return this.users.get2faQr(user);
-    }
-
-    @UseGuards(ConnectedGuard)
-    @Get("disable2fa")
-    async disable2fa(@Request() req: any) {
-        let user = await this.users.find(req.user.id);
-        user = await this.users.disable2fa(user);
-        return JSON.stringify(user);
-    }
-
-    @UseGuards(ConnectedGuard)
-    @Get("test2fa")
-    async test2fa(@Request() req: any, @Query("token") token: string) {
-        const user = await this.users.find(req.user.id);
-        return this.users.check2fa(user, token);
-    }
 }
