@@ -1,28 +1,30 @@
 <template>
     <h1>Auth view</h1>
 
-    <div v-if="state == 0">
+    <div v-if="!isConnected">
         <login-button />
     </div>
 
-    <div v-if="state == 1">
-        <p>Code in url, api token will be {{ apiToken }}</p>
+    <div v-if="isConnected">
+        <p>Code in url, api token will be {{ token }}</p>
     </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
+import { onMounted, computed } from "vue"
 import { useRoute } from "vue-router"
 import axios from "axios"
 
+import { useStore } from "vuex"
+
 const route = useRoute()
 
-const state = ref(0)
-const apiToken = ref("")
 
-if (route.query.code) {
-    state.value = 1
-}
+const store = useStore()
+console.log(store)
+
+const isConnected = computed(() => store.getters["auth/isConnected"])
+const token = computed(() => store.state.auth.token)
 
 onMounted(async () => {
     // This is a response code from 42 Oauth2 server.
@@ -37,8 +39,11 @@ onMounted(async () => {
 
         console.log("posted", response)
 
-        apiToken.value = response.data.token
+        store.commit("auth/connect", response.data.token)
 
+        const me = await store.dispatch("me")
+
+        console.log(me)
     }
 })
 </script>
