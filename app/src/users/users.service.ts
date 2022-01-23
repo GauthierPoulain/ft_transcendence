@@ -38,7 +38,7 @@ export class UsersService {
         return this.usersRepository.findOne(id);
     }
 
-    findIntra(intra_id: string): Promise<User> {
+    findIntra(intra_id: number): Promise<User> {
         return this.usersRepository.findOne({ where: { intra_id } });
     }
 

@@ -7,7 +7,7 @@ export class User {
     id: number;
 
     @Column()
-    intra_id: string;
+    intra_id: number;
 
     @Column()
     intra_login: string;

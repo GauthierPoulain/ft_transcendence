@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { IntraInfosDto } from "src/users/dto/intra_infos.dto";
 import { User } from "src/users/entities/user.entity";
 import { UsersService } from "src/users/users.service";
 import { ConnectDto } from "./dto/connect.dto";
@@ -23,6 +24,18 @@ export class AuthService {
             user = await this.users.create(intra_user)
         } else {
             await this.users.updateIntra(user, intra_user)
+        }
+
+        return user
+    }
+
+    async fake_login(payload: IntraInfosDto): Promise<User> {
+        let user = await this.users.findIntra(payload.id)
+
+        if (!user) {
+            user = await this.users.create(payload)
+        } else {
+            await this.users.updateIntra(user, payload)
         }
 
         return user
