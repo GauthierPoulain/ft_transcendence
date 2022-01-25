@@ -1,36 +1,35 @@
+// import { UseGuards } from "@nestjs/common";
 import {
     ConnectedSocket,
     MessageBody,
     SubscribeMessage,
     WebSocketGateway,
     WebSocketServer,
+    WsException,
 } from "@nestjs/websockets";
 import { Socket } from "socket.io";
 import { Server } from "ws";
 
-@WebSocketGateway({})
+// https://docs.nestjs.com/websockets/guards
+@WebSocketGateway()
 export class EventsGateway {
     @WebSocketServer()
     server: Server;
 
-    handleConnection() {
+    async handleConnection(@ConnectedSocket() client: Socket) {
+        console.log(`client connected: ${client.id}`);
         this.server.emit("connection");
+        throw new WsException("basic error");
     }
-
-    @SubscribeMessage("open")
-    async openConnection(@ConnectedSocket() client: Socket): Promise<any> {
-        console.log(client.id);
+    async handleDisconnect(@ConnectedSocket() client: Socket) {
+        console.log(`client disconnected: ${client.id}`);
     }
 
     @SubscribeMessage("dummy")
-    async onEvent(
+    async dummyEvent(
         @ConnectedSocket() client: Socket,
         @MessageBody() data: number,
-    ): Promise<any> {
-        console.log(client.id);
-
-        console.log(data);
-
-        return data;
+    ) {
+        console.log(`${client.id}:`, data);
     }
 }
