@@ -19,7 +19,7 @@ export class EventsGateway {
     async handleConnection(@ConnectedSocket() client: Socket) {
         console.log(`client connected: ${client.id}`);
         this.server.emit("connection");
-        throw new WsException("basic error");
+        this.server.emit("error", "pouet");
     }
     async handleDisconnect(@ConnectedSocket() client: Socket) {
         console.log(`client disconnected: ${client.id}`);

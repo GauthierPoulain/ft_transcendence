@@ -6,7 +6,7 @@ const main = () => {
         socket.emit("dummy", "hello");
     });
 
-    socket.on("error", (data) => console.error);
+    socket.on("error", console.error);
 };
 
 main();
