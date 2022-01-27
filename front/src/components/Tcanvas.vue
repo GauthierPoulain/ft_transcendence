@@ -10,8 +10,8 @@ const props = defineProps<Props>();
 var g_ctx = document.getElementById("myCanvas")
 var x = ref(0);
 var y = ref(0);
-var canvas;
-var game;
+var canvas:any;
+var game:any;
 
 const PLAYER_H = 100;
 const PLAYER_W = 5;
