@@ -1,5 +1,5 @@
 function pong(props:any) {
-	console.log(props);
+    console.log(props);
     var g_ctx = document.getElementById("pong");
     var canvas:any;
     var game:any;
@@ -11,9 +11,9 @@ function pong(props:any) {
         console.log("Cleared !");
         console.log(g_ctx);
         var c = document.getElementById("pong") as HTMLCanvasElement;
-		var ctx = c.getContext("2d");
-		if (ctx)
-			ctx.clearRect(0, 0, props.width, props.height);
+        var ctx = c.getContext("2d");
+        if (ctx)
+            ctx.clearRect(0, 0, props.width, props.height);
     }
 
     function draw() {
@@ -89,7 +89,12 @@ function pong(props:any) {
         var canvasLoc = canvas.getBoundingClientRect();
         var mouseLoc = e.clientY - canvasLoc.y;
 
-        game.player.y = mouseLoc - PLAYER_H / 2;
+        if (mouseLoc < PLAYER_H / 2)
+            game.player.y = 0;
+        else if (mouseLoc > canvas.height - PLAYER_H / 2)
+            game.player.y = canvas.height - PLAYER_H
+        else
+            game.player.y = mouseLoc - PLAYER_H / 2;
     }
 
     document.addEventListener("DOMContentLoaded", function () {
