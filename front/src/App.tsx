@@ -1,6 +1,6 @@
 import React from "react";
 
-import Tcanvas from "./Tcanvas";
+import Tcanvas from "./components/Tcanvas";
 
 function App() {
     return (
