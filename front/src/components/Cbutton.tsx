@@ -4,13 +4,15 @@ import "../static/styles/button.css"
 var done = false;
 
 function createElem(event:any) {
-	var tag = document.createElement("p");
+	var tag = document.createElement("img");
     tag.setAttribute("id", "sub");
+	tag.src = "https://files.neryss.pw/random/cat.gif";
     tag.style.position = "absolute";
     tag.style.top = event.pageY + "px";
     tag.style.left = event.pageX + "px";
-    tag.style.transform = "translate(-50%, -50%)";
-	tag.style.color = "red";
+    tag.style.transform = "translate(20%, -120%)";
+	tag.style.pointerEvents = "none";
+	// tag.style.color = "red";
     console.log(tag.style.top);
     console.log(event.pageX);
     tag.style.position = 'absolute';
