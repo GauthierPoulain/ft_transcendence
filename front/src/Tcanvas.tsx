@@ -7,7 +7,8 @@ function Tcanvas(props: any) {
         <React.Fragment>
             <canvas
                 id="pong"
-                style={{ width: props.width, height: props.height }}
+                width={props.width}
+                height={props.height}
             ></canvas>
             {pong(props)}
         </React.Fragment>

@@ -113,6 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
+	console.log(canvas.height);
     canvas.addEventListener('mousemove', playerMove);
     draw();
     loop();
