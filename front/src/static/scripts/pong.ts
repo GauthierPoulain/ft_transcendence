@@ -117,8 +117,6 @@ function pong(props:any) {
                 },
             },
         };
-		console.log(canvas.height);
-		console.log(canvas.width);
         canvas.addEventListener("mousemove", playerMove);
         draw();
         loop();
