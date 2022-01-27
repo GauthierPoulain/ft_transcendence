@@ -1,5 +1,3 @@
-import React from "react";
-
 import Tcanvas from "./components/Tcanvas";
 import Cbutton from "./components/Cbutton";
 
