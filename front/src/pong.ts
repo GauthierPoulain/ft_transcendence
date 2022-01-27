@@ -1,9 +1,8 @@
-function pong(width, height) {
-    var g_ctx = document.getElementById("myCanvas");
-    var x = 0;
-    var y = 0;
-    var canvas;
-    var game;
+function pong(props:any) {
+	console.log(props);
+    var g_ctx = document.getElementById("pong");
+    var canvas:any;
+    var game:any;
 
     const PLAYER_H = 100;
     const PLAYER_W = 5;
@@ -11,9 +10,10 @@ function pong(width, height) {
     function clear() {
         console.log("Cleared !");
         console.log(g_ctx);
-        let c = document.getElementById("myCanvas");
-        let ctx = c.getContext("2d");
-        ctx.clearRect(0, 0, width, height);
+        var c = document.getElementById("pong") as HTMLCanvasElement;
+		var ctx = c.getContext("2d");
+		if (ctx)
+			ctx.clearRect(0, 0, props.width, props.height);
     }
 
     function draw() {
@@ -52,13 +52,13 @@ function pong(width, height) {
         context.fill();
     }
 
-    function changeDirection(playerPos) {
+    function changeDirection(playerPos:any) {
         var impact = game.ball.y - playerPos - PLAYER_H / 2;
         var ratio = 100 / (PLAYER_H / 2);
         game.ball.speed.y = Math.round((impact * ratio) / 10);
     }
 
-    function collide(player) {
+    function collide(player:any) {
         if (game.ball.y < player.y || game.ball.y > player.y + PLAYER_H) {
             game.ball.x = canvas.width / 2;
             game.ball.y = canvas.height / 2;
@@ -85,7 +85,7 @@ function pong(width, height) {
         requestAnimationFrame(loop);
     }
 
-    function playerMove(e) {
+    function playerMove(e:any) {
         var canvasLoc = canvas.getBoundingClientRect();
         var mouseLoc = e.clientY - canvasLoc.y;
 
@@ -94,7 +94,7 @@ function pong(width, height) {
 
     document.addEventListener("DOMContentLoaded", function () {
         console.log("ready!");
-        canvas = document.getElementById("myCanvas");
+        canvas = document.getElementById("pong") as HTMLCanvasElement;
         game = {
             player: {
                 y: canvas.height / 2 - PLAYER_H / 2,
@@ -117,3 +117,5 @@ function pong(width, height) {
         loop();
     });
 }
+
+export default pong;
