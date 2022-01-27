@@ -18,8 +18,9 @@ export class EventsGateway {
 
     async handleConnection(@ConnectedSocket() client: Socket) {
         console.log(`client connected: ${client.id}`);
-        this.server.emit("connection");
-        this.server.emit("error", "pouet");
+        client.emit("connection");
+        client.broadcast.emit("dummy", Date.now().toLocaleString());
+        // this.server.emit("error", "pouet");
     }
     async handleDisconnect(@ConnectedSocket() client: Socket) {
         console.log(`client disconnected: ${client.id}`);
