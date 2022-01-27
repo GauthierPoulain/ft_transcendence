@@ -1,13 +1,17 @@
-import React, { Fragment } from 'react';
-import pong from './pong';
+import React from "react";
+import pong from "./pong";
+import "./pong.css"
 
-function Tcanvas(props:any) {
-	return (
-		<Fragment>
-			<canvas id="pong" style={{width: props.width, height: props.height}}></canvas>
-			{pong(props)}
-		</Fragment>
-	)
+function Tcanvas(props: any) {
+    return (
+        <React.Fragment>
+            <canvas
+                id="pong"
+                style={{ width: props.width, height: props.height }}
+            ></canvas>
+            {pong(props)}
+        </React.Fragment>
+    );
 }
 
 export default Tcanvas;

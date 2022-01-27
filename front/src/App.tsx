@@ -1,17 +1,12 @@
-import React, { Fragment } from "react";
-import "./App.css";
-import Tcanvas from "./Tcanvas";
+import React from "react";
 
-function pong() {
-    console.log("saliut");
-}
+import Tcanvas from "./Tcanvas";
 
 function App() {
     return (
-        <Fragment>
-            {pong()}
+        <div>
             <Tcanvas width="1000px" height="500px"></Tcanvas>
-        </Fragment>
+        </div>
     );
 }
 
