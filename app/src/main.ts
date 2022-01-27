@@ -3,7 +3,7 @@ import { AppModule } from "./app.module";
 import { WsAdapter } from "@nestjs/platform-ws";
 import { SocketIoAdapter } from "./adapter/socketio.adapter";
 
-const port = 3000;
+const port = 3005;
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, { cors: true });
