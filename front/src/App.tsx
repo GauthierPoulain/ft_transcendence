@@ -5,7 +5,7 @@ function App() {
     return (
         <div>
             <Tcanvas width="1000px" height="500px"></Tcanvas>
-            <Cbutton>Salut</Cbutton>
+            <Cbutton id="menu">Salut</Cbutton>
         </div>
     );
 }
