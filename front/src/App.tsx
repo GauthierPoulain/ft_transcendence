@@ -1,12 +1,16 @@
 import Tcanvas from "./components/Tcanvas";
 import Cbutton from "./components/Cbutton";
 import Mprofile from "./components/MiniProfile";
-import NavBar from "./components/NavBar";
+import NavButton from "./components/NavButton";
 
 function App() {
     return (
         <div>
-            <NavBar id="navbar"></NavBar>
+            <div class="navbar">
+                <NavButton id="navbutton">Leaderboard</NavButton>
+                <NavButton id="navbutton">Chat</NavButton>
+                <NavButton id="navbutton">Friend List</NavButton>
+            </div>
 
             <Tcanvas width="1000px" height="500px"></Tcanvas>
             <Cbutton id="menu">Pouic</Cbutton>

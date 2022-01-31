@@ -27,10 +27,3 @@
     color: rgb(73, 73, 73);
     transition: 0.5s;
 }
-
-#navbar
-{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
