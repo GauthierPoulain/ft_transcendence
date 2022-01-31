@@ -1,10 +1,10 @@
 import React from "react";
 import "../static/styles/miniProfile.css"
 
-function MiniProfile() {
+function MiniProfile(props:any) {
     return (
         <React.Fragment>
-            <div id="mprofile-container">
+            <div id={props.myid}>
                 salut
             </div>
         </React.Fragment>

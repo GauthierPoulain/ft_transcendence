@@ -6,7 +6,9 @@ import "../static/styles/button.css"
 var done = false;
 
 function    addReactElem(event:any) {
-    const element = <Mprofile/>
+    var style = {position: 'absolute', top: event.pageY, left: event.pageX};
+    var props = {myid: "mprofile-container"};
+    const element = React.createElement(Mprofile, props);
     ReactDOM.render(
         element,
         document.getElementById("menu")
