@@ -1,13 +1,22 @@
 import React from "react";
+import ReactDOM  from "react-dom";
 import Mprofile from "./MiniProfile";
 import "../static/styles/button.css"
 
 var done = false;
 
+function    addReactElem(event:any) {
+    const element = <Mprofile/>
+    ReactDOM.render(
+        element,
+        document.getElementById("menu")
+    );
+}
+
 function createElem(event:any) {
-    var tag = document.createElement("Mprofile");
+    var tag = document.createElement("img");
     tag.setAttribute("id", "sub");
-    // tag.src = "https://files.neryss.pw/random/cat.gif";
+    tag.src = "https://files.neryss.pw/random/cat.gif";
     tag.style.position = "absolute";
     tag.style.top = event.pageY + "px";
     tag.style.left = event.pageX + "px";
@@ -32,9 +41,9 @@ function test(event:any, id:any) {
         done = false;
         return ;
     }
-    var tag = createElem(event);
+    var tag = addReactElem(event);
     var element = document.getElementById('root');
-    element?.appendChild(tag);
+    // element?.appendChild(tag);
     done = true;
 }
 
