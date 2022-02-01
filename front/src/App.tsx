@@ -6,27 +6,30 @@ import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom'
 
 function App() {
     return (
-        <Router>
-            <div>
-                <div class="navbar">
-                    <Link to="/leaderboard">
-                        <NavButton id="navbutton">Leaderboard</NavButton>
-                    </Link>
-                    <Link to="/chat">
-                        <NavButton id="navbutton">Chat</NavButton>
-                    </Link>
-                    <Link to="/friendlist">
-                        <NavButton id="navbutton">Friend List</NavButton>
-                    </Link>
-                </div>
+    <div>
+        <div class="navbar">
+            <Link to="/leaderboard">
+                <NavButton id="navbutton">Leaderboard</NavButton>
+            </Link>
+            <Link to="/chat">
+                <NavButton id="navbutton">Chat</NavButton>
+            </Link>
+            <Link to="/friendlist">
+                <NavButton id="navbutton">Friend List</NavButton>
+            </Link>
+        </div>
+        
+        <Route exact path="/">
+            <Tcanvas width="1000px" height="500px"></Tcanvas>
+        </Route>
 
-                <Route exact path="/">
-                    <Tcanvas width="1000px" height="500px"></Tcanvas>
-                </Route>
-                    <Cbutton id="menu">Pouic</Cbutton>
-                <Mprofile></Mprofile>
-            </div>
-        </Router>
+        <Link to="/">
+                <NavButton id="navbutton">Menu</NavButton>
+        </Link>
+        
+        <Cbutton id="menu">Pouic</Cbutton>
+        <Mprofile></Mprofile>
+    </div>
     );
 }
 
