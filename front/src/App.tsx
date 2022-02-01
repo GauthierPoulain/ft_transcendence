@@ -8,7 +8,7 @@ function App() {
     return (
         <Router>
             <div>
-                <div class="navbar">
+                <div className="navbar">
                     <Link to="/leaderboard">
                         <NavButton id="navbutton">Leaderboard</NavButton>
                     </Link>
