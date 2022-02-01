@@ -13,6 +13,12 @@ code {
         monospace;
 }
 
+#title
+{
+    text-align: center;
+    color: white;
+}
+
 .navbar
 {
     text-align: center;

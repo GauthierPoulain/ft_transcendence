@@ -23,6 +23,16 @@ function App() {
             <Tcanvas width="1000px" height="500px"></Tcanvas>
         </Route>
 
+        <Route exact path="/leaderboard">
+            <h1 id="title">LEADERBOARD</h1>
+        </Route>
+        <Route exact path="/chat">
+            <h1 id="title">CHAT</h1>
+        </Route>
+        <Route exact path="/friendlist">
+            <h1 id="title">FRIEND LIST</h1>
+        </Route>
+
         <Link to="/">
                 <NavButton id="navbutton">Menu</NavButton>
         </Link>
