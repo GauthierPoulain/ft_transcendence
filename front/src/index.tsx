@@ -8,14 +8,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 ReactDOM.render(
   <React.StrictMode>
-      <Router>
-        <Route exact path="/">
-          <App />
-        </Route>
-        <Route path="/test">
-          <Test />
-        </Route>
-      </Router>
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );
