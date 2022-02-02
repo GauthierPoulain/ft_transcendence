@@ -1,9 +1,6 @@
-import Tcanvas from "./components/Tcanvas";
-import Cbutton from "./components/Cbutton";
-import Mprofile from "./components/MiniProfile";
 import Profile from "./pages/profile/Profile"
 import Home from "./pages/home/Home"
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 
 function App() {
     return (
