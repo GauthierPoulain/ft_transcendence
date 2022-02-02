@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './static/styles/index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
 import { createBrowserHistory } from "history";
 
 const history = createBrowserHistory();

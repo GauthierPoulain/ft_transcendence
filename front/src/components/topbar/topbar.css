@@ -1,0 +1,59 @@
+.topbarContainer
+{
+    height: 50px;
+    width: 100%;
+    background-color: rgb(104, 104, 104);
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+}
+
+.logo
+{
+    font-size: 24px;
+    margin-left: 20px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+}
+
+.topbarLeft
+{
+    flex: 3;
+}
+
+.topbarCenter
+{
+    flex: 5;
+}
+
+.topbarRight
+{
+    flex: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    color: white;
+}
+
+.topbarLink
+{
+    margin-right: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.links
+{
+    text-decoration: none;
+    color: white;
+}
+
+.topbarImg
+{
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
