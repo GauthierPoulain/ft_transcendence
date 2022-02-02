@@ -26,7 +26,8 @@
 
 .topbarCenter
 {
-    flex: 5;
+    flex: 2;
+    align-items: center;
 }
 
 .topbarRight
@@ -50,6 +51,7 @@
 {
     text-decoration: none;
     color: white;
+    margin-right: 30px;
 }
 
 .topbarImg
