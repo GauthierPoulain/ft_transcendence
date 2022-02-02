@@ -18,39 +18,3 @@ code {
     text-align: center;
     color: white;
 }
-
-.navbar
-{
-    text-align: center;
-}
-
-.link
-{
-    margin: 30px;
-
-    text-decoration: none;
-    width: 250px;
-    height: 50px;
-    font-size: 32px;
-    background-color: rgb(153, 153, 153);
-    border-color: black;
-    background-color: rgb(73, 73, 73);
-    border-color: rgb(117, 117, 117);
-    border-radius: 25px;
-    border-width: 3px;
-    border-style: solid;
-    font-family: 'Josefin Sans', sans-serif;
-    color: rgb(212, 212, 212);
-    font-weight: 900;
-    align-items: center;
-    text-align: center;
-    
-    transition: 0.5s;
-}
-
-.link:hover
-{
-    background-color: rgb(212, 212, 212);
-    color: rgb(73, 73, 73);
-    transition: 0.5s;
-}

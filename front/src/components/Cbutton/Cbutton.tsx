@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM  from "react-dom";
-import Mprofile from "./MiniProfile";
+import Mprofile from "../MiniProfile/MiniProfile";
 import "../static/styles/button.css"
 
 var done = false;

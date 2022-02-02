@@ -21,6 +21,7 @@
 .topbarLeft
 {
     flex: 3;
+    margin-left: 15px;
 }
 
 .topbarCenter
