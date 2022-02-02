@@ -1,6 +1,7 @@
 import React from "react";
-import pong from "../static/scripts/pong";
-import "../static/styles/pong.css"
+import pong from "../../static/scripts/pong";
+import "../../static/styles/pong.css"
+import "./tcanvas.css"
 
 function Tcanvas(props: any) {
     return (

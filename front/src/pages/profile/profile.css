@@ -1,0 +1,21 @@
+.profileContainer
+{
+	text-align: center;
+	margin: 20vh;
+}
+
+.logo
+{
+	margin: auto;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+}
+
+.profileName
+{
+	margin-top: 10px;
+	font-size: 20px;
+	font-weight: bold;
+	color: white;
+}

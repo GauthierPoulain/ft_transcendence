@@ -1,5 +1,5 @@
 import Topbar from "../../components/topbar/Topbar"
-import Tcanvas from "../../components/Tcanvas"
+import Tcanvas from "../../components/Tcanvas/Tcanvas"
 
 function Home() {
     return (
