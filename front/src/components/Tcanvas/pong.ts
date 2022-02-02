@@ -1,3 +1,4 @@
+
 function pong(props:any) {
     console.log(props);
     var g_ctx = document.getElementById("pong");
@@ -121,6 +122,7 @@ function pong(props:any) {
         draw();
         loop();
     });
+
 }
 
 export default pong;
