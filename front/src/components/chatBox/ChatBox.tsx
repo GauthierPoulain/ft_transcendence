@@ -15,7 +15,7 @@ function ChatBox(props:any) {
 
             <div className="chatcenter">
                 <div className="chat">
-                    <span className="chattitle">Chat</span>
+                    <span className="chatname">ldevilla's chat</span>
                 </div>
             </div>
 
