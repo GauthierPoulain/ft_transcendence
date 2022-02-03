@@ -1,5 +1,5 @@
 import "./chat.css"
-import React from "react";
+import React, { Component } from "react";
 
 class ChatBox extends React.Component {
 
@@ -7,10 +7,10 @@ class ChatBox extends React.Component {
     {
         nb: 0,//TEST
         chat: [
-            {str: "hey"},
-            {str: "pouic"},
-            {str: "lul"}
+            {str: "Welcome to chat room"},
         ],
+        buf: ""
+        ,
         chan:
         [
             {name: "#ldevilla"},
@@ -31,6 +31,28 @@ class ChatBox extends React.Component {
         let chanList = this.state.chan;
         chanList.push({name: "#newChan"});
         this.setState(chanList);
+    }
+
+    msgSubmit = event =>
+    {
+
+        event.preventDefault();
+
+        const msg = this.state.buf;
+        const chat = this.state.chat;
+
+        if (this.state.buf !== "")
+        {
+            console.log(msg);
+            chat.push({str: msg});
+            this.setState(chat);
+            this.setState({buf: ""});
+        }
+    }
+
+    msgChange = event =>
+    {
+        this.setState({ buf: event.currentTarget.value});
     }
 
     render()
@@ -66,7 +88,9 @@ class ChatBox extends React.Component {
                             </div>
                         ))}
                     </div>
-                    <input type="text" placeholder="type something..." className="inputHolder"/>
+                    <form onSubmit={this.msgSubmit}>
+                        <input type="text" value={this.state.buf} onChange={this.msgChange} placeholder="type something..." className="inputHolder"/>
+                    </form>
                 </div>
             </div>
 
