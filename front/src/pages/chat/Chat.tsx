@@ -1,11 +1,12 @@
 import Topbar from "../../components/topbar/Topbar"
 import "./chat.css"
+import ChatBox from "../../components/chatBox/ChatBox"
 
 function Chat() {
     return (
 		<div>
 			<Topbar />
-            <h1>CHAT</h1>
+      <ChatBox />
 		</div>
     )
 }
