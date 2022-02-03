@@ -1,9 +1,21 @@
 import "./chat.css"
-import { Link } from 'react-router-dom'
-import { Home } from '@material-ui/icons'
-import { Person } from '@material-ui/icons'
+import React from "react";
 
-function ChatBox(props:any) {
+class ChatBox extends React.Component {
+
+    state = 
+    {
+        nb: 0
+    };
+
+    add()
+    {
+        let nbr = this.state.nb++;
+        this.setState({nbr});
+    }
+
+    render()
+    {
     return (
         <div className="chatContainer">
             <div className="chatleft">
@@ -15,7 +27,10 @@ function ChatBox(props:any) {
             <div className="chatcenter">
                 <div className="chat">
                     <span className="chatname">#student's chat</span>
-                    <div className="chatbox"></div>
+                    <div className="chatbox">
+                        <button onClick={() => this.add()}>+</button>
+                        <span>{this.state.nb}</span>
+                    </div>
                     <input type="text" placeholder="type something..." className="inputHolder"/>
                 </div>
             </div>
@@ -27,6 +42,7 @@ function ChatBox(props:any) {
             </div>
         </div>
     )
+    }
 }
 
 export default ChatBox;
