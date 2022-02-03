@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { Switch, Route, useRouteMatch, useLocation, Redirect } from "react-router-dom";
+import "./style.css"
 
 function LoginButton() {
 	const redirect_uri = new URL("/auth", window.location as any)
@@ -14,7 +15,7 @@ function LoginButton() {
 	}
 
 	return (
-		<button onClick={redirect}>Click to sign in</button>
+		<button className="loginbutton" onClick={redirect}>Click to sign in</button>
 	);
 }
 
@@ -31,11 +32,11 @@ export function Page() {
 	const code = query.get("code")
 
 	return (
-		<div>
+		<div className="container">
 			<h2>Authentication</h2>
-
+			<img src="/assets/42.jpg" alt="" className="authImg"/><br />
 			<Switch>
-				<Route exact path={path}>
+				<Route exact path={path} >
 					{code ? <Redirect to={{ pathname: `${url}/code` }} /> : <LoginButton />}
 				</Route>
 				<Route exact path={`${path}/code`}>
