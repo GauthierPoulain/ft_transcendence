@@ -6,13 +6,16 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom'
 import { CacheProvider } from '@rest-hooks/core';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { AuthProvider } from './auth';
 
 ReactDOM.render(
-	<CacheProvider>
-		<BrowserRouter>
-			<App />
-		</BrowserRouter>
-	</CacheProvider>,
+	<AuthProvider>
+		<CacheProvider>
+			<BrowserRouter>
+				<App />
+			</BrowserRouter>
+		</CacheProvider>
+	</AuthProvider>,
 	document.getElementById('root')
 );
 

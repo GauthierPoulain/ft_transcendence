@@ -1,19 +1,10 @@
 import { useEffect, useMemo } from "react";
-import { Container, Button } from "react-bootstrap";
+import { Container, Button, Alert } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { apiurl, BaseResource } from "../../api/resources/BaseResource";
+import { useAuth } from "../../auth";
 import "./style.css"
 
-const redirect_uri = new URL("/auth", window.location as any).toString()
-
-const authorize_uri = new URL("https://api.intra.42.fr/oauth/authorize");
-authorize_uri.searchParams.set("client_id", process.env.REACT_APP_API42UID as string)
-authorize_uri.searchParams.set("redirect_uri", redirect_uri)
-authorize_uri.searchParams.set("response_type", "code")
-
-function redirect() {
-	window.location = authorize_uri.toString() as any
-}
 
 function useQuery() {
   const { search } = useLocation();
@@ -26,24 +17,13 @@ export function Page() {
 	const code = query.get("code")
 	const navigate = useNavigate()
 	const isLoading = !!code
+	const auth = useAuth()
 
 	useEffect(() => {
 		const login = async (code: string) => {
-			const response = await fetch(apiurl("auth/login"), {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify({
-					code,
-					redirect_uri
-				})
-			})
-			const json = await response.json()
+			const token = await auth.exchangeCode(code)
 
-			console.log(json)
-			BaseResource.accessToken = json.token
-
+			auth.signin(token)
 			navigate("/", { replace: true })
 		}
 
@@ -57,9 +37,13 @@ export function Page() {
 		<Container>
 			<h1>Authentication</h1>
 
+			<Alert variant="danger">
+				An error occured while we were trying to connect you.
+			</Alert>
+
 			<p>You will be redirected to the 42 intranet.</p>
 
-			<Button variant="primary" disabled={isLoading} onClick={isLoading ? null : redirect}>
+			<Button variant="primary" disabled={isLoading} onClick={isLoading ? null : auth.redirectIntra}>
 				{isLoading ? "Loading..." : "Sign in"}
 			</Button>
 		</Container>

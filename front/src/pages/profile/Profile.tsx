@@ -1,9 +1,10 @@
+import { useAuth } from "../../auth"
 import { useResource } from "rest-hooks";
 import { UserResource } from "../../api/resources/UserResource"
 import Topbar from "../../components/topbar/Topbar"
 import "./profile.css"
 
-function Profile() {
+function ProfileConnected() {
 	const user = useResource(UserResource.current(), {})
 
     return (
@@ -18,6 +19,16 @@ function Profile() {
             </div>
         </div>
     )
+}
+
+function Profile() {
+	const auth = useAuth();
+
+	if (!auth.connected) {
+		return <p>You're not connected</p>
+	}
+
+	return <ProfileConnected />
 }
 
 export default Profile;
