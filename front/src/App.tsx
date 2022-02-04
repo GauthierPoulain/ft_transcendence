@@ -10,7 +10,7 @@ import Topbar from "./components/topbar/Topbar"
 
 function App() {
     return (
-    <div>
+    <>
         <Routes>
             <Route path="/auth" element={<Authentication />} />
             <Route path="/*" element={<Topbar />} />
@@ -21,7 +21,7 @@ function App() {
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/profile" element={<Profile />} />
         </Routes>
-    </div>
+    </>
     );
 }
 
