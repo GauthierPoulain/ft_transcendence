@@ -11,13 +11,15 @@ import Topbar from "./components/topbar/Topbar"
 function App() {
     return (
     <div>
-        <Topbar />
+        <Routes>
+            <Route path="/auth" element={<Authentication />} />
+            <Route path="/*" element={<Topbar />} />
+        </Routes>
         <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/chat" element={<Chat />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/auth" element={<Authentication />} />
         </Routes>
     </div>
     );
