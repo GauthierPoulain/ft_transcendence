@@ -1,5 +1,6 @@
-.container
-{
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap");
+
+.container {
     text-align: center;
 
     position: fixed;
@@ -11,19 +12,23 @@
     background-color: rgb(143, 143, 143);
     border-radius: 15px;
 
-    width: 300px;
-    height: 300px;
+    width: 300px !important;
+    height: 300px !important;
 }
 
-.authImg
-{
+.authImg {
     width: 150px;
     height: 150px;
     border-radius: 15px;
 }
 
-.loginbutton
-{
-    
+.authTitle {
+    margin-top: 20px;
+    margin-bottom: 10px;
+
+    font-family: "Roboto Mono", monospace;
+}
+
+.loginbutton {
     margin-top: 20px;
 }

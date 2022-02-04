@@ -32,11 +32,9 @@ export function Page() {
 
 	return (
 		<div className="container">
-			<h2>Authentication</h2>
+			<h2 className="authTitle">Authentication</h2>
 			<img src="/assets/42.jpg" alt="" className="authImg"/><br />
-			<Link to="code">
-				<LoginButton />
-			</Link>
+			<LoginButton />
 			<Routes>
 				<Route path="code" element={<p>received authentication code</p>} />
 			</Routes>
