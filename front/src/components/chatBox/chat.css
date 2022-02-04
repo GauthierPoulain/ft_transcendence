@@ -1,7 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200&display=swap");
 
-.chatContainer
-{
+.chatContainer {
     height: 100%;
     width: 100%;
     display: flex;
@@ -10,26 +9,22 @@
     top: 0;
 }
 
-.chatleft
-{
+.chatleft {
     flex: 1;
     text-align: left;
 }
 
-.chatcenter
-{
+.chatcenter {
     flex: 4;
     text-align: left;
 }
 
-.chatright
-{
+.chatright {
     flex: 1;
     text-align: left;
 }
 
-.channels
-{
+.channels {
     background-color: #282c34;
     height: 100vh;
     width: 100%;
@@ -37,8 +32,7 @@
     outline: 1px solid rgb(255, 255, 255);
 }
 
-.chat
-{
+.chat {
     background-color: #282c34;
     height: 100vh;
     width: 100%;
@@ -46,8 +40,7 @@
     outline: 1px solid rgb(255, 255, 255);
 }
 
-.friendschat
-{
+.friendschat {
     background-color: #282c34;
     height: 100vh;
     width: 100%;
@@ -55,19 +48,17 @@
     outline: 1px solid rgb(255, 255, 255);
 }
 
-.chattitle
-{
+.chattitle {
     float: left;
     padding-left: 10px;
     padding-top: 5px;
     color: white;
     font-size: 20px;
     font-weight: bold;
-    font-family: 'Roboto Mono', monospace;
+    font-family: "Roboto Mono", monospace;
 }
 
-.chatname
-{
+.chatname {
     float: left;
     color: white;
     width: 100%;
@@ -75,26 +66,23 @@
     padding-top: 10px;
     padding-left: 15px;
     outline: 1px solid rgb(255, 255, 255);
-    font-family: 'Roboto Mono', monospace;
+    font-family: "Roboto Mono", monospace;
 }
 
-.chatbox
-{
+.chatbox {
     float: left;
     background-color: rgb(146, 146, 146);
     width: 100%;
     height: 60vh;
 }
 
-.inputHolder
-{
+.inputHolder {
     width: 100%;
     height: 30px;
     font-size: 20px;
 }
 
-.chan
-{
+.chan {
     width: 100%;
     float: left;
     color: rgb(167, 167, 167);
@@ -105,13 +93,11 @@
     align-items: center;
 }
 
-#addChan
-{
+#addChan {
     margin-left: 20px;
 }
 
-.chanList
-{
+.chanList {
     color: rgb(167, 167, 167);
 
     float: left;
