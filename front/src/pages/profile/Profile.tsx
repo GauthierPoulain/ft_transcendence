@@ -11,7 +11,7 @@ function ProfileConnected() {
         <div>
             <div className="profileContainer">
                 <a href="https://42lyon.fr" target="_blank">
-                    <img src={user.intra_image_url} alt="" className="logo"/>
+                    <img src={user.intra_image_url} alt="" className="profilePicture"/>
                 </a>
                 <div className="profileName">
                     <span>{user.intra_login}</span>
