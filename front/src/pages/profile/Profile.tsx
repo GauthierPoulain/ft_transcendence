@@ -8,7 +8,6 @@ function Profile() {
 
     return (
         <div>
-            <Topbar />
             <div className="profileContainer">
                 <a href="https://42lyon.fr" target="_blank">
                     <img src={user.intra_image_url} alt="" className="logo"/>

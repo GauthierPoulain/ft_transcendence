@@ -5,7 +5,6 @@ import { Table } from "react-bootstrap";
 function Leaderboard() {
     return (
         <div>
-            <Topbar />
             <Table striped bordered hover variant="dark">
                 <thead>
                     <tr>

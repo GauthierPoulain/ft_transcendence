@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Switch, Route, useRouteMatch, useLocation, Redirect } from "react-router-dom";
+import { Routes, Route, useRouteMatch, useLocation, Redirect } from "react-router-dom";
 import "./style.css"
 
 function LoginButton() {
@@ -35,14 +35,14 @@ export function Page() {
 		<div className="container">
 			<h2>Authentication</h2>
 			<img src="/assets/42.jpg" alt="" className="authImg"/><br />
-			<Switch>
-				<Route exact path={path} >
+			<Routes>
+				<Route path={path} >
 					{code ? <Redirect to={{ pathname: `${url}/code` }} /> : <LoginButton />}
 				</Route>
-				<Route exact path={`${path}/code`}>
+				<Route path={`${path}/code`}>
 					<p>received authentication code</p>
 				</Route>
-			</Switch>
+			</Routes>
 		</div>
 	)
 }

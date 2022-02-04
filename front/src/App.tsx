@@ -5,11 +5,30 @@ import Home from "./pages/home/Home"
 import Chat from "./pages/chat/Chat"
 import Leaderboard from "./pages/leaderboard/Leaderboard"
 import { Page as Authentication } from "./pages/authentication"
-import { Route } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
+import Topbar from "./components/topbar/Topbar"
 
 function App() {
     return (
     <div>
+        <Topbar />
+        <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/auth" element={<Authentication />} />
+        </Routes>
+    </div>
+    );
+}
+
+export default App;
+
+/*
+<Route path="/">
+            <Topbar />
+        </Route>
         <Route exact path="/">
             <Home />
         </Route>
@@ -25,8 +44,4 @@ function App() {
 		<Route path="/auth">
 			<Authentication />
 		</Route>
-    </div>
-    );
-}
-
-export default App;
+*/

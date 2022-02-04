@@ -3,15 +3,15 @@ import ReactDOM from 'react-dom';
 import './static/styles/index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import { CacheProvider } from '@rest-hooks/core';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 ReactDOM.render(
 	<CacheProvider>
-		<Router>
+		<BrowserRouter>
 			<App />
-		</Router>
+		</BrowserRouter>
 	</CacheProvider>,
 	document.getElementById('root')
 );
