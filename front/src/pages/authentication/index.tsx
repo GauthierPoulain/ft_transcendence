@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Routes, Route, useRouteMatch, useLocation, Redirect } from "react-router-dom";
+import { Routes, Route, useLocation, Link } from "react-router-dom";
 import "./style.css"
 
 function LoginButton() {
@@ -26,7 +26,6 @@ function useQuery() {
 }
 
 export function Page() {
-	const { path, url } = useRouteMatch();
 	const query = useQuery();
 
 	const code = query.get("code")
@@ -35,14 +34,21 @@ export function Page() {
 		<div className="container">
 			<h2>Authentication</h2>
 			<img src="/assets/42.jpg" alt="" className="authImg"/><br />
+			<Link to="code">
+				<LoginButton />
+			</Link>
 			<Routes>
+				<Route path="code" element={<p>received authentication code</p>} />
+			</Routes>
+		</div>
+	)
+}
+
+/* 
 				<Route path={path} >
 					{code ? <Redirect to={{ pathname: `${url}/code` }} /> : <LoginButton />}
 				</Route>
 				<Route path={`${path}/code`}>
 					<p>received authentication code</p>
 				</Route>
-			</Routes>
-		</div>
-	)
-}
+*/
