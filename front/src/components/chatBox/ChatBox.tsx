@@ -71,8 +71,6 @@ class ChatBox extends React.Component {
                     <div className="chat">
                         <span className="chatname">#student's chat</span>
                         <div className="chatbox">
-                            <button onClick={() => this.add()}>+</button>
-                            <span>{this.state.nb}</span>
                             {this.state.chat.map((msg) => (
                                 <div>
                                     <span>{msg.str}</span> <br />
@@ -93,7 +91,13 @@ class ChatBox extends React.Component {
 
                 <div className="chatright">
                     <div className="friendschat">
-                        <span className="chattitle">Friends</span>
+                        <span className="chattitle">In chat</span>
+                        <br /><br />
+                        <ul className="inchatList">
+                            <li>pouic</li>
+                            <li>pouet</li>
+                            <li>flignoti</li>
+                        </ul>
                     </div>
                 </div>
             </div>

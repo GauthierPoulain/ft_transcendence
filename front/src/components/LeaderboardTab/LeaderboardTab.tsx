@@ -12,6 +12,7 @@ class LeaderboardTab extends React.Component {
             {rank:"3", login:"gapoulai", victories:"12"},
             {rank:"4", login:"ldevilla", victories:"4"}
             //DB
+            //Make button on players to redirect to their profile
         ]
     };
 
