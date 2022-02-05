@@ -6,11 +6,12 @@ import "./profile.css"
 
 function ProfileConnected() {
 	const user = useResource(UserResource.current(), {})
+    const url = "https://profile.intra.42.fr/users/" + user.intra_login;
 
     return (
         <div>
             <div className="profileContainer">
-                <a href="https://42lyon.fr" target="_blank">
+                <a href={url} target="_blank">
                     <img src={user.intra_image_url} alt="" className="profilePicture"/>
                 </a>
                 <div className="profileName">
