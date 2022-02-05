@@ -1,17 +1,13 @@
 import "./chat.css";
 import Channels from "./Channels";
-import RoomView from "./RoomView";
+import { Outlet } from "react-router-dom";
 
 export default function ChatBox() {
 	return (
 		<div className="chatContainer">
-			<div className="chatleft">
-				<div className="channels">
-					<Channels />
-				</div>
-			</div>
+			<Channels />
 
-			<RoomView />
+			<Outlet />
 		</div>
 	);
 }
