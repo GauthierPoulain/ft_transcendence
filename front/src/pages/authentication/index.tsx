@@ -12,6 +12,8 @@ function useQuery() {
   return useMemo(() => new URLSearchParams(search), [search]);
 }
 
+// TODO: Show an alert when a connection failure happens.
+
 export function Page() {
 	const query = useQuery();
 	const code = query.get("code")
@@ -33,18 +35,30 @@ export function Page() {
 		}
 	}, [])
 
+	const fake_login = (name: string) => async () => {
+		const response = await fetch(apiurl(`auth/fake_login_${name}`), { method: "POST" })
+		const { token } = await response.json()
+
+		auth.signin(token)
+		navigate("/", { replace: true })
+	}
+
 	return (
 		<Container>
 			<h1>Authentication</h1>
-
-			<Alert variant="danger">
-				An error occured while we were trying to connect you.
-			</Alert>
 
 			<p>You will be redirected to the 42 intranet.</p>
 
 			<Button variant="primary" disabled={isLoading} onClick={isLoading ? null : auth.redirectIntra}>
 				{isLoading ? "Loading..." : "Sign in"}
+			</Button>
+
+			<Button variant="secondary" disabled={isLoading} onClick={fake_login("one")}>
+				Fake login one
+			</Button>
+
+			<Button variant="secondary" disabled={isLoading} onClick={fake_login("two")}>
+				Fake login two
 			</Button>
 		</Container>
 	)
