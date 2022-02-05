@@ -1,4 +1,6 @@
 import { useState } from "react"
+import { Button, Card, Col, Container, Row, Stack } from "react-bootstrap"
+import { Link } from "react-router-dom"
 
 export default function RoomView() {
 	const [messages, setMessages] = useState<string[]>([])
@@ -11,17 +13,18 @@ export default function RoomView() {
 	}
 
 	return (
-		<>
-			<div className="chatcenter">
-				<div className="chat">
-					<span className="chatname">#student's chat</span>
-					<div className="chatbox">
+		<Container fluid>
+			<Row>
+				<Col>
+					<h2>#student's chat</h2>
+					<Stack gap={2}>
 						{messages.map((msg) => (
-							<div>
-								<span>{msg}</span> <br />
-							</div>
+						<div>
+							<p className="h5">user0</p>
+							<p>{msg}</p>
+						</div>
 						))}
-					</div>
+					</Stack>
 					<form onSubmit={onSubmit}>
 						<input
 							type="text"
@@ -31,20 +34,18 @@ export default function RoomView() {
 							className="inputHolder"
 						/>
 					</form>
-				</div>
-			</div>
+				</Col>
 
-			<div className="chatright">
-				<div className="friendschat">
-					<span className="chattitle">In chat</span>
-					<br /><br />
-					<ul className="inchatList">
-						<li>pouic</li>
-						<li>pouet</li>
-						<li>flignoti</li>
-					</ul>
-				</div>
-			</div>
-		</>
+				<Col xs={2}>
+					<h2>Members</h2>
+
+					<Stack>
+						<Link to="/users/0">user0</Link>
+						<Link to="/users/1">user1</Link>
+						<Link to="/users/2">user2</Link>
+					</Stack>
+				</Col>
+			</Row>
+		</Container>
 	)
 }
