@@ -1,8 +1,12 @@
 import { Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useResource } from "rest-hooks";
+import { ChannelResource } from "../../api/resources/ChannelResource"
 import "./channels.css"
 
 export default function Channels() {
+	const channels = useResource(ChannelResource.joined(), { })
+
 	return (
 		<div className="chatleft">
 			<div className="channels">
@@ -16,9 +20,7 @@ export default function Channels() {
 						</Stack>
 
 						<Stack>
-							<Link to="/chat/room/0">#channel0</Link>
-							<Link to="/chat/room/1">#channel1</Link>
-							<Link to="/chat/room/2">#channel2</Link>
+							{ channels.map((channel) => <Link to={`/chat/room/${channel.id}`}>{ channel.name }</Link>) }
 						</Stack>
 					</Stack>
 				</div>

@@ -36,8 +36,8 @@ export class UsersService {
         return this.usersRepository.save(user);
     }
 
-    find(id: string): Promise<User> {
-        return this.usersRepository.findOne(id);
+    find(id: string, relations=[]): Promise<User> {
+        return this.usersRepository.findOne(id, { relations });
     }
 
     findIntra(intra_id: number): Promise<User> {

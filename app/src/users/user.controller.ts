@@ -20,7 +20,9 @@ export class UserController {
 	@UseGuards(ConnectedGuard)
 	@Get("channels")
 	async channels(@Request() request: any): Promise<Channel[]> {
-		const user = await this.users.find(request.user.id)
+		const user = await this.users.find(request.user.id, ["channels"])
+
+		console.log(user.channels)
 
 		return user.channels
 	}

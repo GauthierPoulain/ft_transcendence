@@ -1,5 +1,5 @@
 import { User } from "src/users/entities/user.entity"
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToMany, JoinTable, OneToMany } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToMany, JoinTable, ManyToOne, OneToMany } from "typeorm"
 import { Message } from "./message.entity"
 
 @Entity()
@@ -20,7 +20,7 @@ export class Channel {
     @Column()
     password: string
 
-    @OneToOne(() => User)
+    @ManyToOne(() => User, user => user.owned_channels)
     @JoinColumn()
     owner: User
 
