@@ -8,7 +8,9 @@ function Topbar(props:any) {
     return (
         <div className="topbarContainer">
 			<div className="topbarLeft">
+            <Link to="/" className="logo">
                 <span className="logo">ft_pong</span>
+            </Link>
             </div>
 
             <div className="topbarCenter">
