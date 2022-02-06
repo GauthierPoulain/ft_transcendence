@@ -2,7 +2,9 @@ import { useAuth } from "../../auth"
 import { useResource } from "rest-hooks";
 import { UserResource } from "../../api/resources/UserResource"
 import Topbar from "../../components/topbar/Topbar"
+import { Link } from 'react-router-dom'
 import "./profile.css"
+import { Button } from 'react-bootstrap'
 
 function ProfileConnected() {
 	const user = useResource(UserResource.current(), {})
@@ -26,7 +28,14 @@ function Profile() {
 	const auth = useAuth();
 
 	if (!auth.connected) {
-		return <p>You're not connected</p>
+		return (
+            <div className="notConnected">
+                <p>You're not connected</p>
+                <Link to="/auth" className="links">
+                    <Button>Sign in here !</Button>
+                </Link>
+            </div>
+        )
 	}
 
 	return <ProfileConnected />
