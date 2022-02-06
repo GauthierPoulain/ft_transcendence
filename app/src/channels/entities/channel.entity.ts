@@ -7,6 +7,10 @@ export class Channel {
     @PrimaryGeneratedColumn()
     id: number
 
+	// TODO: Apply name validation, for example only ascii character and a minimum/maxximum length
+	@Column()
+	name: string
+
     // Is this channel joinable or is it through invitation only.
     // (joinable is the same as public but public is a keyword :upside_down:)
     @Column()

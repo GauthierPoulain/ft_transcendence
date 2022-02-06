@@ -21,6 +21,8 @@ export class UsersService {
         user.intra_id = input.id;
         user.intra_login = input.login;
         user.intra_image_url = input.image_url;
+		user.admin_channels = []
+		user.channels = []
 
         console.log("user", user);
         return this.usersRepository.save(user);

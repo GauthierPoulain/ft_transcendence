@@ -33,6 +33,7 @@
     "@nestjs/platform-ws": "^8.2.5",
     "@nestjs/typeorm": "^8.0.3",
     "@nestjs/websockets": "^8.2.6",
+    "argon2": "^0.28.4",
     "axios": "^0.25.0",
     "node-2fa": "^2.0.3",
     "passport": "^0.5.2",
