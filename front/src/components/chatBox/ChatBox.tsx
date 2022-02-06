@@ -1,7 +1,7 @@
-import "./chat.css";
 import Channels from "./Channels";
 import { Outlet } from "react-router-dom";
 import { Col, Container, Row } from "react-bootstrap";
+import "./chatbox.css"
 
 export default function ChatBox() {
 	return (

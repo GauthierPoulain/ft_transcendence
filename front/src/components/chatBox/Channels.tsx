@@ -1,5 +1,6 @@
 import { Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import "./channels.css"
 
 export default function Channels() {
 	return (

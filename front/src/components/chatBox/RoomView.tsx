@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Button, Card, Col, Container, Row, Stack } from "react-bootstrap"
 import { Link } from "react-router-dom"
+import "./roomview.css"
 
 export default function RoomView() {
 	const [messages, setMessages] = useState<string[]>([])
