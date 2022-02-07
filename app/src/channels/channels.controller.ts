@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ConnectedGuard } from 'src/auth/connected.guard';
-import { UsersService } from 'src/users/users.service';
+import { User } from 'src/users/entities/user.entity';
+import { CurrentUser } from 'src/users/user.decorator';
 import { ChannelsService } from './channels.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
@@ -8,14 +9,12 @@ import { Channel } from './entities/channel.entity';
 
 @Controller('channels')
 export class ChannelsController {
-	constructor(private readonly channels: ChannelsService, private readonly users: UsersService) {
+	constructor(private readonly channels: ChannelsService) {
 	}
 
 	@Post()
 	@UseGuards(ConnectedGuard)
-	async create(@Request() request: any, @Body() createChannelDto: CreateChannelDto): Promise<Channel> {
-		const user = await this.users.find(request.user.id)
-
+	async create(@CurrentUser() user: User, @Body() createChannelDto: CreateChannelDto): Promise<Channel> {
 		return this.channels.create(createChannelDto, user);
 	}
 

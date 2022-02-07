@@ -1,29 +1,22 @@
-import { Controller, Get, Request, UseGuards } from "@nestjs/common";
+import { Controller, Get, UseGuards } from "@nestjs/common";
 import { ConnectedGuard } from "src/auth/connected.guard";
 import { Channel } from "src/channels/entities/channel.entity";
 import { User } from "./entities/user.entity";
-import { UsersService } from "./users.service";
+import { CurrentUser } from "./user.decorator";
 
 // Controller for the current user.
 
 @Controller("user")
 export class UserController {
-	constructor(private users: UsersService) {
-	}
-
-	@UseGuards(ConnectedGuard)
 	@Get()
-    me(@Request() request: any): Promise<User> {
-        return this.users.find(request.user.id);
+	@UseGuards(ConnectedGuard)
+    me(@CurrentUser() user: User): User {
+        return user;
     }
 
-	@UseGuards(ConnectedGuard)
 	@Get("channels")
-	async channels(@Request() request: any): Promise<Channel[]> {
-		const user = await this.users.find(request.user.id, ["channels"])
-
-		console.log(user.channels)
-
+	@UseGuards(ConnectedGuard)
+	channels(@CurrentUser(["channels"]) user: User): Channel[] {
 		return user.channels
 	}
 }

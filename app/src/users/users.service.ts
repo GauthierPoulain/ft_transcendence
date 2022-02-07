@@ -36,7 +36,7 @@ export class UsersService {
         return this.usersRepository.save(user);
     }
 
-    find(id: string, relations=[]): Promise<User> {
+    find(id: number, relations=[]): Promise<User> {
         return this.usersRepository.findOne(id, { relations });
     }
 
