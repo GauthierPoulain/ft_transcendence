@@ -46,18 +46,6 @@ function ProfileConnected() {
     );
 }
 
-function Matches() {
-    return <div>MATCHES</div>;
-}
-
-function Achievements() {
-    return <div>Achiements</div>;
-}
-
-function Friends() {
-    return <div>Friends</div>;
-}
-
 function Layout() {
     return (
         <>
@@ -79,7 +67,7 @@ function Layout() {
                         </button>
                         <button type="button" className="btn btn-light btn-lg">
                             <Link
-                                to="achivements"
+                                to="achievements"
                                 className="proflinks"
                             >
                                 Achievements
@@ -93,7 +81,6 @@ function Layout() {
                     </div>
                 </div>
             </div>
-            <Outlet />
         </>
     );
 }
@@ -115,6 +102,7 @@ function Profile() {
     return (
         <div>
             <Layout />
+            <Outlet />
         </div>
     );
 }

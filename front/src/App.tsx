@@ -9,6 +9,9 @@ import Topbar from "./components/topbar/Topbar"
 import ChatBox from "./components/chatBox/ChatBox"
 import RoomView from "./components/chatBox/RoomView"
 import ChannelCreate from "./pages/channels/ChannelCreate"
+import Matches from './components/profileban/Matches'
+import Achievements from './components/profileban/Achievements'
+import Friends from './components/profileban/Friends'
 
 function Layout() {
 	return (
@@ -32,7 +35,10 @@ export default function App() {
 				</Route>
 				<Route path="leaderboard" element={<Leaderboard />} />
 				<Route path="profile" element={<Profile />} >
-					
+					<Route index element={<Matches />} />
+					<Route path="matches" element={< Matches/>} />
+					<Route path="achievements" element={< Achievements/>} />
+					<Route path="friends" element={< Friends/>} />
 				</Route>
 				<Route path="auth" element={<Authentication/>} />
 			</Route>
