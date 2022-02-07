@@ -1,36 +1,22 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap");
 
-/*
-.container {
+.authContainer
+{
     text-align: center;
+    color: white;
 
-    position: fixed;
+    margin: 0;
+    position: absolute;
     top: 50%;
     left: 50%;
-    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
-
-    background-color: rgb(143, 143, 143);
-    border-radius: 15px;
-
-    width: 300px !important;
-    height: 300px !important;
 }
 
-.authImg {
+.authImg
+{
+    margin-top: 20px;
     width: 150px;
     height: 150px;
-    border-radius: 15px;
+    border-radius: 25%;
 }
-
-.authTitle {
-    margin-top: 20px;
-    margin-bottom: 10px;
-
-    font-family: "Roboto Mono", monospace;
-}
-
-.loginbutton {
-    margin-top: 20px;
-}
-*/
