@@ -3,15 +3,20 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { hash } from 'argon2';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
+import { CreateMessageDto } from './channels.dto';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
 import { Channel } from './entities/channel.entity';
+import { Message } from './entities/message.entity';
 
 @Injectable()
 export class ChannelsService {
 	constructor(
         @InjectRepository(Channel)
-        private channelsRepository: Repository<Channel>
+        private channelsRepository: Repository<Channel>,
+
+		@InjectRepository(Message)
+		private messagesRepository: Repository<Message>
 	) { }
 
 	async create(input: CreateChannelDto, owner: User): Promise<Channel> {
@@ -32,8 +37,8 @@ export class ChannelsService {
 		return this.channelsRepository.find({ where: { joinable: true } })
 	}
 
-	findOne(id: number) {
-		return `This action returns a #${id} channel`;
+	findOne(id: number, relations=[]) {
+		return this.channelsRepository.findOne(id, { relations })
 	}
 
 	update(id: number, updateChannelDto: UpdateChannelDto) {
@@ -42,5 +47,15 @@ export class ChannelsService {
 
 	remove(id: number) {
 		return `This action removes a #${id} channel`;
+	}
+
+	createMessage(channel: Channel, sender: User, dto: CreateMessageDto) {
+		const message = new Message()
+
+		message.content = dto.content
+		message.sender = sender
+		message.channel = channel
+
+		return this.messagesRepository.save(message)
 	}
 }

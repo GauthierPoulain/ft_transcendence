@@ -1,4 +1,5 @@
 import { Channel } from "src/channels/entities/channel.entity";
+import { Message } from "src/channels/entities/message.entity";
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany } from "typeorm";
 
 @Entity()
@@ -34,4 +35,7 @@ export class User {
     // Channels where the user is at least a member
     @ManyToMany(() => Channel, (channel) => channel.members)
     channels: Channel[];
+
+	@OneToMany(() => Message, message => message.sender)
+	messages: Message[];
 }

@@ -1,14 +1,13 @@
 import { Channel } from "./channel.entity"
 import { User } from "src/users/entities/user.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Message {
     @PrimaryGeneratedColumn()
     id: number
 
-    @OneToOne(() => User)
-    @JoinColumn()
+    @ManyToOne(() => User, user => user.messages)
     sender: User
 
     @Column()
