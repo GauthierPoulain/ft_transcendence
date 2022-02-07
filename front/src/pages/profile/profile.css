@@ -72,3 +72,15 @@
 	margin-left: 10px;
 	margin-bottom: 4px;
 }
+
+.profNav
+{
+	text-align: center;
+	margin-top: 20px;
+}
+
+.proflinks
+{
+	text-decoration: none;
+	color: black;
+}

@@ -1,12 +1,12 @@
 import { useAuth } from "../../auth";
 import { useResource } from "rest-hooks";
 import { UserResource } from "../../api/resources/UserResource";
-import Topbar from "../../components/topbar/Topbar";
 import { Link } from "react-router-dom";
 import "./profile.css";
-import { Button, Table } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import Profileban from "../../components/profileban/Profileban";
 import { Brightness1 } from "@material-ui/icons";
+import { Routes, Route, Outlet } from "react-router-dom";
 
 function ProfileConnected() {
     const user = useResource(UserResource.current(), {});
@@ -46,6 +46,58 @@ function ProfileConnected() {
     );
 }
 
+function Matches() {
+    return <div>MATCHES</div>;
+}
+
+function Achievements() {
+    return <div>Achiements</div>;
+}
+
+function Friends() {
+    return <div>Friends</div>;
+}
+
+function Layout() {
+    return (
+        <>
+            <div>
+                <Profileban>
+                    <ProfileConnected />
+                </Profileban>
+
+                <div className="profNav">
+                    <div
+                        className="btn-group"
+                        role="group"
+                        aria-label="Basic example"
+                    >
+                        <button type="button" className="btn btn-light btn-lg">
+                            <Link to="matches" className="proflinks">
+                                Matches
+                            </Link>
+                        </button>
+                        <button type="button" className="btn btn-light btn-lg">
+                            <Link
+                                to="achivements"
+                                className="proflinks"
+                            >
+                                Achievements
+                            </Link>
+                        </button>
+                        <button type="button" className="btn btn-light btn-lg">
+                            <Link to="friends" className="proflinks">
+                                Friends
+                            </Link>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <Outlet />
+        </>
+    );
+}
+
 function Profile() {
     const auth = useAuth();
 
@@ -62,26 +114,7 @@ function Profile() {
 
     return (
         <div>
-            <div>
-                <Profileban>
-                    <ProfileConnected />
-                </Profileban>
-
-                <Table striped bordered hover variant="dark">
-                    <thead>
-                        <tr>
-                            <th>#rank</th>
-                            <th>Login</th>
-                            <th>Victories</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <td>lol</td>
-                        <td>pouic</td>
-                        <td>zeub</td>
-                    </tbody>
-                </Table>
-            </div>
+            <Layout />
         </div>
     );
 }

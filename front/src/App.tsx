@@ -31,7 +31,9 @@ export default function App() {
 					<Route path="room/:channelId" element={<RoomView />} />
 				</Route>
 				<Route path="leaderboard" element={<Leaderboard />} />
-				<Route path="profile" element={<Profile />} />
+				<Route path="profile" element={<Profile />} >
+					
+				</Route>
 				<Route path="auth" element={<Authentication/>} />
 			</Route>
         </Routes>
