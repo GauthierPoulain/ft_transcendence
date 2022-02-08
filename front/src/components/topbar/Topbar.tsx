@@ -2,9 +2,37 @@ import "./topbar.css"
 import { Link } from 'react-router-dom'
 import { Home } from '@material-ui/icons'
 import { Person } from '@material-ui/icons'
+import { useAuth } from "../../auth";
+import { useResource } from "rest-hooks";
+import { UserResource } from "../../api/resources/UserResource";
+import { userInfo } from "os";
 
+function ProfilePic()
+{
+    const user = useResource(UserResource.current(), {});
 
-function Topbar(props:any) {
+    return (
+        <img src={user.intra_image_url} className="topbarImg" alt="" />
+    ) 
+}
+
+function GetProfilePic()
+{
+    const auth = useAuth();
+
+    if (!auth.connected)
+    {
+        return(
+            <img src="/assets/42.jpg" className="topbarImg" alt="" />
+        );
+    }
+
+    return(
+        <ProfilePic />
+    );
+}
+
+function Topbar() {
     return (
         <div className="topbarContainer">
 			<div className="topbarLeft">
@@ -33,7 +61,7 @@ function Topbar(props:any) {
                         <Person />
                     </Link>
                 </div>
-                <img src="/assets/42.jpg" alt="" className="topbarImg" />
+                <GetProfilePic />
             </div>
         </div>
     )
