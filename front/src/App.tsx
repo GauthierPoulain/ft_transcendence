@@ -14,6 +14,7 @@ import Matches from './components/profileban/Matches'
 import Achievements from './components/profileban/Achievements'
 import Friends from './components/profileban/Friends'
 import ProfileSettings from './components/profileban/ProfileSettings'
+import useWebSocket from "react-use-websocket"
 
 function Layout() {
 	return (
@@ -25,7 +26,7 @@ function Layout() {
 
 }
 
-export default function App() {
+function Router() {
     return (
         <Routes>
 			<Route path="/" element={<Layout />}>
@@ -47,4 +48,8 @@ export default function App() {
 			</Route>
         </Routes>
     );
+}
+
+export default function App() {
+	return <Router />
 }

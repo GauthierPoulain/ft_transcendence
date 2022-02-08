@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ConnectedGuard } from 'src/auth/connected.guard';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, Request, UnauthorizedException } from '@nestjs/common';
+import { ConnectedGuard, MaybeConnectedGuard } from 'src/auth/connected.guard';
 import { User } from 'src/users/entities/user.entity';
 import { CurrentUser } from 'src/users/user.decorator';
+import { QueryChannelsDto } from './channels.dto';
 import { ChannelsService } from './channels.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelDto } from './dto/update-channel.dto';
@@ -18,10 +19,19 @@ export class ChannelsController {
 		return this.channels.create(createChannelDto, user);
 	}
 
-	//@Get()
-	//findAll() {
-	//	return this.channels.findAll();
-	//}
+	@Get()
+	@UseGuards(MaybeConnectedGuard)
+	async findAll(@CurrentUser(["channels"]) user: User, @Query() query: QueryChannelsDto) {
+		if (query.joined === true) {
+			if (user === null) {
+				throw new UnauthorizedException();
+			}
+
+			return user.channels;
+		}
+
+		return this.channels.findJoinable();
+	}
 
 	@Get(':id')
 	findOne(@Param('id') id: string) {

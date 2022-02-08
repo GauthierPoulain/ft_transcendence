@@ -7,7 +7,7 @@ import { UsersModule } from "../users/users.module";
 import { AuthService } from "./auth.service";
 import { FortyTwoService } from "./fortytwo.service";
 import { JwtModule } from "@nestjs/jwt";
-import { JwtStrategy } from "./jwt.strategy"
+import { JwtStrategy, AnonymousStrategy } from "./auth.strategy"
 
 @Module({
     imports: [
@@ -17,7 +17,7 @@ import { JwtStrategy } from "./jwt.strategy"
             secret: "TODO: this should be generated with cryptogaphic random later"
         })
     ],
-    providers: [AuthService, FortyTwoService, JwtStrategy],
+    providers: [AuthService, FortyTwoService, JwtStrategy, AnonymousStrategy],
     controllers: [AuthController],
 })
 export class AuthModule {}

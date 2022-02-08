@@ -1,4 +1,3 @@
-import { Resource } from "@rest-hooks/rest"
 import { apiurl, BaseResource } from "./BaseResource"
 
 export class ChannelResource extends BaseResource {
@@ -12,13 +11,4 @@ export class ChannelResource extends BaseResource {
 	}
 
 	static urlRoot = apiurl("channels")
-
-	static joined<T extends typeof Resource>(this: T) {
-		return super.list().extend({
-			url() {
-				return apiurl("user/channels")
-			},
-			schema: [this]
-		})
-	}
 }

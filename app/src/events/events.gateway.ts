@@ -28,6 +28,6 @@ export class EventsGateway {
     async dummyEvent(
         @MessageBody() data: number,
     ) {
-        console.log(`dummy`);
+        console.log(`dumy`);
     }
 }

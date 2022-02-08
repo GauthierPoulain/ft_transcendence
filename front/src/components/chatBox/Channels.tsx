@@ -1,11 +1,13 @@
 import { Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useResource } from "rest-hooks";
+import { useResource, useSubscription } from "rest-hooks";
 import { ChannelResource } from "../../api/resources/ChannelResource"
 import "./channels.css"
 
 export default function Channels() {
-	const channels = useResource(ChannelResource.joined(), { })
+	const channels = useResource(ChannelResource.list(), { joined: true })
+
+	useSubscription(ChannelResource.list(), { joined: true })
 
 	return (
 		<div className="chatleft">

@@ -1,7 +1,7 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { WsAdapter } from "@nestjs/platform-ws";
-import { SocketIoAdapter } from "./adapter/socketio.adapter";
+import { ValidationPipe } from "@nestjs/common";
 
 const port = 3005;
 
@@ -10,6 +10,7 @@ async function bootstrap() {
 
     // To avoid conflict with frontend, move all routes inside /api/.
     app.setGlobalPrefix("api");
+	app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
 	app.useWebSocketAdapter(new WsAdapter(app));
     //app.useWebSocketAdapter(new SocketIoAdapter(app));

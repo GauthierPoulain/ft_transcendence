@@ -3,11 +3,16 @@ import { User as UserEntity } from "./entities/user.entity";
 import { UsersService } from "./users.service";
 
 @Injectable()
-export class FetchUserPipe implements PipeTransform<number, Promise<UserEntity>> {
+export class FetchUserPipe implements PipeTransform<number | undefined, Promise<UserEntity | null>> {
 	constructor(private users: UsersService) {
 	}
 
-	async transform(value: number, metadata: ArgumentMetadata) {
+	async transform(value: number | undefined, metadata: ArgumentMetadata) {
+		console.log("transform", value)
+		if (typeof value !== "number") {
+			return null;
+		}
+
 		// metadata.data should be a string but typing is a joke and we can have an array here.
 		// metadata.data is the relations we want to fetch.
 
@@ -16,7 +21,7 @@ export class FetchUserPipe implements PipeTransform<number, Promise<UserEntity>>
 }
 
 export const CurrentUserId = createParamDecorator((_data: unknown, ctx: ExecutionContext) => {
-	return ctx.switchToHttp().getRequest().user.id
+	return ctx.switchToHttp().getRequest().user?.id
 })
 
 export const CurrentUser = (relations = []) => CurrentUserId(relations, FetchUserPipe)
