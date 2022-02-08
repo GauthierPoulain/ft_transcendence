@@ -7,7 +7,6 @@ import {
     WebSocketServer,
     WsException,
 } from "@nestjs/websockets";
-import { Socket } from "socket.io";
 import { Server } from "ws";
 
 // https://docs.nestjs.com/websockets/guards
@@ -16,21 +15,19 @@ export class EventsGateway {
     @WebSocketServer()
     server: Server;
 
-    async handleConnection(@ConnectedSocket() client: Socket) {
-        console.log(`client connected: ${client.id}`);
-        client.emit("connection");
-        client.broadcast.emit("dummy", Date.now().toLocaleString());
+    async handleConnection() {
+        console.log(`client connected`);
+        //client.broadcast.emit("dummy", Date.now().toLocaleString());
         // this.server.emit("error", "pouet");
     }
-    async handleDisconnect(@ConnectedSocket() client: Socket) {
-        console.log(`client disconnected: ${client.id}`);
+    async handleDisconnect() {
+        console.log(`client disconnected`);
     }
 
     @SubscribeMessage("dummy")
     async dummyEvent(
-        @ConnectedSocket() client: Socket,
         @MessageBody() data: number,
     ) {
-        console.log(`${client.id}:`, data);
+        console.log(`dummy`);
     }
 }

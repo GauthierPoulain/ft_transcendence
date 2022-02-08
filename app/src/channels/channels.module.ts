@@ -6,10 +6,11 @@ import { Channel } from './entities/channel.entity';
 import { UsersModule } from 'src/users/users.module';
 import { MessagesController } from './messages.controller';
 import { Message } from './entities/message.entity';
+import { ChannelWebsockGateway } from './channels.websocket.gateway';
 
 @Module({
 	imports: [TypeOrmModule.forFeature([Channel, Message]), UsersModule],
 	controllers: [ChannelsController, MessagesController],
-	providers: [ChannelsService]
+	providers: [ChannelsService, ChannelWebsockGateway]
 })
 export class ChannelsModule {}

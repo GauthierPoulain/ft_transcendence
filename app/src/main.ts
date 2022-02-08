@@ -11,7 +11,8 @@ async function bootstrap() {
     // To avoid conflict with frontend, move all routes inside /api/.
     app.setGlobalPrefix("api");
 
-    app.useWebSocketAdapter(new SocketIoAdapter(app));
+	app.useWebSocketAdapter(new WsAdapter(app));
+    //app.useWebSocketAdapter(new SocketIoAdapter(app));
 
     await app.listen(port, () => {
         console.info(`Listening on http://localhost:${port}`);
