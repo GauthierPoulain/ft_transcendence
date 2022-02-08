@@ -2,11 +2,12 @@ import { useAuth } from "../../auth";
 import { useResource } from "rest-hooks";
 import { UserResource } from "../../api/resources/UserResource";
 import { Link } from "react-router-dom";
-import "./profile.css";
+import "./profile.scss";
 import { Button } from "react-bootstrap";
 import Profileban from "../../components/profileban/Profileban";
 import { Brightness1 } from "@material-ui/icons";
 import { Routes, Route, Outlet } from "react-router-dom";
+import { Edit } from "@material-ui/icons"
 
 function ProfileConnected() {
     const user = useResource(UserResource.current(), {});
@@ -76,6 +77,12 @@ function Layout() {
                         <button type="button" className="btn btn-light btn-lg">
                             <Link to="friends" className="proflinks">
                                 Friends
+                            </Link>
+                        </button>
+
+                        <button type="button" className="btn btn-warning btn-lg">
+                            <Link to="settings" className="proflinks">
+                                <Edit />
                             </Link>
                         </button>
                     </div>

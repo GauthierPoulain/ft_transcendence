@@ -13,6 +13,7 @@ import ChannelCreate from "./pages/channels/ChannelCreate"
 import Matches from './components/profileban/Matches'
 import Achievements from './components/profileban/Achievements'
 import Friends from './components/profileban/Friends'
+import ProfileSettings from './components/profileban/ProfileSettings'
 
 function Layout() {
 	return (
@@ -40,6 +41,7 @@ export default function App() {
 					<Route path="matches" element={< Matches/>} />
 					<Route path="achievements" element={< Achievements/>} />
 					<Route path="friends" element={< Friends/>} />
+					<Route path="settings" element={< ProfileSettings/>} />
 				</Route>
 				<Route path="auth" element={<Authentication/>} />
 			</Route>
