@@ -41,6 +41,7 @@ export function AuthProvider({ children }) {
 	}
 
 	const signin = (token: string) => {
+		console.log("signin", token)
 		BaseResource.accessToken = token
 		setConnected(true)
 	}

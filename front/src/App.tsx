@@ -14,7 +14,6 @@ import Matches from './components/profileban/Matches'
 import Achievements from './components/profileban/Achievements'
 import Friends from './components/profileban/Friends'
 import ProfileSettings from './components/profileban/ProfileSettings'
-import useWebSocket from "react-use-websocket"
 
 function Layout() {
 	return (

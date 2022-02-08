@@ -5,11 +5,13 @@ import { Person } from '@material-ui/icons'
 import { useAuth } from "../../auth";
 import { useResource } from "rest-hooks";
 import { UserResource } from "../../api/resources/UserResource";
-import { userInfo } from "os";
 
 function ProfilePic()
 {
+	console.log("mdr")
     const user = useResource(UserResource.current(), {});
+
+	console.log(user)
 
     return (
         <img src={user.intra_image_url} className="topbarImg" alt="" />
