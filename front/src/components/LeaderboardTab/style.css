@@ -11,3 +11,11 @@
     text-decoration: underline;
     font-family: "Roboto Mono", monospace;
 }
+
+.imgLead
+{
+    margin-right: 30px;
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+}

@@ -10,17 +10,17 @@ export default function Channels() {
 	return (
 		<div className="chatleft">
 			<div className="channels">
-				<div className="container">
+				<div className="container chanContainer">
 					<h2>Channels</h2>
 
 					<Stack gap={3}>
 						<Stack>
-							<Link to="/chat">Join a channel</Link>
-							<Link to="/chat/create">Create a channel</Link>
+							<Link className="chanLinks" to="/chat">Join a channel</Link>
+							<Link className="chanLinks" to="/chat/create">Create a channel</Link>
 						</Stack>
 
 						<Stack>
-							{ channels.map((channel) => <Link to={`/chat/room/${channel.id}`}>{ channel.name }</Link>) }
+							{ channels.map((channel) => <Link className="chans" to={`/chat/room/${channel.id}`}>{ channel.name }</Link>) }
 						</Stack>
 					</Stack>
 				</div>

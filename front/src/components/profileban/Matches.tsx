@@ -16,10 +16,28 @@ function Matches() {
                 </thead>
                 <tbody>
                     <tr>
-                        <td>gapoulai</td>
-                        <td>ldevilla</td>
+                        <td>
+                            <img className="imgMatches" src="/assets/42.jpg" alt="" />    
+                            gapoulai
+                        </td>
+                        <td>
+                            <img className="imgMatches" src="/assets/42.jpg" alt="" />
+                            ldevilla
+                        </td>
                         <td>4</td>
                         <td>5</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img className="imgMatches" src="/assets/42.jpg" alt="" />    
+                            ckurt
+                        </td>
+                        <td>
+                            <img className="imgMatches" src="/assets/42.jpg" alt="" />
+                            ckurt
+                        </td>
+                        <td>5</td>
+                        <td>2</td>
                     </tr>
                 </tbody>
             </Table>

@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useController } from "rest-hooks"
 import { Button, Form } from "react-bootstrap"
 import { ChannelResource } from "../../api/resources/ChannelResource"
+import "./style.css"
 
 export default function ChannelCreate() {
 	const { fetch } = useController()

@@ -39,7 +39,10 @@ class LeaderboardTab extends React.Component {
                         {this.state.players.map((player) =>(
                             <tr>
                                 <td>{player.rank}</td>
-                                <td>{player.login}</td>
+                                <td>
+                                    <img className="imgLead" src="/assets/42.jpg" alt="" />
+                                    {player.login}
+                                </td>
                                 <td>{player.victories}</td>
                             </tr>
                         ))}

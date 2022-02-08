@@ -1,1 +1,22 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200&display=swap");
+
+
+.chanContainer
+{
+    margin-top: 20px;
+    padding-top: 10px;
+    background-color: rgb(131, 131, 131);
+    border-radius: 10px;
+    color: white;
+}
+
+.chanLinks
+{
+    color: rgb(201, 201, 201);
+}
+
+.chans
+{
+    color: rgb(255, 202, 202);
+    padding-bottom: 10px;
+}
