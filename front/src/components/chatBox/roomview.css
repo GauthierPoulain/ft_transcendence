@@ -1,1 +1,54 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200&display=swap");
+
+
+.chatView
+{
+    color: white;
+    font-family: 'Josefin Sans', sans-serif;
+
+    background-color: rgb(92, 92, 92);
+    border-radius: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-right: 30px;
+}
+
+.chatContainer
+{
+    margin-top: 20px;
+}
+
+.chatTitle
+{
+    color: rgb(208, 208, 208);
+}
+
+.memberView
+{
+    background-color: rgb(131, 131, 131);
+    border-radius: 10px;
+}
+
+.memberTitle
+{
+    color: white;
+}
+
+.inputHolder
+{
+    margin-top: 10px;
+}
+
+.memberLinks
+{
+    color: rgb(214, 214, 214);
+    margin-bottom: 5px;
+}
+
+.imgMember
+{
+    margin-right: 10px;
+    border-radius: 50%;
+    height: 25px;
+    width: 25px;
+}

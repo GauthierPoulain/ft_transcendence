@@ -14,15 +14,15 @@ export default function RoomView() {
 	}
 
 	return (
-		<Container fluid>
+		<Container fluid className="chatContainer">
 			<Row>
-				<Col>
-					<h2>#student's chat</h2>
+				<Col className="chatView">
+					<h2 className="chatTitle">#student's chat</h2>
 					<Stack gap={2}>
 						{messages.map((msg) => (
 						<div>
-							<p className="h5">user0</p>
-							<p>{msg}</p>
+							<span className="h5">user0: </span>
+							<span>{msg}</span>
 						</div>
 						))}
 					</Stack>
@@ -37,13 +37,22 @@ export default function RoomView() {
 					</form>
 				</Col>
 
-				<Col xs={2}>
-					<h2>Members</h2>
+				<Col xs={2} className="memberView">
+					<h2 className="memberTitle">Members</h2>
 
 					<Stack>
-						<Link to="/users/0">user0</Link>
-						<Link to="/users/1">user1</Link>
-						<Link to="/users/2">user2</Link>
+						<Link className="memberLinks" to="/users/0">
+							<img className="imgMember" src="/assets/42.jpg" alt="" />
+							user0
+						</Link>
+						<Link className="memberLinks" to="/users/1">
+							<img className="imgMember" src="/assets/42.jpg" alt="" />
+							user1
+						</Link>
+						<Link className="memberLinks" to="/users/2">
+							<img className="imgMember" src="/assets/42.jpg" alt="" />
+							user2
+						</Link>
 					</Stack>
 				</Col>
 			</Row>
