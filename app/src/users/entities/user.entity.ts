@@ -36,6 +36,6 @@ export class User {
     @ManyToMany(() => Channel, (channel) => channel.members)
     channels: Channel[];
 
-	@OneToMany(() => Message, message => message.sender)
+	@OneToMany(() => Message, message => message.author)
 	messages: Message[];
 }

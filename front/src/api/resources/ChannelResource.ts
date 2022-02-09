@@ -1,4 +1,5 @@
 import { apiurl, BaseResource } from "./BaseResource"
+import { UserResource } from "./UserResource"
 
 export class ChannelResource extends BaseResource {
 	readonly id: number | undefined = undefined
@@ -11,4 +12,13 @@ export class ChannelResource extends BaseResource {
 	}
 
 	static urlRoot = apiurl("channels")
+
+	static members<T extends typeof BaseResource>(this: T) {
+		return UserResource.list().extend({
+			url({ id }) {
+				return apiurl(`channels/${id}/members`)
+			},
+			schema: [UserResource]
+		})
+	}
 }

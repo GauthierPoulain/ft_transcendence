@@ -49,11 +49,11 @@ export class ChannelsService {
 		return `This action removes a #${id} channel`;
 	}
 
-	createMessage(channel: Channel, sender: User, dto: CreateMessageDto) {
+	createMessage(channel: Channel, author: User, dto: CreateMessageDto) {
 		const message = new Message()
 
 		message.content = dto.content
-		message.sender = sender
+		message.author = author
 		message.channel = channel
 
 		return this.messagesRepository.save(message)

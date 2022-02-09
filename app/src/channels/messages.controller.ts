@@ -13,15 +13,13 @@ export class MessagesController {
 	@Get()
 	@UseGuards(ConnectedGuard)
 	async findAll(@CurrentUser() user: User, @Param("channelId") channelId: number) {
-		console.log("user", user)
-		//const channel = await this.channels.findOne(channelId, ["members", "messages"])
+		const channel = await this.channels.findOne(channelId, ["members", "messages", "messages.author"])
 
-		//if (!channel || !channel.members.some(({ id }) => id == request.user.id)) {
-		//	throw new UnauthorizedException;
-		//}
+		if (!channel || !channel.members.some(({ id }) => id === user.id)) {
+			throw new UnauthorizedException;
+		}
 
-		//console.log(channel)
-		//console.log(request.user)
+		return channel.messages
 	}
 
 	@Post()

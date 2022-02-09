@@ -8,7 +8,7 @@ export class Message {
     id: number
 
     @ManyToOne(() => User, user => user.messages)
-    sender: User
+    author: User
 
     @Column()
     content: string

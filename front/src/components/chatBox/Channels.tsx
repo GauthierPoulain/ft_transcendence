@@ -22,7 +22,7 @@ export default function Channels() {
 						</Stack>
 
 						<Stack>
-							{ channels.map((channel) => <Link className="chans" to={`/chat/room/${channel.id}`}>{ channel.name }</Link>) }
+							{ channels.map((channel) => <Link key={channel.id} className="chans" to={`/chat/room/${channel.id}`}>{ channel.name }</Link>) }
 						</Stack>
 					</Stack>
 				</div>

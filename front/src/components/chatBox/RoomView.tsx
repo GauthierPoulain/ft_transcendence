@@ -1,28 +1,42 @@
 import { useState } from "react"
+import { useResource, useController } from "@rest-hooks/core"
 import { Button, Card, Col, Container, Row, Stack } from "react-bootstrap"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
+import { ChannelResource } from "../../api/resources/ChannelResource";
+import { MessageResource } from "../../api/resources/MessageResource";
 import "./roomview.css"
 
 export default function RoomView() {
-	const [messages, setMessages] = useState<string[]>([])
+	const { channelId } = useParams();
+	const { fetch } = useController();
+
+	const [channel, messages, members] = useResource(
+		[ChannelResource.detail(), { id: channelId }],
+		[MessageResource.list(), { channelId }],
+		[ChannelResource.members(), { id: channelId }]
+	)
+
 	const [buffer, setBuffer] = useState("")
 
 	const onSubmit = (event: any) => {
-		setMessages((messages) => [...messages, buffer])
-		setBuffer("")
 		event.preventDefault();
+
+		const request = fetch(MessageResource.create(), { channelId }, { content: buffer })
+		setBuffer("")
+
+		console.log(request)
 	}
 
 	return (
 		<Container fluid className="chatContainer">
 			<Row>
 				<Col className="chatView">
-					<h2 className="chatTitle">#student's chat</h2>
+					<h2 className="chatTitle">{channel.name}</h2>
 					<Stack gap={2}>
-						{messages.map((msg) => (
-						<div>
-							<span className="h5">user0: </span>
-							<span>{msg}</span>
+						{messages.map(({ id, content, author }) => (
+						<div key={id}>
+							<span className="h5">{author?.intra_login}: </span>
+							<span>{content}</span>
 						</div>
 						))}
 					</Stack>
@@ -41,18 +55,14 @@ export default function RoomView() {
 					<h2 className="memberTitle">Members</h2>
 
 					<Stack>
-						<Link className="memberLinks" to="/users/0">
-							<img className="imgMember" src="/assets/42.jpg" alt="" />
-							user0
+					{
+						members.map(({ id, intra_login, intra_image_url }) =>
+						<Link className="memberLinks" to={`/users/${id}`} key={id}>
+							<img className="imgMember" src={intra_image_url} alt="" />
+							{intra_login}
 						</Link>
-						<Link className="memberLinks" to="/users/1">
-							<img className="imgMember" src="/assets/42.jpg" alt="" />
-							user1
-						</Link>
-						<Link className="memberLinks" to="/users/2">
-							<img className="imgMember" src="/assets/42.jpg" alt="" />
-							user2
-						</Link>
+						)
+					}
 					</Stack>
 				</Col>
 			</Row>
