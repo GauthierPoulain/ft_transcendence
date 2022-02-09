@@ -24,7 +24,9 @@ function FriendsTab(props:any)
     return (
         <div className="friendTab">
             <img src={props.pic} className="pic" alt="" />
-            <p className="text">{props.text}</p>
+                <Link to={"/users/" + props.user} className="user">
+                    {props.user}
+                </Link>
             <p className="status">status: {props.status}
                 <Dot status={props.status}/>
             </p>
@@ -47,9 +49,9 @@ function Friends() {
             <h1>FRIENDS</h1>
 
             <FriendList>
-                <FriendsTab pic="/assets/42.jpg" text="ldevilla" status="ONLINE"/>
-                <FriendsTab pic="/assets/42.jpg" text="ldevilla" status="OFFLINE"/>
-                <FriendsTab pic="/assets/42.jpg" text="ldevilla" status="ONLINE"/>
+                <FriendsTab pic="/assets/42.jpg" user="ldevilla" status="ONLINE"/>
+                <FriendsTab pic="/assets/42.jpg" user="pouet" status="OFFLINE"/>
+                <FriendsTab pic="/assets/42.jpg" user="pouic" status="ONLINE"/>
             </FriendList>
 
         </div>

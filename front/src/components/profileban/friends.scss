@@ -38,14 +38,17 @@
         margin-left: 10px;
     }
 
-    .text
+    .user
     {
+        color: white;
         align-items: center;
         flex: 1;
 
         margin-top: 20px;
         margin-left: 10px;
         font-size: 20px;
+    
+        text-decoration: none;
     }
 
     .status
