@@ -1,5 +1,5 @@
 
-import "./achievements.css"
+import "./achievements.scss"
 
 function Achivements() {
     return(
