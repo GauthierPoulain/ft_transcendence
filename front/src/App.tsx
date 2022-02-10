@@ -15,7 +15,8 @@ import Achievements from './components/profileban/Achievements'
 import Friends from './components/profileban/Friends'
 import ProfileSettings from './components/profileban/ProfileSettings'
 import Users from "./pages/users/Users"
-import { useAuth } from "./auth"
+import { useSelector } from "react-redux"
+import { isConnected } from "./services/auth"
 
 function Layout() {
 	return (
@@ -27,51 +28,34 @@ function Layout() {
 
 }
 
-function PrivateRoute(props:any)
-{
-	const auth = useAuth();
+function PrivateRoute({ children }) {
+	const connected = useSelector(isConnected)
 
-	if (!auth.connected)
-	{
-		return (
-			<Navigate to="/auth" />
-		)
-	}
-
-	return (
-		<>
-			{props.children}
-		</>
-	)
+	return connected ? children : <Navigate to="/auth" replace />
 }
 
 function Router() {
-
-	const auth = useAuth();
-
-    return (
-        <Routes>
-			<Route path="/" element={<Layout />}>
-				<Route index element={<Home />} />
-				<Route path="chat" element={<PrivateRoute><ChatBox /></PrivateRoute>}>
-					<Route index element={<ChatJoin />} />
-					<Route path="create" element={<ChannelCreate />} />
-					<Route path="room/:channelId" element={<RoomView />} />
-				</Route>
-				<Route path="leaderboard" element={<PrivateRoute><Leaderboard /></PrivateRoute>} />
-				<Route path="profile" element={<PrivateRoute><Profile /></PrivateRoute>} >
-					<Route index element={<Matches />} />
-					<Route path="matches" element={< Matches/>} />
-					<Route path="achievements" element={< Achievements/>} />
-					<Route path="friends" element={< Friends/>} />
-					<Route path="settings" element={< ProfileSettings/>} />
-				</Route>
-				<Route path="/users/:id" element={<PrivateRoute><Users /></PrivateRoute>}/>
-				<Route path="auth" element={<Authentication/>} />
-				<Route path="*" element={<Navigate to="/"/>} />
+    return <Routes>
+		<Route path="/" element={<Layout />}>
+			<Route index element={<Home />} />
+			<Route path="chat" element={<PrivateRoute><ChatBox /></PrivateRoute>}>
+				<Route index element={<ChatJoin />} />
+				<Route path="create" element={<ChannelCreate />} />
+				<Route path="room/:channelId" element={<RoomView />} />
 			</Route>
-        </Routes>
-    );
+			<Route path="leaderboard" element={<PrivateRoute><Leaderboard /></PrivateRoute>} />
+			<Route path="profile" element={<PrivateRoute><Profile /></PrivateRoute>} >
+				<Route index element={<Matches />} />
+				<Route path="matches" element={< Matches/>} />
+				<Route path="achievements" element={< Achievements/>} />
+				<Route path="friends" element={< Friends/>} />
+				<Route path="settings" element={< ProfileSettings/>} />
+			</Route>
+			<Route path="/users/:id" element={<PrivateRoute><Users /></PrivateRoute>}/>
+			<Route path="auth" element={<Authentication/>} />
+			<Route path="*" element={<Navigate to="/"/>} />
+		</Route>
+	</Routes>
 }
 
 export default function App() {
