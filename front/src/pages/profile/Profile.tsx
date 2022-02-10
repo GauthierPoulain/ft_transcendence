@@ -1,12 +1,10 @@
 import { useAuth } from "../../auth";
 import { useResource } from "rest-hooks";
 import { UserResource } from "../../api/resources/UserResource";
-import { Link } from "react-router-dom";
 import "./profile.scss";
-import { Button } from "react-bootstrap";
 import Profileban from "../../components/profileban/Profileban";
 import { Brightness1 } from "@material-ui/icons";
-import { Routes, Route, Outlet } from "react-router-dom";
+import { Link, Outlet, Navigate } from "react-router-dom";
 import { Edit } from "@material-ui/icons"
 
 function ProfileConnected() {
@@ -97,12 +95,7 @@ function Profile() {
 
     if (!auth.connected) {
         return (
-            <div className="notConnected">
-                <p>You're not connected</p>
-                <Link to="/auth" className="links">
-                    <Button>Sign in here !</Button>
-                </Link>
-            </div>
+            <Navigate to="/auth"/>
         );
     }
 

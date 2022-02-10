@@ -3,8 +3,7 @@ import { Outlet } from "react-router-dom";
 import { Col, Container, Row } from "react-bootstrap";
 import "./chatbox.css"
 import { useAuth } from "../../auth";
-import { Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 function Chat()
 {
@@ -30,12 +29,7 @@ export default function ChatBox() {
 	if (!auth.connected)
 	{
 		return (
-			<div className="notConnected">
-                <p>You're not connected</p>
-                <Link to="/auth" className="links">
-                    <Button>Sign in here !</Button>
-                </Link>
-            </div>
+			<Navigate to="/auth"/>
 		)
 	}
 
