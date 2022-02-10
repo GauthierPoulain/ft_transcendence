@@ -1,5 +1,4 @@
 import { apiurl, BaseResource } from "./BaseResource"
-import { Resource } from "@rest-hooks/rest"
 
 export class UserResource extends BaseResource {
 	readonly id: number | undefined = undefined
@@ -11,13 +10,4 @@ export class UserResource extends BaseResource {
 	}
 
 	static urlRoot = apiurl("users")
-
-	static current<T extends typeof Resource>(this: T) {
-		return super.endpoint().extend({
-			url() {
-				return apiurl("user")
-			},
-			schema: this
-		})
-	}
 }

@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { firstValueFrom } from "rxjs";
 import { IntraInfosDto } from "src/users/dto/intra_infos.dto";
-import { ConnectDto } from "./dto/connect.dto";
+import { ConnectDto } from "./auth.dto";
 
 // TODO: Look into using timeout or something else with the rxjs observable.
 
