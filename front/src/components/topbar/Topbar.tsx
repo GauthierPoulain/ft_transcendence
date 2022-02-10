@@ -2,9 +2,10 @@ import "./topbar.css"
 import { Link } from 'react-router-dom'
 import { Home } from '@material-ui/icons'
 import { Person } from '@material-ui/icons'
-import { useAuth } from "../../auth";
 import { useResource } from "rest-hooks";
 import { UserResource } from "../../api/resources/UserResource";
+import { useSelector } from "react-redux"
+import { isConnected } from "../../services/auth"
 
 function ProfilePic()
 {
@@ -20,18 +21,13 @@ function ProfilePic()
 
 function GetProfilePic()
 {
-    const auth = useAuth();
+	const connected = useSelector(isConnected)
 
-    if (!auth.connected)
-    {
-        return(
-            <img src="/assets/42.jpg" className="topbarImg" alt="" />
-        );
+    if (!connected) {
+        return <img src="/assets/42.jpg" className="topbarImg" alt="" />
     }
 
-    return(
-        <ProfilePic />
-    );
+    return <ProfilePic />
 }
 
 function Topbar() {

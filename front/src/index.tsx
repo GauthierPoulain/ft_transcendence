@@ -5,17 +5,18 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { AuthProvider } from './auth';
 import CacheProvider from "./api/CacheProvider"
+import { Provider } from "react-redux"
+import { store } from "./services/store"
 
 ReactDOM.render(
-	<AuthProvider>
+	<Provider store={store}>
 		<CacheProvider>
 			<BrowserRouter>
 				<App />
 			</BrowserRouter>
 		</CacheProvider>
-	</AuthProvider>,
+	</Provider>,
 	document.getElementById('root')
 );
 
