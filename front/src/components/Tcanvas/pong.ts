@@ -1,9 +1,16 @@
+import io from "socket.io-client";
 
-function pong(props:any) {
+interface Igame {
+    player: any;
+    opponent: any;
+    ball: any;
+}
+
+function pong(props: any) {
     console.log(props);
     var g_ctx = document.getElementById("pong");
-    var canvas:any;
-    var game:any;
+    var canvas: any;
+    var game: Igame;
 
     const PLAYER_H = 100;
     const PLAYER_W = 5;
@@ -13,8 +20,7 @@ function pong(props:any) {
         console.log(g_ctx);
         var c = document.getElementById("pong") as HTMLCanvasElement;
         var ctx = c.getContext("2d");
-        if (ctx)
-            ctx.clearRect(0, 0, props.width, props.height);
+        if (ctx) ctx.clearRect(0, 0, props.width, props.height);
     }
 
     function draw() {
@@ -34,7 +40,7 @@ function pong(props:any) {
         context.fillRect(0, game.player.y, PLAYER_W, PLAYER_H);
         context.fillRect(
             canvas.width - PLAYER_W,
-            game.ai.y,
+            game.opponent.y,
             PLAYER_W,
             PLAYER_H
         );
@@ -53,59 +59,58 @@ function pong(props:any) {
         context.fill();
     }
 
-    function changeDirection(playerPos:any) {
+    function changeDirection(playerPos: any) {
         var impact = game.ball.y - playerPos - PLAYER_H / 2;
         var ratio = 100 / (PLAYER_H / 2);
         game.ball.speed.y = Math.round((impact * ratio) / 10);
     }
 
-    function collide(player:any) {
+    function collide(player: any) {
         if (game.ball.y < player.y || game.ball.y > player.y + PLAYER_H) {
             game.ball.x = canvas.width / 2;
             game.ball.y = canvas.height / 2;
             game.player.y = canvas.height / 2 - PLAYER_H / 2;
-            game.ai.y = canvas.height / 2 - PLAYER_H / 2;
+            game.opponent.y = canvas.height / 2 - PLAYER_H / 2;
             game.ball.speed.x = 2;
             game.ball.speed.y = -2;
         } else game.ball.speed.x *= -1.2;
         changeDirection(player.y);
     }
 
-    function ballMove() {
+    function ballMove(delta: number) {
         if (game.ball.y > canvas.height || game.ball.y < 0)
             game.ball.speed.y *= -1;
-        if (game.ball.x > canvas.width - PLAYER_W) collide(game.ai);
+        if (game.ball.x > canvas.width - PLAYER_W) collide(game.opponent);
         else if (game.ball.x < PLAYER_W) collide(game.player);
-        game.ball.x += game.ball.speed.x;
-        game.ball.y += game.ball.speed.y;
+        game.ball.x += game.ball.speed.x * 100 * delta;
+        game.ball.y += game.ball.speed.y * 100 * delta;
     }
 
+    function animate(delta) {
+        ballMove(delta);
+    }
+
+    var lastRender = Date.now();
     function loop() {
-        ballMove();
-        draw();
         requestAnimationFrame(loop);
-    }
-
-    function playerMove(e:any) {
-        var canvasLoc = canvas.getBoundingClientRect();
-        var mouseLoc = e.clientY - canvasLoc.y;
-
-        if (mouseLoc < PLAYER_H / 2)
-            game.player.y = 0;
-        else if (mouseLoc > canvas.height - PLAYER_H / 2)
-            game.player.y = canvas.height - PLAYER_H
-        else
-            game.player.y = mouseLoc - PLAYER_H / 2;
+        const current = Date.now();
+        const delta = (current - lastRender) / 1000;
+        draw();
+        animate(delta);
+        lastRender = current;
     }
 
     document.addEventListener("DOMContentLoaded", function () {
         console.log("ready!");
+
+        const socket = io(`ws://${document.location.hostname}:3005`);
+
         canvas = document.getElementById("pong") as HTMLCanvasElement;
         game = {
             player: {
                 y: canvas.height / 2 - PLAYER_H / 2,
             },
-            ai: {
+            opponent: {
                 y: canvas.height / 2 - PLAYER_H / 2,
             },
             ball: {
@@ -118,11 +123,35 @@ function pong(props:any) {
                 },
             },
         };
-        canvas.addEventListener("mousemove", playerMove);
-        draw();
+        canvas.addEventListener("mousemove", (e: MouseEvent) => {
+            {
+                var canvasLoc = canvas.getBoundingClientRect();
+                var mouseLoc = e.clientY - canvasLoc.y;
+                console.log(mouseLoc);
+
+                if (mouseLoc < PLAYER_H / 2) game.player.y = 0;
+                else if (mouseLoc > canvas.height - PLAYER_H / 2)
+                    game.player.y = canvas.height - PLAYER_H;
+                else game.player.y = mouseLoc - PLAYER_H / 2;
+                socket.emit("game_playermove", { YPos: e.clientY });
+            }
+        });
+
+        socket.on("game_opponentmove", (data: { YPos: number }) => {
+            var canvasLoc = canvas.getBoundingClientRect();
+            var mouseLoc = data.YPos - canvasLoc.y;
+            console.log(mouseLoc);
+
+            if (mouseLoc < PLAYER_H / 2) game.opponent.y = 0;
+            else if (mouseLoc > canvas.height - PLAYER_H / 2)
+                game.opponent.y = canvas.height - PLAYER_H;
+            else game.opponent.y = mouseLoc - PLAYER_H / 2;
+        });
+
+        socket.emit("game_join");
+
         loop();
     });
-
 }
 
 export default pong;

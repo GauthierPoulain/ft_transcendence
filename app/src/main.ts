@@ -2,6 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { WsAdapter } from "@nestjs/platform-ws";
 import { ValidationPipe } from "@nestjs/common";
+import { SocketIoAdapter } from "./adapter/socketio.adapter";
 
 const port = 3005;
 
@@ -12,8 +13,8 @@ async function bootstrap() {
     app.setGlobalPrefix("api");
 	app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-	app.useWebSocketAdapter(new WsAdapter(app));
-    //app.useWebSocketAdapter(new SocketIoAdapter(app));
+	// app.useWebSocketAdapter(new WsAdapter(app));
+    app.useWebSocketAdapter(new SocketIoAdapter(app));
 
     await app.listen(port, () => {
         console.info(`Listening on http://localhost:${port}`);

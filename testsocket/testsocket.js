@@ -5,11 +5,10 @@ function logger(str, color) {
 }
 
 const main = () => {
-    const socket = io("ws://localhost:3000");
+    const socket = io("ws://localhost:3005");
 
     socket.on("connection", () => {
         logger(`connected to socket as : ${socket.id}`, "cyan");
-        // socket.emit("dummy", "hello");
     });
 
     socket.on("dummy", (data) => {
