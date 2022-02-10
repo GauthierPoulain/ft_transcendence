@@ -2,8 +2,6 @@ import Channels from "./Channels";
 import { Outlet } from "react-router-dom";
 import { Col, Container, Row } from "react-bootstrap";
 import "./chatbox.css"
-import { useAuth } from "../../auth";
-import { Navigate } from "react-router-dom";
 
 function Chat()
 {
@@ -23,15 +21,6 @@ function Chat()
 }
 
 export default function ChatBox() {
-
-	const auth = useAuth();
-
-	if (!auth.connected)
-	{
-		return (
-			<Navigate to="/auth"/>
-		)
-	}
 
 	return (
 		<Chat />

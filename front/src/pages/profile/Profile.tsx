@@ -1,4 +1,3 @@
-import { useAuth } from "../../auth";
 import { useResource } from "rest-hooks";
 import { UserResource } from "../../api/resources/UserResource";
 import "./profile.scss";
@@ -91,13 +90,6 @@ function Layout() {
 }
 
 function Profile() {
-    const auth = useAuth();
-
-    if (!auth.connected) {
-        return (
-            <Navigate to="/auth"/>
-        );
-    }
 
     return (
         <div>
