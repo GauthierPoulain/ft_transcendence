@@ -8,23 +8,13 @@ function Tcanvas(props: { width: number; height: number }) {
     const WSUrl = new URL(`ws://${document.location.hostname}:3005`)
     const [ws, setWs] = useState(new WebSocketService(WSUrl))
 
-    const [message, setMessage] = useState([])
-
     useEffect(() => {
         //function called when component is mounted
         console.log("mount")
         //call draw function of pong obj
 
+        ws.canConnect = true
         ws.connect()
-
-        ws.onMessage((e) => {
-            console.log(e)
-            setMessage(JSON.parse(e.data))
-        })
-
-        ws.onOpen((e) => {
-            console.log("ws connected")
-        })
 
         return () => {
             ws.onClose(() => {
@@ -41,7 +31,7 @@ function Tcanvas(props: { width: number; height: number }) {
                 width={props.width}
                 height={props.height}
             ></canvas>
-            {pong(props)}
+            {pong(props, ws)}
         </React.Fragment>
     )
 }
