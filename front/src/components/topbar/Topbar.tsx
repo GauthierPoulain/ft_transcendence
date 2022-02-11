@@ -2,14 +2,25 @@ import "./topbar.css"
 import { Link } from "react-router-dom"
 import { Home } from "@material-ui/icons"
 import { Person } from "@material-ui/icons"
-import { useSelector } from "react-redux"
-import { currentUser } from "../../services/auth"
+import { useAuth } from "../../services/auth"
+import { api } from "../../services"
+import { User } from "../../services/users"
 
-function ProfilePic() {
-    const user = useSelector(currentUser)
-    const src = user ? user.intra_image_url : "/assets/42.jpg"
+function UserProfilePic({ userId }) {
+    const { data: user, isSuccess } = api.endpoints.getUser.useQuery(userId)
+    const src = isSuccess ? (user as User).intra_image_url : "/assets/42.jpg"
 
     return <img src={src} className="topbarImg" />
+}
+
+function ProfilePic() {
+    const auth = useAuth()
+
+    if (auth.connected) {
+        return <UserProfilePic userId={auth.userId} />
+    }
+
+    return <img src="/assets/42.jpg" className="topbarImg" />
 }
 
 export default function Topbar() {

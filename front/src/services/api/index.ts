@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import type { ExchangeCodeRequest, ExchangeCodeResponse } from "../auth"
+import { User } from "../users"
 
 const baseUrl = "http://localhost:3005/api"
 
@@ -19,5 +20,9 @@ export const api = createApi({
                 body,
             }),
         }),
+
+        getUser: builder.query<User, number>({
+            query: (id) => `users/${id}`
+        })
     }),
 })

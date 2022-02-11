@@ -1,8 +1,9 @@
 import { api } from "./api"
 import { createSlice } from "@reduxjs/toolkit"
-import { RootState } from "./store"
+import { RootState, store } from "./store"
 import { BaseResource } from "../api/resources/BaseResource"
 import { User, usersSelectors } from "./users"
+import { useSelector } from "react-redux"
 
 export type ExchangeCodeRequest = {
     code: string
@@ -34,6 +35,8 @@ const slice = createSlice({
                 state.token = payload.token
                 state.user = payload.user.id
 
+                console.log(api)
+
                 // TODO: Remove when we get rid of rest hooks
                 BaseResource.accessToken = payload.token
             }
@@ -44,8 +47,11 @@ const slice = createSlice({
 export const reducer = slice.reducer
 
 export const isConnected = (state: RootState) => state.auth.user !== null
+export const currentUserId = (state: RootState) => state.auth.user
 
-export const currentUser = (state: RootState) =>
-    state.auth.user !== null
-        ? usersSelectors.selectById(state, state.auth.user)
-        : null
+export function useAuth() {
+    return {
+        connected: useSelector(isConnected),
+        userId: useSelector(currentUserId)
+    }
+}

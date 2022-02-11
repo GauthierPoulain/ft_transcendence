@@ -6,19 +6,13 @@ export class UsersController {
     constructor(private users: UsersService) {}
 
     @Get(":id")
-    getUserById(@Param("id") id: number) {
-        return this.users
-            .find(id)
-            .then((user) => {
-                return {
-                    id: user.id,
-                    nickname: this.users.getNickname(user),
-                    image: this.users.getImage(user),
-                }
-            })
-            .catch((e) => {
-                console.log(e)
-                throw new NotFoundException()
-            })
+    async findOne(@Param("id") id: number) {
+        const user = await this.users.find(id)
+
+        if (!user) {
+            throw new NotFoundException
+        }
+
+        return user
     }
 }

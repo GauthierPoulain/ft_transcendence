@@ -3,11 +3,21 @@ import Profileban from "../../components/profileban/Profileban"
 import { Brightness1 } from "@material-ui/icons"
 import { Link, Outlet } from "react-router-dom"
 import { Edit } from "@material-ui/icons"
-import { useSelector } from "react-redux"
-import { currentUser } from "../../services/auth"
+import { useAuth } from "../../services/auth"
+import { api } from "../../services"
 
 function ProfileConnected() {
-    const user = useSelector(currentUser)
+    const auth = useAuth()
+    const { data: user, isLoading, isError } = api.endpoints.getUser.useQuery(auth.userId)
+
+    if (isError) {
+        return <p>An error happened while fetching this profile</p>
+    }
+
+    if (isLoading) {
+        return <p>Loading...</p>
+    }
+
     const url = `https://profile.intra.42.fr/users/${user.intra_login}`
 
     return (
