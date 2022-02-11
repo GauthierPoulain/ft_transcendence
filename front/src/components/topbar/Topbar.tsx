@@ -25,6 +25,10 @@ function ProfilePic() {
 }
 
 export default function Topbar() {
+
+    const auth = useAuth();
+    const id = auth.userId;
+
     return (
         <div className="topbarContainer">
             <div className="topbarLeft">
@@ -49,7 +53,7 @@ export default function Topbar() {
                     <Link to="/" className="links">
                         <Home />
                     </Link>
-                    <Link to="/profile" className="links">
+                    <Link to={"/users/" + id} className="links">
                         <Person />
                     </Link>
                 </div>

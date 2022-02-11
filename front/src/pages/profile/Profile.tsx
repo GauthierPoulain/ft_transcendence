@@ -8,7 +8,11 @@ import { api } from "../../services"
 
 function ProfileConnected() {
     const auth = useAuth()
-    const { data: user, isLoading, isError } = api.endpoints.getUser.useQuery(auth.userId)
+    const {
+        data: user,
+        isLoading,
+        isError,
+    } = api.endpoints.getUser.useQuery(auth.userId)
 
     if (isError) {
         return <p>An error happened while fetching this profile</p>
