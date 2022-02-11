@@ -1,5 +1,4 @@
-.topbarContainer
-{
+.topbarContainer {
     height: 50px;
     width: 100%;
     background-color: rgb(104, 104, 104);
@@ -9,8 +8,7 @@
     top: 0;
 }
 
-.logo
-{
+.logo {
     font-size: 24px;
     margin-left: 20px;
     font-weight: bold;
@@ -19,20 +17,17 @@
     text-decoration: none;
 }
 
-.topbarLeft
-{
+.topbarLeft {
     flex: 3;
     margin-left: 15px;
 }
 
-.topbarCenter
-{
+.topbarCenter {
     flex: 2;
     align-items: center;
 }
 
-.topbarRight
-{
+.topbarRight {
     flex: 2;
     display: flex;
     align-items: center;
@@ -40,24 +35,22 @@
     color: white;
 }
 
-.topbarLink
-{
+.topbarLink {
     margin-right: 10px;
     font-size: 16px;
     cursor: pointer;
     text-decoration: none;
 }
 
-.links
-{
+.links {
     text-decoration: none;
     color: white;
     margin-right: 30px;
 }
 
-.topbarImg
-{
+.topbarImg {
     width: 32px;
     height: 32px;
     border-radius: 50%;
+    background-color: white;
 }

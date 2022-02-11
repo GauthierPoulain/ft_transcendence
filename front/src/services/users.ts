@@ -5,7 +5,8 @@ import { RootState } from "./store"
 export type User = {
     id: number
     intra_login: string
-    intra_image_url: string
+    nickname: string
+    image: string
 }
 
 const usersAdapter = createEntityAdapter<User>()
@@ -13,7 +14,7 @@ const usersAdapter = createEntityAdapter<User>()
 const slice = createSlice({
     name: "users",
     initialState: usersAdapter.getInitialState(),
-    reducers: {}
+    reducers: {},
 })
 
 export const reducer = slice.reducer

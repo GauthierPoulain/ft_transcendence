@@ -8,11 +8,9 @@ export class UsersController {
     @Get(":id")
     async findOne(@Param("id") id: number) {
         const user = await this.users.find(id)
-
         if (!user) {
-            throw new NotFoundException
+            throw new NotFoundException()
         }
-
-        return user
+        return this.users.getPublicUser(user)
     }
 }

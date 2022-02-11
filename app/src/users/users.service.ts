@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm"
 
 import { Repository } from "typeorm"
 
-import { User } from "./entities/user.entity"
+import { publicUser, User } from "./entities/user.entity"
 import { IntraInfosDto } from "./dto/intra_infos.dto"
 
 import * as tfa from "node-2fa"
@@ -100,5 +100,14 @@ export class UsersService {
     getNickname(user: User) {
         if (user.nickname == "") return user.intra_login
         else return user.nickname
+    }
+
+    getPublicUser(user: User): publicUser {
+        return {
+            id: user.id,
+            intra_login: user.intra_login,
+            nickname: this.getNickname(user),
+            image: this.getImage(user),
+        }
     }
 }

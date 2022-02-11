@@ -40,7 +40,7 @@ export default function RoomView() {
                         {messages.map(({ id, content, author }) => (
                             <div key={id}>
                                 <span className="h5">
-                                    {author?.intra_login}:{" "}
+                                    {author?.nickname}:{" "}
                                 </span>
                                 <span>{content}</span>
                             </div>
@@ -61,18 +61,14 @@ export default function RoomView() {
                     <h2 className="memberTitle">Members</h2>
 
                     <Stack>
-                        {members.map(({ id, intra_login, intra_image_url }) => (
+                        {members.map(({ id, nickname, image }) => (
                             <Link
                                 className="memberLinks"
                                 to={`/users/${id}`}
                                 key={id}
                             >
-                                <img
-                                    className="imgMember"
-                                    src={intra_image_url}
-                                    alt=""
-                                />
-                                {intra_login}
+                                <img className="imgMember" src={image} alt="" />
+                                {nickname}
                             </Link>
                         ))}
                     </Stack>

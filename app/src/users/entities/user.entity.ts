@@ -9,7 +9,7 @@ import {
 } from "typeorm"
 
 @Entity()
-export class User {
+class User {
     @PrimaryGeneratedColumn()
     id: number
 
@@ -45,3 +45,12 @@ export class User {
     @OneToMany(() => Message, (message) => message.author)
     messages: Message[]
 }
+
+interface publicUser {
+    id: number
+    intra_login: string
+    nickname: string
+    image: string
+}
+
+export { User, publicUser }

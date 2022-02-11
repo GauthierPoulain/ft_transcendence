@@ -8,7 +8,8 @@ import { User } from "../../services/users"
 
 function UserProfilePic({ userId }) {
     const { data: user, isSuccess } = api.endpoints.getUser.useQuery(userId)
-    const src = isSuccess ? (user as User).intra_image_url : "/assets/42.jpg"
+    const src = isSuccess ? (user as User).image : "/assets/42.jpg"
+    console.log(user)
 
     return <img src={src} className="topbarImg" />
 }
