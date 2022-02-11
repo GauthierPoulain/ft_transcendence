@@ -1,16 +1,13 @@
 import pong from "./pong"
 import "./tcanvas.css"
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
 
-class WebSocketService extends WebSocket {
-    emit(event: string, data: any = null) {
-        return this.send(JSON.stringify({ event: event, data: data }))
-    }
-}
+import WebSocketService from "../../WebSocketService"
 
-function Tcanvas(props: any) {
+function Tcanvas(props: { width: number; height: number }) {
     const WSUrl = new URL(`ws://${document.location.hostname}:3005`)
     const [ws, setWs] = useState(new WebSocketService(WSUrl))
+
     const [message, setMessage] = useState([])
 
     useEffect(() => {
@@ -18,20 +15,24 @@ function Tcanvas(props: any) {
         console.log("mount")
         //call draw function of pong obj
 
-        ws.onmessage = (e) => {
-            setMessage(JSON.parse(e.data))
-        }
+        ws.connect()
 
-        ws.onopen = () => {
+        ws.onMessage((e) => {
+            console.log(e)
+            setMessage(JSON.parse(e.data))
+        })
+
+        ws.onOpen((e) => {
             console.log("ws connected")
-        }
+        })
 
         return () => {
-            ws.onclose = () => {
+            ws.onClose(() => {
                 console.log("ws disconnected")
-            }
+            })
+            ws.close()
         }
-    }, [ws.onmessage, ws.onopen, ws.onclose])
+    }, [ws.onMessage, ws.onOpen, ws.onClose])
 
     return (
         <React.Fragment>

@@ -41,10 +41,10 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     public handleConnection(client: WebSocket): void {
-        console.info("[socket.io] client connected")
+        console.info("[webSocket] client connected")
     }
 
     public handleDisconnect(client: WebSocket): void {
-        console.info("[socket.io] client disconnected")
+        console.info("[webSocket] client disconnected")
     }
 }
