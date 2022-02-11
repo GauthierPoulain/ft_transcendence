@@ -59,10 +59,10 @@ function Router() {
                     }
                 />
                 <Route
-                    path="profile"
+                    path="/users/:id"
                     element={
                         <PrivateRoute>
-                            <Profile />
+                            <Users />
                         </PrivateRoute>
                     }
                 >
@@ -72,14 +72,6 @@ function Router() {
                     <Route path="friends" element={<Friends />} />
                     <Route path="settings" element={<ProfileSettings />} />
                 </Route>
-                <Route
-                    path="/users/:id"
-                    element={
-                        <PrivateRoute>
-                            <Users />
-                        </PrivateRoute>
-                    }
-                />
                 <Route path="auth" element={<Authentication />} />
                 <Route path="*" element={<Navigate to="/" />} />
             </Route>
