@@ -30,21 +30,21 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.server.clients.forEach((element) => {
             if (!element) return
             let current: WebSocket = element
-            if (current != client)
-                current.send(
-                    JSON.stringify({
-                        event: "game:opponentmove",
-                        data: data,
-                    })
-                )
+            // if (current != client)
+            current.send(
+                JSON.stringify({
+                    event: "game:opponentmove",
+                    data: data,
+                })
+            )
         })
     }
 
     public handleConnection(client: WebSocket): void {
-        console.info("[socket.io] client connected")
+        console.info("[webSocket] client connected")
     }
 
     public handleDisconnect(client: WebSocket): void {
-        console.info("[socket.io] client disconnected")
+        console.info("[webSocket] client disconnected")
     }
 }

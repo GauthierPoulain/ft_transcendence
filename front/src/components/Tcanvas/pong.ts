@@ -1,3 +1,5 @@
+import WebSocketService from "../../WebSocketService"
+
 interface Igame {
     player: any
     opponent: any
@@ -9,25 +11,18 @@ interface IWSPayload {
     data: any
 }
 
-class WebSocketService extends WebSocket {
-    emit(event: string, data: any = null) {
-        return this.send(JSON.stringify({ event: event, data: data }))
-    }
-}
+function pong(props: { width: number; height: number }, ws: WebSocketService) {
+    ws.onMessage((e) => {
+        console.log(e)
+    })
 
-function pong(props: any) {
-    console.log(props)
-
-    const socket = new WebSocketService(
-        `ws://${document.location.hostname}:3005`
-    )
     const g_canvas = document.getElementById("pong") as HTMLCanvasElement
     var canvas: any
     var game: Igame
 
     const PLAYER_H = 100
     const PLAYER_W = 5
-	
+
     function clear() {
         console.log("Cleared !")
         console.log(g_canvas)
@@ -122,10 +117,8 @@ function pong(props: any) {
     }
 
     function load(event) {
-        console.log(event)
-
-        socket.onmessage = (event) => {
-            const payload = JSON.parse(event.data) as IWSPayload
+        ws.onMessage((e) => {
+            const payload = JSON.parse(e.data) as IWSPayload
 
             switch (payload.event) {
                 case "game:opponentmove":
@@ -135,9 +128,9 @@ function pong(props: any) {
                 default:
                     break
             }
-        }
+        })
 
-        socket.emit("game:join")
+        ws.emit("game:join")
 
         canvas = document.getElementById("pong") as HTMLCanvasElement
         game = {
@@ -166,13 +159,14 @@ function pong(props: any) {
                 else if (mouseLoc > canvas.height - PLAYER_H / 2)
                     game.player.y = canvas.height - PLAYER_H
                 else game.player.y = mouseLoc - PLAYER_H / 2
-                socket.emit("game:playermove", { YPos: e.clientY })
+                ws.emit("game:playermove", { YPos: e.clientY })
             }
         })
         loop()
     }
 
-    socket.onopen = load
+    ws.onOpen(load)
+    ws.willConnect = true
 }
 
 export default pong
