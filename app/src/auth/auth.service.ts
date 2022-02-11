@@ -3,7 +3,7 @@ import { JwtService } from "@nestjs/jwt";
 import { IntraInfosDto } from "src/users/dto/intra_infos.dto";
 import { User } from "src/users/entities/user.entity";
 import { UsersService } from "src/users/users.service";
-import { ConnectDto } from "./dto/connect.dto";
+import { ConnectDto } from "./auth.dto";
 import { FortyTwoService } from "./fortytwo.service";
 
 @Injectable()
@@ -14,11 +14,12 @@ export class AuthService {
         private jwt: JwtService
     ) { }
 
-    async login(payload: ConnectDto): Promise<User> {
+    async login(payload: ConnectDto): Promise<{ created: boolean, user: User }> {
         const accessToken = await this.fortytwo.fetchAccessToken(payload)
         const intra_user = await this.fortytwo.fetchSelf(accessToken)
 
         let user = await this.users.findIntra(intra_user.id)
+		const created = !user;
 
         if (!user) {
             user = await this.users.create(intra_user)
@@ -26,7 +27,7 @@ export class AuthService {
             await this.users.updateIntra(user, intra_user)
         }
 
-        return user
+        return { created, user }
     }
 
     async fake_login(payload: IntraInfosDto): Promise<User> {
