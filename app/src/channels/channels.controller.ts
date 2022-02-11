@@ -34,19 +34,7 @@ export class ChannelsController {
     }
 
     @Get()
-    @UseGuards(MaybeConnectedGuard)
-    async findAll(
-        @CurrentUser(["channels"]) user: User,
-        @Query() query: QueryChannelsDto
-    ) {
-        if (query.joined === true) {
-            if (user === null) {
-                throw new UnauthorizedException()
-            }
-
-            return user.channels
-        }
-
+    async findAll() {
         return this.channels.findJoinable()
     }
 
