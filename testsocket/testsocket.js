@@ -1,23 +1,28 @@
-function logger(str, color) {
-    document.getElementById(
-        "logs"
-    ).innerHTML += `<span style="color:${color}">${str}</span><br/>`;
-}
-
 const main = () => {
-    const socket = io("ws://localhost:3005");
+    const socket = new WebSocket("ws://localhost:3005");
 
-    socket.on("connection", () => {
-        logger(`connected to socket as : ${socket.id}`, "cyan");
-    });
+    socket.onopen = (event) => {
+        console.log(event);
+        console.log("Connected to socket");
+        socket.send(
+            JSON.stringify({
+                event: "events",
+                data: "test",
+            })
+        );
+    };
 
-    socket.on("dummy", (data) => {
-        logger(data, "green");
-    });
+    socket.onclose = (event) => {
+        console.log(event);
+    };
 
-    socket.on("error", (err) => {
-        logger(err, "red");
-    });
+    socket.onerror = (event) => {
+        console.log(event);
+    };
+
+    socket.onmessage = (event) => {
+        console.log(event);
+    };
 };
 
 main();

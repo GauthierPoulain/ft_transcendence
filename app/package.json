@@ -29,7 +29,6 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^8.1.0",
     "@nestjs/platform-express": "^8.2.6",
-    "@nestjs/platform-socket.io": "^8.2.6",
     "@nestjs/platform-ws": "^8.2.5",
     "@nestjs/typeorm": "^8.0.3",
     "@nestjs/websockets": "^8.2.6",
@@ -46,8 +45,6 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.2",
-    "socket.io": "^4.4.1",
-    "socket.io-redis": "^6.1.1",
     "typeorm": "^0.2.41",
     "ws": "^8.4.2"
   },

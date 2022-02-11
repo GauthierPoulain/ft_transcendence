@@ -1,9 +1,18 @@
-import io from "socket.io-client";
-
 interface Igame {
     player: any;
     opponent: any;
     ball: any;
+}
+
+interface IWSPayload {
+    event: string;
+    data: any;
+}
+
+class WebSocketService extends WebSocket {
+    emit(event: string, data: any = null) {
+        return this.send(JSON.stringify({ event: event, data: data }));
+    }
 }
 
 function pong(props: any) {
@@ -100,57 +109,70 @@ function pong(props: any) {
         lastRender = current;
     }
 
+    function opponent_move(YPos: number) {
+        var canvasLoc = canvas.getBoundingClientRect();
+        var mouseLoc = YPos - canvasLoc.y;
+        if (mouseLoc < PLAYER_H / 2) game.opponent.y = 0;
+        else if (mouseLoc > canvas.height - PLAYER_H / 2)
+            game.opponent.y = canvas.height - PLAYER_H;
+        else game.opponent.y = mouseLoc - PLAYER_H / 2;
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
-        console.log("ready!");
+        const socket = new WebSocketService(
+            `ws://${document.location.hostname}:3005`
+        );
+        socket.onopen = (event) => {
+            console.log(event);
 
-        const socket = io(`ws://${document.location.hostname}:3005`);
+            socket.onmessage = (event) => {
+                const payload = JSON.parse(event.data) as IWSPayload;
 
-        canvas = document.getElementById("pong") as HTMLCanvasElement;
-        game = {
-            player: {
-                y: canvas.height / 2 - PLAYER_H / 2,
-            },
-            opponent: {
-                y: canvas.height / 2 - PLAYER_H / 2,
-            },
-            ball: {
-                x: canvas.width / 2,
-                y: canvas.height / 2,
-                r: 5,
-                speed: {
-                    x: -2,
-                    y: -2,
+                switch (payload.event) {
+                    case "game_opponentmove":
+                        opponent_move(payload.data.YPos);
+                        break;
+
+                    default:
+                        break;
+                }
+            };
+
+            socket.emit("game_join");
+
+            canvas = document.getElementById("pong") as HTMLCanvasElement;
+            game = {
+                player: {
+                    y: canvas.height / 2 - PLAYER_H / 2,
                 },
-            },
+                opponent: {
+                    y: canvas.height / 2 - PLAYER_H / 2,
+                },
+                ball: {
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    r: 5,
+                    speed: {
+                        x: -2,
+                        y: -2,
+                    },
+                },
+            };
+            canvas.addEventListener("mousemove", (e: MouseEvent) => {
+                {
+                    var canvasLoc = canvas.getBoundingClientRect();
+                    var mouseLoc = e.clientY - canvasLoc.y;
+
+                    if (mouseLoc < PLAYER_H / 2) game.player.y = 0;
+                    else if (mouseLoc > canvas.height - PLAYER_H / 2)
+                        game.player.y = canvas.height - PLAYER_H;
+                    else game.player.y = mouseLoc - PLAYER_H / 2;
+                    socket.emit("game_playermove", { YPos: e.clientY });
+                }
+            });
+            console.log("ready!");
+            loop();
         };
-        canvas.addEventListener("mousemove", (e: MouseEvent) => {
-            {
-                var canvasLoc = canvas.getBoundingClientRect();
-                var mouseLoc = e.clientY - canvasLoc.y;
-                console.log(mouseLoc);
-
-                if (mouseLoc < PLAYER_H / 2) game.player.y = 0;
-                else if (mouseLoc > canvas.height - PLAYER_H / 2)
-                    game.player.y = canvas.height - PLAYER_H;
-                else game.player.y = mouseLoc - PLAYER_H / 2;
-                socket.emit("game_playermove", { YPos: e.clientY });
-            }
-        });
-
-        socket.on("game_opponentmove", (data: { YPos: number }) => {
-            var canvasLoc = canvas.getBoundingClientRect();
-            var mouseLoc = data.YPos - canvasLoc.y;
-            console.log(mouseLoc);
-
-            if (mouseLoc < PLAYER_H / 2) game.opponent.y = 0;
-            else if (mouseLoc > canvas.height - PLAYER_H / 2)
-                game.opponent.y = canvas.height - PLAYER_H;
-            else game.opponent.y = mouseLoc - PLAYER_H / 2;
-        });
-
-        socket.emit("game_join");
-
-        loop();
     });
 }
 
