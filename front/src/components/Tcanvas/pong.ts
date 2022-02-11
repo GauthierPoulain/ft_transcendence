@@ -17,18 +17,21 @@ class WebSocketService extends WebSocket {
 
 function pong(props: any) {
     console.log(props)
-    var g_ctx = document.getElementById("pong")
+
+    const socket = new WebSocketService(
+        `ws://${document.location.hostname}:3005`
+    )
+    const g_canvas = document.getElementById("pong") as HTMLCanvasElement
     var canvas: any
     var game: Igame
 
     const PLAYER_H = 100
     const PLAYER_W = 5
-
+	
     function clear() {
         console.log("Cleared !")
-        console.log(g_ctx)
-        var c = document.getElementById("pong") as HTMLCanvasElement
-        var ctx = c.getContext("2d")
+        console.log(g_canvas)
+        var ctx = g_canvas.getContext("2d")
         if (ctx) ctx.clearRect(0, 0, props.width, props.height)
     }
 
@@ -118,62 +121,58 @@ function pong(props: any) {
         else game.opponent.y = mouseLoc - PLAYER_H / 2
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const socket = new WebSocketService(
-            `ws://${document.location.hostname}:3005`
-        )
-        socket.onopen = (event) => {
-            console.log(event)
+    function load(event) {
+        console.log(event)
 
-            socket.onmessage = (event) => {
-                const payload = JSON.parse(event.data) as IWSPayload
+        socket.onmessage = (event) => {
+            const payload = JSON.parse(event.data) as IWSPayload
 
-                switch (payload.event) {
-                    case "game_opponentmove":
-                        opponent_move(payload.data.YPos)
-                        break
+            switch (payload.event) {
+                case "game:opponentmove":
+                    opponent_move(payload.data.YPos)
+                    break
 
-                    default:
-                        break
-                }
+                default:
+                    break
             }
-
-            socket.emit("game_join")
-
-            canvas = document.getElementById("pong") as HTMLCanvasElement
-            game = {
-                player: {
-                    y: canvas.height / 2 - PLAYER_H / 2,
-                },
-                opponent: {
-                    y: canvas.height / 2 - PLAYER_H / 2,
-                },
-                ball: {
-                    x: canvas.width / 2,
-                    y: canvas.height / 2,
-                    r: 5,
-                    speed: {
-                        x: -2,
-                        y: -2,
-                    },
-                },
-            }
-            canvas.addEventListener("mousemove", (e: MouseEvent) => {
-                {
-                    var canvasLoc = canvas.getBoundingClientRect()
-                    var mouseLoc = e.clientY - canvasLoc.y
-
-                    if (mouseLoc < PLAYER_H / 2) game.player.y = 0
-                    else if (mouseLoc > canvas.height - PLAYER_H / 2)
-                        game.player.y = canvas.height - PLAYER_H
-                    else game.player.y = mouseLoc - PLAYER_H / 2
-                    socket.emit("game_playermove", { YPos: e.clientY })
-                }
-            })
-            console.log("ready!")
-            loop()
         }
-    })
+
+        socket.emit("game:join")
+
+        canvas = document.getElementById("pong") as HTMLCanvasElement
+        game = {
+            player: {
+                y: canvas.height / 2 - PLAYER_H / 2,
+            },
+            opponent: {
+                y: canvas.height / 2 - PLAYER_H / 2,
+            },
+            ball: {
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                r: 5,
+                speed: {
+                    x: -2,
+                    y: -2,
+                },
+            },
+        }
+        canvas.addEventListener("mousemove", (e: MouseEvent) => {
+            {
+                var canvasLoc = canvas.getBoundingClientRect()
+                var mouseLoc = e.clientY - canvasLoc.y
+
+                if (mouseLoc < PLAYER_H / 2) game.player.y = 0
+                else if (mouseLoc > canvas.height - PLAYER_H / 2)
+                    game.player.y = canvas.height - PLAYER_H
+                else game.player.y = mouseLoc - PLAYER_H / 2
+                socket.emit("game:playermove", { YPos: e.clientY })
+            }
+        })
+        loop()
+    }
+
+    socket.onopen = load
 }
 
 export default pong

@@ -10,15 +10,15 @@ import { Provider } from "react-redux"
 import { store } from "./services/store"
 
 ReactDOM.render(
-    <React.StrictMode>
-        <Provider store={store}>
-            <CacheProvider>
-                <BrowserRouter>
-                    <App />
-                </BrowserRouter>
-            </CacheProvider>
-        </Provider>
-    </React.StrictMode>,
+    // <React.StrictMode>
+    <Provider store={store}>
+        <CacheProvider>
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+        </CacheProvider>
+    </Provider>,
+    // </React.StrictMode>
     document.getElementById("root")
 )
 
