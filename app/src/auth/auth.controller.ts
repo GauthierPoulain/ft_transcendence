@@ -1,18 +1,12 @@
-import {
-    Controller,
-    Post,
-    Body,
-    UnauthorizedException,
-} from "@nestjs/common";
-import { IntraInfosDto } from "src/users/dto/intra_infos.dto";
+import { Controller, Post, Body, UnauthorizedException } from "@nestjs/common"
+import { IntraInfosDto } from "src/users/dto/intra_infos.dto"
 
-import { AuthService } from "./auth.service";
-import { AuthResponse, ConnectDto } from "./auth.dto";
+import { AuthService } from "./auth.service"
+import { AuthResponse, ConnectDto } from "./auth.dto"
 
 @Controller("auth")
 export class AuthController {
-    constructor(private auth: AuthService) {
-    }
+    constructor(private auth: AuthService) {}
 
     @Post("login")
     async login(@Body() payload: ConnectDto): Promise<AuthResponse> {
@@ -29,8 +23,8 @@ export class AuthController {
 
         return {
             token: await this.auth.createToken(user),
-			created,
-			user
+            created,
+            user,
         }
     }
 
@@ -41,15 +35,15 @@ export class AuthController {
         const payload: IntraInfosDto = {
             id: 2142000001,
             login: "fake_user_one",
-            image_url: "https://via.placeholder.com/150/0000FF"
+            image_url: "https://via.placeholder.com/150/0000FF",
         }
 
-        const user = await this.auth.fake_login(payload);
+        const user = await this.auth.fake_login(payload)
 
         return {
             token: await this.auth.createToken(user),
-			created: true,
-			user
+            created: true,
+            user,
         }
     }
 
@@ -58,15 +52,15 @@ export class AuthController {
         const payload: IntraInfosDto = {
             id: 2142000002,
             login: "fake_user_two",
-            image_url: "https://via.placeholder.com/150/00FF00"
+            image_url: "https://via.placeholder.com/150/00FF00",
         }
 
-        const user = await this.auth.fake_login(payload);
+        const user = await this.auth.fake_login(payload)
 
         return {
             token: await this.auth.createToken(user),
-			created: false,
-			user
+            created: false,
+            user,
         }
     }
 }

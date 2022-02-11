@@ -4,5 +4,5 @@
 export class Achievements {
     // Achievement rewarded after making a call to a secret API route.
     // (I had no idea what to create now)
-    reverse_engineer: number;
+    reverse_engineer: number
 }

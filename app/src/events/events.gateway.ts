@@ -3,18 +3,18 @@ import {
     SubscribeMessage,
     WebSocketGateway,
     WebSocketServer,
-} from "@nestjs/websockets";
-import { Server } from "ws";
+} from "@nestjs/websockets"
+import { Server } from "ws"
 
 // https://docs.nestjs.com/websockets/guards
 @WebSocketGateway()
 export class EventsGateway {
     @WebSocketServer()
-    server: Server;
+    server: Server
 
     @SubscribeMessage("game_join")
     game_join(client: any, data: any) {
-        console.log("join");
+        console.log("join")
     }
 
     @SubscribeMessage("game_playermove")
@@ -22,23 +22,23 @@ export class EventsGateway {
         this.server.clients.forEach((client) => {
             if (client != sender)
                 client.send(
-                    JSON.stringify({ event: "game_opponentmove", data: data }),
-                );
-        });
+                    JSON.stringify({ event: "game_opponentmove", data: data })
+                )
+        })
     }
 
     @SubscribeMessage("events")
     onEvent(client: any, data: any): any {
-        console.log(client);
+        console.log(client)
 
-        return "ok";
+        return "ok"
     }
 
     handleConnection() {
-        console.log("[socket.io] client connected");
-        this.server.emit("dummy", "salut");
+        console.log("[socket.io] client connected")
+        this.server.emit("dummy", "salut")
     }
     handleDisconnect() {
-        console.log("[socket.io] client disconnected");
+        console.log("[socket.io] client disconnected")
     }
 }

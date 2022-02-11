@@ -1,10 +1,5 @@
-import {
-    Controller,
-    Get,
-    NotFoundException,
-    Param,
-} from "@nestjs/common";
-import { UsersService } from "./users.service";
+import { Controller, Get, NotFoundException, Param } from "@nestjs/common"
+import { UsersService } from "./users.service"
 
 @Controller("users")
 export class UsersController {
@@ -19,11 +14,11 @@ export class UsersController {
                     id: user.id,
                     nickname: this.users.getNickname(user),
                     image: this.users.getImage(user),
-                };
+                }
             })
             .catch((e) => {
-                console.log(e);
-                throw new NotFoundException();
-            });
+                console.log(e)
+                throw new NotFoundException()
+            })
     }
 }

@@ -1,41 +1,47 @@
-import { Channel } from "src/channels/entities/channel.entity";
-import { Message } from "src/channels/entities/message.entity";
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany } from "typeorm";
+import { Channel } from "src/channels/entities/channel.entity"
+import { Message } from "src/channels/entities/message.entity"
+import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    ManyToMany,
+    OneToMany,
+} from "typeorm"
 
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
-    id: number;
+    id: number
 
     @Column()
-    intra_id: number;
+    intra_id: number
 
     @Column()
-    intra_login: string;
+    intra_login: string
 
     @Column()
-    intra_image_url: string;
+    intra_image_url: string
 
     @Column({ default: "" })
-    tfa_secret: string;
+    tfa_secret: string
 
     @Column({ default: "" })
-    image_seed: string;
+    image_seed: string
 
     @Column({ default: "" })
-    nickname: string;
+    nickname: string
 
-	@OneToMany(() => Channel, channel => channel.owner)
-	owned_channels: Channel[];
+    @OneToMany(() => Channel, (channel) => channel.owner)
+    owned_channels: Channel[]
 
     // Channels where the user is at least an administrator
     @ManyToMany(() => Channel, (channel) => channel.admins)
-    admin_channels: Channel[];
+    admin_channels: Channel[]
 
     // Channels where the user is at least a member
     @ManyToMany(() => Channel, (channel) => channel.members)
-    channels: Channel[];
+    channels: Channel[]
 
-	@OneToMany(() => Message, message => message.author)
-	messages: Message[];
+    @OneToMany(() => Message, (message) => message.author)
+    messages: Message[]
 }

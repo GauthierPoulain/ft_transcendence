@@ -3,10 +3,10 @@ import Tcanvas from "../../components/Tcanvas/Tcanvas"
 
 function Home() {
     return (
-		<div>
-			<Tcanvas width="1000px" height="500px"></Tcanvas>
-		</div>
+        <div>
+            <Tcanvas width="1000px" height="500px"></Tcanvas>
+        </div>
     )
 }
 
-export default Home;
+export default Home

@@ -6,7 +6,7 @@ export class ConnectDto {
 }
 
 export class AuthResponse {
-	token: string
-	created: boolean
-	user: User
+    token: string
+    created: boolean
+    user: User
 }

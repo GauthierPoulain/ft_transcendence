@@ -1,15 +1,10 @@
-import { useParams } from 'react-router-dom'
+import { useParams } from "react-router-dom"
 import "./users.scss"
 
 function Users() {
+    let { id } = useParams()
 
-    let {id} = useParams();
-
-    return (
-		<div className="users">
-			User id : {id}
-		</div>
-    )
+    return <div className="users">User id : {id}</div>
 }
 
-export default Users;
+export default Users

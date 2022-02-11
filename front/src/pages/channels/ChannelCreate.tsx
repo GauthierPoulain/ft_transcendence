@@ -1,20 +1,20 @@
-import { useState } from "react";
-import { useController } from "rest-hooks";
-import { Button, Form } from "react-bootstrap";
-import { ChannelResource } from "../../api/resources/ChannelResource";
-import "./style.css";
+import { useState } from "react"
+import { useController } from "rest-hooks"
+import { Button, Form } from "react-bootstrap"
+import { ChannelResource } from "../../api/resources/ChannelResource"
+import "./style.css"
 
 export default function ChannelCreate() {
-    const { fetch } = useController();
-    const [name, setName] = useState("");
-    const [joinable, setJoinable] = useState(false);
-    const [password, setPassword] = useState("");
+    const { fetch } = useController()
+    const [name, setName] = useState("")
+    const [joinable, setJoinable] = useState(false)
+    const [password, setPassword] = useState("")
 
     function submit(event: any) {
-        event.preventDefault();
+        event.preventDefault()
 
-        console.log(fetch);
-        console.log(ChannelResource.create());
+        console.log(fetch)
+        console.log(ChannelResource.create())
         console.log(
             fetch(
                 ChannelResource.create(),
@@ -25,7 +25,7 @@ export default function ChannelCreate() {
                     password: joinable ? password : "",
                 }
             )
-        );
+        )
     }
 
     return (
@@ -65,5 +65,5 @@ export default function ChannelCreate() {
                 Create
             </Button>
         </Form>
-    );
+    )
 }

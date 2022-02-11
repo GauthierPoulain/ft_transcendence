@@ -1,5 +1,5 @@
 export class CreateChannelDto {
-	name: string
-	joinable: boolean
-	password: string
+    name: string
+    joinable: boolean
+    password: string
 }

@@ -1,5 +1,5 @@
-import { Injectable } from "@nestjs/common";
-import { PassportStrategy } from "@nestjs/passport";
+import { Injectable } from "@nestjs/common"
+import { PassportStrategy } from "@nestjs/passport"
 import { ExtractJwt, Strategy as InnerJwtStrategy } from "passport-jwt"
 import { Strategy as InnerAnonymousStrategy } from "passport-anonymous"
 
@@ -9,7 +9,8 @@ export class JwtStrategy extends PassportStrategy(InnerJwtStrategy) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: "TODO: this should be generated with cryptogaphic random later"
+            secretOrKey:
+                "TODO: this should be generated with cryptogaphic random later",
         })
     }
 
@@ -21,6 +22,6 @@ export class JwtStrategy extends PassportStrategy(InnerJwtStrategy) {
 }
 
 @Injectable()
-export class AnonymousStrategy extends PassportStrategy(InnerAnonymousStrategy) {
-
-}
+export class AnonymousStrategy extends PassportStrategy(
+    InnerAnonymousStrategy
+) {}

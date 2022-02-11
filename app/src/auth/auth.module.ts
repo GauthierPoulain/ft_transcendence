@@ -1,12 +1,12 @@
-import { Module } from "@nestjs/common";
+import { Module } from "@nestjs/common"
 import { HttpModule } from "@nestjs/axios"
 
-import { AuthController } from "./auth.controller";
+import { AuthController } from "./auth.controller"
 
-import { UsersModule } from "../users/users.module";
-import { AuthService } from "./auth.service";
-import { FortyTwoService } from "./fortytwo.service";
-import { JwtModule } from "@nestjs/jwt";
+import { UsersModule } from "../users/users.module"
+import { AuthService } from "./auth.service"
+import { FortyTwoService } from "./fortytwo.service"
+import { JwtModule } from "@nestjs/jwt"
 import { JwtStrategy, AnonymousStrategy } from "./auth.strategy"
 
 @Module({
@@ -14,8 +14,8 @@ import { JwtStrategy, AnonymousStrategy } from "./auth.strategy"
         HttpModule,
         UsersModule,
         JwtModule.register({
-            secret: "TODO: this should be generated with cryptogaphic random later"
-        })
+            secret: "TODO: this should be generated with cryptogaphic random later",
+        }),
     ],
     providers: [AuthService, FortyTwoService, JwtStrategy, AnonymousStrategy],
     controllers: [AuthController],

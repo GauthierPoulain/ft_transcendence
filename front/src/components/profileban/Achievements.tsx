@@ -1,12 +1,11 @@
-
 import "./achievements.scss"
 
 function Achivements() {
-    return(
+    return (
         <div className="achContainer">
             <h1>ACHIEVEMENTS</h1>
         </div>
     )
 }
 
-export default Achivements;
+export default Achivements

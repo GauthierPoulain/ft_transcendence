@@ -1,26 +1,23 @@
-import "./style.css";
-import React, { Component } from "react";
-import { Table } from "react-bootstrap";
+import "./style.css"
+import React, { Component } from "react"
+import { Table } from "react-bootstrap"
 
 class LeaderboardTab extends React.Component {
-
-    state =
-    {
-        players:[
-            {rank:"1", login:"arpascal", victories:"32"},
-            {rank:"2", login:"ckurt", victories:"29"},
-            {rank:"3", login:"gapoulai", victories:"12"},
-            {rank:"4", login:"ldevilla", victories:"4"}
+    state = {
+        players: [
+            { rank: "1", login: "arpascal", victories: "32" },
+            { rank: "2", login: "ckurt", victories: "29" },
+            { rank: "3", login: "gapoulai", victories: "12" },
+            { rank: "4", login: "ldevilla", victories: "4" },
             //DB
             //Make button on players to redirect to their profile
-        ]
-    };
+        ],
+    }
 
-    add()
-    {
-        let player = this.state.players;
-        player.push({rank:"?", login:"newPlayer", victories:"?"})
-        this.setState(player);
+    add() {
+        let player = this.state.players
+        player.push({ rank: "?", login: "newPlayer", victories: "?" })
+        this.setState(player)
     }
 
     render() {
@@ -36,11 +33,15 @@ class LeaderboardTab extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.players.map((player) =>(
+                        {this.state.players.map((player) => (
                             <tr>
                                 <td>{player.rank}</td>
                                 <td>
-                                    <img className="imgLead" src="/assets/42.jpg" alt="" />
+                                    <img
+                                        className="imgLead"
+                                        src="/assets/42.jpg"
+                                        alt=""
+                                    />
                                     {player.login}
                                 </td>
                                 <td>{player.victories}</td>
@@ -50,8 +51,8 @@ class LeaderboardTab extends React.Component {
                 </Table>
                 <button onClick={() => this.add()}>+</button>
             </div>
-        );
+        )
     }
 }
 
-export default LeaderboardTab;
+export default LeaderboardTab

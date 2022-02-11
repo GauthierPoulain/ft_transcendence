@@ -1,5 +1,5 @@
-import "./matches.css";
-import { Table } from "react-bootstrap";
+import "./matches.css"
+import { Table } from "react-bootstrap"
 
 function Matches() {
     return (
@@ -17,11 +17,19 @@ function Matches() {
                 <tbody>
                     <tr>
                         <td>
-                            <img className="imgMatches" src="/assets/42.jpg" alt="" />    
+                            <img
+                                className="imgMatches"
+                                src="/assets/42.jpg"
+                                alt=""
+                            />
                             gapoulai
                         </td>
                         <td>
-                            <img className="imgMatches" src="/assets/42.jpg" alt="" />
+                            <img
+                                className="imgMatches"
+                                src="/assets/42.jpg"
+                                alt=""
+                            />
                             ldevilla
                         </td>
                         <td>4</td>
@@ -29,11 +37,19 @@ function Matches() {
                     </tr>
                     <tr>
                         <td>
-                            <img className="imgMatches" src="/assets/42.jpg" alt="" />    
+                            <img
+                                className="imgMatches"
+                                src="/assets/42.jpg"
+                                alt=""
+                            />
                             ckurt
                         </td>
                         <td>
-                            <img className="imgMatches" src="/assets/42.jpg" alt="" />
+                            <img
+                                className="imgMatches"
+                                src="/assets/42.jpg"
+                                alt=""
+                            />
                             ckurt
                         </td>
                         <td>5</td>
@@ -42,7 +58,7 @@ function Matches() {
                 </tbody>
             </Table>
         </div>
-    );
+    )
 }
 
-export default Matches;
+export default Matches
