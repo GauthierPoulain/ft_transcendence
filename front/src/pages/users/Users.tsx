@@ -8,7 +8,11 @@ import { api } from "../../services"
 
 function ProfileConnected() {
     const auth = useAuth()
-    const { data: user, isLoading, isError } = api.endpoints.getUser.useQuery(auth.userId)
+    const {
+        data: user,
+        isLoading,
+        isError,
+    } = api.endpoints.getUser.useQuery(auth.userId)
 
     if (isError) {
         return <p>An error happened while fetching this profile</p>
@@ -26,13 +30,13 @@ function ProfileConnected() {
                 <div className="profleft">
                     <a href={url} target="_blank">
                         <img
-                            src={user.intra_image_url}
+                            src={user.image}
                             alt=""
                             className="profilePicture"
                         />
                     </a>
                     <div className="profileName">
-                        <span>{user.intra_login}</span>
+                        <span>{user.nickname}</span>
                     </div>
                 </div>
                 <div className="profcenter">
