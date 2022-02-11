@@ -1,6 +1,5 @@
 // TODO: Check for lazy route component fetching
 
-import Profile from "./pages/profile/Profile"
 import Home from "./pages/home/Home"
 import Leaderboard from "./pages/leaderboard/Leaderboard"
 import { Page as Authentication } from "./pages/authentication"
