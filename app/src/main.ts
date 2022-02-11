@@ -6,7 +6,7 @@ import { ValidationPipe } from "@nestjs/common"
 const port = 3005
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule)
+    const app = await NestFactory.create(AppModule, { cors: true })
 
     // To avoid conflict with frontend, move all routes inside /api/.
     app.setGlobalPrefix("api")
