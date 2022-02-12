@@ -1,6 +1,6 @@
 import { Channel } from "./channel.entity"
 import { User } from "src/users/entities/user.entity"
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm"
 
 @Entity()
 export class Message {
@@ -9,6 +9,9 @@ export class Message {
 
     @ManyToOne(() => User, (user) => user.messages)
     author: User
+
+    @RelationId((message: Message) => message.author)
+    authorId: number
 
     @Column()
     content: string

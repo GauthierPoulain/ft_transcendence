@@ -24,12 +24,12 @@ export class MessagesController {
         @Param("channelId") channelId: number
     ) {
         const channel = await this.channels.findOne(channelId, [
-            "members",
+            "memberships",
             "messages",
             "messages.author",
         ])
 
-        if (!channel || !channel.members.some(({ id }) => id === user.id)) {
+        if (!channel || !channel.memberships.some(membership => membership.userId === user.id)) {
             throw new UnauthorizedException()
         }
 
@@ -43,9 +43,9 @@ export class MessagesController {
         @Param("channelId") channelId: number,
         @Body() body: CreateMessageDto
     ) {
-        const channel = await this.channels.findOne(channelId, ["members"])
+        const channel = await this.channels.findOne(channelId, ["memberships"])
 
-        if (!channel || !channel.members.some(({ id }) => id == user.id)) {
+        if (!channel || !channel.memberships.some(membership => membership.userId === user.id)) {
             throw new UnauthorizedException()
         }
 

@@ -12,6 +12,7 @@ import { ChannelsModule } from "./channels/channels.module"
 import { Channel } from "./channels/entities/channel.entity"
 import { Message } from "./channels/entities/message.entity"
 import { ConfigModule } from "@nestjs/config"
+import { Membership } from "./channels/entities/membership.entity"
 
 @Module({
     imports: [
@@ -30,7 +31,7 @@ import { ConfigModule } from "@nestjs/config"
             // TODO: This can destroy production data, so we may want to remove this in the future.
             synchronize: true,
 
-            entities: [User, Channel, Message],
+            entities: [User, Channel, Message, Membership],
         }),
         EventsModule,
         UsersModule,

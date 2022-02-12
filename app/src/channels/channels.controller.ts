@@ -29,13 +29,19 @@ export class ChannelsController {
     async create(
         @CurrentUser() user: User,
         @Body() createChannelDto: CreateChannelDto
-    ): Promise<Channel> {
-        return this.channels.create(createChannelDto, user)
+    ) {
+        await this.channels.create(createChannelDto, user)
     }
 
     @Get()
     async findAll() {
         return this.channels.findJoinable()
+    }
+
+    @Get("joined")
+    @UseGuards(ConnectedGuard)
+    findJoined(@CurrentUser(["memberships"]) user: User) {
+        return user.memberships.map(({ channelId }) => channelId)        
     }
 
     @Get(":id")

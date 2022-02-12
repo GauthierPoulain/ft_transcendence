@@ -1,10 +1,9 @@
-import { Channel } from "src/channels/entities/channel.entity"
+import { Membership } from "src/channels/entities/membership.entity"
 import { Message } from "src/channels/entities/message.entity"
 import {
     Entity,
     Column,
     PrimaryGeneratedColumn,
-    ManyToMany,
     OneToMany,
 } from "typeorm"
 
@@ -31,16 +30,8 @@ class User {
     @Column({ default: "" })
     nickname: string
 
-    @OneToMany(() => Channel, (channel) => channel.owner)
-    owned_channels: Channel[]
-
-    // Channels where the user is at least an administrator
-    @ManyToMany(() => Channel, (channel) => channel.admins)
-    admin_channels: Channel[]
-
-    // Channels where the user is at least a member
-    @ManyToMany(() => Channel, (channel) => channel.members)
-    channels: Channel[]
+    @OneToMany(() => Membership, (membership) => membership.user)
+    memberships: Membership[]
 
     @OneToMany(() => Message, (message) => message.author)
     messages: Message[]

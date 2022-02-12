@@ -7,6 +7,7 @@ import { CreateMessageDto } from "./channels.dto"
 import { CreateChannelDto } from "./dto/create-channel.dto"
 import { UpdateChannelDto } from "./dto/update-channel.dto"
 import { Channel } from "./entities/channel.entity"
+import { Membership, MembershipRole } from "./entities/membership.entity"
 import { Message } from "./entities/message.entity"
 
 @Injectable()
@@ -20,15 +21,16 @@ export class ChannelsService {
     ) {}
 
     async create(input: CreateChannelDto, owner: User): Promise<Channel> {
+        const membership = new Membership()
         const channel = new Channel()
 
+        membership.role = MembershipRole.OWNER
+        membership.user = owner
+        membership.channel = channel
         channel.name = input.name
         channel.joinable = input.joinable
         channel.password = input.password ? await hash(input.password) : ""
-        channel.owner = owner
-        channel.admins = [owner]
-        channel.members = [owner]
-        channel.messages = []
+        channel.memberships = [membership]
 
         return this.channelsRepository.save(channel)
     }

@@ -20,12 +20,12 @@ export class MembersController {
         @CurrentUser() user: User,
         @Param("channelId") channelId: number
     ) {
-        const channel = await this.channels.findOne(channelId, ["members"])
+        const channel = await this.channels.findOne(channelId, ["memberships"])
 
-        if (!channel || !channel.members.some(({ id }) => id === user.id)) {
+        if (!channel || !channel.memberships.some(({ userId }) => userId === user.id)) {
             throw new UnauthorizedException()
         }
 
-        return channel.members
+        return channel.memberships
     }
 }

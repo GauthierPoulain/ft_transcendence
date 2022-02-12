@@ -5,15 +5,54 @@ import { Link, useParams } from "react-router-dom"
 import { ChannelResource } from "../../api/resources/ChannelResource"
 import { MessageResource } from "../../api/resources/MessageResource"
 import "./roomview.css"
+import { api } from "../../services"
+import { Membership } from "../../services/channels"
+import { User } from "../../services/users"
+
+function Member({ member }) {
+    const { data, isLoading, isError } = api.endpoints.getUser.useQuery(member.userId)
+
+    if (isError) {
+        return <p>Error...</p>
+    }
+
+    if (isLoading) {
+        return <p>Loading...</p>
+    }
+
+    const user = data as User
+
+    return <Link className="memberLinks" to={`/users/${user.id}`}>
+        <img className="imgMember" src={user.image} alt="" />
+        {user.nickname} - {member.role}
+    </Link>
+}
+
+function Members({ channelId }) {
+    const { data, isLoading, isError } = api.endpoints.getChannelMembers.useQuery(channelId)
+
+    if (isError) {
+        return <p>Error...</p>
+    }
+
+    if (isLoading) {
+        return <p>Loading...</p>
+    }
+
+    const members = data as Membership[]
+
+    return <Stack>
+        { members.map((member) => <Member key={member.id} member={member} />) }
+    </Stack>
+}
 
 export default function RoomView() {
     const { channelId } = useParams()
     const { fetch } = useController()
 
-    const [channel, messages, members] = useResource(
+    const [channel, messages] = useResource(
         [ChannelResource.detail(), { id: channelId }],
         [MessageResource.list(), { channelId }],
-        [ChannelResource.members(), { id: channelId }]
     )
 
     const [buffer, setBuffer] = useState("")
@@ -60,18 +99,7 @@ export default function RoomView() {
                 <Col xs={2} className="memberView">
                     <h2 className="memberTitle">Members</h2>
 
-                    <Stack>
-                        {members.map(({ id, nickname, image }) => (
-                            <Link
-                                className="memberLinks"
-                                to={`/users/${id}`}
-                                key={id}
-                            >
-                                <img className="imgMember" src={image} alt="" />
-                                {nickname}
-                            </Link>
-                        ))}
-                    </Stack>
+                    <Members channelId={channelId} />
                 </Col>
             </Row>
         </Container>

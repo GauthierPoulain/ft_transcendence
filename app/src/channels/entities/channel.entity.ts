@@ -1,15 +1,12 @@
-import { User } from "src/users/entities/user.entity"
 import {
     Entity,
     Column,
     PrimaryGeneratedColumn,
-    JoinColumn,
-    ManyToMany,
-    JoinTable,
-    ManyToOne,
     OneToMany,
 } from "typeorm"
-import { Message } from "./message.entity"
+
+import { Membership } from "src/channels/entities/membership.entity"
+import { Message } from "src/channels/entities/message.entity"
 
 @Entity()
 export class Channel {
@@ -29,17 +26,8 @@ export class Channel {
     @Column()
     password: string
 
-    @ManyToOne(() => User, (user) => user.owned_channels)
-    @JoinColumn()
-    owner: User
-
-    @ManyToMany(() => User, (user) => user.admin_channels)
-    @JoinTable()
-    admins: User[]
-
-    @ManyToMany(() => User, (user) => user.channels)
-    @JoinTable()
-    members: User[]
+    @OneToMany(() => Membership, (membership) => membership.channel, { cascade: true })
+    memberships: Membership[]
 
     @OneToMany(() => Message, (message) => message.channel, { cascade: true })
     messages: Message[]
