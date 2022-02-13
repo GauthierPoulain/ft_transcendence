@@ -12,13 +12,12 @@ export const fetcher = async (url: string, options = {}) => {
     const response = await fetch(apiurl(url), {
         ...options,
         headers: {
+            "Content-Type": "application/json",
             ...(accessToken ? { 'Authorization': `Bearer ${accessToken}` } : { })
         }
     })
 
-    const json = await response.json()
-
-    return json
+    return response.json()
 }
 
 export default function useFetch(key: string) {

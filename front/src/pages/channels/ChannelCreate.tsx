@@ -1,28 +1,24 @@
 import { useState } from "react"
 import { Button, Form } from "react-bootstrap"
+import { useSWRConfig } from "swr"
 import "./style.css"
+import { createChannel } from "../../data/use-channel"
 
 export default function ChannelCreate() {
+    const { mutate } = useSWRConfig()
+
     const [name, setName] = useState("")
     const [joinable, setJoinable] = useState(false)
     const [password, setPassword] = useState("")
 
-    function submit(event: any) {
+    async function submit(event: any) {
         event.preventDefault()
 
-        console.log(fetch)
-        //console.log(ChannelResource.create())
-        //console.log(
-        //    fetch(
-        //        ChannelResource.create(),
-        //        {},
-        //        {
-        //            name,
-        //            joinable,
-        //            password: joinable ? password : "",
-        //        }
-        //    )
-        //)
+        const channel = await createChannel({ name, joinable, password })
+
+        mutate(`/channels/${channel.id}`, channel)
+        mutate("/channels/joined")
+        mutate("/channels")
     }
 
     return (

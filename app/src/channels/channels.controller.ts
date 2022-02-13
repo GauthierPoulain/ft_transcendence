@@ -10,6 +10,8 @@ import {
     Query,
     Request,
     UnauthorizedException,
+    ClassSerializerInterceptor,
+    UseInterceptors,
 } from "@nestjs/common"
 import { ConnectedGuard, MaybeConnectedGuard } from "src/auth/connected.guard"
 import { User } from "src/users/entities/user.entity"
@@ -21,6 +23,7 @@ import { UpdateChannelDto } from "./dto/update-channel.dto"
 import { Channel } from "./entities/channel.entity"
 
 @Controller("channels")
+@UseInterceptors(ClassSerializerInterceptor)
 export class ChannelsController {
     constructor(private readonly channels: ChannelsService) {}
 
@@ -29,8 +32,8 @@ export class ChannelsController {
     async create(
         @CurrentUser() user: User,
         @Body() createChannelDto: CreateChannelDto
-    ) {
-        await this.channels.create(createChannelDto, user)
+    ): Promise<Channel> {
+        return this.channels.create(createChannelDto, user)
     }
 
     @Get()
