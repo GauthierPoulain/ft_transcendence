@@ -2,16 +2,13 @@ import "./topbar.css"
 import { Link } from "react-router-dom"
 import { Home } from "@material-ui/icons"
 import { Person } from "@material-ui/icons"
-import { useAuth } from "../../services/auth"
-import { api } from "../../services"
-import { User } from "../../services/users"
+import { useAuth } from "../../data/use-auth"
+import useUser from "../../data/use-user"
 
 function UserProfilePic({ userId }) {
-    const { data: user, isSuccess } = api.endpoints.getUser.useQuery(userId)
-    const src = isSuccess ? (user as User).image : "/assets/42.jpg"
-    console.log(user)
-
-    return <img src={src} className="topbarImg" />
+    const user = useUser(userId)
+    
+    return <img src={user.image} className="topbarImg" />
 }
 
 function ProfilePic() {
@@ -25,9 +22,7 @@ function ProfilePic() {
 }
 
 export default function Topbar() {
-
     const auth = useAuth();
-    const id = auth.userId;
 
     return (
         <div className="topbarContainer">
@@ -53,9 +48,9 @@ export default function Topbar() {
                     <Link to="/" className="links">
                         <Home />
                     </Link>
-                    <Link to={"/users/" + id} className="links">
+                    { auth.connected && <Link to={"/users/" + auth.userId} className="links">
                         <Person />
-                    </Link>
+                    </Link> }
                 </div>
                 <ProfilePic />
             </div>

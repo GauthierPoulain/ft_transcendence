@@ -1,26 +1,14 @@
 import "./users.scss"
 import Profileban from "../../components/profileban/Profileban"
 import { Brightness1 } from "@material-ui/icons"
-import { Link, Outlet } from "react-router-dom"
+import { Link, Outlet, useParams } from "react-router-dom"
 import { Edit } from "@material-ui/icons"
-import { useAuth } from "../../services/auth"
-import { api } from "../../services"
+import useUser from "../../data/use-user"
 
 function ProfileConnected() {
-    const auth = useAuth()
-    const {
-        data: user,
-        isLoading,
-        isError,
-    } = api.endpoints.getUser.useQuery(auth.userId)
+    const { userId } = useParams()
 
-    if (isError) {
-        return <p>An error happened while fetching this profile</p>
-    }
-
-    if (isLoading) {
-        return <p>Loading...</p>
-    }
+    const user = useUser(parseInt(userId, 10))
 
     const url = `https://profile.intra.42.fr/users/${user.intra_login}`
 

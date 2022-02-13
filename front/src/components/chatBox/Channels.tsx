@@ -1,52 +1,21 @@
 import { Stack } from "react-bootstrap"
 import { Link } from "react-router-dom"
-import { useResource, useSubscription } from "rest-hooks"
-import { ChannelResource } from "../../api/resources/ChannelResource"
-import { api } from "../../services"
-import { Channel } from "../../services/channels"
 import "./channels.css"
 
+import useChannel, { useJoinedChannels } from "../../data/use-channel"
+
 function JoinedChannel({ channelId }) {
-    const { data, isLoading, isError } = api.endpoints.getChannel.useQuery(channelId)
-
-    if (isError) {
-        return <p>Error while loading channel</p>
-    }
-
-    if (isLoading) {
-        return <p>Loading channel...</p>
-    }
-
-    const channel = data as Channel
+    const channel = useChannel(channelId)
 
     return <Link className="chans" to={`/chat/room/${channel.id}`} replace>{channel.name}</Link>
 }
 
 function JoinedChannels() {
-    const { data, isLoading, isError } = api.endpoints.joinedChannels.useQuery()
-
-    if (isError) {
-        return <p>An error occured while loading joined channels.</p>
-    }
-
-    if (isLoading) {
-        return <p>Loading joined channels...</p>
-    }
-
-    const channels = data as number[]
+    const channels = useJoinedChannels()
 
     return <Stack>
         { channels.map((channelId) => <JoinedChannel key={channelId} channelId={channelId} />) }
     </Stack>
-//                            {channels.map((channel) => (
-//                                <Link
-//                                    key={channel.id}
-//                                    className="chans"
-//                                    to={`/chat/room/${channel.id}`}
-//                                >
-//                                    {channel.name}
-//                                </Link>
-//                            ))}
 }
 
 export default function Channels() {

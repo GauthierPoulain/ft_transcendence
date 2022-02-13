@@ -1,8 +1,8 @@
-import { api } from "../../services/api"
 import { useEffect, useMemo, useState } from "react"
 import { Container, Button } from "react-bootstrap"
 import { Navigate, useLocation } from "react-router-dom"
 import "./style.css"
+import { useAuth } from "../../data/use-auth"
 
 const redirect_uri = new URL("/auth", window.location as any).toString()
 const authorize_uri = new URL("https://api.intra.42.fr/oauth/authorize")
@@ -28,17 +28,20 @@ function RedirectIntra() {
 }
 
 function LoginIntra({ code }: { code: string }) {
-    const [login, { isError, isSuccess }] = api.useLoginMutation()
+    const auth = useAuth()
+    const [state, setState] = useState(0)
 
     useEffect(() => {
-        login({ body: { code, redirect_uri }, url: "login" })
+        auth.login({ code, redirect_uri })
+            .then(() => setState(2))
+            .catch(() => setState(1))
     }, [])
 
-    if (isError) {
+    if (state == 1) {
         return <p>An errror during login occured...</p>
     }
 
-    if (isSuccess) {
+    if (state == 2) {
         return <Navigate to="/" replace />
     }
 
@@ -46,17 +49,20 @@ function LoginIntra({ code }: { code: string }) {
 }
 
 function LoginFake({ user }) {
-    const [login, { isError, isSuccess }] = api.useLoginMutation()
+    const auth = useAuth()
+    const [state, setState] = useState(0)
 
     useEffect(() => {
-        login({ body: { code: "", redirect_uri }, url: `fake_login_${user}` })
+        auth.fakeLogin(user)
+            .then(() => setState(2))
+            .catch(() => setState(1))
     }, [])
 
-    if (isError) {
+    if (state == 1) {
         return <p>An errror during login occured...</p>
     }
 
-    if (isSuccess) {
+    if (state == 2) {
         return <Navigate to="/" replace />
     }
 

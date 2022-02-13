@@ -1,19 +1,8 @@
 import "./chatjoin.css"
-import { api } from "../../services/api"
-import { Channel } from "../../services/channels"
+import useChannel, { usePublicChannels } from "../../data/use-channel"
 
 function ChannelJoinCard({ channelId }) {
-    const { data, isLoading, isError } = api.endpoints.getChannel.useQuery(channelId)
-
-    if (isError) {
-        return <p>An error occured while fetching channel</p>
-    }
-
-    if (isLoading) {
-        return <p>Loading channel...</p>
-    }
-
-    const channel = data as Channel
+    const channel = useChannel(channelId)
 
     return (
         <div>
@@ -23,17 +12,7 @@ function ChannelJoinCard({ channelId }) {
 }
 
 export default function ChatBox() {
-    const { data, isLoading, isError } = api.endpoints.publicChannels.useQuery()
-
-    if (isError) {
-        return <p>An error occured while fetching public channels...</p>
-    }
-
-    if (isLoading) {
-        return <p>Loading public channels...</p>
-    }
-
-    const channels = data as number[]
+    const channels = usePublicChannels()
 
     return (
         <div>

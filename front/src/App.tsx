@@ -14,8 +14,7 @@ import Achievements from "./components/profileban/Achievements"
 import Friends from "./components/profileban/Friends"
 import ProfileSettings from "./components/profileban/ProfileSettings"
 import Users from "./pages/users/Users"
-import { useSelector } from "react-redux"
-import { isConnected } from "./services/auth"
+import { useAuth } from "./data/use-auth"
 
 function Layout() {
     return (
@@ -27,9 +26,9 @@ function Layout() {
 }
 
 function PrivateRoute({ children }) {
-    const connected = useSelector(isConnected)
+    const auth = useAuth()
 
-    return connected ? children : <Navigate to="/auth" replace />
+    return auth.connected ? children : <Navigate to="/auth" replace />
 }
 
 function Router() {
@@ -58,7 +57,7 @@ function Router() {
                     }
                 />
                 <Route
-                    path="/users/:id"
+                    path="/users/:userId"
                     element={
                         <PrivateRoute>
                             <Users />
