@@ -33,8 +33,8 @@ function LoginIntra({ code }: { code: string }) {
 
     useEffect(() => {
         auth.login({ code, redirect_uri })
-            .then(() => setState(2))
-            .catch(() => setState(1))
+            .then(() => { setState(2) })
+            .catch(() => { setState(1) })
     }, [])
 
     if (state == 1) {
@@ -53,9 +53,15 @@ function LoginFake({ user }) {
     const [state, setState] = useState(0)
 
     useEffect(() => {
+        console.log("fake login")
+
         auth.fakeLogin(user)
-            .then(() => setState(2))
-            .catch(() => setState(1))
+            .then(() => { setState(2) })
+            .catch(() => { setState(1) })
+
+        return () => {
+            console.log("unmounted")
+        }
     }, [])
 
     if (state == 1) {

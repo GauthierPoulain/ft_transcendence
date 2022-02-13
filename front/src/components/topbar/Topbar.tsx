@@ -6,7 +6,11 @@ import { useAuth } from "../../data/use-auth"
 import useUser from "../../data/use-user"
 
 function UserProfilePic({ userId }) {
+    console.log("UserProfilePic", userId)
+
     const user = useUser(userId)
+
+    console.log(userId, user)
     
     return <img src={user.image} className="topbarImg" />
 }

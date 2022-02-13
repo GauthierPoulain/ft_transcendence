@@ -5,19 +5,16 @@ import App from "./App"
 import reportWebVitals from "./reportWebVitals"
 import { BrowserRouter } from "react-router-dom"
 import "bootstrap/dist/css/bootstrap.min.css"
-import CacheProvider from "./api/CacheProvider"
 
 import { AuthProvider } from "./data/use-auth"
 
 ReactDOM.render(
     <React.StrictMode>
-        <CacheProvider>
         <AuthProvider>
             <BrowserRouter>
                 <App />
             </BrowserRouter>
-            </AuthProvider>
-        </CacheProvider>
+        </AuthProvider>
     </React.StrictMode>,
     document.getElementById("root")
 )

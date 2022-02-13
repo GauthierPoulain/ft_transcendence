@@ -1,5 +1,4 @@
 import { createContext, useContext, useMemo, useState } from "react";
-import { BaseResource } from "../api/resources/BaseResource";
 import { fetcher, setAccessToken } from "./use-fetch";
 import { User } from "./use-user";
 
@@ -35,7 +34,6 @@ export function AuthProvider({ children }) {
             body: JSON.stringify(request)
         })
 
-        BaseResource.accessToken = response.token
         setAccessToken(response.token)
         setUserId(response.user.id)
         setToken(response.token)
@@ -46,7 +44,6 @@ export function AuthProvider({ children }) {
             method: "POST",
         })
 
-        BaseResource.accessToken = response.token
         setAccessToken(response.token)
         setUserId(response.user.id)
         setToken(response.token)
@@ -60,7 +57,7 @@ export function AuthProvider({ children }) {
             login,
             fakeLogin
         }
-    }, [token])
+    }, [token, userId])
 
     return <Context.Provider value={value}>
         { children }

@@ -15,6 +15,8 @@ import Friends from "./components/profileban/Friends"
 import ProfileSettings from "./components/profileban/ProfileSettings"
 import Users from "./pages/users/Users"
 import { useAuth } from "./data/use-auth"
+import { ErrorBoundary } from "react-error-boundary"
+import { Suspense } from "react"
 
 function Layout() {
     return (
@@ -78,5 +80,9 @@ function Router() {
 }
 
 export default function App() {
-    return <Router />
+    return <ErrorBoundary fallbackRender={({error}) => (<p>Error??? {error.toString()}</p>)}>
+        <Suspense fallback={<p>No fallback so loading here :)</p>}>
+        <Router />
+        </Suspense>
+    </ErrorBoundary>
 }
