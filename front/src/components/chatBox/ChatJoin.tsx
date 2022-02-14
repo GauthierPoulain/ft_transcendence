@@ -11,11 +11,11 @@ function JoinPublic({ channelId }) {
     const { submit, isError, isLoading } = useJoinChannel()
 
     if (isError) {
-        return <p>An error occured while joining</p>
+        return <p className="joinMsg">An error occured while joining</p>
     }
 
     if (isLoading) {
-        return <p>Joining...</p>
+        return <p className="joinMsg">Joining...</p>
     }
 
     async function join() {
@@ -34,11 +34,11 @@ function JoinProtected({ channelId }) {
     const [password, setPassword] = useState("")
 
     if (isError) {
-        return <p>An error occured while joining</p>
+        return <p className="joinMsg">An error occured while joining</p>
     }
 
     if (isLoading) {
-        return <p>Joining...</p>
+        return <p className="joinMsg">Joining...</p>
     }
 
     async function join(event: any) {
