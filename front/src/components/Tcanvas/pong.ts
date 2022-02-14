@@ -125,12 +125,16 @@ function pong(props: { width: number; height: number }, ws: WebSocketService) {
                     opponent_move(payload.data.YPos)
                     break
 
+                case "dummy":
+                    console.log(payload)
+                    break
+
                 default:
                     break
             }
         })
 
-        ws.emit("game:join")
+        // ws.emit("game:join")
 
         canvas = document.getElementById("pong") as HTMLCanvasElement
         game = {
