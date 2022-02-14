@@ -94,15 +94,22 @@ function pong(props: { width: number; height: number }, ws: WebSocketService) {
             game.opponent.y = canvas.height / 2 - PLAYER_H / 2
             game.ball.speed.x = 2
             game.ball.speed.y = -2
-        } else game.ball.speed.x *= -1.2
+        } else {
+            if (Math.abs(game.ball.speed.x) > 1) game.ball.speed.x *= -1
+            else game.ball.speed.x *= -1.2
+        }
         changeDirection(player.y)
     }
 
     function ballMove(delta: number) {
-        if (game.ball.y > canvas.height || game.ball.y < 0)
-            game.ball.speed.y *= -1
-        if (game.ball.x > canvas.width - PLAYER_W) collide(game.opponent)
-        else if (game.ball.x < PLAYER_W) collide(game.player)
+        if (game.ball.y + game.ball.r > canvas.height)
+            game.ball.speed.y = -Math.abs(game.ball.speed.y)
+        else if (game.ball.y - game.ball.r < 0)
+            game.ball.speed.y = Math.abs(game.ball.speed.y)
+        if (game.ball.x + game.ball.r > canvas.width - PLAYER_W)
+            collide(game.opponent)
+        else if (game.ball.x - game.ball.r < PLAYER_W) collide(game.player)
+
         game.ball.x += game.ball.speed.x * 100 * delta
         game.ball.y += game.ball.speed.y * 100 * delta
     }
