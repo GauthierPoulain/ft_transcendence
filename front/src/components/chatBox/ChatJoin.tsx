@@ -78,9 +78,11 @@ export default function ChatBox() {
         <div>
             <h2>Join a channel</h2>
 
-            <div className="d-flex flex-wrap">
+            { channels.length === 0 && <p>There's currently no public channel to join.</p> }
+
+            { channels.length > 0 && <div className="d-flex flex-wrap">
                 { channels.map((channelId) => <ChannelJoinCard key={channelId} channelId={channelId} />) }
-            </div>
+            </div> }
         </div>
     )
 }
