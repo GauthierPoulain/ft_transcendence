@@ -5,83 +5,64 @@ import useUser from "../../data/use-user"
 import { useAuth } from "../../data/use-auth"
 
 import "./style.scss"
+import { Image } from "react-bootstrap"
 
-function Profileban(props: any) {
-    return <div className="container-fluid profileBan">{props.children}</div>
-}
-
-function ProfileConnected() {
+function Banner() {
     const { userId } = useParams()
 
     const user = useUser(parseInt(userId as string, 10))
 
-    const url = `https://profile.intra.42.fr/users/${user.intra_login}`
-
     return (
-        <div>
-            <div className="profileContainer">
-                <div className="profleft">
-                    <a href={url} target="_blank">
-                        <img
-                            src={user.image}
-                            alt=""
-                            className="profilePicture"
-                        />
-                    </a>
-                    <div className="profileName">
-                        <span>{user.nickname}</span>
-                    </div>
-                </div>
-                <div className="profcenter">
-                    <span className="profText">
-                        Victories:
-                        <span className="profPoint">13</span>
-                    </span>
-                    <span className="profText">
-                        Rank:
-                        <span className="profPoint">#4</span>
-                    </span>
-                </div>
-                <div className="profright">
-                    <span>ONLINE</span>
-                    <Brightness1 className="profConnected" />
-                </div>
+        <div className="d-flex justify-content-center align-items-center flex-wrap" style={{ backgroundColor: "#c47e7e" }}>
+            <div className="d-flex flex-column justify-content-center align-items-center m-3">
+                <Image roundedCircle width={130} src={user.image} />
+                <p className="mb-0 text-dark fw-bold fs-5">{user.nickname}</p>
+            </div>
+
+            <div className="d-flex flex-grow-1 justify-content-evenly flex-wrap">
+                <p className="fs-3 m-2 text-dark">
+                    Victories: <span style={{ color: "brown" }}>13</span>
+                </p>
+                <p className="fs-3 m-2 text-dark">
+                    Rank: <span style={{ color: "brown" }}>#4</span>
+                </p>
+            </div>
+
+            <div className="m-3">
+                <p className="text-dark text-uppercase mb-0">
+                    Online
+                    <Brightness1 className="mx-2" style={{ color: "lime" }} />
+                </p>
             </div>
         </div>
     )
 }
 
-function Layout() {
+function ProfileRouter() {
     const auth = useAuth();
     const { userId } = useParams()
 
     const isCurrentUser = auth.connected && auth.userId === parseInt(userId as string)
 
     return (
-        <div>
-            <Profileban>
-                <ProfileConnected />
-            </Profileban>
-
-            <div className="profNav">
-                <div
-                    className="btn-group"
-                    role="group"
-                    aria-label="Basic example"
-                >
-                    <Link to="matches" className="btn btn-light btn-lg" replace>
-                        Matches
-                    </Link>
-                    <Link to="achievements" className="btn btn-light btn-lg" replace>
-                        Achievements
-                    </Link>
-                    <Link to="friends" className="btn btn-light btn-lg" replace>
-                        Friends
-                    </Link>
-                    { isCurrentUser && <Link to="settings" className="btn btn-warning btn-lg" replace>
-                        <Edit />
-                    </Link> }
-                </div>
+        <div className="profNav">
+            <div
+                className="btn-group"
+                role="group"
+                aria-label="Basic example"
+            >
+                <Link to="matches" className="btn btn-light btn-lg" replace>
+                    Matches
+                </Link>
+                <Link to="achievements" className="btn btn-light btn-lg" replace>
+                    Achievements
+                </Link>
+                <Link to="friends" className="btn btn-light btn-lg" replace>
+                    Friends
+                </Link>
+                { isCurrentUser && <Link to="settings" className="btn btn-warning btn-lg" replace>
+                    <Edit />
+                </Link> }
             </div>
         </div>
     )
@@ -89,9 +70,10 @@ function Layout() {
 
 export default function Users() {
     return (
-        <div>
-            <Layout />
+        <>
+            <Banner />
+            <ProfileRouter />
             <Outlet />
-        </div>
+        </>
     )
 }
