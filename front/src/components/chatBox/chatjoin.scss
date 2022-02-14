@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
+
+.chatJoinContainer
+{
+    color: white;
+    font-size: 25px;
+    margin: 20px 0 0 10px;
+    padding-left: 10px;
+    font-family: 'Josefin Sans', sans-serif;
+    border-radius: 10px;
+    width: 400px;
+    background-color: rgb(150, 106, 106);
+
+}
+
+.channelsList
+{
+    display: flex;
+    border-radius: 10px;
+    background-color: rgb(116, 116, 116);
+    width: max-content;
+    align-items: center;
+
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+
+    .name
+    {
+        color: white;
+        margin-left: 10px;
+        font-size: 20px;
+    }
+}
+
+.chanListContainer
+{
+    width: max-content;
+    height: max-content;
+    background-color: rgb(59, 59, 59);
+    border-radius: 10px;
+    margin-left: 10px;
+    margin-top: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.chanButton
+{
+   margin: 5px 5px 5px 5px;
+   
+}
+
+.chanPlaceholder
+{
+    margin: 5px 5px 5px 5px;
+    border-radius: 5px;
+    width: 150px;
+}
