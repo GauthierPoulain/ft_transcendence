@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm"
 import { hash } from "argon2"
 import { User } from "src/users/entities/user.entity"
 import { Repository } from "typeorm"
-import { CreateMessageDto } from "./channels.dto"
+import { CreateMessageDto, JoinChannelDto } from "./channels.dto"
 import { CreateChannelDto } from "./dto/create-channel.dto"
 import { UpdateChannelDto } from "./dto/update-channel.dto"
 import { Channel } from "./entities/channel.entity"
@@ -17,7 +17,10 @@ export class ChannelsService {
         private channelsRepository: Repository<Channel>,
 
         @InjectRepository(Message)
-        private messagesRepository: Repository<Message>
+        private messagesRepository: Repository<Message>,
+
+        @InjectRepository(Membership)
+        private membershipsRepository: Repository<Membership>
     ) {}
 
     async create(input: CreateChannelDto, owner: User): Promise<Channel> {
@@ -39,7 +42,7 @@ export class ChannelsService {
         return this.channelsRepository.find({ where: { joinable: true } })
     }
 
-    findOne(id: number, relations = []) {
+    findOne(id: number, relations = []): Promise<Channel | null> {
         return this.channelsRepository.findOne(id, { relations })
     }
 
@@ -59,5 +62,18 @@ export class ChannelsService {
         message.channel = channel
 
         return this.messagesRepository.save(message)
+    }
+
+    joinChannel(channel: Channel, user: User) {
+        let membership = channel.memberships.find(({ userId }) => userId === user.id)
+
+        if (membership) {
+            return membership
+        }
+
+        membership = new Membership()
+        membership.channel = channel
+        membership.user = user
+        return this.membershipsRepository.save(membership)
     }
 }

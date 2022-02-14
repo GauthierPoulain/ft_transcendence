@@ -6,6 +6,11 @@ export class CreateMessageDto {
     content: string
 }
 
+export class JoinChannelDto {
+    @IsString()
+    password: string
+}
+
 export class QueryChannelsDto {
     @IsBoolean()
     @Transform(({ value }) => {
