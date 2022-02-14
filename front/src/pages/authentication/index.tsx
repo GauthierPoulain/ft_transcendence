@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
-import { Container, Button } from "react-bootstrap"
+import { Button } from "react-bootstrap"
 import { Navigate, useLocation } from "react-router-dom"
-import "./style.css"
 import { useAuth } from "../../data/use-auth"
 
 const redirect_uri = new URL("/auth", window.location as any).toString()
@@ -100,16 +99,14 @@ export function Page() {
     const [state, setState] = useState(code ? 4 : 0)
 
     return (
-        <Container>
-            <div className="authContainer">
-                <h1>Authentication</h1>
+        <div className="m-auto">
+            <h1>Authentication</h1>
 
-                {state === 0 && <LoginButtons setState={setState} />}
-                {state === 1 && <RedirectIntra />}
-                {state === 2 && <LoginFake user="one" />}
-                {state === 3 && <LoginFake user="two" />}
-                {state === 4 && <LoginIntra code={code} />}
-            </div>
-        </Container>
+            {state === 0 && <LoginButtons setState={setState} />}
+            {state === 1 && <RedirectIntra />}
+            {state === 2 && <LoginFake user="one" />}
+            {state === 3 && <LoginFake user="two" />}
+            {state === 4 && <LoginIntra code={code} />}
+        </div>
     )
 }

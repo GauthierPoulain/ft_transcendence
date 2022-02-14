@@ -1,63 +1,38 @@
-import "./topbar.css"
 import { Link } from "react-router-dom"
-import { Home } from "@material-ui/icons"
-import { Person } from "@material-ui/icons"
 import { useAuth } from "../../data/use-auth"
 import useUser from "../../data/use-user"
+import { Container, Image, Nav, Navbar } from "react-bootstrap"
 
-function UserProfilePic({ userId }) {
-    console.log("UserProfilePic", userId)
-
+function Profile({ userId }) {
     const user = useUser(userId)
 
-    console.log(userId, user)
-    
-    return <img src={user.image} className="topbarImg" />
-}
-
-function ProfilePic() {
-    const auth = useAuth()
-
-    if (auth.connected) {
-        return <UserProfilePic userId={auth.userId} />
-    }
-
-    return <img src="/assets/42.jpg" className="topbarImg" />
+    return <Link className="nav-link" to={`/users/${user.id}`}>
+        Profile
+        <Image className="ms-2" fluid roundedCircle width={22} height={22} src={user.image} />
+    </Link>
 }
 
 export default function Topbar() {
     const auth = useAuth();
 
     return (
-        <div className="topbarContainer">
-            <div className="topbarLeft">
-                <Link to="/" className="logo">
-                    <span className="logo">ft_pong</span>
-                </Link>
-            </div>
+        <Navbar bg="light" variant="dark">
+            <Container>
+                <Navbar.Brand>ft_pong</Navbar.Brand>
 
-            <div className="topbarCenter">
-                <div className="topbarLinks">
-                    <Link to="/leaderboard" className="links">
-                        <span>Leaderboard</span>
-                    </Link>
-                    <Link to="/chat" className="links">
-                        <span>Chat</span>
-                    </Link>
-                </div>
-            </div>
+                <Navbar.Collapse>
+                    <Nav className="me-auto">
+                        <Link className="nav-link" to="/">Home</Link>
+                        <Link className="nav-link" to="/leaderboard">Leaderboard</Link>
+                        <Link className="nav-link" to="/chat">Chat</Link>
+                    </Nav>
 
-            <div className="topbarRight">
-                <div className="topbarLinks">
-                    <Link to="/" className="links">
-                        <Home />
-                    </Link>
-                    { auth.connected && <Link to={"/users/" + auth.userId} className="links">
-                        <Person />
-                    </Link> }
-                </div>
-                <ProfilePic />
-            </div>
-        </div>
+                    <Nav>
+                        { auth.connected && <Profile userId={auth.userId} /> }
+                        { !auth.connected && <Link className="nav-link" to="/auth">Sign in</Link> }
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
     )
 }

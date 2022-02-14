@@ -1,0 +1,15 @@
+$body-bg: #282c34;
+$body-color: white;
+
+$light: #686868;
+
+@import "node_modules/bootstrap/scss/bootstrap";
+
+html, body, #root {
+    height: 100%;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+}
