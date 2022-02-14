@@ -1,13 +1,11 @@
-import "./profilesettings.scss"
 import { Button, Form } from "react-bootstrap"
 import { useState } from "react"
-import { Navigate, useParams } from "react-router-dom"
-import { useAuth } from "../../data/use-auth"
+
+import "./style.scss"
 
 export default function ProfileSettings() {
     const [username, setUsername] = useState("")
     const [pic, setPic] = useState("")
-    const [save, setSave] = useState(false)
 
     function submit(event: any) {
         event.preventDefault()

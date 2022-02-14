@@ -1,4 +1,4 @@
-import "./matches.css"
+import "./style.css"
 import { Table } from "react-bootstrap"
 
 function Matches() {

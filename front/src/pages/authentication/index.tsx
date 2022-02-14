@@ -106,7 +106,7 @@ export function Page() {
             {state === 1 && <RedirectIntra />}
             {state === 2 && <LoginFake user="one" />}
             {state === 3 && <LoginFake user="two" />}
-            {state === 4 && <LoginIntra code={code} />}
+            {state === 4 && <LoginIntra code={code as string} />}
         </div>
     )
 }

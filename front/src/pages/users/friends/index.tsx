@@ -1,6 +1,7 @@
-import "./friends.scss"
 import { Brightness1 } from "@material-ui/icons"
 import { Link } from "react-router-dom"
+
+import "./style.scss"
 
 function Dot(props: any) {
     const status = props.status.toString()

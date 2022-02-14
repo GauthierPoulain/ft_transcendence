@@ -1,15 +1,19 @@
-import "./users.scss"
-import Profileban from "../../components/profileban/Profileban"
 import { Brightness1 } from "@material-ui/icons"
 import { Link, Outlet, useParams } from "react-router-dom"
 import { Edit } from "@material-ui/icons"
 import useUser from "../../data/use-user"
 import { useAuth } from "../../data/use-auth"
 
+import "./style.scss"
+
+function Profileban(props: any) {
+    return <div className="container-fluid profileBan">{props.children}</div>
+}
+
 function ProfileConnected() {
     const { userId } = useParams()
 
-    const user = useUser(parseInt(userId, 10))
+    const user = useUser(parseInt(userId as string, 10))
 
     const url = `https://profile.intra.42.fr/users/${user.intra_login}`
 
@@ -47,30 +51,12 @@ function ProfileConnected() {
     )
 }
 
-function ParamIfCurrentUser ()
-{
+function Layout() {
     const auth = useAuth();
     const { userId } = useParams()
 
-    if (auth.userId === parseInt(userId))
-    {
-        return (
-            <button type="button" className="btn btn-warning btn-lg">
-                <Link to="settings" className="proflinks">
-                    <Edit />
-                </Link>
-            </button>
-        )
-    }
-    else
-    {
-        return (
-            <></>
-        )
-    }
-}
+    const isCurrentUser = auth.connected && auth.userId === parseInt(userId as string)
 
-function Layout() {
     return (
         <div>
             <Profileban>
@@ -83,22 +69,18 @@ function Layout() {
                     role="group"
                     aria-label="Basic example"
                 >
-                    <button type="button" className="btn btn-light btn-lg">
-                        <Link to="matches" className="proflinks">
-                            Matches
-                        </Link>
-                    </button>
-                    <button type="button" className="btn btn-light btn-lg">
-                        <Link to="achievements" className="proflinks">
-                            Achievements
-                        </Link>
-                    </button>
-                    <button type="button" className="btn btn-light btn-lg">
-                        <Link to="friends" className="proflinks">
-                            Friends
-                        </Link>
-                    </button>
-                    <ParamIfCurrentUser />
+                    <Link to="matches" className="btn btn-light btn-lg" replace>
+                        Matches
+                    </Link>
+                    <Link to="achievements" className="btn btn-light btn-lg" replace>
+                        Achievements
+                    </Link>
+                    <Link to="friends" className="btn btn-light btn-lg" replace>
+                        Friends
+                    </Link>
+                    { isCurrentUser && <Link to="settings" className="btn btn-warning btn-lg" replace>
+                        <Edit />
+                    </Link> }
                 </div>
             </div>
         </div>
