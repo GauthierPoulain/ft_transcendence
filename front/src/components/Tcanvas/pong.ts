@@ -24,7 +24,6 @@ function pong(props: { width: number; height: number }, ws: WebSocketService) {
         console.log(e)
     })
 
-    const g_canvas = document.getElementById("pong") as HTMLCanvasElement
     var canvas: any
     var game: Igame
 
@@ -34,8 +33,6 @@ function pong(props: { width: number; height: number }, ws: WebSocketService) {
         ready: false,
         isHost: false,
         remoteBall: { XPos: 0, YPos: 0 },
-        ballDelay: 10,
-        actualdelay: 0,
     }
 
     const PLAYER_H = 100
@@ -113,16 +110,12 @@ function pong(props: { width: number; height: number }, ws: WebSocketService) {
     function animate(delta) {
         if (connectionData.isHost) {
             ballMove(delta)
-            connectionData.actualdelay += delta
-            if (connectionData.actualdelay > connectionData.ballDelay) {
-                ws.emit("game:moveBall", {
-                    XPos: game.ball.y,
-                    YPos: game.ball.y,
-                })
-                connectionData.actualdelay = 0
-            }
+            ws.emit("game:moveBall", {
+                XPos: game.ball.x,
+                YPos: game.ball.y,
+            })
         } else {
-            game.ball.x = connectionData.remoteBall.XPos
+            game.ball.x = canvas.width - connectionData.remoteBall.XPos
             game.ball.y = connectionData.remoteBall.YPos
         }
     }
