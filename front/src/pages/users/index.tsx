@@ -26,12 +26,10 @@ function Banner() {
                 </p>
             </div>
 
-            <div className="m-3">
-                <p className="text-dark text-uppercase mb-0">
-                    Online
-                    <Brightness1 className="mx-2" style={{ color: "lime" }} />
-                </p>
-            </div>
+            <p className="text-dark text-uppercase mb-0 m-3">
+                Online
+                <Brightness1 className="mx-2" style={{ color: "lime" }} />
+            </p>
         </div>
     )
 }

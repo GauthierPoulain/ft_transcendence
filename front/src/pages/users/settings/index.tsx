@@ -1,7 +1,5 @@
-import { Button, Form } from "react-bootstrap"
+import { Container, Button, Form } from "react-bootstrap"
 import { useState } from "react"
-
-import "./style.scss"
 
 export default function ProfileSettings() {
     const [username, setUsername] = useState("")
@@ -15,8 +13,8 @@ export default function ProfileSettings() {
     }
 
     return (
-        <div className="profSettings">
-            <h1>PROFILE SETTINGS</h1>
+        <Container>
+            <h2>Settings</h2>
 
             <Form className="form" onSubmit={submit}>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -46,6 +44,6 @@ export default function ProfileSettings() {
                     Save
                 </Button>
             </Form>
-        </div>
+        </Container>
     )
 }

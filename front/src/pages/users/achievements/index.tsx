@@ -1,9 +1,10 @@
-import "./style.scss"
+import { Container } from "react-bootstrap"
 
 export default function Achivements() {
     return (
-        <div className="achContainer">
-            <h1>ACHIEVEMENTS</h1>
-        </div>
+        <Container>
+            <h2>Achievements</h2>
+            <p>Nothing to see here for the moment...</p>
+        </Container>
     )
 }

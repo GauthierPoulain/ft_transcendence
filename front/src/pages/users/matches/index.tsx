@@ -1,10 +1,16 @@
-import "./style.css"
-import { Table } from "react-bootstrap"
+import { Container, Image, Table } from "react-bootstrap"
 
-function Matches() {
+import "./styles.scss"
+
+export default function Matches() {
+    const matches = [
+        { against: "gapoulai", winner: "ldevilla", scores: [4, 5] },
+        { against: "ckurt", winner: "ckurt", scores: [5, 2] }
+    ]
+
     return (
-        <div className="matchesContainer">
-            <h1 className="title">MATCHES</h1>
+        <Container>
+            <h2>Matches</h2>
             <Table striped bordered hover variant="dark">
                 <thead>
                     <tr>
@@ -15,50 +21,22 @@ function Matches() {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>
-                            <img
-                                className="imgMatches"
-                                src="/assets/42.jpg"
-                                alt=""
-                            />
-                            gapoulai
-                        </td>
-                        <td>
-                            <img
-                                className="imgMatches"
-                                src="/assets/42.jpg"
-                                alt=""
-                            />
-                            ldevilla
-                        </td>
-                        <td>4</td>
-                        <td>5</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <img
-                                className="imgMatches"
-                                src="/assets/42.jpg"
-                                alt=""
-                            />
-                            ckurt
-                        </td>
-                        <td>
-                            <img
-                                className="imgMatches"
-                                src="/assets/42.jpg"
-                                alt=""
-                            />
-                            ckurt
-                        </td>
-                        <td>5</td>
-                        <td>2</td>
-                    </tr>
+                    { matches.map((match) =>
+                        <tr>
+                            <td>
+                                <Image src="/assets/42.jpg" height={50} width={50} roundedCircle className="me-3" />
+                                { match.against }
+                            </td>
+                            <td>
+                                <Image src="/assets/42.jpg" height={50} width={50} roundedCircle className="me-3" />
+                                { match.winner }
+                            </td>
+                            <td>{ match.scores[0] }</td>
+                            <td>{ match.scores[1] }</td>
+                        </tr>
+                    ) }
                 </tbody>
             </Table>
-        </div>
+        </Container>
     )
 }
-
-export default Matches
