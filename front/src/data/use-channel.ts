@@ -1,4 +1,5 @@
-import useFetch, { fetcher } from "./use-fetch"
+import useFetch, { fetcher, useSubmit } from "./use-fetch"
+import { Membership } from "./use-member"
 
 export type Channel = {
     id: number
@@ -29,4 +30,16 @@ export function createChannel(request: CreateChannelRequest): Promise<Channel> {
         method: "POST",
         body: JSON.stringify(request)
     })
+}
+
+export type JoinChannelRequest = {
+    id: number,
+    password: string
+}
+
+export function useJoinChannel() {
+    return useSubmit<JoinChannelRequest, Membership>(({ id, password }) => fetcher(`/channels/${id}/members`, {
+        method: 'POST',
+        body: JSON.stringify({ password })
+    }))
 }
