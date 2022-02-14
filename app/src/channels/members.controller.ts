@@ -48,7 +48,7 @@ export class MembersController {
         }
 
         if (channel.type === "private" || (channel.type === "protected" && !(await verify(channel.password, body.password)))) {
-            throw UnauthorizedException
+            throw new UnauthorizedException
         }
 
         return this.channels.joinChannel(channel, user)
