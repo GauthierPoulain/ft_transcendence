@@ -3,7 +3,15 @@ import WebSocketService from "../../WebSocketService"
 interface Igame {
     player: any
     opponent: any
-    ball: any
+    ball: {
+        r: number
+        x: number
+        y: number
+        speed: {
+            x: number
+            y: number
+        }
+    }
 }
 
 interface IWSPayload {
@@ -20,13 +28,22 @@ function pong(props: { width: number; height: number }, ws: WebSocketService) {
     var canvas: any
     var game: Igame
 
+    var connectionData = {
+        roomName: "",
+        host: "",
+        ready: false,
+        isHost: false,
+        remoteBall: { XPos: 0, YPos: 0 },
+        ballDelay: 10,
+        actualdelay: 0,
+    }
+
     const PLAYER_H = 100
     const PLAYER_W = 5
 
     function clear() {
         console.log("Cleared !")
-        console.log(g_canvas)
-        var ctx = g_canvas.getContext("2d")
+        var ctx = canvas.getContext("2d")
         if (ctx) ctx.clearRect(0, 0, props.width, props.height)
     }
 
@@ -94,11 +111,27 @@ function pong(props: { width: number; height: number }, ws: WebSocketService) {
     }
 
     function animate(delta) {
-        ballMove(delta)
+        if (connectionData.isHost) {
+            ballMove(delta)
+            connectionData.actualdelay += delta
+            if (connectionData.actualdelay > connectionData.ballDelay) {
+                ws.emit("game:moveBall", {
+                    XPos: game.ball.y,
+                    YPos: game.ball.y,
+                })
+                connectionData.actualdelay = 0
+            }
+        } else {
+            game.ball.x = connectionData.remoteBall.XPos
+            game.ball.y = connectionData.remoteBall.YPos
+        }
     }
 
     var lastRender = Date.now()
     function loop() {
+        if (!connectionData.ready) {
+            return
+        }
         requestAnimationFrame(loop)
         const current = Date.now()
         const delta = (current - lastRender) / 1000
@@ -117,24 +150,52 @@ function pong(props: { width: number; height: number }, ws: WebSocketService) {
     }
 
     function load(event) {
-        ws.onMessage((e) => {
-            const payload = JSON.parse(e.data) as IWSPayload
+        ws.onMessage((e: any) => {
+            const { event: ev_name, data } = JSON.parse(e.data)
 
-            switch (payload.event) {
-                case "game:opponentmove":
-                    opponent_move(payload.data.YPos)
+            switch (ev_name) {
+                case "client:identify":
+                    ws.clientId = data.id
+                    console.log("ws connected as", ws.clientId)
+                    ws.emit("room:join", { name: "main" })
+
+                    break
+                case "auth:request":
+                    //TODO: le truc avec les tokens
                     break
 
-                case "dummy":
-                    console.log(payload)
+                case "room:joinSuccess":
+                    console.log("room joined")
+                    break
+
+                case "room:infos":
+                    connectionData.roomName = data.name
+                    connectionData.host = data.host
+                    connectionData.isHost = ws.clientId == data.host
+                    connectionData.ready = data.ready
+                    console.log(connectionData)
+
+                    if (connectionData.ready) loop()
+
+                    break
+
+                case "room:joinFail":
+                    console.log("room join error ", data)
+                    break
+
+                case "game:playerMove":
+                    opponent_move(data.YPos)
+                    break
+
+                case "game:ballMove":
+                    connectionData.remoteBall = data
                     break
 
                 default:
+                    console.log("unregistered event:", ev_name)
                     break
             }
         })
-
-        // ws.emit("game:join")
 
         canvas = document.getElementById("pong") as HTMLCanvasElement
         game = {
@@ -158,15 +219,15 @@ function pong(props: { width: number; height: number }, ws: WebSocketService) {
             {
                 var canvasLoc = canvas.getBoundingClientRect()
                 var mouseLoc = e.clientY - canvasLoc.y
-
                 if (mouseLoc < PLAYER_H / 2) game.player.y = 0
                 else if (mouseLoc > canvas.height - PLAYER_H / 2)
                     game.player.y = canvas.height - PLAYER_H
                 else game.player.y = mouseLoc - PLAYER_H / 2
-                ws.emit("game:playermove", { YPos: e.clientY })
+                if (connectionData.ready)
+                    ws.emit("game:movePlayer", { YPos: e.clientY })
             }
         })
-        loop()
+        // loop()
     }
 
     ws.onOpen(load)

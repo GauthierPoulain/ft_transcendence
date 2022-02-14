@@ -1,18 +1,16 @@
 class WebSocketService {
-    _ws: WebSocket | null
+    _ws: WebSocket | null = null
     WSUrl: URL
-    canConnect: boolean
-    willConnect: boolean
+    canConnect: boolean = false
+    willConnect: boolean = false
     _onopen: ((this: WebSocket, ev: Event) => any) | undefined
     _onmessage: ((this: WebSocket, ev: MessageEvent<any>) => any) | undefined
     _onerror: ((this: WebSocket, ev: Event) => any) | undefined
     _onclose: ((this: WebSocket, ev: CloseEvent) => any) | undefined
+    clientId: string | null = null
 
     constructor(url: URL) {
         this.WSUrl = url
-        this._ws = null
-        this.canConnect = false
-        this.willConnect = false
     }
 
     connect() {
