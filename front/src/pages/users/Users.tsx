@@ -4,6 +4,7 @@ import { Brightness1 } from "@material-ui/icons"
 import { Link, Outlet, useParams } from "react-router-dom"
 import { Edit } from "@material-ui/icons"
 import useUser from "../../data/use-user"
+import { useAuth } from "../../data/use-auth"
 
 function ProfileConnected() {
     const { userId } = useParams()
@@ -46,6 +47,29 @@ function ProfileConnected() {
     )
 }
 
+function ParamIfCurrentUser ()
+{
+    const auth = useAuth();
+    const { userId } = useParams()
+
+    if (auth.userId === parseInt(userId))
+    {
+        return (
+            <button type="button" className="btn btn-warning btn-lg">
+                <Link to="settings" className="proflinks">
+                    <Edit />
+                </Link>
+            </button>
+        )
+    }
+    else
+    {
+        return (
+            <></>
+        )
+    }
+}
+
 function Layout() {
     return (
         <div>
@@ -74,12 +98,7 @@ function Layout() {
                             Friends
                         </Link>
                     </button>
-
-                    <button type="button" className="btn btn-warning btn-lg">
-                        <Link to="settings" className="proflinks">
-                            <Edit />
-                        </Link>
-                    </button>
+                    <ParamIfCurrentUser />
                 </div>
             </div>
         </div>

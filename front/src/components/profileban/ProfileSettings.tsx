@@ -1,6 +1,8 @@
 import "./profilesettings.scss"
 import { Button, Form } from "react-bootstrap"
 import { useState } from "react"
+import { Navigate, useParams } from "react-router-dom"
+import { useAuth } from "../../data/use-auth"
 
 export default function ProfileSettings() {
     const [username, setUsername] = useState("")
