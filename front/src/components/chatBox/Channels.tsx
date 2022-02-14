@@ -1,13 +1,25 @@
 import { Stack } from "react-bootstrap"
 import { Link } from "react-router-dom"
-import "./channels.css"
-
+import "./channels.scss"
+import { Cancel } from "@material-ui/icons"
 import useChannel, { useJoinedChannels } from "../../data/use-channel"
+
+function leaveChannel()
+{
+    console.log("Leave chan");
+}
 
 function JoinedChannel({ channelId }) {
     const channel = useChannel(channelId)
 
-    return <Link className="chans" to={`/chat/room/${channel.id}`} replace>{channel.name}</Link>
+    return (
+        <div className="chanName"> 
+            <Link className="chans" to={`/chat/room/${channel.id}`} replace>{channel.name}</Link>
+            <div onClick={() => leaveChannel()}>
+                <Cancel className="cross" />
+            </div>
+        </div>
+    )
 }
 
 function JoinedChannels() {
