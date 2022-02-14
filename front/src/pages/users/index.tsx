@@ -1,11 +1,9 @@
+import { Image } from "react-bootstrap"
 import { Brightness1 } from "@material-ui/icons"
 import { Link, Outlet, useParams } from "react-router-dom"
 import { Edit } from "@material-ui/icons"
 import useUser from "../../data/use-user"
 import { useAuth } from "../../data/use-auth"
-
-import "./style.scss"
-import { Image } from "react-bootstrap"
 
 function Banner() {
     const { userId } = useParams()
@@ -38,32 +36,26 @@ function Banner() {
     )
 }
 
-function ProfileRouter() {
+function Navigation() {
     const auth = useAuth();
     const { userId } = useParams()
 
     const isCurrentUser = auth.connected && auth.userId === parseInt(userId as string)
 
     return (
-        <div className="profNav">
-            <div
-                className="btn-group"
-                role="group"
-                aria-label="Basic example"
-            >
-                <Link to="matches" className="btn btn-light btn-lg" replace>
-                    Matches
-                </Link>
-                <Link to="achievements" className="btn btn-light btn-lg" replace>
-                    Achievements
-                </Link>
-                <Link to="friends" className="btn btn-light btn-lg" replace>
-                    Friends
-                </Link>
-                { isCurrentUser && <Link to="settings" className="btn btn-warning btn-lg" replace>
-                    <Edit />
-                </Link> }
-            </div>
+        <div className="btn-group mb-3">
+            <Link to="matches" className="btn btn-dark btn-lg rounded-0" replace>
+                Matches
+            </Link>
+            <Link to="achievements" className="btn btn-dark btn-lg rounded-0" replace>
+                Achievements
+            </Link>
+            <Link to="friends" className="btn btn-dark btn-lg rounded-0" replace>
+                Friends
+            </Link>
+            { isCurrentUser && <Link to="settings" className="btn btn-warning btn-lg rounded-0" replace>
+                <Edit />
+            </Link> }
         </div>
     )
 }
@@ -72,7 +64,7 @@ export default function Users() {
     return (
         <>
             <Banner />
-            <ProfileRouter />
+            <Navigation />
             <Outlet />
         </>
     )
