@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { Button, Form } from "react-bootstrap"
 import { useSWRConfig } from "swr"
-import "./style.css"
 import { createChannel } from "../../data/use-channel"
 
 export default function ChannelCreate() {
@@ -22,41 +21,44 @@ export default function ChannelCreate() {
     }
 
     return (
-        <Form onSubmit={submit} className="chanCreate">
-            <Form.Group>
-                <Form.Label>Channel name</Form.Label>
-                <Form.Control
-                    type="text"
-                    placeholder="Enter channel name"
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                />
-            </Form.Group>
+        <div>
+            <h2>Create a channel</h2>
 
-            <Form.Group>
-                <Form.Check
-                    label="Publicly joinable"
-                    checked={joinable}
-                    onChange={(event) => setJoinable(event.target.checked)}
-                />
-            </Form.Group>
-
-            {joinable && (
-                <Form.Group>
-                    <Form.Label>Channel password</Form.Label>
+            <Form onSubmit={submit}>
+                <Form.Group className="mb-3">
+                    <Form.Label>Channel name</Form.Label>
                     <Form.Control
                         type="text"
-                        placeholder="Enter channel password"
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
+                        placeholder="Enter channel name"
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
                     />
-                    <Form.Text>No password means anyone can join.</Form.Text>
                 </Form.Group>
-            )}
 
-            <Button variant="primary" type="submit">
-                Create
-            </Button>
-        </Form>
+                <Form.Group className="mb-3">
+                    <Form.Check>
+                        <Form.Check.Input checked={joinable} onChange={(event) => setJoinable(event.target.checked)} className="border-white" />
+                        <Form.Check.Label>Publicly joinable</Form.Check.Label>
+                    </Form.Check>
+                </Form.Group>
+
+                {joinable && (
+                    <Form.Group className="mb-3">
+                        <Form.Label>Channel password</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter channel password"
+                            value={password}
+                            onChange={(event) => setPassword(event.target.value)}
+                        />
+                        <Form.Text>No password means anyone can join.</Form.Text>
+                    </Form.Group>
+                )}
+
+                <Button variant="primary" type="submit">
+                    Create
+                </Button>
+            </Form>
+        </div>
     )
 }

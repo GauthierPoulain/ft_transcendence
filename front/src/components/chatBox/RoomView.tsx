@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Col, Container, Row, Stack } from "react-bootstrap"
+import { Stack } from "react-bootstrap"
 import { Link, useParams } from "react-router-dom"
 import "./roomview.css"
 import useUser from "../../data/use-user"
@@ -27,8 +27,6 @@ export default function RoomView() {
     const { channelId } = useParams()
     const channel = useChannel(parseInt(channelId as string, 10))
 
-    const messages = []
-
     const [buffer, setBuffer] = useState("")
 
     const onSubmit = (event: any) => {
@@ -38,37 +36,35 @@ export default function RoomView() {
     }
 
     return (
-        <Container fluid className="chatContainer">
-            <Row>
-                <Col className="chatView">
-                    <h2 className="chatTitle">{channel.name}</h2>
-                    <Stack gap={2}>
-                        {/*messages.map(({ id, content, author }) => (
-                            <div key={id}>
-                                <span className="h5">
-                                    {author?.nickname}:{" "}
-                                </span>
-                                <span>{content}</span>
-                            </div>
-                        ))*/}
-                    </Stack>
-                    <form onSubmit={onSubmit}>
-                        <input
-                            type="text"
-                            value={buffer}
-                            onChange={(event) => setBuffer(event.target.value)}
-                            placeholder="type something..."
-                            className="inputHolder"
-                        />
-                    </form>
-                </Col>
+        <>
+            <div className="flex-grow-1">
+                <h2>{channel.name}</h2>
+                <Stack gap={2}>
+                    {/*messages.map(({ id, content, author }) => (
+                        <div key={id}>
+                            <span className="h5">
+                                {author?.nickname}:{" "}
+                            </span>
+                            <span>{content}</span>
+                        </div>
+                    ))*/}
+                </Stack>
+                <form onSubmit={onSubmit}>
+                    <input
+                        type="text"
+                        value={buffer}
+                        onChange={(event) => setBuffer(event.target.value)}
+                        placeholder="type something..."
+                        className="inputHolder"
+                    />
+                </form>
+            </div>
 
-                <Col xs={2} className="memberView">
-                    <h2 className="memberTitle">Members</h2>
+            <div className="mx-3">
+                <h2 className="memberTitle">Members</h2>
 
-                    <Members channelId={channelId} />
-                </Col>
-            </Row>
-        </Container>
+                <Members channelId={channelId} />
+            </div>
+        </>
     )
 }

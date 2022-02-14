@@ -1,57 +1,37 @@
-import { Stack } from "react-bootstrap"
 import { Link } from "react-router-dom"
-import "./channels.scss"
-import { Cancel } from "@material-ui/icons"
 import useChannel, { useJoinedChannels } from "../../data/use-channel"
-
-function leaveChannel()
-{
-    console.log("Leave chan");
-}
 
 function JoinedChannel({ channelId }) {
     const channel = useChannel(channelId)
 
     return (
-        <div className="chanName"> 
-            <Link className="chans" to={`/chat/room/${channel.id}`} replace>{channel.name}</Link>
-            <div onClick={() => leaveChannel()} title="Leave this channel">
-                <Cancel className="cross"/>
-            </div>
-        </div>
+        <li>
+            <Link className="text-decoration-none" to={`/chat/room/${channel.id}`} replace>{channel.name}</Link>
+        </li>
     )
 }
 
 function JoinedChannels() {
     const channels = useJoinedChannels()
 
-    return <Stack>
-        { channels.map((channelId) => <JoinedChannel key={channelId} channelId={channelId} />) }
-    </Stack>
+    return (
+        <ul className="list-unstyled mt-3">
+            { channels.map((channelId) => <JoinedChannel key={channelId} channelId={channelId} />) }
+        </ul>
+    )
 }
 
 export default function Channels() {
-
     return (
-        <div className="chatleft">
-            <div className="channels">
-                <div className="container chanContainer">
-                    <h2>Channels</h2>
+        <div className="mx-4">
+            <h2>Channels</h2>
 
-                    <Stack gap={3}>
-                        <Stack>
-                            <Link className="chanLinks" to="/chat">
-                                Join a channel
-                            </Link>
-                            <Link className="chanLinks" to="/chat/create">
-                                Create a channel
-                            </Link>
-                        </Stack>
+            <ul className="list-unstyled">
+                <li><Link className="chanLinks" to="/chat">Join a channel</Link></li>
+                <li><Link className="chanLinks" to="/chat/create">Create a channel</Link></li>
+            </ul>
 
-                        <JoinedChannels />
-                    </Stack>
-                </div>
-            </div>
+            <JoinedChannels />
         </div>
     )
 }

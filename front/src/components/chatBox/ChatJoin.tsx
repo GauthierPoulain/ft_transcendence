@@ -3,7 +3,7 @@ import "./chatjoin.scss"
 import useChannel, { useJoinChannel, useJoinedChannels, usePublicChannels } from "../../data/use-channel"
 import { useSWRConfig } from "swr"
 import { useNavigate } from "react-router-dom"
-import { Button } from 'react-bootstrap'
+import { Button, Card, Form, InputGroup } from 'react-bootstrap'
 
 function JoinPublic({ channelId }) {
     const { mutate } = useSWRConfig()
@@ -15,7 +15,7 @@ function JoinPublic({ channelId }) {
     }
 
     if (isLoading) {
-        return <p className="joinMsg">Joining...</p>
+        return <Button style={{ width: '100%' }} disabled>Joining...</Button>
     }
 
     async function join() {
@@ -24,7 +24,7 @@ function JoinPublic({ channelId }) {
         navigate(`/chat/room/${channelId}`, { replace: true })
     }
 
-    return <Button className="chanButton" variant="primary" onClick={join}>Join</Button>
+    return <Button style={{ width: '100%' }} onClick={join}>Join</Button>
 }
 
 function JoinProtected({ channelId }) {
@@ -37,10 +37,6 @@ function JoinProtected({ channelId }) {
         return <p className="joinMsg">An error occured while joining</p>
     }
 
-    if (isLoading) {
-        return <p className="joinMsg">Joining...</p>
-    }
-
     async function join(event: any) {
         event.preventDefault()
         
@@ -50,22 +46,25 @@ function JoinProtected({ channelId }) {
         navigate(`/chat/room/${channelId}`, { replace: true })
     }
 
-    return <form onSubmit={join}>
-        <input type="text" className="chanPlaceholder" required placeholder="Enter password..." value={password} onChange={(event) => setPassword(event.target.value)}></input>
-        <Button variant="warning" className="chanButton" type="submit">Join</Button>
-    </form>
+    return <Form onSubmit={join}>
+        <InputGroup>
+            <Form.Control className="bg-white text-dark" placeholder="Enter password..." value={password} onChange={(event) => setPassword(event.target.value)}/>
+            <Button type="submit" disabled={isLoading}>Join</Button>
+        </InputGroup>
+    </Form>
 }
 
 function ChannelJoinCard({ channelId }) {
     const channel = useChannel(channelId)
 
     return (
-        <div className="channelsList">
-            <h3 className="name">{ channel.name }</h3>
-
+        <Card className="bg-transparent m-2" style={{ width: '18rem' }}>
+          <Card.Body>
+            <Card.Title className="mb-3">{ channel.name }</Card.Title>
             { channel.type === "public" && <JoinPublic channelId={channelId} /> }
             { channel.type === "protected" && <JoinProtected channelId={channelId} /> }
-        </div>
+          </Card.Body>
+        </Card>
     )
 }
 
@@ -77,9 +76,9 @@ export default function ChatBox() {
 
     return (
         <div>
-            <h2 className="chatJoinContainer">Join or create a wanted channel !</h2>
+            <h2>Join a channel</h2>
 
-            <div className="chanListContainer">
+            <div className="d-flex flex-wrap">
                 { channels.map((channelId) => <ChannelJoinCard key={channelId} channelId={channelId} />) }
             </div>
         </div>
