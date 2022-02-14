@@ -29,9 +29,12 @@
 
     .cross
     {
-        color: rgb(255, 82, 82);
-        background-color: white;
-        border-radius: 50%;
+        color: rgb(109, 109, 109);
+        background-color: rgb(214, 214, 214);
+        border-radius: 35%;
         margin-left: 30px;
+        cursor: pointer;
+        height: 20px;
+        width: 20px;
     }
 }
