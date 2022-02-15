@@ -1,6 +1,8 @@
+import { Outlet } from "react-router-dom"
 import { Link } from "react-router-dom"
-import useChannel, { useJoinedChannels } from "../../../data/use-channel"
-import "./channels.scss"
+import useChannel, { useJoinedChannels } from "../../data/use-channel"
+
+import "./style.scss"
 
 function JoinedChannel({ channelId }) {
     const channel = useChannel(channelId)
@@ -22,7 +24,7 @@ function JoinedChannels() {
     )
 }
 
-export default function Channels() {
+function Sidebar() {
     return (
         <div className="mx-4 p-3 chan-list">
             <h2>Channels</h2>
@@ -33,6 +35,15 @@ export default function Channels() {
             </ul>
 
             <JoinedChannels />
+        </div>
+    )
+}
+
+export default function Chat() {
+    return (
+        <div className="d-flex mt-3">
+            <Sidebar />
+            <Outlet />
         </div>
     )
 }
