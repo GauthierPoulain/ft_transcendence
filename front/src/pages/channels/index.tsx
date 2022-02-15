@@ -26,7 +26,7 @@ function JoinedChannels() {
 
 function Sidebar() {
     return (
-        <div className="mx-4 p-3 chan-list">
+        <div className="p-3 chan-list bg-dark">
             <h2>Channels</h2>
 
             <ul className="list-unstyled test">
@@ -41,7 +41,7 @@ function Sidebar() {
 
 export default function Chat() {
     return (
-        <div className="d-flex mt-3">
+        <div className="d-flex flex-grow-1">
             <Sidebar />
             <Outlet />
         </div>

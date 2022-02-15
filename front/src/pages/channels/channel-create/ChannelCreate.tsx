@@ -22,7 +22,7 @@ export default function ChannelCreate() {
     }
 
     return (
-        <div className="create-chan">
+        <div className="p-3 create-chan">
             <h2>Create a channel</h2>
 
             <Form onSubmit={submit}>

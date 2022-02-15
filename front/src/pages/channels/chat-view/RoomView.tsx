@@ -68,7 +68,7 @@ export default function RoomView() {
                 </form>
             </div>
 
-            <div className="mx-3 members p-2">
+            <div className="members p-3 bg-dark">
                 <h2>Members</h2>
 
                 <Members channelId={channelId} />
