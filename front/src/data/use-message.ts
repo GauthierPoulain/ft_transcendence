@@ -8,7 +8,14 @@ export type Message = {
 }
 
 export function useMessages(channelId: number): Message[] {
-    return useFetch(`/channels/${channelId}/messages`)
+    // Messages are not immuable but mutate through websocket events, so there's no need to
+    // emit request to have fresh data.
+    return useFetch(`/channels/${channelId}/messages`, {
+        revalidateOnMount: false,
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false
+    })
 }
 
 export type CreateMessageRequest = {

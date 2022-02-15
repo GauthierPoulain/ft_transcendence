@@ -8,6 +8,8 @@ import { AuthService } from "./auth.service"
 import { FortyTwoService } from "./fortytwo.service"
 import { JwtModule } from "@nestjs/jwt"
 import { JwtStrategy, AnonymousStrategy } from "./auth.strategy"
+import { AuthWebsocketGateway } from "./auth.websocket.gateway"
+import { AuthSocketService } from "./auth-socket.service"
 
 @Module({
     imports: [
@@ -17,7 +19,8 @@ import { JwtStrategy, AnonymousStrategy } from "./auth.strategy"
             secret: "TODO: this should be generated with cryptogaphic random later",
         }),
     ],
-    providers: [AuthService, FortyTwoService, JwtStrategy, AnonymousStrategy],
+    providers: [AuthService, AuthSocketService, FortyTwoService, JwtStrategy, AnonymousStrategy, AuthWebsocketGateway],
     controllers: [AuthController],
+    exports: [AuthSocketService]
 })
 export class AuthModule {}

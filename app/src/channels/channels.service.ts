@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { hash } from "argon2"
+import { AuthSocketService } from "src/auth/auth-socket.service"
 import { User } from "src/users/entities/user.entity"
 import { Repository } from "typeorm"
 import { CreateMessageDto, JoinChannelDto } from "./channels.dto"
@@ -9,6 +10,7 @@ import { UpdateChannelDto } from "./dto/update-channel.dto"
 import { Channel } from "./entities/channel.entity"
 import { Membership, MembershipRole } from "./entities/membership.entity"
 import { Message } from "./entities/message.entity"
+import { instanceToPlain } from "class-transformer"
 
 @Injectable()
 export class ChannelsService {
@@ -20,7 +22,9 @@ export class ChannelsService {
         private messagesRepository: Repository<Message>,
 
         @InjectRepository(Membership)
-        private membershipsRepository: Repository<Membership>
+        private membershipsRepository: Repository<Membership>,
+
+        private authSocket: AuthSocketService
     ) {}
 
     async create(input: CreateChannelDto, owner: User): Promise<Channel> {
@@ -75,5 +79,15 @@ export class ChannelsService {
         membership.channel = channel
         membership.user = user
         return this.membershipsRepository.save(membership)
+    }
+
+    async broadcastNewMessage(message: Message) {
+        const memberships = await this.membershipsRepository.find({
+            where: { channelId: message.channelId }
+        })
+
+        for (const connection of this.authSocket.getConnections(memberships.map(({userId}) => userId))) {
+            connection.emit("new_message", JSON.stringify(instanceToPlain(message, {})))
+        }
     }
 }

@@ -25,8 +25,8 @@ export const fetcher = async (url: string, options = {}, jsonResponse=true) => {
     return jsonResponse ? response.json() : response
 }
 
-export default function useFetch(key: string) {
-    const { data, error } = useSWR(key, fetcher, { suspense: true })
+export default function useFetch(key: string, options = {}) {
+    const { data, error } = useSWR(key, fetcher, { suspense: true, ...options })
 
     if (error) {
         console.debug("useFetch", data, error)

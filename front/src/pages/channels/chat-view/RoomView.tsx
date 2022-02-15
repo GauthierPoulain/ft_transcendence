@@ -76,7 +76,7 @@ function Messages({ channelId }) {
 
     return (
         <div className="flex-grow-1 d-flex flex-column-reverse gap-row-1" style={{ height: 0, overflow: "auto" }}>
-            { [...messages].reverse().map((message) => <Message message={message} />) }
+            { [...messages].reverse().map((message) => <Message key={message.id} message={message} />) }
         </div>
     )
 }

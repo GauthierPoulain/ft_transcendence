@@ -6,6 +6,10 @@ import { UsersService } from "src/users/users.service"
 import { ConnectDto } from "./auth.dto"
 import { FortyTwoService } from "./fortytwo.service"
 
+type TokenPayload = {
+    sub: number
+}
+
 @Injectable()
 export class AuthService {
     constructor(
@@ -52,7 +56,7 @@ export class AuthService {
         return this.jwt.signAsync(payload)
     }
 
-    verify(token: string): Promise<object> {
+    verify(token: string): Promise<TokenPayload> {
         return this.jwt.verifyAsync(token)
     }
 }
