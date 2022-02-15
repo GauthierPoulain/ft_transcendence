@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Stack } from "react-bootstrap"
 import { Link, useParams } from "react-router-dom"
-import "./roomview.css"
+import "./roomview.scss"
 import useUser from "../../data/use-user"
 import { useMembers } from "../../data/use-member"
 import useChannel from "../../data/use-channel"
@@ -9,8 +9,8 @@ import useChannel from "../../data/use-channel"
 function Member({ member }) {
     const user = useUser(member.userId)
 
-    return <Link className="memberLinks" to={`/users/${user.id}`}>
-        <img className="imgMember" src={user.image} alt="" />
+    return <Link className="member-links" to={`/users/${user.id}`}>
+        <img className="member-img" src={user.image} alt="" />
         {user.nickname} - {member.role}
     </Link>
 }
@@ -37,7 +37,7 @@ export default function RoomView() {
 
     return (
         <>
-            <div className="flex-grow-1">
+            <div className="flex-grow-1 chat-view">
                 <h2>{channel.name}</h2>
                 <Stack gap={2}>
                     {/*messages.map(({ id, content, author }) => (
@@ -55,13 +55,13 @@ export default function RoomView() {
                         value={buffer}
                         onChange={(event) => setBuffer(event.target.value)}
                         placeholder="type something..."
-                        className="inputHolder"
+                        className="chat-input"
                     />
                 </form>
             </div>
 
-            <div className="mx-3">
-                <h2 className="memberTitle">Members</h2>
+            <div className="mx-3 members">
+                <h2>Members</h2>
 
                 <Members channelId={channelId} />
             </div>

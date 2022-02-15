@@ -1,69 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap");
 
-.chatJoinContainer
-{
-    color: white;
-    font-size: 25px;
-    margin: 20px 0 0 10px;
-    padding-left: 10px;
-    font-family: 'Josefin Sans', sans-serif;
-    border-radius: 10px;
-    width: 400px;
-    background-color: rgb(150, 106, 106);
-
-}
-
-.channelsList
-{
-    display: flex;
-    border-radius: 10px;
-    background-color: rgb(116, 116, 116);
-    width: max-content;
-    align-items: center;
-
-    margin-top: 10px;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-bottom: 10px;
-
-    .name
-    {
-        color: white;
-        margin-left: 10px;
-        margin-top: 5px;
-        margin-right: 50px;
-        font-size: 20px;
-    }
-}
-
-.chanListContainer
-{
-    width: max-content;
-    height: max-content;
-    background-color: rgb(59, 59, 59);
-    border-radius: 10px;
-    margin-left: 10px;
-    margin-top: 20px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
-.chanButton
-{
-   margin: 5px 5px 5px 5px;
-   
-}
-
-.chanPlaceholder
-{
-    margin: 5px 5px 5px 5px;
+.chat-join-container {
+    padding: 10px 10px 0px 10px;
+    background-color: rgb(107, 107, 107);
     border-radius: 5px;
-    width: 150px;
-}
+    font-family: "Josefin Sans", sans-serif;
 
-.joinMsg
-{
-    padding-top: 14px;
-    margin-right: 10px;
-    color: rgb(255, 134, 134);
+    .join-card {
+        background-color: rgb(78, 78, 78);
+    }
 }

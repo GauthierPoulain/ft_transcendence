@@ -59,7 +59,7 @@ function ChannelJoinCard({ channelId }) {
 
     return (
         <Card className="bg-transparent m-2" style={{ width: '18rem' }}>
-          <Card.Body>
+          <Card.Body className="join-card">
             <Card.Title className="mb-3">{ channel.name }</Card.Title>
             { channel.type === "public" && <JoinPublic channelId={channelId} /> }
             { channel.type === "protected" && <JoinProtected channelId={channelId} /> }
@@ -75,7 +75,7 @@ export default function ChatBox() {
     const channels = pubs.filter((id) => !joined.includes(id))
 
     return (
-        <div>
+        <div className="chat-join-container">
             <h2>Join a channel</h2>
 
             { channels.length === 0 && <p>There's currently no public channel to join.</p> }
