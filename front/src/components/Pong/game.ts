@@ -14,6 +14,8 @@ export default function game() {
         engine.camera.updateProjectionMatrix()
     })
 
+    var keyPressed = new Map<string, boolean>()
+
     var engine = {
         scene: new THREE.Scene(),
         renderer: new THREE.WebGLRenderer({
@@ -21,6 +23,7 @@ export default function game() {
         }),
         camera: new THREE.PerspectiveCamera(60, size.x / size.y, 0.1, 1000),
         objects: new Map<string, any>(),
+        clock: new THREE.Clock(),
     }
 
     var remoteData = {
@@ -44,6 +47,20 @@ export default function game() {
     function animate() {
         requestAnimationFrame(animate)
         engine.renderer.render(engine.scene, engine.camera)
+        let delta = engine.clock.getDelta()
+
+        {
+            if (keyPressed.get("ArrowUp") && !keyPressed.get("ArrowDown")) {
+                let player = engine.objects.get("player0") as THREE.Mesh
+                if (player.position.y + remoteData.players[0].height / 2 < 5)
+                    player.position.y += 10 * delta
+            }
+            if (keyPressed.get("ArrowDown") && !keyPressed.get("ArrowUp")) {
+                let player = engine.objects.get("player0") as THREE.Mesh
+                if (player.position.y - remoteData.players[0].height / 2 > -5)
+                    player.position.y -= 10 * delta
+            }
+        }
     }
 
     function initScene() {
@@ -106,9 +123,50 @@ export default function game() {
         playersData[1] = new Player("HornyBoiii")
     }
 
+    function initKeyControl() {
+        document.onkeydown = (e) => {
+            keyPressed.set(e.code, true)
+            switch (e.code) {
+                case "ArrowUp":
+                    break
+                case "ArrowDown":
+                    break
+                case "Digit1":
+                    playersData[0].score += 1
+                    updateHUD()
+                    break
+                case "Digit2":
+                    playersData[1].score += 1
+                    updateHUD()
+                    break
+
+                default:
+                    console.log("keydown", e.code)
+                    break
+            }
+        }
+        document.onkeyup = (e) => {
+            switch (e.code) {
+                case "ArrowUp":
+                    break
+                case "ArrowDown":
+                    break
+
+                default:
+                    console.log("keyup", e.code)
+
+                    break
+            }
+            keyPressed.set(e.code, false)
+        }
+    }
+
     initGameData()
     updateHUD()
     initEngine()
     initScene()
+    initKeyControl()
+    console.log("game loaded")
+
     animate()
 }
