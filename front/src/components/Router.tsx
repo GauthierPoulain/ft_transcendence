@@ -16,6 +16,7 @@ import Achievements from "../pages/users/achievements"
 import Friends from "../pages/users/friends"
 import ProfileSettings from "../pages/users/settings"
 import Users from "../pages/users"
+import Game from "../pages/game/game"
 
 function Layout() {
     return (
@@ -37,6 +38,7 @@ export default function Router() {
         <Routes>
             <Route path="/" element={<Layout />}>
                 <Route index element={<Home />} />
+                <Route path="game" element={<Game />} />
                 <Route
                     path="chat"
                     element={
