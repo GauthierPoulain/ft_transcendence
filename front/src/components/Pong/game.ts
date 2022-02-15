@@ -18,46 +18,10 @@ export default function game() {
         scene: new THREE.Scene(),
         renderer: new THREE.WebGLRenderer({
             antialias: true,
-            alpha: false,
-            preserveDrawingBuffer: true,
         }),
         camera: new THREE.PerspectiveCamera(60, size.x / size.y, 0.1, 1000),
         objects: new Map<string, any>(),
-        hud: {
-            cam: new THREE.OrthographicCamera(
-                -size.x / 2,
-                size.x / 2,
-                size.y / 2,
-                -size.y / 2
-            ),
-            canvas: document.createElement("canvas"),
-            scene: new THREE.Scene(),
-            texture: new THREE.Texture(),
-            material: new THREE.MeshBasicMaterial(),
-            geometry: new THREE.PlaneGeometry(size.x, size.y),
-            plane: new THREE.Mesh(),
-        },
     }
-    engine.renderer.autoClear = true
-
-    engine.hud.canvas.width = size.x
-    engine.hud.canvas.height = size.y
-
-    var hudBitmap = engine.hud.canvas.getContext("2d")
-    if (hudBitmap) {
-        hudBitmap.font = "Normal 40px Arial"
-        hudBitmap.textAlign = "center"
-        hudBitmap.fillStyle = "rgba(245,245,245,0.75)"
-        hudBitmap.fillText("Initializing...", size.x / 2, size.y / 2)
-    }
-
-    engine.hud.texture.image = engine.hud.canvas
-    engine.hud.texture.needsUpdate = true
-    engine.hud.material.map = engine.hud.texture
-    engine.hud.plane.geometry = engine.hud.geometry
-    engine.hud.plane.material = engine.hud.material
-    engine.hud.material.transparent = true
-    engine.hud.scene.add(engine.hud.plane)
 
     var remoteData = {
         players: [
@@ -75,17 +39,11 @@ export default function game() {
         }
     }
 
-    var playersData: Array<Player> | null = null
+    var playersData = new Array<Player>(2)
 
     function animate() {
         requestAnimationFrame(animate)
         engine.renderer.render(engine.scene, engine.camera)
-        engine.renderer.render(engine.hud.scene, engine.hud.cam)
-        {
-            let cube = engine.objects.get("maincube") as THREE.Mesh
-            // cube.rotation.x += 0.01
-            // cube.rotation.y += 0.01
-        }
     }
 
     function initScene() {
@@ -123,16 +81,33 @@ export default function game() {
     }
 
     function initEngine() {
-        playersData = new Array<Player>(2)
-        playersData[0] = new Player("GogoLeDozo")
-        playersData[1] = new Player("HornyBoiii")
         engine.renderer.setSize(size.x, size.y)
         engine.camera.position.z = 12
         document
-            .getElementById("gameContainer")
-            ?.replaceChildren(engine.renderer.domElement)
+            .querySelector("#gameContainer canvas")
+            ?.replaceWith(engine.renderer.domElement)
     }
 
+    function updateHUD() {
+        document.querySelector(".identity#one .name")!.textContent =
+            playersData[0].name
+        document.querySelector(".identity#one .score")!.textContent = String(
+            playersData[0].score
+        )
+        document.querySelector(".identity#two .name")!.textContent =
+            playersData[1].name
+        document.querySelector(".identity#two .score")!.textContent = String(
+            playersData[1].score
+        )
+    }
+
+    function initGameData() {
+        playersData[0] = new Player("GogoLeDozo")
+        playersData[1] = new Player("HornyBoiii")
+    }
+
+    initGameData()
+    updateHUD()
     initEngine()
     initScene()
     animate()
