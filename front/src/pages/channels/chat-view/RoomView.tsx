@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Stack } from "react-bootstrap"
+import { Button, Form, Stack } from "react-bootstrap"
 import { Link, useParams } from "react-router-dom"
 import useUser from "../../../data/use-user"
 import { useMembers } from "../../../data/use-member"
@@ -31,12 +31,12 @@ export default function RoomView() {
     const channel = useChannel(parseInt(channelId as string, 10))
     const messages = useMessages(parseInt(channelId as string, 10))
 
-    const [buffer, setBuffer] = useState("")
+    const [message, setMessage] = useState("")
 
     const onSubmit = (event: any) => {
         event.preventDefault()
 
-        setBuffer("")
+        setMessage("")
     }
 
     return (
@@ -44,6 +44,7 @@ export default function RoomView() {
             <div className="flex-grow-1 chat-view p-3 d-flex flex-column">
                 <div>
                     <h2>{channel.name}</h2>
+                    <Button variant="danger" size="sm">Leave channel</Button>
                 </div>
 
                 <div className="flex-grow-1">
@@ -57,15 +58,9 @@ export default function RoomView() {
                     ))}
                 </div>
 
-                <form onSubmit={onSubmit}>
-                    <input
-                        type="text"
-                        value={buffer}
-                        onChange={(event) => setBuffer(event.target.value)}
-                        placeholder="type something..."
-                        className="chat-input"
-                    />
-                </form>
+                <Form onSubmit={onSubmit}>
+                    <Form.Control type="text" className="bg-dark border-dark text-white" placeholder="Enter a message" value={message} onChange={(event) => setMessage(event.target.value)}  />
+                </Form>
             </div>
 
             <div className="members p-3 bg-dark">
