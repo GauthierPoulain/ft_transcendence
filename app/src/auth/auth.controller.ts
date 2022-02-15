@@ -35,7 +35,7 @@ export class AuthController {
         const payload: IntraInfosDto = {
             id: 2142000001,
             login: "fake_user_one",
-            image_url: "https://via.placeholder.com/150/0000FF",
+            image_url: "https://via.placeholder.com/300x150/0000FF",
         }
 
         const user = await this.auth.fake_login(payload)
