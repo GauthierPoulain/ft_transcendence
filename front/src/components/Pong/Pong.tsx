@@ -1,9 +1,10 @@
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import game from "./game"
 import "./pong.css"
 
 export default function Pong() {
     useEffect(() => {
+        document.dispatchEvent(new CustomEvent("stopRendering"))
         game()
     }, [])
     return (

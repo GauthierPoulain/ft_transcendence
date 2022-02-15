@@ -37,8 +37,8 @@
     transform: translateX(-50%);
     text-align: center;
     font-size: xx-large;
-	display: flex;
-	flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 #gameHud .identity#one {
