@@ -24,6 +24,6 @@
     },
     "include": [
         "src/scripts",
-        "src/components",
+        "src/components", "src/pages/channels/chat-view/RoomView.tsx", "src/pages/channels/channels-list/Channels.tsx", "src/pages/channels/channel-join/ChatJoin.tsx",
     ]
 }

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import useChannel, { useJoinedChannels } from "../../data/use-channel"
+import useChannel, { useJoinedChannels } from "../../../data/use-channel"
 import "./channels.scss"
 
 function JoinedChannel({ channelId }) {

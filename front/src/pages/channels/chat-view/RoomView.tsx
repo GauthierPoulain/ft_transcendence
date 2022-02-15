@@ -2,9 +2,9 @@ import { useState } from "react"
 import { Stack } from "react-bootstrap"
 import { Link, useParams } from "react-router-dom"
 import "./roomview.scss"
-import useUser from "../../data/use-user"
-import { useMembers } from "../../data/use-member"
-import useChannel from "../../data/use-channel"
+import useUser from "../../../data/use-user"
+import { useMembers } from "../../../data/use-member"
+import useChannel from "../../../data/use-channel"
 
 function Member({ member }) {
     const user = useUser(member.userId)

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import "./chatjoin.scss"
-import useChannel, { useJoinChannel, useJoinedChannels, usePublicChannels } from "../../data/use-channel"
+import useChannel, { useJoinChannel, useJoinedChannels, usePublicChannels } from "../../../data/use-channel"
 import { useSWRConfig } from "swr"
 import { useNavigate } from "react-router-dom"
 import { Button, Card, Form, InputGroup } from 'react-bootstrap'

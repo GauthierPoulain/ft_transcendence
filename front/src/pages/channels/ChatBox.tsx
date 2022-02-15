@@ -1,6 +1,5 @@
-import Channels from "./Channels"
+import Channels from "../../pages/channels/channels-list/Channels"
 import { Outlet } from "react-router-dom"
-import "./chatbox.css"
 
 export default function ChatBox() {
     return (

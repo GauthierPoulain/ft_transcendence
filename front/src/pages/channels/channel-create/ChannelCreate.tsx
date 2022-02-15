@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Button, Form } from "react-bootstrap"
 import { useSWRConfig } from "swr"
-import { createChannel } from "../../data/use-channel"
+import { createChannel } from "../../../data/use-channel"
 import "./channelcreate.scss"
 
 export default function ChannelCreate() {
