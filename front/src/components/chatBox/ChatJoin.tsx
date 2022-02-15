@@ -75,7 +75,7 @@ export default function ChatBox() {
     const channels = pubs.filter((id) => !joined.includes(id))
 
     return (
-        <div className="chat-join-container">
+        <div className="chat-join-container p-3 ">
             <h2>Join a channel</h2>
 
             { channels.length === 0 && <p>There's currently no public channel to join.</p> }

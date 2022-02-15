@@ -9,8 +9,8 @@ import useChannel from "../../data/use-channel"
 function Member({ member }) {
     const user = useUser(member.userId)
 
-    return <Link className="member-links" to={`/users/${user.id}`}>
-        <img className="member-img" src={user.image} alt="" />
+    return <Link className="member-links mb-2" to={`/users/${user.id}`}>
+        <img className="member-img me-2" src={user.image} alt="" />
         {user.nickname} - {member.role}
     </Link>
 }
@@ -37,7 +37,7 @@ export default function RoomView() {
 
     return (
         <>
-            <div className="flex-grow-1 chat-view">
+            <div className="flex-grow-1 chat-view p-3">
                 <h2>{channel.name}</h2>
                 <Stack gap={2}>
                     {/*messages.map(({ id, content, author }) => (
@@ -60,7 +60,7 @@ export default function RoomView() {
                 </form>
             </div>
 
-            <div className="mx-3 members">
+            <div className="mx-3 members p-2">
                 <h2>Members</h2>
 
                 <Members channelId={channelId} />

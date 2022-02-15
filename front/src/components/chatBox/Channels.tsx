@@ -24,7 +24,7 @@ function JoinedChannels() {
 
 export default function Channels() {
     return (
-        <div className="mx-4 chan-list">
+        <div className="mx-4 p-3 chan-list">
             <h2>Channels</h2>
 
             <ul className="list-unstyled test">
