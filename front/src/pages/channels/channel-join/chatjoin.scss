@@ -3,7 +3,11 @@
 .chat-join-container {
     font-family: "Josefin Sans", sans-serif;
 
-    .join-card {
-        background-color: rgb(78, 78, 78);
+    .join-cards {
+        gap: 1rem;
+
+        .join-card {
+            background-color: rgb(78, 78, 78);
+        }
     }
 }
