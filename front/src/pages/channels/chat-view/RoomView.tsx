@@ -75,8 +75,8 @@ function Messages({ channelId }) {
     const messages = useMessages(channelId)
 
     return (
-        <div className="flex-grow-1 d-flex flex-column gap-row-1">
-            { messages.map((message) => <Message message={message} />) }
+        <div className="flex-grow-1 d-flex flex-column-reverse gap-row-1" style={{ height: 0, overflow: "auto" }}>
+            { [...messages].reverse().map((message) => <Message message={message} />) }
         </div>
     )
 }
