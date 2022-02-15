@@ -8,13 +8,14 @@ import { useCreateMessage, useMessages } from "../../../data/use-message"
 
 import "./style.scss"
 import { useSWRConfig } from "swr"
+import UserAvatar from "../../../components/user/UserAvatar"
 
 function Member({ member }) {
     const user = useUser(member.userId)
 
     return <Link className="member-links mb-2 text-decoration-none d-flex" to={`/users/${user.id}`}>
-        <Image roundedCircle className="me-2" src={user.image} width={25} height={25} />
-        <span className="m-auto">{user.nickname} - {member.role}</span>
+        <UserAvatar className="me-2 w-8" userId={user.id} />
+        <span className="m-auto ms-0">{user.nickname} - {member.role}</span>
     </Link>
 }
 

@@ -4,6 +4,7 @@ import { Link, Outlet, useParams } from "react-router-dom"
 import { Edit } from "@material-ui/icons"
 import useUser from "../../data/use-user"
 import { useAuth } from "../../data/use-auth"
+import UserAvatar from "../../components/user/UserAvatar"
 
 function Banner() {
     const { userId } = useParams()
@@ -13,7 +14,7 @@ function Banner() {
     return (
         <div className="d-flex justify-content-center align-items-center flex-wrap" style={{ backgroundColor: "#c47e7e" }}>
             <div className="d-flex flex-column justify-content-center align-items-center m-3">
-                <Image roundedCircle width={130} src={user.image} />
+                <UserAvatar userId={user.id} className="w-32" />
                 <p className="mb-0 text-dark fw-bold fs-5">{user.nickname}</p>
             </div>
 

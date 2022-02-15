@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom"
 import { useAuth } from "../../data/use-auth"
 import useUser from "../../data/use-user"
-import { Container, Image, Nav, Navbar } from "react-bootstrap"
+import { Container, Nav, Navbar } from "react-bootstrap"
+import UserAvatar from "../user/UserAvatar"
 
 function Profile({ userId }) {
     const user = useUser(userId)
 
-    return <Link className="nav-link" to={`/users/${user.id}`}>
-        Profile
-        <Image className="ms-2" fluid roundedCircle width={22} height={22} src={user.image} />
+    return <Link className="nav-link d-flex" to={`/users/${user.id}`}>
+        <span className="m-auto">Profile</span>
+        <UserAvatar userId={user.id} className="w-8 ms-2" />
     </Link>
 }
 

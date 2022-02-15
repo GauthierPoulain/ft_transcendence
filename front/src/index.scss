@@ -17,3 +17,19 @@ html, body, #root {
 .gap-row-1 {
     row-gap: 1rem;
 }
+
+.object-fill {
+    object-fit: fill;
+}
+
+.aspect-square {
+    aspect-ratio: 1 / 1;
+}
+
+.w-8 {
+    width: 2rem;
+}
+
+.w-32 {
+    width: 8rem;
+}
