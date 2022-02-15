@@ -1,10 +1,12 @@
 import { useState } from "react"
 import { Stack } from "react-bootstrap"
 import { Link, useParams } from "react-router-dom"
-import "./roomview.scss"
 import useUser from "../../../data/use-user"
 import { useMembers } from "../../../data/use-member"
 import useChannel from "../../../data/use-channel"
+import { useMessages } from "../../../data/use-message"
+
+import "./style.scss"
 
 function Member({ member }) {
     const user = useUser(member.userId)
@@ -25,7 +27,9 @@ function Members({ channelId }) {
 
 export default function RoomView() {
     const { channelId } = useParams()
+
     const channel = useChannel(parseInt(channelId as string, 10))
+    const messages = useMessages(parseInt(channelId as string, 10))
 
     const [buffer, setBuffer] = useState("")
 
@@ -37,18 +41,22 @@ export default function RoomView() {
 
     return (
         <>
-            <div className="flex-grow-1 chat-view p-3">
-                <h2>{channel.name}</h2>
-                <Stack gap={2}>
-                    {/*messages.map(({ id, content, author }) => (
+            <div className="flex-grow-1 chat-view p-3 d-flex flex-column">
+                <div>
+                    <h2>{channel.name}</h2>
+                </div>
+
+                <div className="flex-grow-1">
+                    {messages.map(({ id, content, authorId }) => (
                         <div key={id}>
                             <span className="h5">
-                                {author?.nickname}:{" "}
+                                {authorId}:{" "}
                             </span>
                             <span>{content}</span>
                         </div>
-                    ))*/}
-                </Stack>
+                    ))}
+                </div>
+
                 <form onSubmit={onSubmit}>
                     <input
                         type="text"

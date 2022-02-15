@@ -18,4 +18,7 @@ export class Message {
 
     @ManyToOne(() => Channel, (channel) => channel.messages)
     channel: Channel
+
+    @RelationId((message: Message) => message.channel)
+    channelId: number
 }
