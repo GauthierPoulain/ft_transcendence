@@ -1,11 +1,13 @@
 import {
     Body,
+    ClassSerializerInterceptor,
     Controller,
     Get,
     Param,
     Post,
     UnauthorizedException,
     UseGuards,
+    UseInterceptors,
 } from "@nestjs/common"
 import { ConnectedGuard } from "src/auth/connected.guard"
 import { User } from "src/users/entities/user.entity"
@@ -14,6 +16,7 @@ import { CreateMessageDto } from "./channels.dto"
 import { ChannelsService } from "./channels.service"
 
 @Controller("channels/:channelId/messages")
+@UseInterceptors(ClassSerializerInterceptor)
 export class MessagesController {
     constructor(private channels: ChannelsService) {}
 
@@ -49,6 +52,6 @@ export class MessagesController {
             throw new UnauthorizedException()
         }
 
-        await this.channels.createMessage(channel, user, body)
+        return this.channels.createMessage(channel, user, body)
     }
 }
