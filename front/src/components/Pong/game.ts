@@ -1,10 +1,18 @@
 import * as THREE from "three"
 
 export default function game() {
-    const size = {
-        x: 600,
-        y: 600,
+    var size = {
+        x: document.getElementById("gameContainer")!.clientWidth,
+        y: document.getElementById("gameContainer")!.clientHeight,
     }
+
+    window.addEventListener("resize", (e) => {
+        size.x = document.getElementById("gameContainer")!.clientWidth
+        size.y = document.getElementById("gameContainer")!.clientHeight
+        engine.renderer.setSize(size.x, size.y)
+        engine.camera.aspect = size.x / size.y
+        engine.camera.updateProjectionMatrix()
+    })
 
     var engine = {
         scene: new THREE.Scene(),

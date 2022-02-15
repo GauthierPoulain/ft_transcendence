@@ -1,13 +1,10 @@
 import React, { useEffect } from "react"
 import game from "./game"
+import "./pong.css"
 
 export default function Pong() {
     useEffect(() => {
         game()
     }, [])
-    return (
-        <React.Fragment>
-            <div id="gameContainer" />
-        </React.Fragment>
-    )
+    return <div id="gameContainer" />
 }
