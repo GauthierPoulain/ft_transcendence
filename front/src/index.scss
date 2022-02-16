@@ -3,13 +3,19 @@
 $body-bg: #282c34;
 $body-color: white;
 
-
 $font-family-base: "Josefin Sans", sans-serif;
 $light: #686868;
 
 @import "node_modules/bootstrap/scss/bootstrap";
 
-html, body, #root {
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+#root {
     height: 100%;
 }
 

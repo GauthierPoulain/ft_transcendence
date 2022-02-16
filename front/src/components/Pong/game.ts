@@ -102,7 +102,7 @@ function main() {
         // return "spec"
     }
 
-    function currentPlayer() {
+    function currentPlayer(): Player {
         return currentGameData.players[whoAmI()]
     }
 
@@ -384,7 +384,7 @@ function main() {
             const clip = new THREE.AnimationClip("blink", 2, [colorsKF])
             const mixer = new THREE.AnimationMixer(obj)
             const clipAction = mixer.clipAction(clip)
-            clipAction.setLoop(THREE.LoopRepeat, 3)
+            clipAction.setLoop(THREE.LoopRepeat, 4)
             clipAction.timeScale = 3
             engine.animationClips.set("mapPannel_player1:blink", clipAction)
         }
@@ -408,7 +408,7 @@ function main() {
             const clip = new THREE.AnimationClip("blink", 2, [colorsKF])
             const mixer = new THREE.AnimationMixer(obj)
             const clipAction = mixer.clipAction(clip)
-            clipAction.setLoop(THREE.LoopRepeat, 3)
+            clipAction.setLoop(THREE.LoopRepeat, 4)
             clipAction.timeScale = 3
             engine.animationClips.set("mapPannel_player2:blink", clipAction)
         }
@@ -424,8 +424,37 @@ function main() {
             clip?.reset()
             clip?.play()
         }
+        gameAlert(
+            scorer.name == currentPlayer().name
+                ? "You have scored"
+                : scorer.name + " has scored"
+        )
         scorer.score++
         updateHUD()
+    }
+
+    let gameAlertTimeout: any | null = null
+    function gameAlert(text: string) {
+        if (gameAlertTimeout) {
+            document
+                .getElementById("bigAlert")
+                ?.classList.remove("bigAlertAnimation")
+            clearTimeout(gameAlertTimeout)
+            gameAlertTimeout = null
+            setTimeout(() => {
+                gameAlert(text)
+            }, 1)
+            return
+        }
+        document.getElementById("bigAlert")?.classList.add("bigAlertAnimation")
+        if (document.querySelector("#bigAlert p"))
+            document.querySelector("#bigAlert p")!.innerHTML = text
+        gameAlertTimeout = setTimeout(() => {
+            document
+                .getElementById("bigAlert")
+                ?.classList.remove("bigAlertAnimation")
+            gameAlertTimeout = null
+        }, 4000)
     }
 
     initGameData()

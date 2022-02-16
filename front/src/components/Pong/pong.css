@@ -2,13 +2,13 @@
 	border: 1px solid red;
 } */
 
-#loadingContainer{
-	height: 100%;
-	width: 100%;
-	position: relative;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+#loadingContainer {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #gameContainer {
@@ -29,14 +29,7 @@
     pointer-events: none;
     top: 0;
     user-select: none;
-}
-
-#gameHud #gameSeparator {
-    height: 100%;
-    width: 2px;
-    left: calc(50% - (2px / 2));
-    position: absolute;
-    background-color: #ffffff40;
+    overflow: hidden;
 }
 
 #gameHud .identity {
@@ -56,4 +49,77 @@
 
 #gameHud .identity#two {
     left: calc(60%);
+}
+
+@keyframes bigAlert_text {
+    from {
+        transform: translateX(-100vw);
+    }
+
+    20% {
+        transform: translateX(0);
+    }
+
+    80% {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(100vw);
+    }
+}
+
+@keyframes bigAlert_background {
+    from {
+        transform: translateY(-50%) scaleY(0);
+    }
+
+    10% {
+        transform: translateY(-50%) scaleY(1);
+    }
+
+    90% {
+        transform: translateY(-50%) scaleY(1);
+    }
+
+    to {
+        transform: translateY(-50%) scaleY(0);
+    }
+}
+
+.bigAlertAnimation {
+    animation-name: bigAlert_background;
+    animation-duration: 4s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 1;
+}
+
+.bigAlertAnimation p {
+    animation-name: bigAlert_text;
+    animation-duration: 3.2s;
+    animation-delay: 0.4s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 1;
+}
+
+#bigAlert p {
+    margin: 0;
+    transform: translateX(100vw);
+}
+
+#bigAlert {
+    background-color: #000000;
+    color: white;
+    top: 50%;
+    display: flex;
+    position: absolute;
+    justify-content: center;
+    width: 100%;
+    font-size: xx-large;
+    transform: translateY(-50%) scaleY(0);
+    padding: 2rem;
+}
+
+#bigAlert span {
+    color: crimson;
 }
