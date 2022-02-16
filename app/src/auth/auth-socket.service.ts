@@ -30,4 +30,14 @@ export class AuthSocketService {
             .filter(([_, id]) => userIds.includes(id))
             .map(([socket]) => socket)
     }
+
+    broadcast(users: number[] | null, event: string, data: any) {
+        const message = JSON.stringify({ event, data })
+
+        for (const [socket, user] of this.sockets.entries()) {
+            if (users === null || users.includes(user)) {
+                socket.send(message)
+            }
+        }
+    }
 }

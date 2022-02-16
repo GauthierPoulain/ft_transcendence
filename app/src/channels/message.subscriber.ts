@@ -5,7 +5,7 @@ import { Message } from "./entities/message.entity";
 
 @EventSubscriber()
 export class MessageSubscriber implements EntitySubscriberInterface<Message> {
-    constructor(connection: Connection, private auth: AuthSocketService) {
+    constructor(connection: Connection, private sockets: AuthSocketService) {
         connection.subscribers.push(this)
     }
 
@@ -14,18 +14,9 @@ export class MessageSubscriber implements EntitySubscriberInterface<Message> {
     }
 
     afterInsert(event: InsertEvent<Message>) {
-        const users = event.entity.channel.memberships.map(
-            ({ userId }) => userId
-        )
+        const users = event.entity.channel.memberships.map(({ userId }) => userId)
 
         // TODO: Find a way to get the class transformer configuration?
-        const data = instanceToPlain(event.entity, { })
-
-        this.auth.getConnections(users).forEach((connection) => {
-            connection.send(JSON.stringify({
-                event: "channel.message.new",
-                data
-            }))
-        })
+        this.sockets.broadcast(users, "channel.message.new", instanceToPlain(event.entity))
     }
 }

@@ -35,6 +35,10 @@ function WebsocketTokenIssuer({ children }) {
         }
     }, [token, readyState])
 
+    if (readyState !== ReadyState.OPEN) {
+        return <p>Connecting to the websocket! (we should create a loading component)</p>
+    }
+
     return children
 }
 
