@@ -1,8 +1,6 @@
 class WebSocketService {
     _ws: WebSocket | null = null
     WSUrl: URL
-    canConnect: boolean = false
-    willConnect: boolean = false
     _onopen: ((this: WebSocket, ev: Event) => any) | undefined
     _onmessage: ((this: WebSocket, ev: MessageEvent<any>) => any) | undefined
     _onerror: ((this: WebSocket, ev: Event) => any) | undefined
@@ -14,13 +12,11 @@ class WebSocketService {
     }
 
     connect() {
-        if (this.canConnect && this.willConnect) {
-            this._ws = new WebSocket(this.WSUrl)
-            if (this._onopen) this._ws.onopen = this._onopen
-            if (this._onmessage) this._ws.onmessage = this._onmessage
-            if (this._onerror) this._ws.onerror = this._onerror
-            if (this._onclose) this._ws.onclose = this._onclose
-        }
+        this._ws = new WebSocket(this.WSUrl)
+        if (this._onopen) this._ws.onopen = this._onopen
+        if (this._onmessage) this._ws.onmessage = this._onmessage
+        if (this._onerror) this._ws.onerror = this._onerror
+        if (this._onclose) this._ws.onclose = this._onclose
     }
 
     close() {

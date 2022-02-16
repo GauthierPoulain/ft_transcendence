@@ -1,3 +1,16 @@
+/* #gameContainer #gameHud * {
+	border: 1px solid red;
+} */
+
+#loadingContainer{
+	height: 100%;
+	width: 100%;
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
 #gameContainer {
     height: 100%;
     width: 100%;
@@ -6,10 +19,6 @@
 
 #gameContainer canvas {
     z-index: 1;
-}
-
-#gameContainer #gameHud * {
-    /* border: 1px solid red; */
 }
 
 #gameHud {

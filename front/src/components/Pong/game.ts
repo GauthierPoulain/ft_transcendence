@@ -1,4 +1,5 @@
 import * as THREE from "three"
+import WebSocketService from "../../WebSocketService"
 import { degToRad } from "three/src/math/MathUtils"
 
 function main() {
@@ -12,7 +13,7 @@ function main() {
         renderResolution: 1,
     }
 
-    window.onresize = () => {
+    function resizeRenderer() {
         size.x = document.getElementById("gameContainer")!.clientWidth
         size.y = document.getElementById("gameContainer")!.clientHeight
         engine.renderer.setSize(
@@ -24,6 +25,8 @@ function main() {
         engine.camera.aspect = size.x / size.y
         engine.camera.updateProjectionMatrix()
     }
+
+    window.onresize = resizeRenderer
 
     var keyPressed = new Map<string, boolean>()
 
@@ -108,6 +111,9 @@ function main() {
             const light = new THREE.PointLight(0xffffff, 0.25)
             light.position.set(0, 0, 0)
             light.castShadow = graphicConfig.shadows
+            light.shadow.camera.far = 22
+            // light.shadow.mapSize.width = 512
+            // light.shadow.mapSize.width = 512
             engine.objects.set("light", light)
             engine.scene.add(light)
         }
@@ -126,7 +132,6 @@ function main() {
             const cube = new THREE.Mesh(geometry, material)
             cube.position.x = -7
             cube.castShadow = graphicConfig.shadows
-            cube.receiveShadow = graphicConfig.shadows
             engine.objects.set("player0", cube)
             engine.scene.add(cube)
         }
@@ -139,7 +144,6 @@ function main() {
             const material = new THREE.MeshStandardMaterial({ color: 0xffffff })
             const cube = new THREE.Mesh(geometry, material)
             cube.castShadow = graphicConfig.shadows
-            cube.receiveShadow = graphicConfig.shadows
             cube.position.x = 7
             engine.objects.set("player1", cube)
             engine.scene.add(cube)
@@ -148,8 +152,6 @@ function main() {
             const geometry = new THREE.SphereGeometry(remoteData.ball.radius)
             const material = new THREE.MeshBasicMaterial({ color: 0xffffff })
             const ball = new THREE.Mesh(geometry, material)
-            // ball.castShadow = graphicConfig.shadows
-            // ball.receiveShadow = graphicConfig.shadows
             engine.objects.set("ball", ball)
             engine.scene.add(ball)
         }
@@ -157,7 +159,6 @@ function main() {
             const geometry = new THREE.PlaneGeometry(10, 18)
             const material = new THREE.MeshStandardMaterial({ color: 0x222222 })
             const plane = new THREE.Mesh(geometry, material)
-            plane.castShadow = graphicConfig.shadows
             plane.receiveShadow = graphicConfig.shadows
             plane.position.y = -5
             plane.rotation.x = -degToRad(90)
@@ -169,7 +170,6 @@ function main() {
             const geometry = new THREE.PlaneGeometry(10, 18)
             const material = new THREE.MeshStandardMaterial({ color: 0x222222 })
             const plane = new THREE.Mesh(geometry, material)
-            plane.castShadow = graphicConfig.shadows
             plane.receiveShadow = graphicConfig.shadows
             plane.position.y = 5
             plane.rotation.x = degToRad(90)
@@ -181,7 +181,6 @@ function main() {
             const geometry = new THREE.PlaneGeometry(10, 10)
             const material = new THREE.MeshStandardMaterial({ color: 0x222222 })
             const plane = new THREE.Mesh(geometry, material)
-            plane.castShadow = graphicConfig.shadows
             plane.receiveShadow = graphicConfig.shadows
             plane.position.x = -9
             plane.rotation.y = degToRad(90)
@@ -192,7 +191,6 @@ function main() {
             const geometry = new THREE.PlaneGeometry(10, 10)
             const material = new THREE.MeshStandardMaterial({ color: 0x222222 })
             const plane = new THREE.Mesh(geometry, material)
-            plane.castShadow = graphicConfig.shadows
             plane.receiveShadow = graphicConfig.shadows
             plane.position.x = 9
             plane.rotation.y = -degToRad(90)
@@ -203,7 +201,6 @@ function main() {
             const geometry = new THREE.PlaneGeometry(18, 10)
             const material = new THREE.MeshStandardMaterial({ color: 0x222222 })
             const plane = new THREE.Mesh(geometry, material)
-            plane.castShadow = graphicConfig.shadows
             plane.receiveShadow = graphicConfig.shadows
             plane.position.z = -5
             engine.objects.set("backWall", plane)
@@ -221,7 +218,6 @@ function main() {
         engine.renderer.shadowMap.enabled = graphicConfig.shadows
         engine.renderer.shadowMap.type = THREE.PCFSoftShadowMap
         engine.camera.position.z = 12
-        // engine.camera.position.x = -8
         document
             .querySelector("#gameContainer canvas")
             ?.replaceWith(engine.renderer.domElement)
@@ -288,10 +284,18 @@ function main() {
         { once: true }
     )
 
-    console.log("game loaded")
+    {
+        document.getElementById("loadingContainer")!.style.display = "none"
+        document.getElementById("gameContainer")!.style.display = "block"
+        resizeRenderer()
+        console.log("game loaded")
+    }
     animate()
 }
 
-export default function game() {
-    if (document.getElementById("gameContainer")) main()
+export default function game(ws: WebSocketService) {
+    ws.onOpen(() => {
+        console.log("ws connected")
+        main()
+    })
 }
