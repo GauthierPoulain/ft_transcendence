@@ -5,7 +5,6 @@ import useUser from "../../../data/use-user"
 import { useMembers } from "../../../data/use-member"
 import useChannel from "../../../data/use-channel"
 import { useCreateMessage, useMessages } from "../../../data/use-message"
-
 import "./style.scss"
 import { useSWRConfig } from "swr"
 import UserAvatar from "../../../components/user/UserAvatar"
@@ -104,6 +103,43 @@ function Messages({ channelId }) {
     )
 }
 
+function PasswordMaintenance({ channelId }) {
+    const channel = useChannel(channelId)
+
+    if (channel.type === "public") {
+        return (
+            <div>
+                <Form className="w-auto ms-3">
+                    <InputGroup>
+                        <Form.Control
+                            className="bg-white text-dark"
+                            placeholder="Add password..."
+                        />
+                        <Button type="submit">Add</Button>
+                    </InputGroup>
+                </Form>
+            </div>
+        )
+    }
+
+    return (
+        <div className="d-flex">
+            <Form className="w-auto ms-3">
+                <InputGroup>
+                    <Form.Control
+                        className="bg-white text-dark"
+                        placeholder="Change password..."
+                    />
+                    <Button type="submit">Change</Button>
+                </InputGroup>
+            </Form>
+            <Button variant="warning" size="sm" className="ms-3">
+                Remove password
+            </Button>
+        </div>
+    )
+}
+
 function Main({ channelId }) {
     const channel = useChannel(channelId)
 
@@ -115,15 +151,7 @@ function Main({ channelId }) {
                     <Button variant="danger" size="sm">
                         Leave channel
                     </Button>
-                    <Form className="w-auto ms-3">
-                        <InputGroup>
-                            <Form.Control
-                                className="bg-white text-dark"
-                                placeholder="Enter name..."
-                            />
-                            <Button type="submit">Rename</Button>
-                        </InputGroup>
-                    </Form>
+                    <PasswordMaintenance channelId={channelId} />
                 </div>
             </div>
 
