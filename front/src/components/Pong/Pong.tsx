@@ -23,7 +23,7 @@ export default function Pong() {
         <React.Fragment>
             <div id="gameContainer" style={{ display: "none" }}>
                 <div id="gameHud">
-                    <div id="gameSeparator" />
+                    {/* <div id="gameSeparator" /> */}
                     <div className="identity" id="one">
                         <span className="name"></span>
                         <span className="score"></span>

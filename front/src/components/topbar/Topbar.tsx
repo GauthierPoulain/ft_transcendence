@@ -17,7 +17,7 @@ export default function Topbar() {
     const auth = useAuth();
 
     return (
-        <Navbar bg="light" variant="dark">
+        <Navbar bg="light" variant="dark" id="navbar">
             <Container>
                 <Navbar.Brand>ft_pong</Navbar.Brand>
 

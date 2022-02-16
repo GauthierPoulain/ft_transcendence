@@ -3,7 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm"
 
 import { AppController } from "./app.controller"
 import { AppService } from "./app.service"
-import { EventsModule } from "./events/events.module"
+import { GameModule } from "./game/game.module"
 import { UsersModule } from "./users/users.module"
 import { AuthModule } from "./auth/auth.module"
 
@@ -33,7 +33,7 @@ import { Membership } from "./channels/entities/membership.entity"
 
             entities: [User, Channel, Message, Membership],
         }),
-        EventsModule,
+        GameModule,
         UsersModule,
         AuthModule,
         ChannelsModule,

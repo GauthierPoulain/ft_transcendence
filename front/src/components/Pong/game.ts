@@ -1,6 +1,13 @@
 import * as THREE from "three"
 import WebSocketService from "../../WebSocketService"
-import { degToRad } from "three/src/math/MathUtils"
+
+function hexToRgb(hex: number) {
+    return {
+        r: hex >> 16,
+        g: (hex >> 8) & 255,
+        b: hex & 255,
+    }
+}
 
 function main() {
     var size = {
@@ -13,6 +20,22 @@ function main() {
         renderResolution: 1,
     }
 
+    const map = {
+        depth: 25,
+        width: 15,
+        height: 0.5,
+        color: 0x0000ff,
+        separator: {
+            depth: 0.5,
+            color: 0xffffff,
+        },
+        borders: {
+            width: 0.3,
+            height: 1.25,
+            color: 0xffffff,
+        },
+    }
+
     function resizeRenderer() {
         size.x = document.getElementById("gameContainer")!.clientWidth
         size.y = document.getElementById("gameContainer")!.clientHeight
@@ -21,7 +44,10 @@ function main() {
             size.y * graphicConfig.renderResolution
         )
         engine.renderer.domElement.style.width = "100%"
-        engine.renderer.domElement.style.height = "100%"
+        engine.renderer.domElement.style.height =
+            "calc(100vh - " +
+            document.getElementById("navbar")?.offsetHeight +
+            "px)"
         engine.camera.aspect = size.x / size.y
         engine.camera.updateProjectionMatrix()
     }
@@ -29,182 +55,234 @@ function main() {
     window.onresize = resizeRenderer
 
     var keyPressed = new Map<string, boolean>()
+    let mixerGroup = new THREE.AnimationObjectGroup()
 
     var engine = {
         scene: new THREE.Scene(),
         renderer: new THREE.WebGLRenderer({
             antialias: true,
         }),
-        camera: new THREE.PerspectiveCamera(60, size.x / size.y, 0.1, 1000),
+        camera: new THREE.PerspectiveCamera(50, size.x / size.y, 0.1, 1000),
         objects: new Map<string, any>(),
         clock: new THREE.Clock(),
         animationFrame: 0,
-    }
-
-    var remoteData = {
-        players: [
-            { y: 0, height: 3 },
-            { y: 0, height: 3 },
-        ],
-        ball: { x: 0, y: 0, radius: 0.3 },
+        animationClips: new Map<string, THREE.AnimationAction>(),
     }
 
     class Player {
         name: string
         score: number = 0
-        constructor(name: string) {
+        x: number = 0
+        width: number = 3
+        color: number = 0xffffff
+        meshName: string
+
+        constructor(name: string, color: number, meshName: string) {
             this.name = name
+            this.color = color
+            this.meshName = meshName
         }
     }
 
-    var playersData = new Array<Player>(2)
+    function initGameData() {
+        return {
+            players: {
+                one: new Player("Player 1", 0xffffff, "player1"),
+                two: new Player("Player 2", 0xffffff, "player2"),
+            },
+            ball: { x: 0, y: 0, radius: 0.3, color: 0xffffff },
+        }
+    }
+
+    var currentGameData = initGameData()
+
+    function whoAmI() {
+        return "one"
+        // return "two"
+        // return "spec"
+    }
+
+    function currentPlayer() {
+        return currentGameData.players[whoAmI()]
+    }
+
+    function render(delta) {
+        engine.animationClips.forEach((clip) => {
+            clip.getMixer().update(delta)
+        })
+        {
+            if (keyPressed.get("ArrowLeft") && !keyPressed.get("ArrowRight")) {
+                let player = engine.objects.get("player_1") as THREE.Mesh
+                if (
+                    player.position.x - currentPlayer().width / 2 >
+                    -map.width / 2
+                )
+                    player.position.x -= 10 * delta
+            }
+            if (keyPressed.get("ArrowRight") && !keyPressed.get("ArrowLeft")) {
+                let player = engine.objects.get("player_1") as THREE.Mesh
+                if (
+                    player.position.x + currentPlayer().width / 2 <
+                    map.width / 2
+                )
+                    player.position.x += 10 * delta
+            }
+            if (keyPressed.get("KeyA")) {
+                let quoit = engine.objects.get("quoit") as THREE.Mesh
+                quoit.position.x -= 10 * delta
+            }
+            if (keyPressed.get("KeyD")) {
+                let quoit = engine.objects.get("quoit") as THREE.Mesh
+                quoit.position.x += 10 * delta
+            }
+            if (keyPressed.get("KeyW")) {
+                let quoit = engine.objects.get("quoit") as THREE.Mesh
+                quoit.position.z -= 10 * delta
+            }
+            if (keyPressed.get("KeyS")) {
+                let quoit = engine.objects.get("quoit") as THREE.Mesh
+                quoit.position.z += 10 * delta
+            }
+        }
+    }
 
     function animate() {
         engine.animationFrame = requestAnimationFrame(animate)
+        render(engine.clock.getDelta())
         engine.renderer.render(engine.scene, engine.camera)
-        let delta = engine.clock.getDelta()
-
-        {
-            if (keyPressed.get("ArrowUp") && !keyPressed.get("ArrowDown")) {
-                let player = engine.objects.get("player0") as THREE.Mesh
-                if (player.position.y + remoteData.players[0].height / 2 < 5)
-                    player.position.y += 10 * delta
-            }
-            if (keyPressed.get("ArrowDown") && !keyPressed.get("ArrowUp")) {
-                let player = engine.objects.get("player0") as THREE.Mesh
-                if (player.position.y - remoteData.players[0].height / 2 > -5)
-                    player.position.y -= 10 * delta
-            }
-            if (keyPressed.get("KeyA")) {
-                let ball = engine.objects.get("ball") as THREE.Mesh
-                ball.position.x -= 10 * delta
-            }
-            if (keyPressed.get("KeyD")) {
-                let ball = engine.objects.get("ball") as THREE.Mesh
-                ball.position.x += 10 * delta
-            }
-            if (keyPressed.get("KeyW")) {
-                let ball = engine.objects.get("ball") as THREE.Mesh
-                ball.position.y += 10 * delta
-            }
-            if (keyPressed.get("KeyS")) {
-                let ball = engine.objects.get("ball") as THREE.Mesh
-                ball.position.y -= 10 * delta
-            }
-        }
-        {
-            {
-                let ball = engine.objects.get("ball") as THREE.Mesh
-                let light = engine.objects.get("light") as THREE.PointLight
-
-                light.position.set(
-                    ball.position.x,
-                    ball.position.y,
-                    ball.position.z
-                )
-            }
-        }
     }
 
     function initScene() {
-        {
-            const light = new THREE.PointLight(0xffffff, 0.25)
-            light.position.set(0, 0, 0)
-            light.castShadow = graphicConfig.shadows
-            light.shadow.camera.far = 22
-            // light.shadow.mapSize.width = 512
-            // light.shadow.mapSize.width = 512
-            engine.objects.set("light", light)
-            engine.scene.add(light)
+        engine.camera.position.set(0, 10, 25)
+        engine.camera.lookAt(0, 0, 0)
+
+        function addObj(name: string, obj: any) {
+            engine.objects.set(name, obj)
+            engine.scene.add(obj)
         }
         {
-            const light = new THREE.AmbientLight(0xffffff, 0.75)
-            engine.objects.set("ambientLight", light)
-            engine.scene.add(light)
+            const light = new THREE.AmbientLight(0xffffff, 0.3)
+            addObj("ambientLight", light)
         }
         {
-            const geometry = new THREE.BoxGeometry(
-                0.5,
-                remoteData.players[0].height,
-                0.5
+            const light = new THREE.PointLight(0xffffff, 1, 40)
+            light.position.set(12, 6, 0)
+            light.castShadow = true
+            addObj("light", light)
+        }
+
+        {
+            const geo = new THREE.BoxGeometry(
+                map.width,
+                map.height,
+                map.depth / 2 - map.separator.depth / 2
             )
-            const material = new THREE.MeshStandardMaterial({ color: 0xffffff })
-            const cube = new THREE.Mesh(geometry, material)
-            cube.position.x = -7
-            cube.castShadow = graphicConfig.shadows
-            engine.objects.set("player0", cube)
-            engine.scene.add(cube)
-        }
-        {
-            const geometry = new THREE.BoxGeometry(
-                0.5,
-                remoteData.players[1].height,
-                0.5
+            const mat = new THREE.MeshPhongMaterial({ color: map.color })
+            const obj = new THREE.Mesh(geo, mat)
+            obj.position.set(
+                0,
+                -(map.height / 2),
+                (map.depth - map.separator.depth) / 4 + map.separator.depth / 2
             )
-            const material = new THREE.MeshStandardMaterial({ color: 0xffffff })
-            const cube = new THREE.Mesh(geometry, material)
-            cube.castShadow = graphicConfig.shadows
-            cube.position.x = 7
-            engine.objects.set("player1", cube)
-            engine.scene.add(cube)
+            obj.receiveShadow = true
+            addObj("mapPannel_player1", obj)
         }
         {
-            const geometry = new THREE.SphereGeometry(remoteData.ball.radius)
-            const material = new THREE.MeshBasicMaterial({ color: 0xffffff })
-            const ball = new THREE.Mesh(geometry, material)
-            engine.objects.set("ball", ball)
-            engine.scene.add(ball)
+            const geo = new THREE.BoxGeometry(
+                map.width,
+                map.height,
+                map.depth / 2 - map.separator.depth / 2
+            )
+            const mat = new THREE.MeshPhongMaterial({ color: map.color })
+            const obj = new THREE.Mesh(geo, mat)
+            obj.position.set(
+                0,
+                -(map.height / 2),
+                -(
+                    (map.depth - map.separator.depth) / 4 +
+                    map.separator.depth / 2
+                )
+            )
+            obj.receiveShadow = true
+            addObj("mapPannel_player2", obj)
         }
         {
-            const geometry = new THREE.PlaneGeometry(10, 18)
-            const material = new THREE.MeshStandardMaterial({ color: 0x222222 })
-            const plane = new THREE.Mesh(geometry, material)
-            plane.receiveShadow = graphicConfig.shadows
-            plane.position.y = -5
-            plane.rotation.x = -degToRad(90)
-            engine.objects.set("floor", plane)
-            plane.rotation.z = degToRad(90)
-            engine.scene.add(plane)
+            const geo = new THREE.BoxGeometry(
+                map.width,
+                map.height,
+                map.separator.depth
+            )
+            const mat = new THREE.MeshPhongMaterial({
+                color: map.separator.color,
+            })
+            const obj = new THREE.Mesh(geo, mat)
+            obj.position.set(0, -(map.height / 2), 0)
+            obj.receiveShadow = true
+            addObj("map_separator", obj)
         }
         {
-            const geometry = new THREE.PlaneGeometry(10, 18)
-            const material = new THREE.MeshStandardMaterial({ color: 0x222222 })
-            const plane = new THREE.Mesh(geometry, material)
-            plane.receiveShadow = graphicConfig.shadows
-            plane.position.y = 5
-            plane.rotation.x = degToRad(90)
-            plane.rotation.z = degToRad(90)
-            engine.objects.set("ceil", plane)
-            engine.scene.add(plane)
+            const geo = new THREE.BoxGeometry(
+                map.borders.width,
+                map.borders.height,
+                map.depth
+            )
+            const mat = new THREE.MeshPhongMaterial({
+                color: map.borders.color,
+            })
+            const obj = new THREE.Mesh(geo, mat)
+            obj.position.set(
+                map.width / 2 + map.borders.width / 2,
+                map.borders.height / 2 - map.height,
+                0
+            )
+            obj.castShadow = true
+            obj.receiveShadow = true
+            addObj("map_border1", obj)
         }
         {
-            const geometry = new THREE.PlaneGeometry(10, 10)
-            const material = new THREE.MeshStandardMaterial({ color: 0x222222 })
-            const plane = new THREE.Mesh(geometry, material)
-            plane.receiveShadow = graphicConfig.shadows
-            plane.position.x = -9
-            plane.rotation.y = degToRad(90)
-            engine.objects.set("leftWall", plane)
-            engine.scene.add(plane)
+            const geo = new THREE.BoxGeometry(
+                map.borders.width,
+                map.borders.height,
+                map.depth
+            )
+            const mat = new THREE.MeshPhongMaterial({
+                color: map.borders.color,
+            })
+            const obj = new THREE.Mesh(geo, mat)
+            obj.position.set(
+                -(map.width / 2 + map.borders.width / 2),
+                map.borders.height / 2 - map.height,
+                0
+            )
+            obj.castShadow = true
+            obj.receiveShadow = true
+            addObj("map_border2", obj)
         }
         {
-            const geometry = new THREE.PlaneGeometry(10, 10)
-            const material = new THREE.MeshStandardMaterial({ color: 0x222222 })
-            const plane = new THREE.Mesh(geometry, material)
-            plane.receiveShadow = graphicConfig.shadows
-            plane.position.x = 9
-            plane.rotation.y = -degToRad(90)
-            engine.objects.set("rightWall", plane)
-            engine.scene.add(plane)
+            let player = currentGameData.players.one
+            const geo = new THREE.BoxGeometry(player.width, 0.3, 0.4)
+            const mat = new THREE.MeshPhongMaterial({ color: player.color })
+            const obj = new THREE.Mesh(geo, mat)
+            obj.position.set(0, 0.3, 11.5)
+            obj.castShadow = true
+            addObj("player_1", obj)
         }
         {
-            const geometry = new THREE.PlaneGeometry(18, 10)
-            const material = new THREE.MeshStandardMaterial({ color: 0x222222 })
-            const plane = new THREE.Mesh(geometry, material)
-            plane.receiveShadow = graphicConfig.shadows
-            plane.position.z = -5
-            engine.objects.set("backWall", plane)
-            engine.scene.add(plane)
+            let player = currentGameData.players.two
+            const geo = new THREE.BoxGeometry(player.width, 0.3, 0.4)
+            const mat = new THREE.MeshPhongMaterial({ color: player.color })
+            const obj = new THREE.Mesh(geo, mat)
+            obj.position.set(0, 0.3, -11.5)
+            obj.castShadow = true
+            addObj("player_2", obj)
+        }
+        {
+            const geo = new THREE.CylinderGeometry(0.5, 0.5, 0.3, 15)
+            const mat = new THREE.MeshPhongMaterial({ color: 0xffffff })
+            const obj = new THREE.Mesh(geo, mat)
+            obj.position.set(0, 0.3, 0)
+            obj.castShadow = true
+            addObj("quoit", obj)
         }
     }
 
@@ -213,11 +291,12 @@ function main() {
             size.x * graphicConfig.renderResolution,
             size.y * graphicConfig.renderResolution
         )
+        engine.renderer.setPixelRatio(window.devicePixelRatio)
         engine.renderer.domElement.style.width = "100%"
         engine.renderer.domElement.style.height = "100%"
         engine.renderer.shadowMap.enabled = graphicConfig.shadows
-        engine.renderer.shadowMap.type = THREE.PCFSoftShadowMap
-        engine.camera.position.z = 12
+        engine.renderer.shadowMap.type = THREE.PCFShadowMap
+        engine.renderer.outputEncoding = THREE.sRGBEncoding
         document
             .querySelector("#gameContainer canvas")
             ?.replaceWith(engine.renderer.domElement)
@@ -225,20 +304,15 @@ function main() {
 
     function updateHUD() {
         document.querySelector(".identity#one .name")!.textContent =
-            playersData[0].name
+            currentGameData.players.one.name
         document.querySelector(".identity#one .score")!.textContent = String(
-            playersData[0].score
+            currentGameData.players.one.score
         )
         document.querySelector(".identity#two .name")!.textContent =
-            playersData[1].name
+            currentGameData.players.two.name
         document.querySelector(".identity#two .score")!.textContent = String(
-            playersData[1].score
+            currentGameData.players.two.score
         )
-    }
-
-    function initGameData() {
-        playersData[0] = new Player("GogoLeDozo")
-        playersData[1] = new Player("HornyBoiii")
     }
 
     function initKeyControl() {
@@ -246,12 +320,16 @@ function main() {
             keyPressed.set(e.code, true)
             switch (e.code) {
                 case "Digit1":
-                    playersData[0].score += 1
-                    updateHUD()
+                    playerScore(
+                        currentGameData.players.one,
+                        currentGameData.players.two
+                    )
                     break
                 case "Digit2":
-                    playersData[1].score += 1
-                    updateHUD()
+                    playerScore(
+                        currentGameData.players.two,
+                        currentGameData.players.one
+                    )
                     break
 
                 default:
@@ -269,12 +347,6 @@ function main() {
         }
     }
 
-    initGameData()
-    updateHUD()
-    initEngine()
-    initScene()
-    initKeyControl()
-
     document.addEventListener(
         "stopRendering",
         () => {
@@ -290,12 +362,85 @@ function main() {
         resizeRenderer()
         console.log("game loaded")
     }
+
+    function registerAnimations() {
+        {
+            let obj = engine.objects.get("mapPannel_player1") as THREE.Mesh
+            let mat = obj.material as THREE.MeshPhongMaterial
+            let blinkColor = hexToRgb(0xff0000)
+            let colorsKF = new THREE.ColorKeyframeTrack(
+                ".material.color",
+                [0, 1],
+                [
+                    blinkColor.r,
+                    blinkColor.g,
+                    blinkColor.b,
+                    mat.color.r,
+                    mat.color.g,
+                    mat.color.b,
+                ],
+                THREE.InterpolateDiscrete
+            )
+            const clip = new THREE.AnimationClip("blink", 2, [colorsKF])
+            const mixer = new THREE.AnimationMixer(obj)
+            const clipAction = mixer.clipAction(clip)
+            clipAction.setLoop(THREE.LoopRepeat, 3)
+            clipAction.timeScale = 3
+            engine.animationClips.set("mapPannel_player1:blink", clipAction)
+        }
+        {
+            let obj = engine.objects.get("mapPannel_player2") as THREE.Mesh
+            let mat = obj.material as THREE.MeshPhongMaterial
+            let blinkColor = hexToRgb(0xff0000)
+            let colorsKF = new THREE.ColorKeyframeTrack(
+                ".material.color",
+                [0, 1],
+                [
+                    blinkColor.r,
+                    blinkColor.g,
+                    blinkColor.b,
+                    mat.color.r,
+                    mat.color.g,
+                    mat.color.b,
+                ],
+                THREE.InterpolateDiscrete
+            )
+            const clip = new THREE.AnimationClip("blink", 2, [colorsKF])
+            const mixer = new THREE.AnimationMixer(obj)
+            const clipAction = mixer.clipAction(clip)
+            clipAction.setLoop(THREE.LoopRepeat, 3)
+            clipAction.timeScale = 3
+            engine.animationClips.set("mapPannel_player2:blink", clipAction)
+        }
+    }
+
+    function playerScore(scorer: Player, looser: Player) {
+        if (looser.meshName == "player1") {
+            const clip = engine.animationClips.get("mapPannel_player1:blink")
+            clip?.reset()
+            clip?.play()
+        } else if (looser.meshName == "player2") {
+            const clip = engine.animationClips.get("mapPannel_player2:blink")
+            clip?.reset()
+            clip?.play()
+        }
+        scorer.score++
+        updateHUD()
+    }
+
+    initGameData()
+    initEngine()
+    initScene()
+    updateHUD()
+    registerAnimations()
+    initKeyControl()
     animate()
 }
 
 export default function game(ws: WebSocketService) {
     ws.onOpen(() => {
         console.log("ws connected")
+        // ws.emit("login")
         main()
     })
 }
