@@ -141,7 +141,7 @@ function PasswordMaintenance({ channelId }) {
                             className="bg-white text-dark"
                             placeholder="Add password..."
                         />
-                        <Button type="submit">Add</Button>
+                        <Button type="submit">Protect channel</Button>
                     </InputGroup>
                 </Form>
             </div>
@@ -172,7 +172,10 @@ function Main({ channelId }) {
     return (
         <div className="flex-grow-1 chat-view p-3 d-flex flex-column">
             <div>
-                <h2>{channel.name}</h2>
+                <div className="d-flex">
+                    <h2>{channel.name}</h2>
+                    <h4 className="ms-2 chan-type">[{channel.type}]</h4>
+                </div>
                 <div className="d-flex">
                     <Button variant="danger" size="sm">
                         Leave channel
