@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Button, Form, InputGroup, Stack } from "react-bootstrap"
+import { Button, Form, InputGroup, Stack, Dropdown } from "react-bootstrap"
 import { Link, useParams } from "react-router-dom"
 import useUser from "../../../data/use-user"
 import { useMembers } from "../../../data/use-member"
@@ -8,20 +8,34 @@ import { useCreateMessage, useMessages } from "../../../data/use-message"
 import "./style.scss"
 import { useSWRConfig } from "swr"
 import UserAvatar from "../../../components/user/UserAvatar"
+import { Edit } from "@material-ui/icons"
 
 function Member({ member }) {
     const user = useUser(member.userId)
 
     return (
-        <Link
-            className="member-links mb-2 text-decoration-none d-flex"
-            to={`/users/${user.id}`}
-        >
-            <UserAvatar className="me-2 w-8" userId={user.id} />
-            <span className="m-auto ms-0">
-                {user.nickname} - {member.role}
-            </span>
-        </Link>
+        <div className="d-flex">
+            <Link
+                className="member-links mb-2 text-decoration-none d-flex"
+                to={`/users/${user.id}`}
+            >
+                <UserAvatar className="me-2 w-8" userId={user.id} />
+                <span className="m-auto ms-0">
+                    {user.nickname} - {member.role}
+                </span>
+            </Link>
+            <Dropdown>
+                <Dropdown.Toggle childBsPrefix="member-edit" bsPrefix="member-edit" size="sm">
+                    <Edit/>
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                    <Dropdown.Item>Ban</Dropdown.Item>
+                    <Dropdown.Item>Mute</Dropdown.Item>
+                    <Dropdown.Item>Kick</Dropdown.Item>
+                </Dropdown.Menu>
+            </Dropdown>
+        </div>
     )
 }
 
@@ -105,6 +119,8 @@ function Messages({ channelId }) {
 
 function PasswordMaintenance({ channelId }) {
     const channel = useChannel(channelId)
+
+    /* Test if user is owner else -> return <></> */
 
     if (channel.type === "public") {
         return (
