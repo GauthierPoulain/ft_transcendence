@@ -52,10 +52,6 @@ export class MessagesController {
             throw new UnauthorizedException()
         }
 
-        const message = await this.channels.createMessage(channel, user, body)
-
-        await this.channels.broadcastNewMessage(message)
-
-        return message
+        return this.channels.createMessage(channel, user, body)
     }
 }

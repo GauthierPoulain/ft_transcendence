@@ -80,19 +80,4 @@ export class ChannelsService {
         membership.user = user
         return this.membershipsRepository.save(membership)
     }
-
-    async broadcastNewMessage(message: Message) {
-        const { memberships } = message.channel
-        const users = memberships.map(({ userId }) => userId)
-
-        console.log(users)
-
-        for (const connection of this.authSocket.getConnections(users)) {
-            console.log("found connection", connection)
-            connection.send(JSON.stringify({
-                event: "channel.message.new",
-                data: instanceToPlain(message, {})
-            }))
-        }
-    }
 }
