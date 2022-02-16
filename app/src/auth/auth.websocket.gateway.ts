@@ -13,6 +13,12 @@ export class AuthWebsocketGateway implements OnGatewayDisconnect {
 
     @SubscribeMessage("login")
     async onLogin(@MessageBody() token: string, @ConnectedSocket() client: WebSocket) {
+        console.log("logging in someone")
         await this.auth.login(client, token)        
+    }
+
+    @SubscribeMessage("logout")
+    onLogout(@ConnectedSocket() client: WebSocket) {
+        this.auth.logout(client)        
     }
 }

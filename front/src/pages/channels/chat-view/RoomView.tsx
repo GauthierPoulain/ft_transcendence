@@ -60,7 +60,6 @@ function Members({ channelId }) {
 }
 
 function FormMessage({ channelId }) {
-    const { mutate } = useSWRConfig()
     const channel = useChannel(channelId)
     const [content, setContent] = useState("")
     const { submit, isError, isLoading } = useCreateMessage()
@@ -75,7 +74,6 @@ function FormMessage({ channelId }) {
             await submit({ channelId, content })
 
             setContent("")
-            mutate(`/channels/${channelId}/messages`)
         }
     }
 

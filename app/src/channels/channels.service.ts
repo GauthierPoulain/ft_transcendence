@@ -82,12 +82,17 @@ export class ChannelsService {
     }
 
     async broadcastNewMessage(message: Message) {
-        const memberships = await this.membershipsRepository.find({
-            where: { channelId: message.channelId }
-        })
+        const { memberships } = message.channel
+        const users = memberships.map(({ userId }) => userId)
 
-        for (const connection of this.authSocket.getConnections(memberships.map(({userId}) => userId))) {
-            connection.emit("new_message", JSON.stringify(instanceToPlain(message, {})))
+        console.log(users)
+
+        for (const connection of this.authSocket.getConnections(users)) {
+            console.log("found connection", connection)
+            connection.send(JSON.stringify({
+                event: "channel.message.new",
+                data: instanceToPlain(message, {})
+            }))
         }
     }
 }

@@ -1,6 +1,7 @@
 import { createContext, useContext, useMemo, useState } from "react";
 import { fetcher, setAccessToken } from "./use-fetch";
 import { User } from "./use-user";
+import { useWebSocket } from  "./use-websocket"
 
 export type ExchangeCodeRequest = {
     code: string
@@ -57,7 +58,7 @@ export function AuthProvider({ children }) {
             login,
             fakeLogin
         }
-    }, [token, userId])
+    }, [token])
 
     return <Context.Provider value={value}>
         { children }
