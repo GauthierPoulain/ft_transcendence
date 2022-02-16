@@ -5,7 +5,7 @@ import {
     OneToMany,
 } from "typeorm"
 
-import { Membership } from "src/channels/entities/membership.entity"
+import { Member } from "src/channels/members/member.entity"
 import { Message } from "src/channels/messages/message.entity"
 import { Exclude, Expose } from "class-transformer"
 
@@ -29,9 +29,9 @@ export class Channel {
     @Exclude()
     password: string
 
-    @OneToMany(() => Membership, (membership) => membership.channel, { cascade: true })
+    @OneToMany(() => Member, (member) => member.channel, { cascade: true })
     @Exclude()
-    memberships: Membership[]
+    members: Member[]
 
     @OneToMany(() => Message, (message) => message.channel, { cascade: true })
     @Exclude()

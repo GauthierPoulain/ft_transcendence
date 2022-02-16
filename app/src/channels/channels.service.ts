@@ -1,15 +1,13 @@
 import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { hash } from "argon2"
-import { AuthSocketService } from "src/auth/auth-socket.service"
 import { User } from "src/users/entities/user.entity"
 import { Repository } from "typeorm"
-import { CreateMessageDto } from "./channels.dto"
 import { CreateChannelDto } from "./dto/create-channel.dto"
 import { UpdateChannelDto } from "./dto/update-channel.dto"
 import { Channel } from "./entities/channel.entity"
-import { Membership, MembershipRole } from "./entities/membership.entity"
-import { Message } from "./messages/message.entity"
+import { Role } from "./members/member.entity"
+import { MembersService } from "./members/members.service"
 
 @Injectable()
 export class ChannelsService {
@@ -17,26 +15,25 @@ export class ChannelsService {
         @InjectRepository(Channel)
         private channelsRepository: Repository<Channel>,
 
-        @InjectRepository(Message)
-        private messagesRepository: Repository<Message>,
-
-        @InjectRepository(Membership)
-        private membershipsRepository: Repository<Membership>,
+        private members: MembersService
     ) {}
 
     async create(input: CreateChannelDto, owner: User): Promise<Channel> {
-        const membership = new Membership()
-        const channel = new Channel()
-
-        membership.role = MembershipRole.OWNER
-        membership.user = owner
-        membership.channel = channel
+        let channel = new Channel()
         channel.name = input.name
         channel.joinable = input.joinable
         channel.password = input.password ? await hash(input.password) : ""
-        channel.memberships = [membership]
 
-        return this.channelsRepository.save(channel)
+        channel = await this.channelsRepository.save(channel)
+
+        try {
+            await this.members.create(channel, owner, Role.OWNER)
+        } catch (e) {
+            await this.channelsRepository.remove(channel)
+            throw e;
+        }
+
+        return channel
     }
 
     findJoinable() {
@@ -53,28 +50,5 @@ export class ChannelsService {
 
     remove(id: number) {
         return `This action removes a #${id} channel`
-    }
-
-    createMessage(channel: Channel, author: User, dto: CreateMessageDto) {
-        const message = new Message()
-
-        message.content = dto.content
-        message.author = author
-        message.channel = channel
-
-        return this.messagesRepository.save(message)
-    }
-
-    joinChannel(channel: Channel, user: User) {
-        let membership = channel.memberships.find(({ userId }) => userId === user.id)
-
-        if (membership) {
-            return membership
-        }
-
-        membership = new Membership()
-        membership.channel = channel
-        membership.user = user
-        return this.membershipsRepository.save(membership)
     }
 }

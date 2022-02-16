@@ -3,6 +3,7 @@ import {
     ClassSerializerInterceptor,
     Controller,
     Get,
+    NotFoundException,
     Param,
     Post,
     UnauthorizedException,
@@ -14,11 +15,32 @@ import { User } from "src/users/entities/user.entity"
 import { CurrentUser } from "src/users/user.decorator"
 import { CreateMessageDto } from "../channels.dto"
 import { ChannelsService } from "../channels.service"
+import { MembersService } from "../members/members.service"
+import { MessagesService } from "./messages.service"
 
 @Controller("channels/:channelId/messages")
 @UseInterceptors(ClassSerializerInterceptor)
 export class MessagesController {
-    constructor(private channels: ChannelsService) {}
+    constructor(private messages: MessagesService, private channels: ChannelsService, private members: MembersService) {
+    }
+
+    @Post()
+    @UseGuards(ConnectedGuard)
+    async create(@CurrentUser() user: User, @Param("channelId") channelId: number, @Body() body: CreateMessageDto) {
+        const channel = await this.channels.findOne(channelId)
+
+        if (!channel) {
+            throw new NotFoundException()
+        }
+
+        const member = await this.members.findOne(channel, user)
+
+        if (!member) {
+            throw new UnauthorizedException()
+        }
+
+        return this.messages.create(channel, user, body.content)
+    }
 
     @Get()
     @UseGuards(ConnectedGuard)
@@ -26,32 +48,19 @@ export class MessagesController {
         @CurrentUser() user: User,
         @Param("channelId") channelId: number
     ) {
-        const channel = await this.channels.findOne(channelId, [
-            "memberships",
-            "messages",
-            "messages.author",
-        ])
+        const channel = await this.channels.findOne(channelId)
 
-        if (!channel || !channel.memberships.some(membership => membership.userId === user.id)) {
+        if (!channel) {
+            throw new NotFoundException()
+        }
+
+        const member = await this.members.findOne(channel, user)
+
+        if (!member) {
             throw new UnauthorizedException()
         }
 
-        return channel.messages
+        return this.messages.findAll(channel)
     }
 
-    @Post()
-    @UseGuards(ConnectedGuard)
-    async create(
-        @CurrentUser() user: User,
-        @Param("channelId") channelId: number,
-        @Body() body: CreateMessageDto
-    ) {
-        const channel = await this.channels.findOne(channelId, ["memberships"])
-
-        if (!channel || !channel.memberships.some(membership => membership.userId === user.id)) {
-            throw new UnauthorizedException()
-        }
-
-        return this.channels.createMessage(channel, user, body)
-    }
 }

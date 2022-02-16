@@ -3,34 +3,34 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, RelationId } from "t
 import { User } from "src/users/entities/user.entity"
 import { Channel } from "src/channels/entities/channel.entity"
 
-export enum MembershipRole {
+export enum Role {
     GUEST = "guest",
     ADMIN = "admin",
     OWNER = "owner"
 }
 
 @Entity()
-export class Membership {
+export class Member {
     @PrimaryGeneratedColumn()
     id: number
 
-    @ManyToOne(() => Channel, (channel) => channel.memberships)
+    @ManyToOne(() => Channel, (channel) => channel.members)
     channel: Channel
 
-    @RelationId((membership: Membership) => membership.channel)
+    @RelationId((member: Member) => member.channel)
     channelId: number
 
     @ManyToOne(() => User, (user) => user.memberships)
     user: User
 
-    @RelationId((membership: Membership) => membership.user)
+    @RelationId((member: Member) => member.user)
     userId: number
 
     @Column({
         type: "enum",
-        enum: MembershipRole,
-        default: MembershipRole.GUEST
+        enum: Role,
+        default: Role.GUEST
     })
-    role: MembershipRole
+    role: Role
 }
 

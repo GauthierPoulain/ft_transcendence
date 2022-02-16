@@ -1,4 +1,4 @@
-import { Membership } from "src/channels/entities/membership.entity"
+import { Member } from "src/channels/members/member.entity"
 import { Message } from "src/channels/messages/message.entity"
 import {
     Entity,
@@ -30,8 +30,8 @@ class User {
     @Column({ default: "" })
     nickname: string
 
-    @OneToMany(() => Membership, (membership) => membership.user)
-    memberships: Membership[]
+    @OneToMany(() => Member, (member) => member.user)
+    memberships: Member[]
 
     @OneToMany(() => Message, (message) => message.author)
     messages: Message[]

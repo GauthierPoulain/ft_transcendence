@@ -15,7 +15,6 @@ export class FetchUserPipe
     constructor(private users: UsersService) {}
 
     async transform(value: number | undefined, metadata: ArgumentMetadata) {
-        console.log("transform", value)
         if (typeof value !== "number") {
             return null
         }
