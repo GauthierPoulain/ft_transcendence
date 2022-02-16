@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Button, Form, Image, Stack } from "react-bootstrap"
+import { Button, Form, InputGroup, Stack } from "react-bootstrap"
 import { Link, useParams } from "react-router-dom"
 import useUser from "../../../data/use-user"
 import { useMembers } from "../../../data/use-member"
@@ -13,10 +13,17 @@ import UserAvatar from "../../../components/user/UserAvatar"
 function Member({ member }) {
     const user = useUser(member.userId)
 
-    return <Link className="member-links mb-2 text-decoration-none d-flex" to={`/users/${user.id}`}>
-        <UserAvatar className="me-2 w-8" userId={user.id} />
-        <span className="m-auto ms-0">{user.nickname} - {member.role}</span>
-    </Link>
+    return (
+        <Link
+            className="member-links mb-2 text-decoration-none d-flex"
+            to={`/users/${user.id}`}
+        >
+            <UserAvatar className="me-2 w-8" userId={user.id} />
+            <span className="m-auto ms-0">
+                {user.nickname} - {member.role}
+            </span>
+        </Link>
+    )
 }
 
 function Members({ channelId }) {
@@ -27,7 +34,9 @@ function Members({ channelId }) {
             <h2>Members</h2>
 
             <Stack>
-                { members.map((member) => <Member key={member.id} member={member} />) }
+                {members.map((member) => (
+                    <Member key={member.id} member={member} />
+                ))}
             </Stack>
         </div>
     )
@@ -55,7 +64,16 @@ function FormMessage({ channelId }) {
 
     return (
         <Form onSubmit={onSubmit}>
-            <Form.Control type="text" className={`bg-dark border-${isError ? "danger" : "dark"} text-white`} placeholder={`Enter a content for ${channel.name}`} value={content} onChange={(event) => setContent(event.target.value)} disabled={isLoading}  />
+            <Form.Control
+                type="text"
+                className={`bg-dark border-${
+                    isError ? "danger" : "dark"
+                } text-white`}
+                placeholder={`Enter a content for ${channel.name}`}
+                value={content}
+                onChange={(event) => setContent(event.target.value)}
+                disabled={isLoading}
+            />
         </Form>
     )
 }
@@ -65,8 +83,8 @@ function Message({ message }) {
 
     return (
         <div className="d-flex flex-column">
-            <div>{ author.nickname }</div>
-            <div>{ message.content }</div>
+            <div>{author.nickname}</div>
+            <div>{message.content}</div>
         </div>
     )
 }
@@ -75,8 +93,13 @@ function Messages({ channelId }) {
     const messages = useMessages(channelId)
 
     return (
-        <div className="flex-grow-1 d-flex flex-column-reverse gap-row-1" style={{ height: 0, overflow: "auto" }}>
-            { [...messages].reverse().map((message) => <Message key={message.id} message={message} />) }
+        <div
+            className="flex-grow-1 d-flex flex-column-reverse gap-row-1"
+            style={{ height: 0, overflow: "auto" }}
+        >
+            {[...messages].reverse().map((message) => (
+                <Message key={message.id} message={message} />
+            ))}
         </div>
     )
 }
@@ -88,7 +111,20 @@ function Main({ channelId }) {
         <div className="flex-grow-1 chat-view p-3 d-flex flex-column">
             <div>
                 <h2>{channel.name}</h2>
-                <Button variant="danger" size="sm">Leave channel</Button>
+                <div className="d-flex">
+                    <Button variant="danger" size="sm">
+                        Leave channel
+                    </Button>
+                    <Form className="w-auto ms-3">
+                        <InputGroup>
+                            <Form.Control
+                                className="bg-white text-dark"
+                                placeholder="Enter name..."
+                            />
+                            <Button type="submit">Rename</Button>
+                        </InputGroup>
+                    </Form>
+                </div>
             </div>
 
             <Messages channelId={channelId} />
@@ -102,7 +138,6 @@ export default function RoomView() {
     const { channelId } = useParams()
 
     const channel = useChannel(parseInt(channelId as string, 10))
-
 
     return (
         <>
