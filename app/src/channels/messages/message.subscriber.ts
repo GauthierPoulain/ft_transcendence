@@ -15,7 +15,7 @@ export class MessageSubscriber {
     }
 
     async afterInsert({ entity: message }: InsertEvent<Message>) {
-        const members = await this.members.findAll(message.channelId)
+        const members = await this.members.findByChannel(message.channelId)
         const users = members.map(({ userId }) => userId)
 
         // TODO: Find a way to get the class transformer configuration?

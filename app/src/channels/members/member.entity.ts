@@ -20,7 +20,7 @@ export class Member {
     @RelationId((member: Member) => member.channel)
     channelId: number
 
-    @ManyToOne(() => User, (user) => user.memberships)
+    @ManyToOne(() => User, (user: User) => user.memberships)
     user: User
 
     @RelationId((member: Member) => member.user)

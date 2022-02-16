@@ -20,7 +20,15 @@ export class MembersService {
         return this.members.save(member)
     }
 
-    findAll(channelId: Channel["id"]): Promise<Member[]> {
+    findByUser(userId: User["id"]): Promise<Member[]> {
+        return this.members.find({
+            where: {
+                user: { id: userId }
+            }
+        })
+    }
+
+    findByChannel(channelId: Channel["id"]): Promise<Member[]> {
         return this.members.find({
             where: {
                 channel: { id: channelId }

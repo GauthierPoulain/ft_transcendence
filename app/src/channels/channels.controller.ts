@@ -17,11 +17,12 @@ import { ChannelsService } from "./channels.service"
 import { CreateChannelDto } from "./dto/create-channel.dto"
 import { UpdateChannelDto } from "./dto/update-channel.dto"
 import { Channel } from "./entities/channel.entity"
+import { MembersService } from "./members/members.service"
 
 @Controller("channels")
 @UseInterceptors(ClassSerializerInterceptor)
 export class ChannelsController {
-    constructor(private readonly channels: ChannelsService) {}
+    constructor(private readonly channels: ChannelsService, private readonly members: MembersService) {}
 
     @Post()
     @UseGuards(ConnectedGuard)
@@ -39,8 +40,10 @@ export class ChannelsController {
 
     @Get("joined")
     @UseGuards(ConnectedGuard)
-    findJoined(@CurrentUser(["memberships"]) user: User) {
-        return user.memberships.map(({ channelId }) => channelId)        
+    async findJoined(@CurrentUser() user: User) {
+        const members = await this.members.findByUser(user.id)
+
+        return members.map(({ channelId }) => channelId)
     }
 
     @Get(":id")

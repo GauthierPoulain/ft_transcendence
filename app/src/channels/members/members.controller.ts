@@ -48,6 +48,6 @@ export class MembersController {
             throw new UnauthorizedException
         }
 
-        return this.members.findAll(channel.id)
+        return this.members.findByChannel(channel.id)
     }
 }
