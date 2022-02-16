@@ -8,7 +8,7 @@ import { useCreateMessage, useMessages } from "../../../data/use-message"
 import "./style.scss"
 import { useSWRConfig } from "swr"
 import UserAvatar from "../../../components/user/UserAvatar"
-import { Edit } from "@material-ui/icons"
+import { Edit, Delete } from "@material-ui/icons"
 
 function Member({ member }) {
     const user = useUser(member.userId)
@@ -25,8 +25,12 @@ function Member({ member }) {
                 </span>
             </Link>
             <Dropdown>
-                <Dropdown.Toggle childBsPrefix="member-edit" bsPrefix="member-edit" size="sm">
-                    <Edit/>
+                <Dropdown.Toggle
+                    childBsPrefix="member-edit"
+                    bsPrefix="member-edit"
+                    size="sm"
+                >
+                    <Edit />
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
@@ -96,7 +100,13 @@ function Message({ message }) {
 
     return (
         <div className="d-flex flex-column">
-            <div>{author.nickname}</div>
+            <div className="d-flex justify-content-between">
+                <div className="user-tag">{author.nickname}</div>
+                <Button variant="danger" size="sm" className="me-2 del-msg">
+                    <Delete />
+                </Button>
+            </div>
+
             <div>{message.content}</div>
         </div>
     )
