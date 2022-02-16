@@ -1,10 +1,10 @@
 import { instanceToPlain } from "class-transformer";
 import { AuthSocketService } from "src/auth/auth-socket.service";
 import { Connection, EntitySubscriberInterface, EventSubscriber, InsertEvent } from "typeorm";
-import { Message } from "./entities/message.entity";
+import { Message } from "./message.entity";
 
 @EventSubscriber()
-export class MessageSubscriber implements EntitySubscriberInterface<Message> {
+export class MessageSubscriber {
     constructor(connection: Connection, private sockets: AuthSocketService) {
         connection.subscribers.push(this)
     }

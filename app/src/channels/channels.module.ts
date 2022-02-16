@@ -4,14 +4,14 @@ import { TypeOrmModule } from "@nestjs/typeorm"
 import { ChannelsService } from "./channels.service"
 import { ChannelsController } from "./channels.controller"
 import { UsersModule } from "src/users/users.module"
-import { MessagesController } from "./messages.controller"
+import { MessagesController } from "./messages/messages.controller"
 import { MembersController } from "./members.controller"
 
 import { Membership } from "src/channels/entities/membership.entity"
 import { Channel } from "src/channels/entities/channel.entity"
-import { Message } from "src/channels/entities/message.entity"
+import { Message } from "src/channels/messages/message.entity"
 import { AuthModule } from "src/auth/auth.module"
-import { MessageSubscriber } from "./message.subscriber"
+import { MessageSubscriber } from "./messages/message.subscriber"
 
 @Module({
     imports: [TypeOrmModule.forFeature([Membership, Channel, Message]), UsersModule, AuthModule],

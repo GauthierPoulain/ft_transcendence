@@ -10,7 +10,7 @@ import { AuthModule } from "./auth/auth.module"
 import { User } from "./users/entities/user.entity"
 import { ChannelsModule } from "./channels/channels.module"
 import { Channel } from "./channels/entities/channel.entity"
-import { Message } from "./channels/entities/message.entity"
+import { Message } from "./channels/messages/message.entity"
 import { ConfigModule } from "@nestjs/config"
 import { Membership } from "./channels/entities/membership.entity"
 

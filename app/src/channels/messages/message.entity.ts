@@ -1,4 +1,4 @@
-import { Channel } from "./channel.entity"
+import { Channel } from "../entities/channel.entity"
 import { User } from "src/users/entities/user.entity"
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm"
 import { Exclude } from "class-transformer"

@@ -6,7 +6,7 @@ import {
 } from "typeorm"
 
 import { Membership } from "src/channels/entities/membership.entity"
-import { Message } from "src/channels/entities/message.entity"
+import { Message } from "src/channels/messages/message.entity"
 import { Exclude, Expose } from "class-transformer"
 
 @Entity()

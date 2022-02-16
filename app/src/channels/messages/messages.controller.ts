@@ -12,8 +12,8 @@ import {
 import { ConnectedGuard } from "src/auth/connected.guard"
 import { User } from "src/users/entities/user.entity"
 import { CurrentUser } from "src/users/user.decorator"
-import { CreateMessageDto } from "./channels.dto"
-import { ChannelsService } from "./channels.service"
+import { CreateMessageDto } from "../channels.dto"
+import { ChannelsService } from "../channels.service"
 
 @Controller("channels/:channelId/messages")
 @UseInterceptors(ClassSerializerInterceptor)

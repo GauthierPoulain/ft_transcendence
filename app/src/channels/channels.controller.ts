@@ -7,16 +7,12 @@ import {
     Param,
     Delete,
     UseGuards,
-    Query,
-    Request,
-    UnauthorizedException,
     ClassSerializerInterceptor,
     UseInterceptors,
 } from "@nestjs/common"
-import { ConnectedGuard, MaybeConnectedGuard } from "src/auth/connected.guard"
+import { ConnectedGuard } from "src/auth/connected.guard"
 import { User } from "src/users/entities/user.entity"
 import { CurrentUser } from "src/users/user.decorator"
-import { QueryChannelsDto } from "./channels.dto"
 import { ChannelsService } from "./channels.service"
 import { CreateChannelDto } from "./dto/create-channel.dto"
 import { UpdateChannelDto } from "./dto/update-channel.dto"

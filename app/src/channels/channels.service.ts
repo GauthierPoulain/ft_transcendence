@@ -4,13 +4,12 @@ import { hash } from "argon2"
 import { AuthSocketService } from "src/auth/auth-socket.service"
 import { User } from "src/users/entities/user.entity"
 import { Repository } from "typeorm"
-import { CreateMessageDto, JoinChannelDto } from "./channels.dto"
+import { CreateMessageDto } from "./channels.dto"
 import { CreateChannelDto } from "./dto/create-channel.dto"
 import { UpdateChannelDto } from "./dto/update-channel.dto"
 import { Channel } from "./entities/channel.entity"
 import { Membership, MembershipRole } from "./entities/membership.entity"
-import { Message } from "./entities/message.entity"
-import { instanceToPlain } from "class-transformer"
+import { Message } from "./messages/message.entity"
 
 @Injectable()
 export class ChannelsService {
@@ -23,8 +22,6 @@ export class ChannelsService {
 
         @InjectRepository(Membership)
         private membershipsRepository: Repository<Membership>,
-
-        private authSocket: AuthSocketService
     ) {}
 
     async create(input: CreateChannelDto, owner: User): Promise<Channel> {
