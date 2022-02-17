@@ -1,6 +1,8 @@
 import { forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { verify } from "argon2";
+import { instanceToPlain } from "class-transformer";
+import { AuthSocketService } from "src/auth/auth-socket.service";
 import { User } from "src/users/entities/user.entity";
 import { Repository } from "typeorm";
 import { ChannelsService } from "../channels.service";
@@ -13,16 +15,25 @@ export class MembersService {
         @InjectRepository(Member) private readonly members: Repository<Member>,
 
         @Inject(forwardRef(() => ChannelsService))
-        private channels: ChannelsService
+        private channels: ChannelsService,
+        
+        private sockets: AuthSocketService
     ) { }
 
-    create(channel: Channel, user: User, role: Role): Promise<Member> {
-        const member = new Member()
-
+    async create(channel: Channel, user: User, role: Role): Promise<Member> {
+        let member = new Member()
         member.channel = channel
         member.user = user
         member.role = role
-        return this.members.save(member)
+        member = await this.members.save(member)
+
+        const members = await this.findByChannel(member.channelId)
+        const users = members.map(({ userId }) => userId)
+
+        // TODO: Find a way to get the class transformer configuration?
+        this.sockets.broadcast(users, "channel.member.new", instanceToPlain(member))
+
+        return member
     }
 
     findByUser(userId: User["id"]): Promise<Member[]> {
@@ -60,7 +71,17 @@ export class MembersService {
     }
 
     async remove(member: Member): Promise<void> {
+        const id = member.id
         await this.members.remove(member)
+
+        const members = await this.findByChannel(member.channelId)
+        const users = [...members.map(({ userId }) => userId), member.userId]
+
+        this.sockets.broadcast(users, "channel.member.remove", {
+            id,
+            channelId: member.channelId,
+            userId: member.userId
+        })
     }
 
     // Logic to run when an user wants to join a channel
@@ -83,44 +104,5 @@ export class MembersService {
         }
 
         return this.create(channel, user, Role.GUEST)
-    }
-
-    // Logic to run when an user wants to leave a channel
-    // (we may need to transfer ownership or delete the channel)
-    async leave(member: Member): Promise<void> {
-        // An user leaving which is not an owner means we don't need
-        // to delete or transfer ownership.
-        if (member.role !== Role.OWNER) {
-            return this.remove(member)
-        }
-
-        const members = await this.findByChannel(member.channelId)
-
-        // Remove the leaving user from the list of eligible owners.
-        const eligible = members.filter(({ id }) => id != member.id)
-
-        // There are other users that can receive the ownership, transfering.
-        if (eligible.length !== 0) {
-            // Sort eligible members by role then by id.
-            const [target] = eligible.sort((first, second) => {
-                const cmp = roleRank(first.role) - roleRank(second.role)
-
-                if (cmp !== 0) {
-                    return cmp
-                } else {
-                    return first.id - second.id
-                }
-            })
-
-            await Promise.all([
-                this.remove(member),
-                this.setRole(target, Role.OWNER)
-            ])
-        }
-
-        // No user will be left in the channel, delete the channel directly.
-        else {
-            return this.channels.remove(member.channelId)
-        }
     }
 }

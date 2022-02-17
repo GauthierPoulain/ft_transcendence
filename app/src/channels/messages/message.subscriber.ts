@@ -1,6 +1,6 @@
 import { instanceToPlain } from "class-transformer";
 import { AuthSocketService } from "src/auth/auth-socket.service";
-import { Connection, EntitySubscriberInterface, EventSubscriber, InsertEvent, RemoveEvent } from "typeorm";
+import { Connection, EntitySubscriberInterface, EventSubscriber, InsertEvent, RemoveEvent, TransactionCommitEvent } from "typeorm";
 import { MembersService } from "../members/members.service";
 import { Message } from "./message.entity";
 

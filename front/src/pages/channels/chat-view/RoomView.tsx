@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { Button, Form, InputGroup, Stack, Dropdown } from "react-bootstrap"
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import useUser from "../../../data/use-user"
-import { useMember, useMembers, useRemoveMember } from "../../../data/use-member"
+import { useMembers, useRemoveMember } from "../../../data/use-member"
 import useChannel from "../../../data/use-channel"
 import {
     Message,
@@ -14,6 +14,8 @@ import "./style.scss"
 import UserAvatar from "../../../components/user/UserAvatar"
 import { Delete } from "@material-ui/icons"
 import { useAuth } from "../../../data/use-auth"
+import { ErrorBoundary } from "react-error-boundary"
+import { ErrorBox } from "../../../components/error/ErrorBox"
 
 function Member({ member }) {
     const user = useUser(member.userId)
@@ -145,18 +147,14 @@ function Messages({ channelId }) {
 }
 
 function PasswordMaintenance({ channelId }) {
+    const auth = useAuth()
     const channel = useChannel(channelId)
-
     const members = useMembers(channelId)
-    const user = useAuth()
 
-    let i = 0
-    for (i; i < members.length; i++) {
-        if (members[i].userId === user.userId) break
-    }
+    const member = members.find(({ userId }) => userId === auth.userId)
 
-    if (members[i].role != "owner") {
-        return <></>
+    if (member?.role !== "owner") {
+        return null
     }
 
     if (channel.type === "public") {
@@ -179,7 +177,7 @@ function PasswordMaintenance({ channelId }) {
         )
     }
 
-    if (channel.type === "protected") {
+    else if (channel.type === "protected") {
         return (
             <div className="d-flex">
                 <Form className="w-auto ms-3">
@@ -199,7 +197,7 @@ function PasswordMaintenance({ channelId }) {
         )
     }
 
-    if (channel.type === "private") {
+    else {
         return (
             <div className="d-flex">
                 <Button variant="primary" size="sm" className="ms-3">
@@ -208,18 +206,18 @@ function PasswordMaintenance({ channelId }) {
             </div>
         )
     }
-
-    return <></>
 }
 
 function Main({ channelId }) {
     const auth = useAuth()
     const channel = useChannel(channelId)
-    const member = useMember(channel.id, auth.userId!)
+    const members = useMembers(channelId)
 
     const { submit, isLoading } = useRemoveMember()
 
     async function leave() {
+        const member = members.find(({ userId }) => userId === auth.userId)
+
         await submit({ id: member!.id, channelId: channel.id })
     }
 
@@ -245,15 +243,25 @@ function Main({ channelId }) {
     )
 }
 
-export default function RoomView() {
-    const { channelId } = useParams()
+function TempLol({ channelId }) {
+    const channel = useChannel(channelId)
 
-    const channel = useChannel(parseInt(channelId as string, 10))
+    console.log("TEMPLOL", channel.id, channel)
+
+    return <>
+        <Main channelId={channel.id} />
+        <Members channelId={channel.id} />
+    </>
+}
+
+export default function RoomView() {
+    const params = useParams()
+
+    const channelId = parseInt(params.channelId as string, 10)
 
     return (
-        <>
-            <Main channelId={channel.id} />
-            <Members channelId={channel.id} />
-        </>
+        <ErrorBoundary FallbackComponent={ErrorBox} onError={() => {}}>
+            <TempLol channelId={channelId} />
+        </ErrorBoundary>
     )
 }

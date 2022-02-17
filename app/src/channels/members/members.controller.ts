@@ -55,21 +55,14 @@ export class MembersController {
         ])
 
         if (!current || !target || current.channelId !== target.channelId) {
-            throw NotFoundException
+            throw new NotFoundException
         }
 
-        // If the current user is leaving.
-        if (target.id === current.id) {
-            await this.members.leave(target)
+        // If the user is kicking someone which is an admin or without admin rights
+        if (target.id !== current.id && (target.isAdmin || !current.isAdmin)) {
+            throw new UnauthorizedException
         }
 
-        // If the current user is kicking someone else.
-        else {
-            if (target.isAdmin || !current.isAdmin) {
-                throw UnauthorizedException
-            }
-
-            await this.members.remove(target)
-        }
+        await this.members.remove(target)
     }
 }

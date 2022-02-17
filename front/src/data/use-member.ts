@@ -11,12 +11,6 @@ export function useMembers(channelId: number): Membership[] {
     return useFetch(`/channels/${channelId}/members`)
 }
 
-export function useMember(channelId: number, userId: number) {
-    const members = useMembers(channelId)
-
-    return members.find((member) => member.userId === userId)
-}
-
 export type RemoveMemberRequest = {
     id: number,
     channelId: number

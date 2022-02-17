@@ -14,10 +14,11 @@ import { AuthModule } from "src/auth/auth.module"
 import { MessageSubscriber } from "./messages/message.subscriber"
 import { MessagesService } from "./messages/messages.service"
 import { MembersService } from "./members/members.service"
+import { MemberSubscriber } from "./members/member.subscriber"
 
 @Module({
     imports: [TypeOrmModule.forFeature([Member, Channel, Message]), UsersModule, AuthModule],
     controllers: [ChannelsController, MessagesController, MembersController],
-    providers: [ChannelsService, MessageSubscriber, MessagesService, MembersService],
+    providers: [ChannelsService, MessageSubscriber, MessagesService, MembersService, MemberSubscriber],
 })
 export class ChannelsModule {}

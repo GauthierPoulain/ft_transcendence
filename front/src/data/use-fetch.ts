@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
+import { HttpError } from "../errors/HttpError"
 
 let accessToken: string | null = null
 
@@ -19,17 +20,23 @@ export const fetcher = async (url: string, options = {}, jsonResponse=true) => {
     })
 
     if (!response.ok) {
-        throw new Error("Not an OK response code")
+        console.log("response not ok", url, accessToken, response.ok, response.status)
+        throw new HttpError(response.status)
     }
 
     return jsonResponse ? response.json() : response
 }
 
 export default function useFetch(key: string, options = {}) {
-    const { data, error } = useSWR(key, fetcher, { suspense: true, ...options })
+    const { data, error, mutate } = useSWR(key, fetcher, {
+        suspense: true,
+        shouldRetryOnError: false,
+        ...options
+    })
 
     if (error) {
-        console.debug("useFetch", data, error)
+        mutate((v: any) => v, false)
+        throw error
     }
 
     return data
@@ -40,7 +47,9 @@ export function useSubmit<Request, Response>(callback: (req: Request) => Promise
     const [active, setActive] = useState(true)
 
     async function submit(value: Request) {
-        setState(1)
+        if (active) {
+            setState(1)
+        }
 
         try {
             const data = await callback(value)

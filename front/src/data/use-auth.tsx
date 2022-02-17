@@ -1,7 +1,6 @@
 import { createContext, useContext, useMemo, useState } from "react";
 import { fetcher, setAccessToken } from "./use-fetch";
 import { User } from "./use-user";
-import { useWebSocket } from  "./use-websocket"
 
 export type ExchangeCodeRequest = {
     code: string
