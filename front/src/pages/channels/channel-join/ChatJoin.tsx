@@ -48,7 +48,7 @@ function JoinProtected({ channelId }) {
 
     return <Form onSubmit={join}>
         <InputGroup>
-            <Form.Control className="bg-white text-dark" placeholder="Enter password..." value={password} onChange={(event) => setPassword(event.target.value)}/>
+            <Form.Control type="password" className="bg-white text-dark" placeholder="Enter password..." value={password} onChange={(event) => setPassword(event.target.value)}/>
             <Button type="submit" disabled={isLoading}>Join</Button>
         </InputGroup>
     </Form>

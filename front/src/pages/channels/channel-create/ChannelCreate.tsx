@@ -47,7 +47,7 @@ export default function ChannelCreate() {
                     <Form.Group className="mb-3">
                         <Form.Label>Channel password</Form.Label>
                         <Form.Control
-                            type="text"
+                            type="password"
                             placeholder="Enter channel password"
                             value={password}
                             onChange={(event) => setPassword(event.target.value)}
