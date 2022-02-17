@@ -25,6 +25,16 @@ export function WebsocketProvider({ children }) {
 
                     return messages
                 }, false)
+            } else if (event === "channel.message.remove") {
+                mutate(`/channels/${data.channelId}/messages`, (messages: Message[] | null) => {
+                    if (messages) {
+                        return messages.filter(({ id }) => id !== data.id)
+                    }
+
+                    return messages
+                }, false)
+            } else {
+                console.log("Unhandled websocket message", event)
             }
         },
 

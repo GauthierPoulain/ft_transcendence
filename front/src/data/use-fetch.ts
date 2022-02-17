@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 
 let accessToken: string | null = null
@@ -37,19 +37,28 @@ export default function useFetch(key: string, options = {}) {
 
 export function useSubmit<Request, Response>(callback: (req: Request) => Promise<Response>) {
     const [state, setState] = useState(0)
+    const [active, setActive] = useState(true)
 
     async function submit(value: Request) {
         setState(1)
 
         try {
             const data = await callback(value)
-            setState(2)
+            if (active) {
+                setState(2)
+            }
             return data
         } catch (error) {
-            setState(3)
+            if (active) {
+                setState(3)
+            }
             throw error
         }
     }
+
+    useEffect(() => () => {
+        setActive(false)
+    }, [])
 
     const value = useMemo(() => ({
         isLoading: state === 1,

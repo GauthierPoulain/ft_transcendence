@@ -20,6 +20,15 @@ export class MessagesService {
         return this.messages.save(message)
     }
 
+    findOne(channelId: Channel["id"], messageId: Channel["id"]): Promise<Message> {
+        return this.messages.findOne({
+            where: {
+                id: messageId,
+                channel: { id: channelId }
+            }
+        })
+    }
+
     findAll(channel: Channel): Promise<Message[]> {
         return this.messages.find({
             where: {

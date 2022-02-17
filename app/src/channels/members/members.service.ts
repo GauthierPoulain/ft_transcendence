@@ -36,11 +36,11 @@ export class MembersService {
         })
     }
 
-    findOne(channel: Channel, user: User): Promise<Member> {
+    findOne(channelId: Channel["id"], userId: User["id"]): Promise<Member> {
         return this.members.findOne({
             where: {
-                user: { id: user.id },
-                channel: { id: channel.id }
+                user: { id: userId },
+                channel: { id: channelId }
             }
         })
     }
@@ -61,7 +61,7 @@ export class MembersService {
             throw new UnauthorizedException
         }
 
-        const member = await this.findOne(channel, user)
+        const member = await this.findOne(channel.id, user.id)
 
         // If the user is already a member of the channel do not create it
         if (member) {

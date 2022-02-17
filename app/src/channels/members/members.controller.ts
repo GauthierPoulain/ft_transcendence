@@ -37,17 +37,11 @@ export class MembersController {
         @CurrentUser() user: User,
         @Param("channelId") channelId: number
     ) {
-        const channel = await this.channels.findOne(channelId)
-
-        if (!channel) {
-            throw new NotFoundException
-        }
-
         // If the user is not a member of the channel.
-        if (!await this.members.findOne(channel, user)) {
+        if (!await this.members.findOne(channelId, user.id)) {
             throw new UnauthorizedException
         }
 
-        return this.members.findByChannel(channel.id)
+        return this.members.findByChannel(channelId)
     }
 }

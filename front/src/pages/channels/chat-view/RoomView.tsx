@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom"
 import useUser from "../../../data/use-user"
 import { useMembers } from "../../../data/use-member"
 import useChannel from "../../../data/use-channel"
-import { useCreateMessage, useMessages } from "../../../data/use-message"
+import { Message, useCreateMessage, useMessages, useRemoveMessage } from "../../../data/use-message"
 import "./style.scss"
 import { useSWRConfig } from "swr"
 import UserAvatar from "../../../components/user/UserAvatar"
@@ -93,14 +93,19 @@ function FormMessage({ channelId }) {
     )
 }
 
-function Message({ message }) {
+function MessageComponent({ message }: { message: Message }) {
     const author = useUser(message.authorId)
+    const { submit, isLoading } = useRemoveMessage()
+
+    async function remove() {
+        await submit({ channelId: message.channelId, messageId: message.id })
+    }
 
     return (
         <div className="d-flex flex-column">
             <div className="d-flex justify-content-between">
                 <div className="user-tag">{author.nickname}</div>
-                <Button variant="danger" size="sm" className="me-2 del-msg">
+                <Button variant="danger" size="sm" className="me-2 del-msg" disabled={isLoading} onClick={remove}>
                     <Delete />
                 </Button>
             </div>
@@ -119,7 +124,7 @@ function Messages({ channelId }) {
             style={{ height: 0, overflow: "auto" }}
         >
             {[...messages].reverse().map((message) => (
-                <Message key={message.id} message={message} />
+                <MessageComponent key={message.id} message={message} />
             ))}
         </div>
     )

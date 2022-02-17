@@ -2,6 +2,7 @@ import {
     Body,
     ClassSerializerInterceptor,
     Controller,
+    Delete,
     Get,
     NotFoundException,
     Param,
@@ -12,7 +13,7 @@ import {
 } from "@nestjs/common"
 import { ConnectedGuard } from "src/auth/connected.guard"
 import { User } from "src/users/entities/user.entity"
-import { CurrentUser } from "src/users/user.decorator"
+import { CurrentUser, CurrentUserId } from "src/users/user.decorator"
 import { CreateMessageDto } from "../channels.dto"
 import { ChannelsService } from "../channels.service"
 import { MembersService } from "../members/members.service"
@@ -33,7 +34,7 @@ export class MessagesController {
             throw new NotFoundException()
         }
 
-        const member = await this.members.findOne(channel, user)
+        const member = await this.members.findOne(channel.id, user.id)
 
         if (!member) {
             throw new UnauthorizedException()
@@ -54,7 +55,7 @@ export class MessagesController {
             throw new NotFoundException()
         }
 
-        const member = await this.members.findOne(channel, user)
+        const member = await this.members.findOne(channel.id, user.id)
 
         if (!member) {
             throw new UnauthorizedException()
@@ -63,4 +64,24 @@ export class MessagesController {
         return this.messages.findAll(channel)
     }
 
+    @Delete(":messageId")
+    @UseGuards(ConnectedGuard)
+    async remove(@CurrentUserId() userId: number, @Param("channelId") channelId: number, @Param("messageId") messageId: number) {
+        const [message, member] = await Promise.all([
+            this.messages.findOne(channelId, messageId),
+            this.members.findOne(channelId, userId)
+        ])
+
+        console.log("remove", message, member, channelId, messageId, userId)
+
+        if (!message || !member) {
+            throw new NotFoundException;
+        }
+
+        if (message.authorId !== userId && !member.isAdmin) {
+            throw new UnauthorizedException;
+        }
+
+        await this.messages.remove(message)
+    }
 }

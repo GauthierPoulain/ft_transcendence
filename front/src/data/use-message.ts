@@ -30,3 +30,14 @@ export function useCreateMessage() {
     }))
 
 }
+
+export type RemoveMessageRequest = {
+    channelId: number
+    messageId: number
+}
+
+export function useRemoveMessage() {
+    return useSubmit<RemoveMessageRequest, void>(({ channelId, messageId }) => fetcher(`/channels/${channelId}/messages/${messageId}`, {
+        method: 'DELETE'
+    }, false))
+}

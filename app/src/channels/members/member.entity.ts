@@ -2,6 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, RelationId } from "t
 
 import { User } from "src/users/entities/user.entity"
 import { Channel } from "src/channels/entities/channel.entity"
+import { Exclude } from "class-transformer"
 
 export enum Role {
     GUEST = "guest",
@@ -32,5 +33,10 @@ export class Member {
         default: Role.GUEST
     })
     role: Role
+
+    @Exclude()
+    get isAdmin(): boolean {
+        return this.role === Role.ADMIN || this.role === Role.OWNER
+    }
 }
 
