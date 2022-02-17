@@ -51,13 +51,15 @@ export class MembersService {
 
     // Logic to run when an user wants to join a channel
     async join(channel: Channel, user: User, password: string): Promise<Member> {
+        console.log(channel, channel.type, password)
+
         // An user can't join a private channel
         if (channel.type === "private") {
             throw new UnauthorizedException
         }
 
         // An user can't join a protected channel with an incorrect password
-        if (channel.type === "protected" && !verify(channel.password, password)) {
+        if (channel.type === "protected" && !await verify(channel.password, password)) {
             throw new UnauthorizedException
         }
 
