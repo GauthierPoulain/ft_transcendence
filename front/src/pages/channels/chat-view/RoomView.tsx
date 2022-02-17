@@ -14,6 +14,7 @@ import "./style.scss"
 import { useSWRConfig } from "swr"
 import UserAvatar from "../../../components/user/UserAvatar"
 import { Edit, Delete } from "@material-ui/icons"
+import { useAuth } from "../../../data/use-auth"
 
 function Member({ member }) {
     const user = useUser(member.userId)
@@ -141,7 +142,21 @@ function Messages({ channelId }) {
 function PasswordMaintenance({ channelId }) {
     const channel = useChannel(channelId)
 
-    /* Test if user is owner else -> return <></> */
+    const members = useMembers(channelId)
+    const user = useAuth();
+
+    let i = 0;
+    for (i; i < members.length; i++)
+    {
+        if (members[i].userId === user.userId)
+            break;
+    }
+
+    if (members[i].role != "owner")
+    {
+        return <></>
+    }
+
 
     if (channel.type === "public") {
         return (
