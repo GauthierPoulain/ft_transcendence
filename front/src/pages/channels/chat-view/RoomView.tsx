@@ -70,6 +70,10 @@ function FormMessage({ channelId }) {
     // Code to reset the content's state when naigating to another channel.
     useEffect(() => setContent(""), [channelId])
 
+    useEffect(() => {
+        document.getElementById("chatInput")?.focus()
+    }, [isLoading])
+
     async function onSubmit(event: any) {
         event.preventDefault()
 
@@ -83,6 +87,7 @@ function FormMessage({ channelId }) {
     return (
         <Form onSubmit={onSubmit}>
             <Form.Control
+                id="chatInput"
                 type="text"
                 className={`bg-dark border-${
                     isError ? "danger" : "dark"
@@ -91,6 +96,7 @@ function FormMessage({ channelId }) {
                 value={content}
                 onChange={(event) => setContent(event.target.value)}
                 disabled={isLoading}
+                autoComplete={"off"}
             />
         </Form>
     )
@@ -143,20 +149,16 @@ function PasswordMaintenance({ channelId }) {
     const channel = useChannel(channelId)
 
     const members = useMembers(channelId)
-    const user = useAuth();
+    const user = useAuth()
 
-    let i = 0;
-    for (i; i < members.length; i++)
-    {
-        if (members[i].userId === user.userId)
-            break;
+    let i = 0
+    for (i; i < members.length; i++) {
+        if (members[i].userId === user.userId) break
     }
 
-    if (members[i].role != "owner")
-    {
+    if (members[i].role != "owner") {
         return <></>
     }
-
 
     if (channel.type === "public") {
         return (
@@ -208,7 +210,7 @@ function PasswordMaintenance({ channelId }) {
         )
     }
 
-    return (<></>)
+    return <></>
 }
 
 function Main({ channelId }) {
