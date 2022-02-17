@@ -34,7 +34,7 @@ export class MessagesController {
             throw new NotFoundException()
         }
 
-        const member = await this.members.findOne(channel.id, user.id)
+        const member = await this.members.findOneWithChannelAndUser(channel.id, user.id)
 
         if (!member) {
             throw new UnauthorizedException()
@@ -55,7 +55,7 @@ export class MessagesController {
             throw new NotFoundException()
         }
 
-        const member = await this.members.findOne(channel.id, user.id)
+        const member = await this.members.findOneWithChannelAndUser(channel.id, user.id)
 
         if (!member) {
             throw new UnauthorizedException()
@@ -69,7 +69,7 @@ export class MessagesController {
     async remove(@CurrentUserId() userId: number, @Param("channelId") channelId: number, @Param("messageId") messageId: number) {
         const [message, member] = await Promise.all([
             this.messages.findOne(channelId, messageId),
-            this.members.findOne(channelId, userId)
+            this.members.findOneWithChannelAndUser(channelId, userId)
         ])
 
         console.log("remove", message, member, channelId, messageId, userId)

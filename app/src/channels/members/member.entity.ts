@@ -10,18 +10,28 @@ export enum Role {
     OWNER = "owner"
 }
 
+export function roleRank(role: Role): number {
+    const roles = {
+        [Role.GUEST]: 0,
+        [Role.ADMIN]: 1,
+        [Role.OWNER]: 2
+    }
+
+    return roles[role]
+}
+
 @Entity()
 export class Member {
     @PrimaryGeneratedColumn()
     id: number
 
-    @ManyToOne(() => Channel, (channel) => channel.members)
+    @ManyToOne(() => Channel, (channel) => channel.members, { onDelete: "CASCADE" })
     channel: Channel
 
     @RelationId((member: Member) => member.channel)
     channelId: number
 
-    @ManyToOne(() => User, (user: User) => user.memberships)
+    @ManyToOne(() => User, (user: User) => user.memberships, { onDelete: "CASCADE" })
     user: User
 
     @RelationId((member: Member) => member.user)

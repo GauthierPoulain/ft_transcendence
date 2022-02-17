@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Button, Form, InputGroup, Stack, Dropdown } from "react-bootstrap"
 import { Link, useParams } from "react-router-dom"
 import useUser from "../../../data/use-user"
-import { useMembers } from "../../../data/use-member"
+import { useMember, useMembers, useRemoveMember } from "../../../data/use-member"
 import useChannel from "../../../data/use-channel"
 import {
     Message,
@@ -11,9 +11,8 @@ import {
     useRemoveMessage,
 } from "../../../data/use-message"
 import "./style.scss"
-import { useSWRConfig } from "swr"
 import UserAvatar from "../../../components/user/UserAvatar"
-import { Edit, Delete } from "@material-ui/icons"
+import { Delete } from "@material-ui/icons"
 import { useAuth } from "../../../data/use-auth"
 
 function Member({ member }) {
@@ -214,7 +213,15 @@ function PasswordMaintenance({ channelId }) {
 }
 
 function Main({ channelId }) {
+    const auth = useAuth()
     const channel = useChannel(channelId)
+    const member = useMember(channel.id, auth.userId!)
+
+    const { submit, isLoading } = useRemoveMember()
+
+    async function leave() {
+        await submit({ id: member!.id, channelId: channel.id })
+    }
 
     return (
         <div className="flex-grow-1 chat-view p-3 d-flex flex-column">
@@ -224,7 +231,7 @@ function Main({ channelId }) {
                     <h4 className="ms-2 chan-type">[{channel.type}]</h4>
                 </div>
                 <div className="d-flex">
-                    <Button variant="danger" size="sm">
+                    <Button variant="danger" size="sm" onClick={leave} disabled={isLoading}>
                         Leave channel
                     </Button>
                     <PasswordMaintenance channelId={channelId} />

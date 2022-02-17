@@ -15,6 +15,8 @@ export function WebsocketProvider({ children }) {
         onMessage(message) {
             const { event, data } = JSON.parse(message.data)
 
+            console.log("websocket message", event, data)
+
             if (event === "channel.message.new") {
                 const message = data as Message
 

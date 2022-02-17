@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Delete,
     Get,
     NotFoundException,
     Param,
@@ -10,7 +11,7 @@ import {
 } from "@nestjs/common"
 import { ConnectedGuard } from "src/auth/connected.guard"
 import { User } from "src/users/entities/user.entity"
-import { CurrentUser } from "src/users/user.decorator"
+import { CurrentUser, CurrentUserId } from "src/users/user.decorator"
 import { MembersService } from "./members.service"
 import { CreateMemberDto } from "./members.dto"
 import { ChannelsService } from "../channels.service"
@@ -38,10 +39,37 @@ export class MembersController {
         @Param("channelId") channelId: number
     ) {
         // If the user is not a member of the channel.
-        if (!await this.members.findOne(channelId, user.id)) {
+        if (!await this.members.findOneWithChannelAndUser(channelId, user.id)) {
             throw new UnauthorizedException
         }
 
         return this.members.findByChannel(channelId)
+    }
+
+    @Delete(":memberId")
+    @UseGuards(ConnectedGuard)
+    async remove(@CurrentUserId() userId: number, @Param("channelId") channelId: number, @Param("memberId") memberId: number) {
+        const [current, target] = await Promise.all([
+            this.members.findOneWithChannelAndUser(channelId, userId),
+            this.members.findOne(memberId)
+        ])
+
+        if (!current || !target || current.channelId !== target.channelId) {
+            throw NotFoundException
+        }
+
+        // If the current user is leaving.
+        if (target.id === current.id) {
+            await this.members.leave(target)
+        }
+
+        // If the current user is kicking someone else.
+        else {
+            if (target.isAdmin || !current.isAdmin) {
+                throw UnauthorizedException
+            }
+
+            await this.members.remove(target)
+        }
     }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common"
+import { forwardRef, Inject, Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { hash } from "argon2"
 import { User } from "src/users/entities/user.entity"
@@ -15,6 +15,7 @@ export class ChannelsService {
         @InjectRepository(Channel)
         private channelsRepository: Repository<Channel>,
 
+        @Inject(forwardRef(() => MembersService))
         private members: MembersService
     ) {}
 
@@ -48,7 +49,7 @@ export class ChannelsService {
         return `This action updates a #${id} channel`
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} channel`
+    async remove(id: Channel["id"]): Promise<void> {
+        await this.channelsRepository.delete(id)
     }
 }
