@@ -17,6 +17,7 @@ import { useAuth } from "../../../data/use-auth"
 import { ErrorBoundary } from "react-error-boundary"
 import { ErrorBox } from "../../../components/error/ErrorBox"
 import { SetDropDown } from "./UserManagement"
+import Messages from "./messages"
 
 function Member({ member, channelId }) {
     const user = useUser(member.userId)
@@ -125,21 +126,6 @@ function MessageComponent({ message }: { message: Message }) {
     )
 }
 
-function Messages({ channelId }) {
-    const messages = useMessages(channelId)
-
-    return (
-        <div
-            className="flex-grow-1 d-flex flex-column-reverse gap-row-1"
-            style={{ height: 0, overflow: "auto" }}
-        >
-            {[...messages].reverse().map((message) => (
-                <MessageComponent key={message.id} message={message} />
-            ))}
-        </div>
-    )
-}
-
 function PasswordMaintenance({ channelId }) {
     const auth = useAuth()
     const channel = useChannel(channelId)
@@ -202,6 +188,7 @@ function Main({ channelId }) {
     const auth = useAuth()
     const channel = useChannel(channelId)
     const members = useMembers(channelId)
+    const messages = useMessages(channelId)
 
     const { submit, isLoading } = useRemoveMember()
 
@@ -231,23 +218,10 @@ function Main({ channelId }) {
                 </div>
             </div>
 
-            <Messages channelId={channelId} />
+            <Messages messages={messages} />
 
             <FormMessage channelId={channelId} />
         </div>
-    )
-}
-
-function TempLol({ channelId }) {
-    const channel = useChannel(channelId)
-
-    console.log("TEMPLOL", channel.id, channel)
-
-    return (
-        <>
-            <Main channelId={channel.id} />
-            <Members channelId={channel.id} />
-        </>
     )
 }
 
@@ -258,7 +232,8 @@ export default function RoomView() {
 
     return (
         <ErrorBoundary FallbackComponent={ErrorBox} onError={() => {}}>
-            <TempLol channelId={channelId} />
+            <Main channelId={channelId} />
+            <Members channelId={channelId} />
         </ErrorBoundary>
     )
 }
