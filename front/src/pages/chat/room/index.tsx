@@ -16,47 +16,10 @@ import { Delete } from "@material-ui/icons"
 import { useAuth } from "../../../data/use-auth"
 import { ErrorBoundary } from "react-error-boundary"
 import { ErrorBox } from "../../../components/error/ErrorBox"
-import { SetDropDown } from "./UserManagement"
 import Messages from "./messages"
+import Members from "./members"
 
-function Member({ member, channelId }) {
-    const user = useUser(member.userId)
 
-    return (
-        <div className="d-flex">
-            <Link
-                className="member-links mb-2 text-decoration-none d-flex"
-                to={`/users/${user.id}`}
-            >
-                <UserAvatar className="me-2 w-8" userId={user.id} />
-                <span className="m-auto ms-0">
-                    {user.nickname} - {member.role}
-                </span>
-            </Link>
-            <SetDropDown channelId={channelId} member={member} />
-        </div>
-    )
-}
-
-function Members({ channelId }) {
-    const members = useMembers(channelId)
-
-    return (
-        <div className="members p-3 bg-dark">
-            <h2>Members</h2>
-
-            <Stack>
-                {members.map((member) => (
-                    <Member
-                        key={member.id}
-                        member={member}
-                        channelId={channelId}
-                    />
-                ))}
-            </Stack>
-        </div>
-    )
-}
 
 function FormMessage({ channelId }) {
     const channel = useChannel(channelId)
@@ -95,34 +58,6 @@ function FormMessage({ channelId }) {
                 autoComplete={"off"}
             />
         </Form>
-    )
-}
-
-function MessageComponent({ message }: { message: Message }) {
-    const author = useUser(message.authorId)
-    const { submit, isLoading } = useRemoveMessage()
-
-    async function remove() {
-        await submit({ channelId: message.channelId, messageId: message.id })
-    }
-
-    return (
-        <div className="d-flex flex-column">
-            <div className="d-flex justify-content-between">
-                <div className="user-tag">{author.nickname}</div>
-                <Button
-                    variant="danger"
-                    size="sm"
-                    className="me-2 del-msg"
-                    disabled={isLoading}
-                    onClick={remove}
-                >
-                    <Delete />
-                </Button>
-            </div>
-
-            <div>{message.content}</div>
-        </div>
     )
 }
 
