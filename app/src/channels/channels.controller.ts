@@ -9,6 +9,7 @@ import {
     UseGuards,
     ClassSerializerInterceptor,
     UseInterceptors,
+    NotFoundException,
 } from "@nestjs/common"
 import { ConnectedGuard } from "src/auth/connected.guard"
 import { User } from "src/users/entities/user.entity"
@@ -47,8 +48,14 @@ export class ChannelsController {
     }
 
     @Get(":id")
-    findOne(@Param("id") id: string) {
-        return this.channels.findOne(+id)
+    async findOne(@Param("id") channelId: number): Promise<Channel> {
+        const channel = await this.channels.findOne(channelId)
+
+        if (!channel) {
+            throw new NotFoundException
+        }
+
+        return channel
     }
 
     @Patch(":id")

@@ -41,8 +41,8 @@ export class ChannelsService {
         return this.channelsRepository.find({ where: { joinable: true } })
     }
 
-    findOne(id: number, relations = []): Promise<Channel | null> {
-        return this.channelsRepository.findOne(id, { relations })
+    findOne(id: Channel["id"]): Promise<Channel | null> {
+        return this.channelsRepository.findOne(id)
     }
 
     update(id: number, updateChannelDto: UpdateChannelDto) {
