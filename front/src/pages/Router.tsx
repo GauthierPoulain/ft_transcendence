@@ -6,17 +6,17 @@ import { Page as Authentication } from "../pages/authentication"
 import { Outlet, Route, Routes, Navigate } from "react-router-dom"
 import Topbar from "../components/topbar/Topbar"
 
-import Chat from "../pages/channels"
-import RoomView from "../pages/channels/chat-view/RoomView"
-import ChatJoin from "../pages/channels/channel-join/ChatJoin"
-import ChannelCreate from "../pages/channels/channel-create/ChannelCreate"
+import Chat from "./chat"
+import RoomView from "./chat/room"
+import ChatJoin from "./chat/join"
+import ChannelCreate from "./chat/create"
 
-import Matches from "../pages/users/matches"
-import Achievements from "../pages/users/achievements"
-import Friends from "../pages/users/friends"
-import ProfileSettings from "../pages/users/settings"
-import Users from "../pages/users"
-import Game from "../pages/game/game"
+import Matches from "./users/matches"
+import Achievements from "./users/achievements"
+import Friends from "./users/friends"
+import ProfileSettings from "./users/settings"
+import Users from "./users"
+import Game from "./game/game"
 
 function Layout() {
     return (
