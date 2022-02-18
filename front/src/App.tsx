@@ -5,6 +5,8 @@ import { AuthProvider, useAuth } from "./data/use-auth"
 import { useWebSocket, WebsocketProvider } from "./data/use-websocket"
 import Router from "./components/Router"
 import { ReadyState } from "react-use-websocket"
+import { setAccessToken } from "./data/use-fetch"
+import Loading from "./components/Loading"
 
 function RootProvider({ children }) {
     return (
@@ -33,10 +35,12 @@ function WebsocketTokenIssuer({ children }) {
                 sendMessage("logout")
             }
         }
+
+        setAccessToken(token)
     }, [token, readyState])
 
     if (readyState !== ReadyState.OPEN) {
-        return <p>Connecting to the websocket! (we should create a loading component)</p>
+        return <Loading />
     }
 
     return children
