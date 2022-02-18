@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Button, Form, InputGroup, Stack, Dropdown } from "react-bootstrap"
+import { Button, Form, InputGroup, Stack } from "react-bootstrap"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import useUser from "../../../data/use-user"
 import { useMembers, useRemoveMember } from "../../../data/use-member"
@@ -16,63 +16,7 @@ import { Delete } from "@material-ui/icons"
 import { useAuth } from "../../../data/use-auth"
 import { ErrorBoundary } from "react-error-boundary"
 import { ErrorBox } from "../../../components/error/ErrorBox"
-
-function DropDownAttr({ channelId }) {
-    const auth = useAuth()
-    const members = useMembers(channelId)
-
-    const member = members.find(({ userId }) => userId === auth.userId)
-
-    if (member?.role === "owner") {
-        return (
-            <Dropdown.Menu>
-                <Dropdown.Item>Ban</Dropdown.Item>
-                <Dropdown.Item>Mute</Dropdown.Item>
-                <Dropdown.Item>Op</Dropdown.Item>
-                <Dropdown.Item>Follow</Dropdown.Item>
-                <Dropdown.Item>Game request</Dropdown.Item>
-            </Dropdown.Menu>
-        )
-    }
-
-    if (member?.role === "admin") {
-        return (
-            <Dropdown.Menu>
-                <Dropdown.Item>Ban</Dropdown.Item>
-                <Dropdown.Item>Mute</Dropdown.Item>
-                <Dropdown.Item>Follow</Dropdown.Item>
-                <Dropdown.Item>Game request</Dropdown.Item>
-            </Dropdown.Menu>
-        )
-    }
-
-    return (
-        <Dropdown.Menu>
-            <Dropdown.Item>Follow</Dropdown.Item>
-            <Dropdown.Item>Game request</Dropdown.Item>
-        </Dropdown.Menu>
-    )
-}
-
-function SetDropDown({ channelId, member }) {
-    const auth = useAuth()
-
-    if (auth.userId === member?.userId)
-    {
-        return null
-    }
-
-    return (
-        <Dropdown>
-            <Dropdown.Toggle
-                className="dropdown-toggle ms-2"
-                size="sm"
-            ></Dropdown.Toggle>
-
-            <DropDownAttr channelId={channelId} />
-        </Dropdown>
-    )
-}
+import { SetDropDown } from "./UserManagement"
 
 function Member({ member, channelId }) {
     const user = useUser(member.userId)
