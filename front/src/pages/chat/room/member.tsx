@@ -53,7 +53,7 @@ function Options({ member }) {
 
     return (
         <Dropdown align="end">
-            <Dropdown.Toggle as={MoreVert} className="dropdown-toggle" fontSize="small" />
+            <Dropdown.Toggle as={MoreVert} className="cursor-pointer" fontSize="small" />
 
             <Dropdown.Menu variant="dark">
                 { current.role === "owner" && <OwnerOptions member={member} /> }

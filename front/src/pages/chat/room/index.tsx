@@ -1,18 +1,13 @@
 import { useEffect, useState } from "react"
-import { Button, Form, InputGroup, Stack } from "react-bootstrap"
-import { Link, useNavigate, useParams } from "react-router-dom"
-import useUser from "../../../data/use-user"
+import { Button, Form, InputGroup } from "react-bootstrap"
+import { useParams } from "react-router-dom"
 import { useMembers, useRemoveMember } from "../../../data/use-member"
 import useChannel from "../../../data/use-channel"
 import {
-    Message,
     useCreateMessage,
     useMessages,
-    useRemoveMessage,
 } from "../../../data/use-message"
 import "./style.scss"
-import UserAvatar from "../../../components/user/UserAvatar"
-import { Delete } from "@material-ui/icons"
 import { useAuth } from "../../../data/use-auth"
 import { ErrorBoundary } from "react-error-boundary"
 import { ErrorBox } from "../../../components/error/ErrorBox"
@@ -30,7 +25,9 @@ function FormMessage({ channelId }) {
     useEffect(() => setContent(""), [channelId])
 
     useEffect(() => {
-        document.getElementById("chatInput")?.focus()
+        if (!isLoading) {
+            document.getElementById("chatInput")?.focus()
+        }
     }, [isLoading])
 
     async function onSubmit(event: any) {
