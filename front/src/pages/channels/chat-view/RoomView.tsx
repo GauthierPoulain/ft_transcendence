@@ -17,7 +17,64 @@ import { useAuth } from "../../../data/use-auth"
 import { ErrorBoundary } from "react-error-boundary"
 import { ErrorBox } from "../../../components/error/ErrorBox"
 
-function Member({ member }) {
+function DropDownAttr({ channelId }) {
+    const auth = useAuth()
+    const members = useMembers(channelId)
+
+    const member = members.find(({ userId }) => userId === auth.userId)
+
+    if (member?.role === "owner") {
+        return (
+            <Dropdown.Menu>
+                <Dropdown.Item>Ban</Dropdown.Item>
+                <Dropdown.Item>Mute</Dropdown.Item>
+                <Dropdown.Item>Op</Dropdown.Item>
+                <Dropdown.Item>Follow</Dropdown.Item>
+                <Dropdown.Item>Game request</Dropdown.Item>
+            </Dropdown.Menu>
+        )
+    }
+
+    if (member?.role === "admin") {
+        return (
+            <Dropdown.Menu>
+                <Dropdown.Item>Ban</Dropdown.Item>
+                <Dropdown.Item>Mute</Dropdown.Item>
+                <Dropdown.Item>Follow</Dropdown.Item>
+                <Dropdown.Item>Game request</Dropdown.Item>
+            </Dropdown.Menu>
+        )
+    }
+
+    return (
+        <Dropdown.Menu>
+            <Dropdown.Item>Follow</Dropdown.Item>
+            <Dropdown.Item>Game request</Dropdown.Item>
+        </Dropdown.Menu>
+    )
+}
+
+function SetDropDown({ channelId, member }) {
+    const auth = useAuth()
+
+    if (auth.userId === member?.userId)
+    {
+        return null
+    }
+
+    return (
+        <Dropdown>
+            <Dropdown.Toggle
+                className="dropdown-toggle ms-2"
+                size="sm"
+            ></Dropdown.Toggle>
+
+            <DropDownAttr channelId={channelId} />
+        </Dropdown>
+    )
+}
+
+function Member({ member, channelId }) {
     const user = useUser(member.userId)
 
     return (
@@ -31,18 +88,7 @@ function Member({ member }) {
                     {user.nickname} - {member.role}
                 </span>
             </Link>
-            <Dropdown>
-                <Dropdown.Toggle
-                    className="dropdown-toggle ms-2"
-                    size="sm"
-                ></Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                    <Dropdown.Item>Ban</Dropdown.Item>
-                    <Dropdown.Item>Mute</Dropdown.Item>
-                    <Dropdown.Item>Kick</Dropdown.Item>
-                </Dropdown.Menu>
-            </Dropdown>
+            <SetDropDown channelId={channelId} member={member} />
         </div>
     )
 }
@@ -56,7 +102,11 @@ function Members({ channelId }) {
 
             <Stack>
                 {members.map((member) => (
-                    <Member key={member.id} member={member} />
+                    <Member
+                        key={member.id}
+                        member={member}
+                        channelId={channelId}
+                    />
                 ))}
             </Stack>
         </div>
@@ -175,9 +225,7 @@ function PasswordMaintenance({ channelId }) {
                 </Button>
             </div>
         )
-    }
-
-    else if (channel.type === "protected") {
+    } else if (channel.type === "protected") {
         return (
             <div className="d-flex">
                 <Form className="w-auto ms-3">
@@ -195,9 +243,7 @@ function PasswordMaintenance({ channelId }) {
                 </Button>
             </div>
         )
-    }
-
-    else {
+    } else {
         return (
             <div className="d-flex">
                 <Button variant="primary" size="sm" className="ms-3">
@@ -229,7 +275,12 @@ function Main({ channelId }) {
                     <h4 className="ms-2 chan-type">[{channel.type}]</h4>
                 </div>
                 <div className="d-flex">
-                    <Button variant="danger" size="sm" onClick={leave} disabled={isLoading}>
+                    <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={leave}
+                        disabled={isLoading}
+                    >
                         Leave channel
                     </Button>
                     <PasswordMaintenance channelId={channelId} />
@@ -248,10 +299,12 @@ function TempLol({ channelId }) {
 
     console.log("TEMPLOL", channel.id, channel)
 
-    return <>
-        <Main channelId={channel.id} />
-        <Members channelId={channel.id} />
-    </>
+    return (
+        <>
+            <Main channelId={channel.id} />
+            <Members channelId={channel.id} />
+        </>
+    )
 }
 
 export default function RoomView() {
