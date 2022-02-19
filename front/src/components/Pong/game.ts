@@ -1,4 +1,5 @@
 import * as THREE from "three"
+import Stats from "stats.js"
 import WebSocketService from "../../WebSocketService"
 
 function hexToRgb(hex: number) {
@@ -18,6 +19,7 @@ function main() {
     const graphicConfig = {
         shadows: true,
         renderResolution: 1,
+        performanceMonitor: true,
     }
 
     const map = {
@@ -55,18 +57,19 @@ function main() {
     window.onresize = resizeRenderer
 
     var keyPressed = new Map<string, boolean>()
-    let mixerGroup = new THREE.AnimationObjectGroup()
 
     var engine = {
         scene: new THREE.Scene(),
         renderer: new THREE.WebGLRenderer({
             antialias: true,
+            powerPreference: "high-performance",
         }),
         camera: new THREE.PerspectiveCamera(50, size.x / size.y, 0.1, 1000),
         objects: new Map<string, any>(),
         clock: new THREE.Clock(),
         animationFrame: 0,
         animationClips: new Map<string, THREE.AnimationAction>(),
+        stats: graphicConfig.performanceMonitor ? new Stats() : null,
     }
 
     class Player {
@@ -148,8 +151,10 @@ function main() {
 
     function animate() {
         engine.animationFrame = requestAnimationFrame(animate)
+        engine.stats?.begin()
         render(engine.clock.getDelta())
         engine.renderer.render(engine.scene, engine.camera)
+        engine.stats?.end()
     }
 
     function initScene() {
@@ -167,7 +172,7 @@ function main() {
         {
             const light = new THREE.PointLight(0xffffff, 1, 40)
             light.position.set(12, 6, 0)
-            light.castShadow = true
+            light.castShadow = graphicConfig.shadows
             addObj("light", light)
         }
 
@@ -287,19 +292,34 @@ function main() {
     }
 
     function initEngine() {
+        console.log(`Three.js r${THREE.REVISION}`)
+
         engine.renderer.setSize(
             size.x * graphicConfig.renderResolution,
             size.y * graphicConfig.renderResolution
         )
-        engine.renderer.setPixelRatio(window.devicePixelRatio)
+        engine.renderer.setPixelRatio(2)
         engine.renderer.domElement.style.width = "100%"
         engine.renderer.domElement.style.height = "100%"
         engine.renderer.shadowMap.enabled = graphicConfig.shadows
         engine.renderer.shadowMap.type = THREE.PCFShadowMap
         engine.renderer.outputEncoding = THREE.sRGBEncoding
+        {
+            const list = document.querySelectorAll("#gameContainer canvas")
+            list.forEach((e) => {
+                e.parentElement?.removeChild(e)
+            })
+        }
         document
-            .querySelector("#gameContainer canvas")
-            ?.replaceWith(engine.renderer.domElement)
+            .querySelector("#gameContainer")
+            ?.appendChild(engine.renderer.domElement)
+
+        if (engine.stats) {
+            engine.stats.showPanel(0)
+            let dom = engine.stats.dom
+            dom.style.position = "absolute"
+            document.querySelector("#gameContainer")?.appendChild(dom)
+        }
     }
 
     function updateHUD() {
