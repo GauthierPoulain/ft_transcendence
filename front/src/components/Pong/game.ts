@@ -93,7 +93,7 @@ function main() {
         last: number
         interval: any
     } = {
-        running: true,
+        running: false,
         last: Date.now(),
         interval: undefined,
     }
@@ -145,42 +145,52 @@ function main() {
         box2.updateMatrixWorld()
         const Cbox1 = box1.geometry.boundingBox?.clone()
         Cbox1?.applyMatrix4(box1.matrixWorld)
-        const Cbox2 = box1.geometry.boundingBox?.clone()
+        const Cbox2 = box2.geometry.boundingBox?.clone()
         Cbox2?.applyMatrix4(box2.matrixWorld)
         if (Cbox2) return Cbox1?.intersectsBox(Cbox2)
         return false
     }
 
-    function resetRound() {
-        currentGameData.players.one.x = 0
-        currentGameData.players.two.x = 0
-        currentGameData.ball.x = 0
-        currentGameData.ball.z = 0
-        currentGameData.ball.speed.x = 0
-        currentGameData.ball.speed.z = 10
-    }
-
-    function roundEnd(winner: Player) {
-        simulationData.running = false
-        playerScore(winner)
-    }
-
-    function syncSimulation() {
+    function syncMeshs() {
         const quoit = engine.objects.get("quoit") as THREE.Mesh
         const playerP = engine.objects.get("player1") as THREE.Mesh
         const playerN = engine.objects.get("player2") as THREE.Mesh
 
         quoit.position.x = currentGameData.ball.x
         quoit.position.z = currentGameData.ball.z
+        quoit.scale.x = currentGameData.ball.radius
+        quoit.scale.z = currentGameData.ball.radius
 
         playerP.position.x = currentGameData.players.one.x
+        playerP.scale.x = currentGameData.players.one.width
+
         playerN.position.x = currentGameData.players.two.x
+        playerN.scale.x = currentGameData.players.two.width
+    }
+
+    function resetRound() {
+        currentGameData.players.one.x = 0
+        currentGameData.players.one.width = 3
+        currentGameData.players.two.x = 0
+        currentGameData.players.two.width = 3
+        currentGameData.ball.x = 0
+        currentGameData.ball.z = 0
+        currentGameData.ball.speed.x = 0
+        currentGameData.ball.speed.z = 10
+    }
+
+    function syncSimulation() {
+        syncMeshs()
     }
 
     function startSimulation() {
         simulationData.running = true
         simulationData.last = Date.now()
         syncSimulation()
+    }
+
+    function stopSimulation() {
+        simulationData.running = false
     }
 
     function localSimulation() {
@@ -225,18 +235,20 @@ function main() {
                 quoit.position.x += currentGameData.ball.speed.x * delta
                 quoit.position.z += currentGameData.ball.speed.z * delta
             }
-
+            {
+                playerN.position.x = quoit.position.x
+            }
             {
                 if (quoit.position.z > map.depth / 2)
-                    roundEnd(currentGameData.players.two)
+                    playerScore(currentGameData.players.two)
                 else if (quoit.position.z < -(map.depth / 2))
-                    roundEnd(currentGameData.players.one)
+                    playerScore(currentGameData.players.one)
             }
 
             simulationData.last = Date.now()
         } catch (error) {
             console.log(error)
-            simulationData.running = false
+            stopSimulation()
             return false
         }
     }
@@ -249,18 +261,19 @@ function main() {
             if (keyPressed.get("ArrowLeft") && !keyPressed.get("ArrowRight")) {
                 let player = engine.objects.get("player1") as THREE.Mesh
                 if (
-                    player.position.x - currentPlayer().width / 2 >
-                    -map.width / 2
-                )
+                    !collisionBoxBox(player, engine.objects.get("map_border2"))
+                ) {
                     player.position.x -= 10 * delta
+                }
             }
             if (keyPressed.get("ArrowRight") && !keyPressed.get("ArrowLeft")) {
                 let player = engine.objects.get("player1") as THREE.Mesh
+
                 if (
-                    player.position.x + currentPlayer().width / 2 <
-                    map.width / 2
-                )
+                    !collisionBoxBox(player, engine.objects.get("map_border1"))
+                ) {
                     player.position.x += 10 * delta
+                }
             }
             // if (keyPressed.get("KeyA")) {
             //     let quoit = engine.objects.get("quoit") as THREE.Mesh
@@ -401,7 +414,7 @@ function main() {
         }
         {
             let player = currentGameData.players.one
-            const geo = new THREE.BoxGeometry(player.width, 0.3, 0.4)
+            const geo = new THREE.BoxGeometry(1, 0.3, 0.4)
             const mat = new THREE.MeshPhongMaterial({ color: player.color })
             const obj = new THREE.Mesh(geo, mat)
             obj.position.set(0, 0.3, 11.5)
@@ -410,7 +423,7 @@ function main() {
         }
         {
             let player = currentGameData.players.two
-            const geo = new THREE.BoxGeometry(player.width, 0.3, 0.4)
+            const geo = new THREE.BoxGeometry(1, 0.3, 0.4)
             const mat = new THREE.MeshPhongMaterial({ color: player.color })
             const obj = new THREE.Mesh(geo, mat)
             obj.position.set(0, 0.3, -11.5)
@@ -418,18 +431,14 @@ function main() {
             addObj("player2", obj)
         }
         {
-            const geo = new THREE.CylinderGeometry(
-                currentGameData.ball.radius,
-                currentGameData.ball.radius,
-                0.3,
-                20
-            )
+            const geo = new THREE.CylinderGeometry(1, 1, 0.3, 20)
             const mat = new THREE.MeshPhongMaterial({ color: 0xffffff })
             const obj = new THREE.Mesh(geo, mat)
             obj.position.set(0, 0.3, 0)
             obj.castShadow = true
             addObj("quoit", obj)
         }
+        syncMeshs()
     }
 
     function initEngine() {
@@ -487,8 +496,10 @@ function main() {
                     playerScore(currentGameData.players.two)
                     break
                 case "Digit3":
-                    simulationData.last = Date.now()
-                    simulationData.running = !simulationData.running
+                    startSimulation()
+                    break
+                case "Digit4":
+                    stopSimulation()
                     break
 
                 default:
@@ -576,6 +587,7 @@ function main() {
     }
 
     function playerScore(winner: Player) {
+        stopSimulation()
         var looser =
             winner == currentGameData.players.one
                 ? currentGameData.players.two
@@ -595,7 +607,7 @@ function main() {
         setTimeout(() => {
             resetRound()
             startSimulation()
-        }, 5000)
+        }, 3000)
     }
 
     let gameAlertTimeout: any | null = null
@@ -634,10 +646,12 @@ function main() {
     }, 1)
 }
 
-export default function game(ws: WebSocketService) {
-    ws.onOpen(() => {
-        console.log("ws connected")
-        // ws.emit("login")
-        main()
-    })
+export default function game(ws?: WebSocketService) {
+    // ws.onOpen(() => {
+    //     console.log("ws connected")
+    //     // ws.emit("login")
+    //     main()
+    // })
+
+    main()
 }

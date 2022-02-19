@@ -25,7 +25,7 @@ export function WebsocketProvider({ children }) {
 
     const [handlers, setHandlers] = useState(new Map())
 
-    const { sendMessage: send, readyState, lastJsonMessage } = useInner("ws://localhost:3005", {
+    const { sendMessage: send, readyState, lastJsonMessage } = useInner(`ws://${document.location.hostname}:3005`, {
         async onMessage(message) {
             const { event, data } = JSON.parse(message.data)
 

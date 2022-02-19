@@ -8,7 +8,7 @@ export function setAccessToken(token: string) {
     accessToken = token
 }
 
-const apiurl = (url: string) => `http://localhost:3005/api${url}`
+const apiurl = (url: string) => `http://${document.location.hostname}:3005/api${url}`
 
 export const fetcher = async (url: string, options = {}, jsonResponse=true) => {
     const response = await fetch(apiurl(url), {
