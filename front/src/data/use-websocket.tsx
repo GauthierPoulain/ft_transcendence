@@ -35,14 +35,14 @@ export function WebsocketProvider({ children }) {
 
             handlers.forEach((value) => value(event, data))
 
-            if (event === "channel.member.new") {
+            if (event === "members.created") {
                 const member = data as Membership
 
                 mutate(`/channels/${member.channelId}/members`)
                 if (auth.userId === data.userId) {
                     mutate(`/channels/joined`)
                 }
-            } else if (event === "channel.member.remove") {
+            } else if (event === "members.removed") {
                 mutate(`/channels/${data.channelId}/members`)
                 if (auth.userId === data.userId) {
                     mutate(`/channels/joined`)

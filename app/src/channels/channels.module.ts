@@ -11,7 +11,6 @@ import { Member } from "src/channels/members/member.entity"
 import { Channel } from "src/channels/entities/channel.entity"
 import { Message } from "src/channels/messages/message.entity"
 import { AuthModule } from "src/auth/auth.module"
-import { MessageSubscriber } from "./messages/message.subscriber"
 import { MessagesService } from "./messages/messages.service"
 import { MembersService } from "./members/members.service"
 import { MemberSubscriber } from "./members/member.subscriber"
@@ -19,6 +18,6 @@ import { MemberSubscriber } from "./members/member.subscriber"
 @Module({
     imports: [TypeOrmModule.forFeature([Member, Channel, Message]), UsersModule, AuthModule],
     controllers: [ChannelsController, MessagesController, MembersController],
-    providers: [ChannelsService, MessageSubscriber, MessagesService, MembersService, MemberSubscriber],
+    providers: [ChannelsService, MessagesService, MembersService, MemberSubscriber],
 })
 export class ChannelsModule {}

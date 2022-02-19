@@ -1,4 +1,5 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common"
+import { OnEvent } from "@nestjs/event-emitter"
 import { InjectRepository } from "@nestjs/typeorm"
 import { hash } from "argon2"
 import { User } from "src/users/entities/user.entity"
@@ -35,6 +36,10 @@ export class ChannelsService {
         }
 
         return channel
+    }
+
+    find(options: any): Promise<Channel[]> {
+        return this.channelsRepository.find(options)
     }
 
     findJoinable() {
