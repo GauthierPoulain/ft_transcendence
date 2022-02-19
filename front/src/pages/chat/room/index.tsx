@@ -14,8 +14,6 @@ import { ErrorBox } from "../../../components/error/ErrorBox"
 import Messages from "./messages"
 import Members from "./members"
 
-
-
 function FormMessage({ channelId }) {
     const channel = useChannel(channelId)
     const [content, setContent] = useState("")
@@ -120,7 +118,6 @@ function Main({ channelId }) {
     const auth = useAuth()
     const channel = useChannel(channelId)
     const members = useMembers(channelId)
-    const messages = useMessages(channelId)
 
     const { submit, isLoading } = useRemoveMember()
 
@@ -150,7 +147,7 @@ function Main({ channelId }) {
                 </div>
             </div>
 
-            <Messages messages={messages} />
+            <Messages channelId={channelId} />
 
             <FormMessage channelId={channelId} />
         </div>

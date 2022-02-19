@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 import useInner, { ReadyState } from "react-use-websocket"
 import { mutate } from "swr"
 import { Message } from "./use-message";
@@ -11,6 +11,10 @@ type State = {
     lastJsonMessage?: {
         event: string,
         data: any
+    },
+    setHandlers: any,
+    subscribe: (fn: (key: string, value: any) => void) => {
+        unsubscribe: () => void
     }
 }
 
@@ -19,31 +23,19 @@ const Context = createContext<State>({} as State)
 export function WebsocketProvider({ children }) {
     const auth = useAuth()
 
+    const [handlers, setHandlers] = useState(new Map())
+
     const { sendMessage: send, readyState, lastJsonMessage } = useInner("ws://localhost:3005", {
         async onMessage(message) {
             const { event, data } = JSON.parse(message.data)
 
-            console.log("websocket message", event, data)
 
-            if (event === "channel.message.new") {
-                const message = data as Message
 
-                mutate(`/channels/${message.channelId}/messages`, (messages: Message[] | null) => {
-                    if (messages) {
-                        return [...messages, message]
-                    }
+            console.log("websocket message", event, data, handlers)
 
-                    return messages
-                }, false)
-            } else if (event === "channel.message.remove") {
-                mutate(`/channels/${data.channelId}/messages`, (messages: Message[] | null) => {
-                    if (messages) {
-                        return messages.filter(({ id }) => id !== data.id)
-                    }
+            handlers.forEach((value) => value(event, data))
 
-                    return messages
-                }, false)
-            } else if (event === "channel.member.new") {
+            if (event === "channel.member.new") {
                 const member = data as Membership
 
                 mutate(`/channels/${member.channelId}/members`)
@@ -72,8 +64,28 @@ export function WebsocketProvider({ children }) {
         return send(JSON.stringify({ event, data }))
     }
 
+    function subscribe(fn: (event: string, data: any) => void) {
+        const key = Symbol()
+
+        setHandlers((map) => {
+            const copy = new Map(map)
+            copy.set(key, fn)
+            return copy
+        })
+
+        return {
+            unsubscribe() {
+                setHandlers((map) => {
+                    const copy = new Map(map)
+                    copy.delete(key)
+                    return copy
+                })
+            }
+        }
+    }
+
     return (
-        <Context.Provider value={{ sendMessage, readyState, lastJsonMessage }}>
+        <Context.Provider value={{ subscribe, setHandlers, sendMessage, readyState, lastJsonMessage }}>
             { children }
         </Context.Provider>
     )
