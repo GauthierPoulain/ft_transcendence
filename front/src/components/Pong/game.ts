@@ -17,6 +17,7 @@ function main() {
     }
 
     const graphicConfig = {
+        antiAliasing: true,
         shadows: true,
         renderResolution: 1,
         performanceMonitor: true,
@@ -61,7 +62,7 @@ function main() {
     var engine = {
         scene: new THREE.Scene(),
         renderer: new THREE.WebGLRenderer({
-            antialias: true,
+            antialias: graphicConfig.antiAliasing,
             powerPreference: "high-performance",
         }),
         camera: new THREE.PerspectiveCamera(50, size.x / size.y, 0.1, 1000),
@@ -87,13 +88,29 @@ function main() {
         }
     }
 
+    var simulationData: {
+        running: boolean
+        last: number
+        interval: any
+    } = {
+        running: true,
+        last: Date.now(),
+        interval: undefined,
+    }
+
     function initGameData() {
         return {
             players: {
                 one: new Player("Player 1", 0xffffff, "player1"),
                 two: new Player("Player 2", 0xffffff, "player2"),
             },
-            ball: { x: 0, y: 0, radius: 0.3, color: 0xffffff },
+            ball: {
+                x: 0,
+                y: 0,
+                radius: 0.5,
+                color: 0xffffff,
+                speed: { x: 0, z: 10 },
+            },
         }
     }
 
@@ -109,13 +126,60 @@ function main() {
         return currentGameData.players[whoAmI()]
     }
 
+    function collisionBoxCyl(box: THREE.Mesh, cyl: THREE.Mesh) {
+        box.geometry.computeBoundingBox()
+        box.updateMatrixWorld()
+        const Cbox = box.geometry.boundingBox?.clone()
+        Cbox?.applyMatrix4(box.matrixWorld)
+        const Csphere = new THREE.Sphere(
+            cyl.position,
+            currentGameData.ball.radius
+        )
+        return Cbox?.intersectsSphere(Csphere)
+    }
+
+    function localSimulation() {
+        try {
+            const delta = (Date.now() - simulationData.last) / 1000
+
+            if (!simulationData.running) return
+            const quoit = engine.objects.get("quoit") as THREE.Mesh
+            const wallP = engine.objects.get("map_border1") as THREE.Mesh
+            const wallN = engine.objects.get("map_border2") as THREE.Mesh
+            const playerP = engine.objects.get("player1") as THREE.Mesh
+            const playerN = engine.objects.get("player2") as THREE.Mesh
+
+            {
+                if (collisionBoxCyl(playerP, quoit)) {
+                    currentGameData.ball.speed.z = -Math.abs(
+                        currentGameData.ball.speed.z
+                    )
+                } else if (collisionBoxCyl(playerN, quoit)) {
+                    currentGameData.ball.speed.z = Math.abs(
+                        currentGameData.ball.speed.z
+                    )
+                }
+            }
+            {
+                quoit.position.x += currentGameData.ball.speed.x * delta
+                quoit.position.z += currentGameData.ball.speed.z * delta
+            }
+
+            simulationData.last = Date.now()
+        } catch (error) {
+            console.log(error)
+            simulationData.running = false
+            return false
+        }
+    }
+
     function render(delta) {
         engine.animationClips.forEach((clip) => {
             clip.getMixer().update(delta)
         })
         {
             if (keyPressed.get("ArrowLeft") && !keyPressed.get("ArrowRight")) {
-                let player = engine.objects.get("player_1") as THREE.Mesh
+                let player = engine.objects.get("player1") as THREE.Mesh
                 if (
                     player.position.x - currentPlayer().width / 2 >
                     -map.width / 2
@@ -123,38 +187,42 @@ function main() {
                     player.position.x -= 10 * delta
             }
             if (keyPressed.get("ArrowRight") && !keyPressed.get("ArrowLeft")) {
-                let player = engine.objects.get("player_1") as THREE.Mesh
+                let player = engine.objects.get("player1") as THREE.Mesh
                 if (
                     player.position.x + currentPlayer().width / 2 <
                     map.width / 2
                 )
                     player.position.x += 10 * delta
             }
-            if (keyPressed.get("KeyA")) {
-                let quoit = engine.objects.get("quoit") as THREE.Mesh
-                quoit.position.x -= 10 * delta
-            }
-            if (keyPressed.get("KeyD")) {
-                let quoit = engine.objects.get("quoit") as THREE.Mesh
-                quoit.position.x += 10 * delta
-            }
-            if (keyPressed.get("KeyW")) {
-                let quoit = engine.objects.get("quoit") as THREE.Mesh
-                quoit.position.z -= 10 * delta
-            }
-            if (keyPressed.get("KeyS")) {
-                let quoit = engine.objects.get("quoit") as THREE.Mesh
-                quoit.position.z += 10 * delta
-            }
+            // if (keyPressed.get("KeyA")) {
+            //     let quoit = engine.objects.get("quoit") as THREE.Mesh
+            //     quoit.position.x -=
+            //         (keyPressed.get("ShiftLeft") == true ? 10 : 1) * delta
+            // }
+            // if (keyPressed.get("KeyD")) {
+            //     let quoit = engine.objects.get("quoit") as THREE.Mesh
+            //     quoit.position.x +=
+            //         (keyPressed.get("ShiftLeft") == true ? 10 : 1) * delta
+            // }
+            // if (keyPressed.get("KeyW")) {
+            //     let quoit = engine.objects.get("quoit") as THREE.Mesh
+            //     quoit.position.z -=
+            //         (keyPressed.get("ShiftLeft") == true ? 10 : 1) * delta
+            // }
+            // if (keyPressed.get("KeyS")) {
+            //     let quoit = engine.objects.get("quoit") as THREE.Mesh
+            //     quoit.position.z +=
+            //         (keyPressed.get("ShiftLeft") == true ? 10 : 1) * delta
+            // }
         }
     }
 
     function animate() {
-        engine.animationFrame = requestAnimationFrame(animate)
         engine.stats?.begin()
         render(engine.clock.getDelta())
         engine.renderer.render(engine.scene, engine.camera)
         engine.stats?.end()
+        engine.animationFrame = requestAnimationFrame(animate)
     }
 
     function initScene() {
@@ -270,7 +338,7 @@ function main() {
             const obj = new THREE.Mesh(geo, mat)
             obj.position.set(0, 0.3, 11.5)
             obj.castShadow = true
-            addObj("player_1", obj)
+            addObj("player1", obj)
         }
         {
             let player = currentGameData.players.two
@@ -279,10 +347,15 @@ function main() {
             const obj = new THREE.Mesh(geo, mat)
             obj.position.set(0, 0.3, -11.5)
             obj.castShadow = true
-            addObj("player_2", obj)
+            addObj("player2", obj)
         }
         {
-            const geo = new THREE.CylinderGeometry(0.5, 0.5, 0.3, 15)
+            const geo = new THREE.CylinderGeometry(
+                currentGameData.ball.radius,
+                currentGameData.ball.radius,
+                0.3,
+                20
+            )
             const mat = new THREE.MeshPhongMaterial({ color: 0xffffff })
             const obj = new THREE.Mesh(geo, mat)
             obj.position.set(0, 0.3, 0)
@@ -351,6 +424,9 @@ function main() {
                         currentGameData.players.one
                     )
                     break
+                case "Digit3":
+                    simulationData.running = !simulationData.running
+                    break
 
                 default:
                     // console.log("keydown", e.code)
@@ -371,6 +447,8 @@ function main() {
         "stopRendering",
         () => {
             console.log("stop render")
+            simulationData.running = false
+            clearInterval(simulationData.interval)
             cancelAnimationFrame(engine.animationFrame)
         },
         { once: true }
@@ -484,6 +562,9 @@ function main() {
     registerAnimations()
     initKeyControl()
     animate()
+    simulationData.interval = setInterval(() => {
+        localSimulation()
+    }, 1)
 }
 
 export default function game(ws: WebSocketService) {
