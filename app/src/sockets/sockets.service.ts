@@ -74,4 +74,9 @@ export class SocketsService {
             console.log(socket.send(message))
         }
     }
+
+    // Return the list of socket for a given room
+    findSockets(room: string): Set<WebSocket> {
+        return this.rooms.get(room) ?? new Set()
+    }
 }

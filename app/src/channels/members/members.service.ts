@@ -1,26 +1,20 @@
-import { forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
 import { InjectRepository } from "@nestjs/typeorm";
 import { verify } from "argon2";
 import { instanceToPlain } from "class-transformer";
-import { AuthSocketService } from "src/auth/auth-socket.service";
 import { SocketsService } from "src/sockets/sockets.service";
 import { User } from "src/users/entities/user.entity";
 import { Repository } from "typeorm";
-import { ChannelsService } from "../channels.service";
 import { Channel } from "../entities/channel.entity";
-import { Member, Role, roleRank } from "./member.entity";
+import { Member, Role } from "./member.entity";
 
 @Injectable()
 export class MembersService {
     constructor(
         @InjectRepository(Member) private readonly members: Repository<Member>,
 
-        @Inject(forwardRef(() => ChannelsService))
-        private channels: ChannelsService,
-        
-        private sockets: AuthSocketService,
-        private sockets2: SocketsService
+        private sockets: SocketsService
     ) { }
 
     async create(channel: Channel, user: User, role: Role): Promise<Member> {
@@ -30,11 +24,8 @@ export class MembersService {
         member.role = role
         member = await this.members.save(member)
 
-        const members = await this.findByChannel(member.channelId)
-        const users = members.map(({ userId }) => userId)
-
-        // TODO: Find a way to get the class transformer configuration?
-        this.sockets.broadcast(users, "channel.member.new", instanceToPlain(member))
+        this.sockets.findSockets(`users.${member.userId}`).forEach((socket) => this.sockets.join(socket, `channels.${member.channelId}`))
+        this.publish("created", instanceToPlain(member, {}))
 
         return member
     }
@@ -77,14 +68,8 @@ export class MembersService {
         const id = member.id
         await this.members.remove(member)
 
-        const members = await this.findByChannel(member.channelId)
-        const users = [...members.map(({ userId }) => userId), member.userId]
-
-        this.sockets.broadcast(users, "channel.member.remove", {
-            id,
-            channelId: member.channelId,
-            userId: member.userId
-        })
+        this.sockets.findSockets(`users.${member.userId}`).forEach((socket) => this.sockets.leave(socket, `channels.${member.channelId}`))
+        this.publish("removed", { id, channelId: member.channelId, userId: member.userId })
     }
 
     // Logic to run when an user wants to join a channel
@@ -114,7 +99,11 @@ export class MembersService {
         const members = await this.findByUser(userId)
 
         for (const member of members) {
-            this.sockets2.join(socket, `channels.${member.channelId}`)
+            this.sockets.join(socket, `channels.${member.channelId}`)
         }
+    }
+
+    private publish(event: string, data: any) {
+        this.sockets.publish([`channels.${data.channelId}`, `users.${data.userId}`], `members.${event}`, data)
     }
 }
