@@ -106,10 +106,10 @@ function main() {
             },
             ball: {
                 x: 0,
-                y: 0,
+                z: 0,
                 radius: 0.5,
                 color: 0xffffff,
-                speed: { x: 0, z: 10 },
+                speed: { x: 0, xMultiplicator: 3, z: 10 },
             },
         }
     }
@@ -138,6 +138,51 @@ function main() {
         return Cbox?.intersectsSphere(Csphere)
     }
 
+    function collisionBoxBox(box1: THREE.Mesh, box2: THREE.Mesh) {
+        box1.geometry.computeBoundingBox()
+        box1.updateMatrixWorld()
+        box2.geometry.computeBoundingBox()
+        box2.updateMatrixWorld()
+        const Cbox1 = box1.geometry.boundingBox?.clone()
+        Cbox1?.applyMatrix4(box1.matrixWorld)
+        const Cbox2 = box1.geometry.boundingBox?.clone()
+        Cbox2?.applyMatrix4(box2.matrixWorld)
+        if (Cbox2) return Cbox1?.intersectsBox(Cbox2)
+        return false
+    }
+
+    function resetRound() {
+        currentGameData.players.one.x = 0
+        currentGameData.players.two.x = 0
+        currentGameData.ball.x = 0
+        currentGameData.ball.z = 0
+        currentGameData.ball.speed.x = 0
+        currentGameData.ball.speed.z = 10
+    }
+
+    function roundEnd(winner: Player) {
+        simulationData.running = false
+        playerScore(winner)
+    }
+
+    function syncSimulation() {
+        const quoit = engine.objects.get("quoit") as THREE.Mesh
+        const playerP = engine.objects.get("player1") as THREE.Mesh
+        const playerN = engine.objects.get("player2") as THREE.Mesh
+
+        quoit.position.x = currentGameData.ball.x
+        quoit.position.z = currentGameData.ball.z
+
+        playerP.position.x = currentGameData.players.one.x
+        playerN.position.x = currentGameData.players.two.x
+    }
+
+    function startSimulation() {
+        simulationData.running = true
+        simulationData.last = Date.now()
+        syncSimulation()
+    }
+
     function localSimulation() {
         try {
             const delta = (Date.now() - simulationData.last) / 1000
@@ -154,15 +199,38 @@ function main() {
                     currentGameData.ball.speed.z = -Math.abs(
                         currentGameData.ball.speed.z
                     )
+                    let xSpeed = -(playerP.position.x - quoit.position.x)
+                    currentGameData.ball.speed.x +=
+                        xSpeed * currentGameData.ball.speed.xMultiplicator
                 } else if (collisionBoxCyl(playerN, quoit)) {
                     currentGameData.ball.speed.z = Math.abs(
                         currentGameData.ball.speed.z
+                    )
+                    let xSpeed = -(playerN.position.x - quoit.position.x)
+                    currentGameData.ball.speed.x +=
+                        xSpeed * currentGameData.ball.speed.xMultiplicator
+                }
+
+                if (collisionBoxCyl(wallP, quoit)) {
+                    currentGameData.ball.speed.x = -Math.abs(
+                        currentGameData.ball.speed.x
+                    )
+                } else if (collisionBoxCyl(wallN, quoit)) {
+                    currentGameData.ball.speed.x = Math.abs(
+                        currentGameData.ball.speed.x
                     )
                 }
             }
             {
                 quoit.position.x += currentGameData.ball.speed.x * delta
                 quoit.position.z += currentGameData.ball.speed.z * delta
+            }
+
+            {
+                if (quoit.position.z > map.depth / 2)
+                    roundEnd(currentGameData.players.two)
+                else if (quoit.position.z < -(map.depth / 2))
+                    roundEnd(currentGameData.players.one)
             }
 
             simulationData.last = Date.now()
@@ -413,18 +481,13 @@ function main() {
             keyPressed.set(e.code, true)
             switch (e.code) {
                 case "Digit1":
-                    playerScore(
-                        currentGameData.players.one,
-                        currentGameData.players.two
-                    )
+                    playerScore(currentGameData.players.one)
                     break
                 case "Digit2":
-                    playerScore(
-                        currentGameData.players.two,
-                        currentGameData.players.one
-                    )
+                    playerScore(currentGameData.players.two)
                     break
                 case "Digit3":
+                    simulationData.last = Date.now()
                     simulationData.running = !simulationData.running
                     break
 
@@ -512,23 +575,27 @@ function main() {
         }
     }
 
-    function playerScore(scorer: Player, looser: Player) {
-        if (looser.meshName == "player1") {
-            const clip = engine.animationClips.get("mapPannel_player1:blink")
-            clip?.reset()
-            clip?.play()
-        } else if (looser.meshName == "player2") {
-            const clip = engine.animationClips.get("mapPannel_player2:blink")
-            clip?.reset()
-            clip?.play()
-        }
-        gameAlert(
-            scorer.name == currentPlayer().name
-                ? "You have scored"
-                : scorer.name + " has scored"
+    function playerScore(winner: Player) {
+        var looser =
+            winner == currentGameData.players.one
+                ? currentGameData.players.two
+                : currentGameData.players.one
+        const clip = engine.animationClips.get(
+            "mapPannel_" + looser.meshName + ":blink"
         )
-        scorer.score++
+        clip?.reset()
+        clip?.play()
+        gameAlert(
+            winner.name == currentPlayer().name
+                ? "You have scored"
+                : winner.name + " has scored"
+        )
+        winner.score++
         updateHUD()
+        setTimeout(() => {
+            resetRound()
+            startSimulation()
+        }, 5000)
     }
 
     let gameAlertTimeout: any | null = null
