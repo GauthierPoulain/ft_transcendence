@@ -39,16 +39,16 @@ export function useMessages(channelId: number) {
     const [isLoading, setLoading] = useState(true)
 
     useEffect(() => {
-        console.log("subscribe", channelId)
-
         fetcher(`/channels/${channelId}/messages`).then((response) => {
             setMessages(response)
             setLoading(false)
         })
+    }, [channelId])
+
+    useEffect(() => {
+        if (isLoading) return;
 
         const { unsubscribe } = subscribe((event, data) => {
-            if (isLoading) return;
-
             if (event === "channel.message.new") {
                 if (data.channelId === channelId) {
                     setMessages((messages) => [...messages, data])
@@ -63,7 +63,7 @@ export function useMessages(channelId: number) {
         })
 
         return unsubscribe
-    }, [channelId])
+    }, [channelId, isLoading])
 
     return { isLoading, messages }
 }
