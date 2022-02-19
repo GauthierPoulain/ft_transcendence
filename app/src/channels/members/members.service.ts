@@ -1,8 +1,10 @@
 import { forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
 import { InjectRepository } from "@nestjs/typeorm";
 import { verify } from "argon2";
 import { instanceToPlain } from "class-transformer";
 import { AuthSocketService } from "src/auth/auth-socket.service";
+import { SocketsService } from "src/sockets/sockets.service";
 import { User } from "src/users/entities/user.entity";
 import { Repository } from "typeorm";
 import { ChannelsService } from "../channels.service";
@@ -17,7 +19,8 @@ export class MembersService {
         @Inject(forwardRef(() => ChannelsService))
         private channels: ChannelsService,
         
-        private sockets: AuthSocketService
+        private sockets: AuthSocketService,
+        private sockets2: SocketsService
     ) { }
 
     async create(channel: Channel, user: User, role: Role): Promise<Member> {
@@ -104,5 +107,14 @@ export class MembersService {
         }
 
         return this.create(channel, user, Role.GUEST)
+    }
+
+    @OnEvent("socket.auth")
+    async onAuthentication({ socket, userId }) {
+        const members = await this.findByUser(userId)
+
+        for (const member of members) {
+            this.sockets2.join(socket, `channels.${member.channelId}`)
+        }
     }
 }

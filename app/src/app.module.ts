@@ -13,11 +13,16 @@ import { Channel } from "./channels/entities/channel.entity"
 import { Message } from "./channels/messages/message.entity"
 import { ConfigModule } from "@nestjs/config"
 import { Member } from "./channels/members/member.entity"
+import { SocketsModule } from "./sockets/sockets.module"
+import { EventEmitterModule } from "@nestjs/event-emitter"
 
 @Module({
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
+        }),
+        EventEmitterModule.forRoot({
+            wildcard: true
         }),
         TypeOrmModule.forRoot({
             // TODO: Make them configurable.
@@ -37,6 +42,7 @@ import { Member } from "./channels/members/member.entity"
         UsersModule,
         AuthModule,
         ChannelsModule,
+        SocketsModule
     ],
     controllers: [AppController],
     providers: [AppService],

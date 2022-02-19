@@ -49,13 +49,13 @@ export function useMessages(channelId: number) {
         if (isLoading) return;
 
         const { unsubscribe } = subscribe((event, data) => {
-            if (event === "channel.message.new") {
+            if (event === "messages.created") {
                 if (data.channelId === channelId) {
                     setMessages((messages) => [...messages, data])
                 }
             }
 
-            if (event === "channel.message.remove") {
+            if (event === "messages.removed") {
                 if (data.channelId === channelId) {
                     setMessages((messages) => messages.filter(({id}) => id !== data.id))
                 }
