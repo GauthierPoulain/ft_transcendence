@@ -35,7 +35,7 @@ export function useRemoveMessage() {
 
 export function useMessages(channelId: number) {
     const { subscribe } = useWebSocket()
-    const [messages, setMessages] = useState([])
+    const [messages, setMessages] = useState<Message[]>([])
     const [isLoading, setLoading] = useState(true)
 
     useEffect(() => {

@@ -1,27 +1,40 @@
 import React, { useEffect, useState } from "react"
-import WebSocketService from "../../WebSocketService"
 import game from "./game"
 import "./pong.css"
+import { useWebSocket } from "../../data/use-websocket"
+import { useAuth } from "../../data/use-auth"
+import useUser from "../../data/use-user"
 
 export default function Pong() {
-    // const WSUrl = new URL(`ws://${document.location.hostname}:3005`)
-    // const [ws, setWs] = useState(new WebSocketService(WSUrl))
+    const { subscribe, sendMessage } = useWebSocket()
+    const [isLoading, setLoading] = useState(true)
+    const auth = useAuth()
+    // const user = auth ? useUser(auth.userId!) : undefined
 
-    // useEffect(() => {
-    //     ws.connect()
-    //     return () => {
-    //         ws.onClose(() => {
-    //             console.log("ws disconnected")
-    //         })
-    //         ws.close()
-    //     }
-    // }, [ws.onMessage, ws.onOpen, ws.onClose])
+    useEffect(() => {
+        if (isLoading) return
+
+        const { unsubscribe } = subscribe((event, data) => {
+            console.log(event, data)
+        })
+
+        return unsubscribe
+    }, [isLoading])
+
+    function stopRendering() {
+        document.dispatchEvent(new CustomEvent("stopRendering"))
+    }
 
     useEffect(() => {
         console.log("mount")
-        document.dispatchEvent(new CustomEvent("stopRendering"))
+        console.log(auth)
+        // console.log(user)
+
+        sendMessage("salut", "owomg")
+
         game()
-    })
+        return stopRendering
+    }, [])
 
     return (
         <React.Fragment>

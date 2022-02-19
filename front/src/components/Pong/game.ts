@@ -438,7 +438,6 @@ function main() {
             obj.castShadow = true
             addObj("quoit", obj)
         }
-        syncMeshs()
     }
 
     function initEngine() {
@@ -448,7 +447,7 @@ function main() {
             size.x * graphicConfig.renderResolution,
             size.y * graphicConfig.renderResolution
         )
-        engine.renderer.setPixelRatio(2)
+        engine.renderer.setPixelRatio(devicePixelRatio)
         engine.renderer.domElement.style.width = "100%"
         engine.renderer.domElement.style.height = "100%"
         engine.renderer.shadowMap.enabled = graphicConfig.shadows
@@ -637,6 +636,8 @@ function main() {
     initGameData()
     initEngine()
     initScene()
+    resetRound()
+    syncSimulation()
     updateHUD()
     registerAnimations()
     initKeyControl()

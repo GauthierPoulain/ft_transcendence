@@ -11,7 +11,7 @@ export function useMembers(channelId: number): Membership[] {
     return useFetch(`/channels/${channelId}/members`)
 }
 
-export function useMember(channelId: number, userId: number): Membership | null {
+export function useMember(channelId: number, userId: number): Membership | undefined {
     const members = useMembers(channelId)
 
     return members.find((member) => member.userId === userId)
