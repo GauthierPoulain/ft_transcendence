@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react"
-import useFetch, { fetcher, useSubmit } from "./use-fetch"
+import { createContext, useContext, useEffect, useState } from "react"
+import { fetcher, useSubmit } from "./use-fetch"
 import { useWebSocket } from "./use-websocket"
+import { State, createRepository } from "./repository"
 
 export type Message = {
     id: number
@@ -33,37 +34,62 @@ export function useRemoveMessage() {
     }, false))
 }
 
-export function useMessages(channelId: number) {
+const repository = createRepository<Message>()
+const Context = createContext<{ state: State<Message>, loading: boolean }>(undefined)
+
+export function MessagesProvider({ channelId, children }) {
     const { subscribe } = useWebSocket()
-    const [messages, setMessages] = useState<Message[]>([])
-    const [isLoading, setLoading] = useState(true)
+    const [state, setState] = useState(repository.initialState())
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
+        setLoading(true)
+        setState(repository.initialState())
+
         fetcher(`/channels/${channelId}/messages`).then((response) => {
-            setMessages(response)
+            setState(repository.setAll(response))
             setLoading(false)
         })
     }, [channelId])
 
     useEffect(() => {
-        if (isLoading) return;
+        if (loading) return;
 
         const { unsubscribe } = subscribe((event, data) => {
             if (event === "messages.created") {
                 if (data.channelId === channelId) {
-                    setMessages((messages) => [...messages, data])
+                    setState((state) => repository.addOne(state, data))
                 }
             }
 
             if (event === "messages.removed") {
                 if (data.channelId === channelId) {
-                    setMessages((messages) => messages.filter(({id}) => id !== data.id))
+                    setState((state) => repository.removeOne(state, data))
                 }
             }
         })
 
         return unsubscribe
-    }, [channelId, isLoading])
+    }, [channelId, loading])
 
-    return { isLoading, messages }
+    const value = {
+        loading,
+        state
+    }
+
+    return (
+        <Context.Provider value={value}>
+            { children }
+        </Context.Provider>
+    )
+}
+
+export function useMessages(): Message[] {
+    const { state } = useContext(Context)
+
+    return repository.selectAll(state)
+}
+
+export function useMessagesLoading(): boolean {
+    return useContext(Context).loading
 }

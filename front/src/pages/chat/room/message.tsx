@@ -1,5 +1,5 @@
 import useUser from "../../../data/use-user"
-import { Message as MessageType, useRemoveMessage } from "../../../data/use-message"
+import { Message as MessageType, useRemoveMessage } from "../../../data/messages"
 import { OverlayTrigger, Tooltip } from "react-bootstrap"
 import { Delete } from "@material-ui/icons"
 import { useAuth } from "../../../data/use-auth"

@@ -4,9 +4,9 @@ import { useParams } from "react-router-dom"
 import { useRemoveMember } from "../../../data/use-member"
 import useChannel from "../../../data/use-channel"
 import {
+    MessagesProvider,
     useCreateMessage,
-    useMessages,
-} from "../../../data/use-message"
+} from "../../../data/messages"
 import "./style.scss"
 import { useAuth } from "../../../data/use-auth"
 import { ErrorBoundary } from "react-error-boundary"
@@ -61,7 +61,8 @@ function FormMessage({ channelId }) {
 function PasswordMaintenance({ channelId }) {
     const auth = useAuth()
     const channel = useChannel(channelId)
-    const members = useMembers(channelId)
+
+    const members = useMembers()
 
     const member = members.find(({ userId }) => userId === auth.userId)
 
@@ -119,14 +120,14 @@ function PasswordMaintenance({ channelId }) {
 function Main({ channelId }) {
     const auth = useAuth()
     const channel = useChannel(channelId)
-    const members = useMembers(channelId)
+    const members = useMembers()
 
     const { submit, isLoading } = useRemoveMember()
 
     async function leave() {
         const member = members.find(({ userId }) => userId === auth.userId)
 
-        await submit({ id: member!.id, channelId: channel.id })
+        await submit({ id: member!.id })
     }
 
     return (
@@ -149,7 +150,7 @@ function Main({ channelId }) {
                 </div>
             </div>
 
-            <Messages channelId={channelId} />
+            <Messages />
 
             <FormMessage channelId={channelId} />
         </div>
@@ -179,7 +180,9 @@ export default function RoomView() {
     return (
         <ErrorBoundary FallbackComponent={ErrorBox} onError={() => {}}>
             <MembersProvider channelId={channelId}>
-                <Inner channelId={channelId} />
+                <MessagesProvider channelId={channelId}>
+                    <Inner channelId={channelId} />
+                </MessagesProvider>
             </MembersProvider>
         </ErrorBoundary>
     )

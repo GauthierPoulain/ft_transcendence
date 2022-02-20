@@ -1,7 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import useInner, { ReadyState } from "react-use-websocket"
 import { mutate } from "swr"
-import { Message } from "./use-message";
 import { Membership } from "./use-member"
 import { useAuth } from "./use-auth";
 
