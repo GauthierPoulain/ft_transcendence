@@ -3,10 +3,10 @@ import { OnEvent } from "@nestjs/event-emitter";
 import { InjectRepository } from "@nestjs/typeorm";
 import { verify } from "argon2";
 import { instanceToPlain } from "class-transformer";
+import { Channel } from "src/channels/entities/channel.entity";
 import { SocketsService } from "src/sockets/sockets.service";
 import { User } from "src/users/entities/user.entity";
-import { Repository } from "typeorm";
-import { Channel } from "../entities/channel.entity";
+import { FindManyOptions, Repository } from "typeorm";
 import { Member, Role } from "./member.entity";
 
 @Injectable()
@@ -57,6 +57,10 @@ export class MembersService {
                 channel: { id: channelId }
             }
         })
+    }
+
+    find(options: FindManyOptions<Member>): Promise<Member[]> {
+        return this.members.find(options)
     }
 
     setRole(member: Member, role: Role): Promise<Member> {

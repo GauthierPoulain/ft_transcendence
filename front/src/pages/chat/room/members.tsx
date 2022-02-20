@@ -1,8 +1,8 @@
 import Member from "./member"
-import { useMembers } from "../../../data/use-member.ts"
+import { useMembers } from "../../../data/members"
 
-export default function Members({ channelId }) {
-    const members = useMembers(channelId)
+export default function Members() {
+    const members = useMembers()
 
     return (
         <div className="members p-3 bg-dark">

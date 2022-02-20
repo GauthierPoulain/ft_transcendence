@@ -5,9 +5,9 @@ import {
     OneToMany,
 } from "typeorm"
 
-import { Member } from "src/channels/members/member.entity"
 import { Message } from "src/channels/messages/message.entity"
 import { Exclude, Expose } from "class-transformer"
+import { Member } from "src/members/member.entity"
 
 @Entity()
 export class Channel {

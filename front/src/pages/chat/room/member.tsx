@@ -3,9 +3,9 @@ import UserAvatar from "../../../components/user/UserAvatar"
 import { Link } from "react-router-dom"
 
 import { useAuth } from "../../../data/use-auth"
-import { useMember } from "../../../data/use-member"
 import { Dropdown } from "react-bootstrap"
 import { MoreVert } from "@material-ui/icons"
+import { useMemberByUser } from "../../../data/members"
 
 function OwnerOptions({ member }) {
     return (
@@ -45,7 +45,7 @@ function CommonOptions() {
 function Options({ member }) {
     const auth = useAuth()
 
-    const current = useMember(member.channelId, auth.userId)
+    const current = useMemberByUser(auth.userId)
 
     if (current.id === member.id) {
         return null

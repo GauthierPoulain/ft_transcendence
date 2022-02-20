@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Button, Form, InputGroup } from "react-bootstrap"
 import { useParams } from "react-router-dom"
-import { useMembers, useRemoveMember } from "../../../data/use-member"
+import { useRemoveMember } from "../../../data/use-member"
 import useChannel from "../../../data/use-channel"
 import {
     useCreateMessage,
@@ -13,6 +13,8 @@ import { ErrorBoundary } from "react-error-boundary"
 import { ErrorBox } from "../../../components/error/ErrorBox"
 import Messages from "./messages"
 import Members from "./members"
+import { MembersProvider, useMembers, useMembersLoading } from "../../../data/members"
+import Loading from "../../../components/Loading"
 
 function FormMessage({ channelId }) {
     const channel = useChannel(channelId)
@@ -154,6 +156,21 @@ function Main({ channelId }) {
     )
 }
 
+function Inner({ channelId }) {
+    const loading = useMembersLoading()
+
+    if (loading) {
+        return <Loading />
+    }
+
+    return (
+        <>
+            <Main channelId={channelId} />
+            <Members />
+        </>
+    )
+}
+
 export default function RoomView() {
     const params = useParams()
 
@@ -161,8 +178,9 @@ export default function RoomView() {
 
     return (
         <ErrorBoundary FallbackComponent={ErrorBox} onError={() => {}}>
-            <Main channelId={channelId} />
-            <Members channelId={channelId} />
+            <MembersProvider channelId={channelId}>
+                <Inner channelId={channelId} />
+            </MembersProvider>
         </ErrorBoundary>
     )
 }

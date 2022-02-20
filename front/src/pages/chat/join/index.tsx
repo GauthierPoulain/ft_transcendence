@@ -19,7 +19,7 @@ function JoinPublic({ channelId }) {
     }
 
     async function join() {
-        await submit({ id: channelId, password: "" })
+        await submit({ channelId, password: "" })
         mutate("/channels/joined")
         navigate(`/chat/room/${channelId}`, { replace: true })
     }
@@ -40,7 +40,7 @@ function JoinProtected({ channelId }) {
     async function join(event: any) {
         event.preventDefault()
         
-        await submit({ id: channelId, password })
+        await submit({ channelId, password })
 
         mutate("/channels/joined")
         navigate(`/chat/room/${channelId}`, { replace: true })

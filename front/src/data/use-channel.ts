@@ -33,13 +33,13 @@ export function createChannel(request: CreateChannelRequest): Promise<Channel> {
 }
 
 export type JoinChannelRequest = {
-    id: number,
+    channelId: number,
     password: string
 }
 
 export function useJoinChannel() {
-    return useSubmit<JoinChannelRequest, Membership>(({ id, password }) => fetcher(`/channels/${id}/members`, {
+    return useSubmit<JoinChannelRequest, Membership>((request) => fetcher(`/members`, {
         method: 'POST',
-        body: JSON.stringify({ password })
+        body: JSON.stringify(request)
     }))
 }

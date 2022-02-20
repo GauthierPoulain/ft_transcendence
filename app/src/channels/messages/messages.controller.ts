@@ -12,11 +12,11 @@ import {
     UseInterceptors,
 } from "@nestjs/common"
 import { ConnectedGuard } from "src/auth/connected.guard"
+import { MembersService } from "src/members/members.service"
 import { User } from "src/users/entities/user.entity"
 import { CurrentUser, CurrentUserId } from "src/users/user.decorator"
 import { CreateMessageDto } from "../channels.dto"
 import { ChannelsService } from "../channels.service"
-import { MembersService } from "../members/members.service"
 import { MessagesService } from "./messages.service"
 
 @Controller("channels/:channelId/messages")

@@ -12,11 +12,12 @@ import { ChannelsModule } from "./channels/channels.module"
 import { Channel } from "./channels/entities/channel.entity"
 import { Message } from "./channels/messages/message.entity"
 import { ConfigModule } from "@nestjs/config"
-import { Member } from "./channels/members/member.entity"
 import { SocketsModule } from "./sockets/sockets.module"
 import { EventEmitterModule } from "@nestjs/event-emitter"
 import { Match } from "./matches/match.entity"
 import { MatchesModule } from "./matches/matches.module"
+import { MembersModule } from "./members/members.module"
+import { Member } from "./members/member.entity"
 
 @Module({
     imports: [
@@ -45,7 +46,8 @@ import { MatchesModule } from "./matches/matches.module"
         AuthModule,
         ChannelsModule,
         SocketsModule,
-        MatchesModule
+        MatchesModule,
+        MembersModule
     ],
     controllers: [AppController],
     providers: [AppService],

@@ -1,4 +1,4 @@
-import { Member } from "src/channels/members/member.entity"
+import { Member } from "src/members/member.entity"
 import { Message } from "src/channels/messages/message.entity"
 import { Match } from "src/matches/match.entity"
 import {

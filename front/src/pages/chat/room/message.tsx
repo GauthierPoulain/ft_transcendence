@@ -1,9 +1,9 @@
 import useUser from "../../../data/use-user"
-import { useMember } from "../../../data/use-member"
 import { Message as MessageType, useRemoveMessage } from "../../../data/use-message"
 import { OverlayTrigger, Tooltip } from "react-bootstrap"
 import { Delete } from "@material-ui/icons"
 import { useAuth } from "../../../data/use-auth"
+import { useMemberByUser } from "../../../data/members"
 
 function DeleteButton({ message }) {
     const { submit, isLoading } = useRemoveMessage()
@@ -24,7 +24,7 @@ function DeleteButton({ message }) {
 export default function Message({ message }: { message: MessageType }) {
     const auth = useAuth()
     const author = useUser(message.authorId)
-    const self = useMember(message.channelId, auth.userId)
+    const self = useMemberByUser(auth.userId)
 
     return (
         <div className="d-flex flex-column">

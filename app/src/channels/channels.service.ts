@@ -1,14 +1,13 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common"
-import { OnEvent } from "@nestjs/event-emitter"
 import { InjectRepository } from "@nestjs/typeorm"
 import { hash } from "argon2"
+import { Role } from "src/members/member.entity"
+import { MembersService } from "src/members/members.service"
 import { User } from "src/users/entities/user.entity"
 import { Repository } from "typeorm"
 import { CreateChannelDto } from "./dto/create-channel.dto"
 import { UpdateChannelDto } from "./dto/update-channel.dto"
 import { Channel } from "./entities/channel.entity"
-import { Role } from "./members/member.entity"
-import { MembersService } from "./members/members.service"
 
 @Injectable()
 export class ChannelsService {

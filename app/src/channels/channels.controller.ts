@@ -12,13 +12,14 @@ import {
     NotFoundException,
 } from "@nestjs/common"
 import { ConnectedGuard } from "src/auth/connected.guard"
+import { Member } from "src/members/member.entity"
+import { MembersService } from "src/members/members.service"
 import { User } from "src/users/entities/user.entity"
 import { CurrentUser } from "src/users/user.decorator"
 import { ChannelsService } from "./channels.service"
 import { CreateChannelDto } from "./dto/create-channel.dto"
 import { UpdateChannelDto } from "./dto/update-channel.dto"
 import { Channel } from "./entities/channel.entity"
-import { MembersService } from "./members/members.service"
 
 @Controller("channels")
 @UseInterceptors(ClassSerializerInterceptor)
@@ -69,5 +70,10 @@ export class ChannelsController {
     @Delete(":id")
     remove(@Param("id") id: string) {
         return this.channels.remove(+id)
+    }
+
+    @Get(":id/members")
+    findMembers(@Param("id") id: number): Promise<Member[]> {
+        return this.members.findByChannel(id)
     }
 }

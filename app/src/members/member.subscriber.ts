@@ -1,5 +1,5 @@
+import { Channel } from "src/channels/entities/channel.entity";
 import { Connection, EntitySubscriberInterface, EventSubscriber, RemoveEvent } from "typeorm";
-import { Channel } from "../entities/channel.entity";
 import { Member, Role, roleRank } from "./member.entity";
 
 @EventSubscriber()
