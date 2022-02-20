@@ -64,7 +64,7 @@ export function MessagesProvider({ channelId, children }) {
 
             if (event === "messages.removed") {
                 if (data.channelId === channelId) {
-                    setState((state) => repository.removeOne(state, data))
+                    setState((state) => repository.removeOne(state, data.id))
                 }
             }
         })
