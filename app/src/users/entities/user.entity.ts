@@ -1,5 +1,6 @@
 import { Member } from "src/channels/members/member.entity"
 import { Message } from "src/channels/messages/message.entity"
+import { Match } from "src/matches/match.entity"
 import {
     Entity,
     Column,
@@ -35,6 +36,12 @@ class User {
 
     @OneToMany(() => Message, (message) => message.author)
     messages: Message[]
+
+    @OneToMany(() => Match, (match) => match.playerOne)
+    matchesPlayerOne: Match[]
+
+    @OneToMany(() => Match, (match) => match.playerTwo)
+    matchesPlayerTwo: Match[]
 }
 
 interface publicUser {

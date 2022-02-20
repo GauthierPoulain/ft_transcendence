@@ -15,6 +15,8 @@ import { ConfigModule } from "@nestjs/config"
 import { Member } from "./channels/members/member.entity"
 import { SocketsModule } from "./sockets/sockets.module"
 import { EventEmitterModule } from "@nestjs/event-emitter"
+import { Match } from "./matches/match.entity"
+import { MatchesModule } from "./matches/matches.module"
 
 @Module({
     imports: [
@@ -36,13 +38,14 @@ import { EventEmitterModule } from "@nestjs/event-emitter"
             // TODO: This can destroy production data, so we may want to remove this in the future.
             synchronize: true,
 
-            entities: [User, Channel, Message, Member],
+            entities: [User, Channel, Message, Member, Match],
         }),
         GameModule,
         UsersModule,
         AuthModule,
         ChannelsModule,
-        SocketsModule
+        SocketsModule,
+        MatchesModule
     ],
     controllers: [AppController],
     providers: [AppService],
