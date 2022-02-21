@@ -41,7 +41,7 @@ function GameRequestCard({author}) {
                 <div className="author mb-2">
                     {author.nickname} asking for a game !
                 </div>
-                <Button variant="warning" style={{width: '100%'}}>Join</Button>
+                <Button variant="warning" style={{width: '100%'}}>Play</Button>
             </Card.Body>
         </Card>
     )
