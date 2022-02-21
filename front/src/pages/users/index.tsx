@@ -23,6 +23,9 @@ function Banner() {
                     Victories: <span style={{ color: "brown" }}>13</span>
                 </p>
                 <p className="fs-3 m-2 text-dark">
+                    Losses: <span style={{ color: "brown" }}>2</span>
+                </p>
+                <p className="fs-3 m-2 text-dark">
                     Rank: <span style={{ color: "brown" }}>#4</span>
                 </p>
             </div>
