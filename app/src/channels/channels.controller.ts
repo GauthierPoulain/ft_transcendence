@@ -10,12 +10,13 @@ import {
     ClassSerializerInterceptor,
     UseInterceptors,
     NotFoundException,
+    UnauthorizedException,
 } from "@nestjs/common"
 import { ConnectedGuard } from "src/auth/connected.guard"
 import { Member } from "src/members/member.entity"
 import { MembersService } from "src/members/members.service"
 import { User } from "src/users/entities/user.entity"
-import { CurrentUser } from "src/users/user.decorator"
+import { CurrentUser, CurrentUserId } from "src/users/user.decorator"
 import { ChannelsService } from "./channels.service"
 import { CreateChannelDto } from "./dto/create-channel.dto"
 import { UpdateChannelDto } from "./dto/update-channel.dto"
@@ -36,8 +37,8 @@ export class ChannelsController {
     }
 
     @Get()
-    async findAll() {
-        return this.channels.findJoinable()
+    async find() {
+        return this.channels.find(undefined)
     }
 
     @Get("joined")
@@ -59,21 +60,16 @@ export class ChannelsController {
         return channel
     }
 
-    @Patch(":id")
-    update(
-        @Param("id") id: string,
-        @Body() updateChannelDto: UpdateChannelDto
-    ) {
-        return this.channels.update(+id, updateChannelDto)
-    }
-
-    @Delete(":id")
-    remove(@Param("id") id: string) {
-        return this.channels.remove(+id)
-    }
-
     @Get(":id/members")
-    findMembers(@Param("id") id: number): Promise<Member[]> {
-        return this.members.findByChannel(id)
+    @UseGuards(ConnectedGuard)
+    async findMembers(@CurrentUserId() userId: number, @Param("id") channelId: number): Promise<Member[]> {
+        const members = await this.members.findByChannel(channelId)
+
+        // Assert that the current user is a member of the channel
+        if (!members.some((member) => member.userId === userId)) {
+            throw new UnauthorizedException
+        }
+
+        return members
     }
 }

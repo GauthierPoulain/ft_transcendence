@@ -1,11 +1,11 @@
 import { useState } from "react"
 import "./chatjoin.scss"
-import useChannel, { useJoinChannel, useJoinedChannels, usePublicChannels } from "../../../data/use-channel"
+import { useJoinChannel, useChannels } from "../../../data/channels"
 import { useSWRConfig } from "swr"
 import { useNavigate } from "react-router-dom"
 import { Button, Card, Form, InputGroup } from 'react-bootstrap'
 
-function JoinPublic({ channelId }) {
+function JoinPublic({ channel }) {
     const { mutate } = useSWRConfig()
     const navigate = useNavigate()
     const { submit, isError, isLoading } = useJoinChannel()
@@ -19,15 +19,15 @@ function JoinPublic({ channelId }) {
     }
 
     async function join() {
-        await submit({ channelId, password: "" })
+        await submit({ channelId: channel.id, password: "" })
         mutate("/channels/joined")
-        navigate(`/chat/room/${channelId}`, { replace: true })
+        navigate(`/chat/room/${channel.id}`, { replace: true })
     }
 
     return <Button style={{ width: '100%' }} onClick={join}>Join</Button>
 }
 
-function JoinProtected({ channelId }) {
+function JoinProtected({ channel }) {
     const { mutate } = useSWRConfig()
     const navigate = useNavigate()
     const { submit, isError, isLoading } = useJoinChannel()
@@ -40,10 +40,10 @@ function JoinProtected({ channelId }) {
     async function join(event: any) {
         event.preventDefault()
         
-        await submit({ channelId, password })
+        await submit({ channelId: channel.id, password })
 
         mutate("/channels/joined")
-        navigate(`/chat/room/${channelId}`, { replace: true })
+        navigate(`/chat/room/${channel.id}`, { replace: true })
     }
 
     return <Form onSubmit={join}>
@@ -54,23 +54,22 @@ function JoinProtected({ channelId }) {
     </Form>
 }
 
-function ChannelJoinCard({ channelId }) {
-    const channel = useChannel(channelId)
-
+function ChannelJoinCard({ channel }) {
     return (
         <Card className="join-card" style={{ width: '18rem' }}>
           <Card.Body>
             <Card.Title className="mb-3">{ channel.name }</Card.Title>
-            { channel.type === "public" && <JoinPublic channelId={channelId} /> }
-            { channel.type === "protected" && <JoinProtected channelId={channelId} /> }
+            { channel.type === "public" && <JoinPublic channel={channel} /> }
+            { channel.type === "protected" && <JoinProtected channel={channel} /> }
           </Card.Body>
         </Card>
     )
 }
 
 export default function ChatBox() {
-    const pubs = usePublicChannels()
-    const joined = useJoinedChannels()
+    const pubs = useChannels()
+    // TODO: Use joined channels
+    const joined = []
 
     const channels = pubs.filter((id) => !joined.includes(id))
 
@@ -81,7 +80,7 @@ export default function ChatBox() {
             { channels.length === 0 && <p>There's currently no public channel to join.</p> }
 
             { channels.length > 0 && <div className="join-cards d-flex flex-wrap">
-                { channels.map((channelId) => <ChannelJoinCard key={channelId} channelId={channelId} />) }
+                { channels.map((channel) => <ChannelJoinCard key={channel.id} channel={channel} />) }
             </div> }
         </div>
     )

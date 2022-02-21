@@ -1,12 +1,10 @@
 import { Outlet } from "react-router-dom"
 import { Link } from "react-router-dom"
-import useChannel, { useJoinedChannels } from "../../data/use-channel"
+import { ChannelsProvider, useChannels } from "../../data/channels"
 
 import "./style.scss"
 
-function JoinedChannel({ channelId }) {
-    const channel = useChannel(channelId)
-
+function JoinedChannel({ channel }) {
     return (
         <li>
             <Link className="text-decoration-none chan-text" to={`/chat/room/${channel.id}`} replace>{channel.name}</Link>
@@ -15,11 +13,12 @@ function JoinedChannel({ channelId }) {
 }
 
 function JoinedChannels() {
-    const channels = useJoinedChannels()
+    // TODO: Transformed to joined channels
+    const channels = useChannels()
 
     return (
         <ul className="list-unstyled mt-3">
-            { channels.map((channelId) => <JoinedChannel key={channelId} channelId={channelId} />) }
+            { channels.map((channel) => <JoinedChannel key={channel.id} channel={channel} />) }
         </ul>
     )
 }
@@ -39,11 +38,19 @@ function Sidebar() {
     )
 }
 
-export default function Chat() {
+function Inner() {
     return (
         <div className="d-flex flex-grow-1">
             <Sidebar />
             <Outlet />
         </div>
+    )
+}
+
+export default function Chat() {
+    return (
+        <ChannelsProvider>
+            <Inner />
+        </ChannelsProvider>
     )
 }

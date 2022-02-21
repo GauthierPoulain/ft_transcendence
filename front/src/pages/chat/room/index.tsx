@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Button, Form, InputGroup } from "react-bootstrap"
 import { useParams } from "react-router-dom"
 import { useRemoveMember } from "../../../data/use-member"
-import useChannel from "../../../data/use-channel"
+import { useChannel } from "../../../data/channels"
 import {
     MessagesProvider,
     useCreateMessage,

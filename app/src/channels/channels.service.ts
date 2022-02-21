@@ -1,10 +1,13 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common"
+import { OnEvent } from "@nestjs/event-emitter"
 import { InjectRepository } from "@nestjs/typeorm"
 import { hash } from "argon2"
+import { instanceToPlain } from "class-transformer"
 import { Role } from "src/members/member.entity"
 import { MembersService } from "src/members/members.service"
+import { SocketsService } from "src/sockets/sockets.service"
 import { User } from "src/users/entities/user.entity"
-import { Repository } from "typeorm"
+import { FindManyOptions, Repository } from "typeorm"
 import { CreateChannelDto } from "./dto/create-channel.dto"
 import { UpdateChannelDto } from "./dto/update-channel.dto"
 import { Channel } from "./entities/channel.entity"
@@ -16,7 +19,9 @@ export class ChannelsService {
         private channelsRepository: Repository<Channel>,
 
         @Inject(forwardRef(() => MembersService))
-        private members: MembersService
+        private members: MembersService,
+
+        private sockets: SocketsService
     ) {}
 
     async create(input: CreateChannelDto, owner: User): Promise<Channel> {
@@ -34,10 +39,12 @@ export class ChannelsService {
             throw e;
         }
 
+        this.publish("created", instanceToPlain(channel, {}))
+
         return channel
     }
 
-    find(options: any): Promise<Channel[]> {
+    find(options: FindManyOptions<Channel>): Promise<Channel[]> {
         return this.channelsRepository.find(options)
     }
 
@@ -49,11 +56,17 @@ export class ChannelsService {
         return this.channelsRepository.findOne(id)
     }
 
-    update(id: number, updateChannelDto: UpdateChannelDto) {
-        return `This action updates a #${id} channel`
-    }
-
     async remove(id: Channel["id"]): Promise<void> {
         await this.channelsRepository.delete(id)
+        this.publish("removed", { id })
+    }
+
+    @OnEvent("socket.auth")
+    onAuthenticate({ socket }) {
+        this.sockets.join(socket, "channels")
+    }
+
+    private publish(event: string, data: any) {
+        this.sockets.publish(["channels"], `channels.${event}`, data)
     }
 }

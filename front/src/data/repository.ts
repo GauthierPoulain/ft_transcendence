@@ -14,6 +14,7 @@ type Repository<T> = {
 
     initialState(): State<T>
 
+    selectById(state: State<T>, id: number): T | undefined
     selectAll(state: State<T>): T[]
 }
 
@@ -42,5 +43,6 @@ export const createRepository = <T extends Entity>(): Repository<T> => ({
     setAll: (entities) => addMany(initialState(), entities),
     removeOne,
     initialState,
+    selectById: (state, id) => state.get(id),
     selectAll: (state) => ([...state.values()])
 })
