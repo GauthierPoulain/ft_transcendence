@@ -29,7 +29,7 @@ function Sidebar() {
         <div className="p-3 chan-list bg-dark">
             <h2>Channels</h2>
 
-            <ul className="list-unstyled test">
+            <ul className="list-unstyled">
                 <li><Link className="header-text" to="/chat">Join a channel</Link></li>
                 <li><Link className="header-text" to="/chat/create">Create a channel</Link></li>
             </ul>
