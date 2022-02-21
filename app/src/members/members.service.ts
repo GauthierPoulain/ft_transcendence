@@ -1,8 +1,9 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common"
+import { forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common"
 import { OnEvent } from "@nestjs/event-emitter"
 import { InjectRepository } from "@nestjs/typeorm"
 import { verify } from "argon2"
 import { instanceToPlain } from "class-transformer"
+import { ChannelsService } from "src/channels/channels.service"
 import { Channel } from "src/channels/entities/channel.entity"
 import { SocketsService } from "src/sockets/sockets.service"
 import { User } from "src/users/entities/user.entity"
@@ -14,7 +15,10 @@ export class MembersService {
     constructor(
         @InjectRepository(Member) private readonly members: Repository<Member>,
 
-        private sockets: SocketsService
+        private sockets: SocketsService,
+
+        @Inject(forwardRef(() => ChannelsService))
+        private channels: ChannelsService
     ) {}
 
     async create(channel: Channel, user: User, role: Role): Promise<Member> {
@@ -89,6 +93,10 @@ export class MembersService {
             channelId: member.channelId,
             userId: member.userId,
         })
+
+        if ((await this.findByChannel(member.channelId)).length === 0) {
+            this.channels.remove(member.channelId)
+        }
     }
 
     // Logic to run when an user wants to join a channel

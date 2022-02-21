@@ -1,4 +1,3 @@
-import { Channel } from "src/channels/entities/channel.entity"
 import {
     Connection,
     EntitySubscriberInterface,
@@ -22,13 +21,8 @@ export class MemberSubscriber implements EntitySubscriberInterface<Member> {
             channel: { id: event.entity.channelId },
         })
 
-        // If there's no user left, delete the channel.
-        if (members.length === 0) {
-            await event.manager.delete(Channel, event.entity.channelId)
-        }
-
-        // Otherwise if the user was an owner, transfer ownership.
-        else if (event.entity.role === Role.OWNER) {
+        // If the user was an owner, transfer ownership.
+        if (event.entity.role === Role.OWNER) {
             // Sort members by role then by id.
             const [target] = members.sort((first, second) => {
                 const cmp = roleRank(first.role) - roleRank(second.role)
@@ -36,9 +30,11 @@ export class MemberSubscriber implements EntitySubscriberInterface<Member> {
                 return cmp !== 0 ? cmp : first.id - second.id
             })
 
-            // Update the new owner role.
-            target.role = Role.OWNER
-            await event.manager.save(Member, target)
+            if (target) {
+                // Update the new owner role.
+                target.role = Role.OWNER
+                await event.manager.save(Member, target)
+            }
         }
     }
 }

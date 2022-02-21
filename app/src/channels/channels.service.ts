@@ -9,7 +9,6 @@ import { SocketsService } from "src/sockets/sockets.service"
 import { User } from "src/users/entities/user.entity"
 import { FindManyOptions, Repository } from "typeorm"
 import { CreateChannelDto } from "./dto/create-channel.dto"
-import { UpdateChannelDto } from "./dto/update-channel.dto"
 import { Channel } from "./entities/channel.entity"
 
 @Injectable()
