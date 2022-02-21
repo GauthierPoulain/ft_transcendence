@@ -61,8 +61,8 @@ export default function Message({ message }: { message: MessageType }) {
                 )}
             </div>
             <div>{message.content}</div>
-            <GameRequestCard author={author}/>
         </div>
     )
 }
 
+//<GameRequestCard author={author}/>
