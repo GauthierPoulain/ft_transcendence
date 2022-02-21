@@ -19,8 +19,10 @@ import { Member } from "./member.entity"
 
 @Controller("members")
 export class MembersController {
-    constructor(private members: MembersService, private channels: ChannelsService) {
-    }
+    constructor(
+        private members: MembersService,
+        private channels: ChannelsService
+    ) {}
 
     @Post()
     @UseGuards(ConnectedGuard)
@@ -28,7 +30,7 @@ export class MembersController {
         const channel = await this.channels.findOne(body.channelId)
 
         if (!channel) {
-            throw new NotFoundException
+            throw new NotFoundException()
         }
 
         return this.members.join(channel, user, body.password)
@@ -36,22 +38,28 @@ export class MembersController {
 
     @Delete(":memberId")
     @UseGuards(ConnectedGuard)
-    async remove(@CurrentUserId() userId: number, @Param("memberId") memberId: number) {
+    async remove(
+        @CurrentUserId() userId: number,
+        @Param("memberId") memberId: number
+    ) {
         const target = await this.members.findOne(memberId)
 
         if (!target) {
-            throw new NotFoundException
+            throw new NotFoundException()
         }
 
-        const current = await this.members.findOneWithChannelAndUser(target.channelId, userId)
+        const current = await this.members.findOneWithChannelAndUser(
+            target.channelId,
+            userId
+        )
 
         if (!current || current.channelId !== target.channelId) {
-            throw new NotFoundException
+            throw new NotFoundException()
         }
 
         // If the user is kicking someone which is an admin or without admin rights
         if (target.id !== current.id && (target.isAdmin || !current.isAdmin)) {
-            throw new UnauthorizedException
+            throw new UnauthorizedException()
         }
 
         await this.members.remove(target)

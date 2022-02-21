@@ -36,7 +36,7 @@ export class ChannelsService {
             await this.members.create(channel, owner, Role.OWNER)
         } catch (e) {
             await this.channelsRepository.remove(channel)
-            throw e;
+            throw e
         }
 
         this.publish("created", instanceToPlain(channel, {}))

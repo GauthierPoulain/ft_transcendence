@@ -1,6 +1,12 @@
-import { Exclude } from "class-transformer";
-import { User } from "src/users/entities/user.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
+import { Exclude } from "class-transformer"
+import { User } from "src/users/entities/user.entity"
+import {
+    Column,
+    Entity,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    RelationId,
+} from "typeorm"
 
 export enum State {
     // If we're waiting for both players to accept the game.
@@ -39,7 +45,7 @@ export class Match {
     @Column({
         type: "enum",
         enum: State,
-        default: State.WAITING
+        default: State.WAITING,
     })
     state: State
 }

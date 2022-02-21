@@ -25,7 +25,7 @@ import { Member } from "./members/member.entity"
             isGlobal: true,
         }),
         EventEmitterModule.forRoot({
-            wildcard: true
+            wildcard: true,
         }),
         TypeOrmModule.forRoot({
             // TODO: Make them configurable.
@@ -47,7 +47,7 @@ import { Member } from "./members/member.entity"
         ChannelsModule,
         SocketsModule,
         MatchesModule,
-        MembersModule
+        MembersModule,
     ],
     controllers: [AppController],
     providers: [AppService],

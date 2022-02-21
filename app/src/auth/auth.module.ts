@@ -19,8 +19,15 @@ import { AuthSocketService } from "./auth-socket.service"
             secret: "TODO: this should be generated with cryptogaphic random later",
         }),
     ],
-    providers: [AuthService, AuthSocketService, FortyTwoService, JwtStrategy, AnonymousStrategy, AuthWebsocketGateway],
+    providers: [
+        AuthService,
+        AuthSocketService,
+        FortyTwoService,
+        JwtStrategy,
+        AnonymousStrategy,
+        AuthWebsocketGateway,
+    ],
     controllers: [AuthController],
-    exports: [AuthSocketService]
+    exports: [AuthSocketService],
 })
 export class AuthModule {}

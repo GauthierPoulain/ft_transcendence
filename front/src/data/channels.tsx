@@ -11,28 +11,30 @@ export type Channel = {
 }
 
 export type CreateChannelRequest = {
-    name: string,
-    joinable: boolean,
+    name: string
+    joinable: boolean
     password: string
 }
 
 export function createChannel(request: CreateChannelRequest): Promise<Channel> {
     return fetcher("/channels", {
         method: "POST",
-        body: JSON.stringify(request)
+        body: JSON.stringify(request),
     })
 }
 
 export type JoinChannelRequest = {
-    channelId: number,
+    channelId: number
     password: string
 }
 
 export function useJoinChannel() {
-    return useSubmit<JoinChannelRequest, Membership>((request) => fetcher(`/members`, {
-        method: 'POST',
-        body: JSON.stringify(request)
-    }))
+    return useSubmit<JoinChannelRequest, Membership>((request) =>
+        fetcher(`/members`, {
+            method: "POST",
+            body: JSON.stringify(request),
+        })
+    )
 }
 
 const repository = createRepository<Channel>()
@@ -51,7 +53,7 @@ const service = createService<Channel, void>({
 
     onRemoved(data, setState) {
         setState((state) => repository.removeOne(state, data.id))
-    }
+    },
 })
 
 export const ChannelsProvider = service.Provider

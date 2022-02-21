@@ -1,20 +1,32 @@
-import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, Post, UnauthorizedException, UseGuards } from "@nestjs/common";
-import { ConnectedGuard } from "src/auth/connected.guard";
-import { CurrentUserId } from "src/users/user.decorator";
-import { UsersService } from "src/users/users.service";
-import { Match, State } from "./match.entity";
-import { CreateMatchDto } from "./matches.dto";
-import { MatchesService } from "./matches.service";
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Delete,
+    Get,
+    NotFoundException,
+    Param,
+    Post,
+    UnauthorizedException,
+    UseGuards,
+} from "@nestjs/common"
+import { ConnectedGuard } from "src/auth/connected.guard"
+import { CurrentUserId } from "src/users/user.decorator"
+import { UsersService } from "src/users/users.service"
+import { Match, State } from "./match.entity"
+import { CreateMatchDto } from "./matches.dto"
+import { MatchesService } from "./matches.service"
 
 @Controller("matches")
 export class MatchesController {
-    constructor(private matches: MatchesService, private users: UsersService) {
-
-    }
+    constructor(private matches: MatchesService, private users: UsersService) {}
 
     @Post()
     @UseGuards(ConnectedGuard)
-    async create(@CurrentUserId() playerOneId: number, @Body() body: CreateMatchDto): Promise<Match> {
+    async create(
+        @CurrentUserId() playerOneId: number,
+        @Body() body: CreateMatchDto
+    ): Promise<Match> {
         const playerTwo = await this.users.find(body.opponent)
 
         if (!playerTwo) {
@@ -24,9 +36,17 @@ export class MatchesController {
         // Check if another match involving these two player exists and is in a waiting state
         const match = await this.matches.get({
             where: [
-                { playerOne: { id: playerOneId }, playerTwo: { id: playerTwo.id }, state: State.WAITING },
-                { playerOne: { id: playerTwo.id }, playerTwo: { id: playerOneId }, state: State.WAITING },
-            ]
+                {
+                    playerOne: { id: playerOneId },
+                    playerTwo: { id: playerTwo.id },
+                    state: State.WAITING,
+                },
+                {
+                    playerOne: { id: playerTwo.id },
+                    playerTwo: { id: playerOneId },
+                    state: State.WAITING,
+                },
+            ],
         })
 
         if (match) {
@@ -47,17 +67,23 @@ export class MatchesController {
 
     @Delete(":id")
     @UseGuards(ConnectedGuard)
-    async remove(@CurrentUserId() userId: number, @Param("id") matchId: number): Promise<void> {
+    async remove(
+        @CurrentUserId() userId: number,
+        @Param("id") matchId: number
+    ): Promise<void> {
         const match = await this.matches.get({
-            where: { id: matchId }
+            where: { id: matchId },
         })
 
         if (!match) {
             throw new NotFoundException()
         }
-        
+
         // If the user is not one of the two players involved or the game is not in the first stage.
-        if (!(match.playerOneId === userId || match.playerTwoId === userId) || match.state !== State.WAITING) {
+        if (
+            !(match.playerOneId === userId || match.playerTwoId === userId) ||
+            match.state !== State.WAITING
+        ) {
             throw new UnauthorizedException()
         }
 

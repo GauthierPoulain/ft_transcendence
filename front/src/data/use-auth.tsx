@@ -1,6 +1,6 @@
-import { createContext, useContext, useMemo, useState } from "react";
-import { fetcher, setAccessToken } from "./use-fetch";
-import { User } from "./use-user";
+import { createContext, useContext, useMemo, useState } from "react"
+import { fetcher, setAccessToken } from "./use-fetch"
+import { User } from "./use-user"
 
 export type ExchangeCodeRequest = {
     code: string
@@ -16,13 +16,13 @@ export type ExchangeCodeResponse = {
 export type AuthState = {
     connected: boolean
     token?: string
-    userId?: number,
+    userId?: number
 
-    login: (request: ExchangeCodeRequest) => Promise<void>,
+    login: (request: ExchangeCodeRequest) => Promise<void>
     fakeLogin: (name: "one" | "two") => Promise<void>
 }
 
-const Context = createContext<AuthState>({} as AuthState);
+const Context = createContext<AuthState>({} as AuthState)
 
 export function AuthProvider({ children }) {
     const [token, setToken] = useState<string>("")
@@ -31,7 +31,7 @@ export function AuthProvider({ children }) {
     const login = async (request: ExchangeCodeRequest) => {
         const response: ExchangeCodeResponse = await fetcher(`/auth/login`, {
             method: "POST",
-            body: JSON.stringify(request)
+            body: JSON.stringify(request),
         })
 
         setAccessToken(response.token)
@@ -40,9 +40,12 @@ export function AuthProvider({ children }) {
     }
 
     const fakeLogin = async (name: "one" | "two") => {
-        const response: ExchangeCodeResponse = await fetcher(`/auth/fake_login_${name}`, {
-            method: "POST",
-        })
+        const response: ExchangeCodeResponse = await fetcher(
+            `/auth/fake_login_${name}`,
+            {
+                method: "POST",
+            }
+        )
 
         setAccessToken(response.token)
         setUserId(response.user.id)
@@ -55,13 +58,11 @@ export function AuthProvider({ children }) {
             userId,
             token,
             login,
-            fakeLogin
+            fakeLogin,
         }
     }, [token])
 
-    return <Context.Provider value={value}>
-        { children }
-    </Context.Provider>
+    return <Context.Provider value={value}>{children}</Context.Provider>
 }
 
 export function useAuth(): AuthState {

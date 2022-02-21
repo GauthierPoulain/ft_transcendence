@@ -7,7 +7,9 @@ function Home() {
     return (
         <React.Fragment>
             <h1>uwu</h1>
-			<Link className="nav-link" to="/game">pour les g@m3rz</Link>
+            <Link className="nav-link" to="/game">
+                pour les g@m3rz
+            </Link>
         </React.Fragment>
     )
 }

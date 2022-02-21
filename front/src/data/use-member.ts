@@ -18,11 +18,17 @@ export type Membership = {
 //}
 
 export type RemoveMemberRequest = {
-    id: number,
+    id: number
 }
 
 export function useRemoveMember() {
-    return useSubmit<RemoveMemberRequest, Membership>(({ id }) => fetcher(`/members/${id}`, {
-        method: 'DELETE',
-    }, false))
+    return useSubmit<RemoveMemberRequest, Membership>(({ id }) =>
+        fetcher(
+            `/members/${id}`,
+            {
+                method: "DELETE",
+            },
+            false
+        )
+    )
 }

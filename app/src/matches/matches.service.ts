@@ -1,18 +1,17 @@
-import { Injectable } from "@nestjs/common";
-import { OnEvent } from "@nestjs/event-emitter";
-import { InjectRepository } from "@nestjs/typeorm";
-import { instanceToPlain } from "class-transformer";
-import { SocketsService } from "src/sockets/sockets.service";
-import { FindManyOptions, FindOneOptions, Repository } from "typeorm";
-import { Match } from "./match.entity";
+import { Injectable } from "@nestjs/common"
+import { OnEvent } from "@nestjs/event-emitter"
+import { InjectRepository } from "@nestjs/typeorm"
+import { instanceToPlain } from "class-transformer"
+import { SocketsService } from "src/sockets/sockets.service"
+import { FindManyOptions, FindOneOptions, Repository } from "typeorm"
+import { Match } from "./match.entity"
 
 @Injectable()
 export class MatchesService {
     constructor(
         @InjectRepository(Match) private matches: Repository<Match>,
         private sockets: SocketsService
-    ) {
-    }
+    ) {}
 
     async create(match: Match): Promise<Match> {
         match = await this.matches.save(match)

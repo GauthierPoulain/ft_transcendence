@@ -1,12 +1,7 @@
 import { Member } from "src/members/member.entity"
 import { Message } from "src/channels/messages/message.entity"
 import { Match } from "src/matches/match.entity"
-import {
-    Entity,
-    Column,
-    PrimaryGeneratedColumn,
-    OneToMany,
-} from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm"
 
 @Entity()
 class User {

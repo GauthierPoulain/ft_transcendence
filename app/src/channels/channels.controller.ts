@@ -25,7 +25,10 @@ import { Channel } from "./entities/channel.entity"
 @Controller("channels")
 @UseInterceptors(ClassSerializerInterceptor)
 export class ChannelsController {
-    constructor(private readonly channels: ChannelsService, private readonly members: MembersService) {}
+    constructor(
+        private readonly channels: ChannelsService,
+        private readonly members: MembersService
+    ) {}
 
     @Post()
     @UseGuards(ConnectedGuard)
@@ -54,7 +57,7 @@ export class ChannelsController {
         const channel = await this.channels.findOne(channelId)
 
         if (!channel) {
-            throw new NotFoundException
+            throw new NotFoundException()
         }
 
         return channel
@@ -62,12 +65,15 @@ export class ChannelsController {
 
     @Get(":id/members")
     @UseGuards(ConnectedGuard)
-    async findMembers(@CurrentUserId() userId: number, @Param("id") channelId: number): Promise<Member[]> {
+    async findMembers(
+        @CurrentUserId() userId: number,
+        @Param("id") channelId: number
+    ): Promise<Member[]> {
         const members = await this.members.findByChannel(channelId)
 
         // Assert that the current user is a member of the channel
         if (!members.some((member) => member.userId === userId)) {
-            throw new UnauthorizedException
+            throw new UnauthorizedException()
         }
 
         return members

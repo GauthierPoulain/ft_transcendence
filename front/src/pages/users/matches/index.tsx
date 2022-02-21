@@ -5,7 +5,7 @@ import "./styles.scss"
 export default function Matches() {
     const matches = [
         { against: "gapoulai", winner: "ldevilla", scores: [4, 5] },
-        { against: "ckurt", winner: "ckurt", scores: [5, 2] }
+        { against: "ckurt", winner: "ckurt", scores: [5, 2] },
     ]
 
     return (
@@ -21,20 +21,32 @@ export default function Matches() {
                     </tr>
                 </thead>
                 <tbody>
-                    { matches.map((match) =>
+                    {matches.map((match) => (
                         <tr>
                             <td>
-                                <Image src="/assets/42.jpg" height={50} width={50} roundedCircle className="me-3" />
-                                { match.against }
+                                <Image
+                                    src="/assets/42.jpg"
+                                    height={50}
+                                    width={50}
+                                    roundedCircle
+                                    className="me-3"
+                                />
+                                {match.against}
                             </td>
                             <td>
-                                <Image src="/assets/42.jpg" height={50} width={50} roundedCircle className="me-3" />
-                                { match.winner }
+                                <Image
+                                    src="/assets/42.jpg"
+                                    height={50}
+                                    width={50}
+                                    roundedCircle
+                                    className="me-3"
+                                />
+                                {match.winner}
                             </td>
-                            <td>{ match.scores[0] }</td>
-                            <td>{ match.scores[1] }</td>
+                            <td>{match.scores[0]}</td>
+                            <td>{match.scores[1]}</td>
                         </tr>
-                    ) }
+                    ))}
                 </tbody>
             </Table>
         </Container>

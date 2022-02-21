@@ -33,15 +33,23 @@ function DeleteButton({ message }) {
     )
 }
 
-function GameRequestCard({author}) {
+function GameRequestCard({ author }) {
     return (
-        <Card style={{ backgroundColor: "black", width: "20rem", borderRadius: "22px"}}>
+        <Card
+            style={{
+                backgroundColor: "black",
+                width: "20rem",
+                borderRadius: "22px",
+            }}
+        >
             <Card.Body className="game-card">
                 <Card.Title className="mb-2">Game Request</Card.Title>
                 <div className="author mb-2">
                     {author.nickname} asking for a game !
                 </div>
-                <Button variant="warning" style={{width: '100%'}}>Play</Button>
+                <Button variant="warning" style={{ width: "100%" }}>
+                    Play
+                </Button>
             </Card.Body>
         </Card>
     )

@@ -22,19 +22,29 @@ import { MessagesService } from "./messages.service"
 @Controller("channels/:channelId/messages")
 @UseInterceptors(ClassSerializerInterceptor)
 export class MessagesController {
-    constructor(private messages: MessagesService, private channels: ChannelsService, private members: MembersService) {
-    }
+    constructor(
+        private messages: MessagesService,
+        private channels: ChannelsService,
+        private members: MembersService
+    ) {}
 
     @Post()
     @UseGuards(ConnectedGuard)
-    async create(@CurrentUser() user: User, @Param("channelId") channelId: number, @Body() body: CreateMessageDto) {
+    async create(
+        @CurrentUser() user: User,
+        @Param("channelId") channelId: number,
+        @Body() body: CreateMessageDto
+    ) {
         const channel = await this.channels.findOne(channelId)
 
         if (!channel) {
             throw new NotFoundException()
         }
 
-        const member = await this.members.findOneWithChannelAndUser(channel.id, user.id)
+        const member = await this.members.findOneWithChannelAndUser(
+            channel.id,
+            user.id
+        )
 
         if (!member) {
             throw new UnauthorizedException()
@@ -55,7 +65,10 @@ export class MessagesController {
             throw new NotFoundException()
         }
 
-        const member = await this.members.findOneWithChannelAndUser(channel.id, user.id)
+        const member = await this.members.findOneWithChannelAndUser(
+            channel.id,
+            user.id
+        )
 
         if (!member) {
             throw new UnauthorizedException()
@@ -66,20 +79,24 @@ export class MessagesController {
 
     @Delete(":messageId")
     @UseGuards(ConnectedGuard)
-    async remove(@CurrentUserId() userId: number, @Param("channelId") channelId: number, @Param("messageId") messageId: number) {
+    async remove(
+        @CurrentUserId() userId: number,
+        @Param("channelId") channelId: number,
+        @Param("messageId") messageId: number
+    ) {
         const [message, member] = await Promise.all([
             this.messages.findOne(channelId, messageId),
-            this.members.findOneWithChannelAndUser(channelId, userId)
+            this.members.findOneWithChannelAndUser(channelId, userId),
         ])
 
         console.log("remove", message, member, channelId, messageId, userId)
 
         if (!message || !member) {
-            throw new NotFoundException;
+            throw new NotFoundException()
         }
 
         if (message.authorId !== userId && !member.isAdmin) {
-            throw new UnauthorizedException;
+            throw new UnauthorizedException()
         }
 
         await this.messages.remove(message)

@@ -13,9 +13,14 @@ import { MessagesService } from "./messages/messages.service"
 import { MembersModule } from "src/members/members.module"
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Channel, Message]), UsersModule, AuthModule, forwardRef(() => MembersModule)],
+    imports: [
+        TypeOrmModule.forFeature([Channel, Message]),
+        UsersModule,
+        AuthModule,
+        forwardRef(() => MembersModule),
+    ],
     controllers: [ChannelsController, MessagesController],
     providers: [ChannelsService, MessagesService],
-    exports: [ChannelsService]
+    exports: [ChannelsService],
 })
 export class ChannelsModule {}

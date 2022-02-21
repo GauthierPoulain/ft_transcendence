@@ -1,6 +1,11 @@
-import { Channel } from "src/channels/entities/channel.entity";
-import { Connection, EntitySubscriberInterface, EventSubscriber, RemoveEvent } from "typeorm";
-import { Member, Role, roleRank } from "./member.entity";
+import { Channel } from "src/channels/entities/channel.entity"
+import {
+    Connection,
+    EntitySubscriberInterface,
+    EventSubscriber,
+    RemoveEvent,
+} from "typeorm"
+import { Member, Role, roleRank } from "./member.entity"
 
 @EventSubscriber()
 export class MemberSubscriber implements EntitySubscriberInterface<Member> {
@@ -14,7 +19,7 @@ export class MemberSubscriber implements EntitySubscriberInterface<Member> {
 
     async afterRemove(event: RemoveEvent<Member>) {
         const members = await event.manager.find(Member, {
-            channel: { id: event.entity.channelId }
+            channel: { id: event.entity.channelId },
         })
 
         // If there's no user left, delete the channel.

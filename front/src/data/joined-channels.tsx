@@ -29,7 +29,7 @@ const service = createService<Membership, ProviderSettings>({
         if (data.userId === userId) {
             setState((state) => repository.removeOne(state, data.id))
         }
-    }
+    },
 })
 
 export const JoinedChannelsProvider = service.Provider

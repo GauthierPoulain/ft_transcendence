@@ -1,7 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import { useContext } from "react"
 import { fetcher, useSubmit } from "./use-fetch"
-import { useWebSocket } from "./use-websocket"
-import { State, createRepository } from "./repository"
+import { createRepository } from "./repository"
 import { createService } from "./service"
 
 export type Message = {
@@ -17,11 +16,12 @@ export type CreateMessageRequest = {
 }
 
 export function useCreateMessage() {
-    return useSubmit<CreateMessageRequest, Message>(({ channelId, content }) => fetcher(`/channels/${channelId}/messages`, {
-        method: 'POST',
-        body: JSON.stringify({ content })
-    }))
-
+    return useSubmit<CreateMessageRequest, Message>(({ channelId, content }) =>
+        fetcher(`/channels/${channelId}/messages`, {
+            method: "POST",
+            body: JSON.stringify({ content }),
+        })
+    )
 }
 
 export type RemoveMessageRequest = {
@@ -30,9 +30,15 @@ export type RemoveMessageRequest = {
 }
 
 export function useRemoveMessage() {
-    return useSubmit<RemoveMessageRequest, void>(({ channelId, messageId }) => fetcher(`/channels/${channelId}/messages/${messageId}`, {
-        method: 'DELETE'
-    }, false))
+    return useSubmit<RemoveMessageRequest, void>(({ channelId, messageId }) =>
+        fetcher(
+            `/channels/${channelId}/messages/${messageId}`,
+            {
+                method: "DELETE",
+            },
+            false
+        )
+    )
 }
 
 type ProviderSettings = {
@@ -59,7 +65,7 @@ const service = createService<Message, ProviderSettings>({
         if (data.channelId === channelId) {
             setState((state) => repository.removeOne(state, data.id))
         }
-    }
+    },
 })
 
 export const MessagesProvider = service.Provider

@@ -8,19 +8,30 @@ export function setAccessToken(token: string) {
     accessToken = token
 }
 
-const apiurl = (url: string) => `http://${document.location.hostname}:3005/api${url}`
+const apiurl = (url: string) =>
+    `http://${document.location.hostname}:3005/api${url}`
 
-export const fetcher = async (url: string, options = {}, jsonResponse=true) => {
+export const fetcher = async (
+    url: string,
+    options = {},
+    jsonResponse = true
+) => {
     const response = await fetch(apiurl(url), {
         ...options,
         headers: {
             "Content-Type": "application/json",
-            ...(accessToken ? { 'Authorization': `Bearer ${accessToken}` } : { })
-        }
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
     })
 
     if (!response.ok) {
-        console.log("response not ok", url, accessToken, response.ok, response.status)
+        console.log(
+            "response not ok",
+            url,
+            accessToken,
+            response.ok,
+            response.status
+        )
         throw new HttpError(response.status)
     }
 
@@ -31,7 +42,7 @@ export default function useFetch(key: string, options = {}) {
     const { data, error, mutate } = useSWR(key, fetcher, {
         suspense: true,
         shouldRetryOnError: false,
-        ...options
+        ...options,
     })
 
     if (error) {
@@ -42,7 +53,9 @@ export default function useFetch(key: string, options = {}) {
     return data
 }
 
-export function useSubmit<Request, Response>(callback: (req: Request) => Promise<Response>) {
+export function useSubmit<Request, Response>(
+    callback: (req: Request) => Promise<Response>
+) {
     const [state, setState] = useState(0)
     const [active, setActive] = useState(true)
 
@@ -65,17 +78,23 @@ export function useSubmit<Request, Response>(callback: (req: Request) => Promise
         }
     }
 
-    useEffect(() => () => {
-        setActive(false)
-    }, [])
+    useEffect(
+        () => () => {
+            setActive(false)
+        },
+        []
+    )
 
-    const value = useMemo(() => ({
-        isLoading: state === 1,
-        isSuccess: state === 2,
-        isError: state === 3,
+    const value = useMemo(
+        () => ({
+            isLoading: state === 1,
+            isSuccess: state === 2,
+            isError: state === 3,
 
-        submit
-    }), [state])
+            submit,
+        }),
+        [state]
+    )
 
     return value
 }

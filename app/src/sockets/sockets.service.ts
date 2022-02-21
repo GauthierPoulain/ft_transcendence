@@ -1,5 +1,5 @@
-import { Injectable } from "@nestjs/common";
-import WebSocket from "ws";
+import { Injectable } from "@nestjs/common"
+import WebSocket from "ws"
 
 @Injectable()
 export class SocketsService {
@@ -67,7 +67,9 @@ export class SocketsService {
     }
 
     publish(rooms: string[], event: string, data: any) {
-        const sockets = new Set(rooms.flatMap((room) => [...(this.rooms.get(room) ?? [])]))
+        const sockets = new Set(
+            rooms.flatMap((room) => [...(this.rooms.get(room) ?? [])])
+        )
         const message = JSON.stringify({ event, data })
 
         for (const socket of sockets) {

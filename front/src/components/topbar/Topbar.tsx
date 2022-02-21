@@ -7,14 +7,16 @@ import UserAvatar from "../user/UserAvatar"
 function Profile({ userId }) {
     const user = useUser(userId)
 
-    return <Link className="nav-link d-flex" to={`/users/${user.id}`}>
-        <span className="m-auto">Profile</span>
-        <UserAvatar userId={user.id} className="w-8 ms-2" />
-    </Link>
+    return (
+        <Link className="nav-link d-flex" to={`/users/${user.id}`}>
+            <span className="m-auto">Profile</span>
+            <UserAvatar userId={user.id} className="w-8 ms-2" />
+        </Link>
+    )
 }
 
 export default function Topbar() {
-    const auth = useAuth();
+    const auth = useAuth()
 
     return (
         <Navbar bg="light" variant="dark" id="navbar">
@@ -23,14 +25,24 @@ export default function Topbar() {
 
                 <Navbar.Collapse>
                     <Nav className="me-auto">
-                        <Link className="nav-link" to="/">Home</Link>
-                        <Link className="nav-link" to="/leaderboard">Leaderboard</Link>
-                        <Link className="nav-link" to="/chat">Chat</Link>
+                        <Link className="nav-link" to="/">
+                            Home
+                        </Link>
+                        <Link className="nav-link" to="/leaderboard">
+                            Leaderboard
+                        </Link>
+                        <Link className="nav-link" to="/chat">
+                            Chat
+                        </Link>
                     </Nav>
 
                     <Nav>
-                        { auth.connected && <Profile userId={auth.userId} /> }
-                        { !auth.connected && <Link className="nav-link" to="/auth">Sign in</Link> }
+                        {auth.connected && <Profile userId={auth.userId} />}
+                        {!auth.connected && (
+                            <Link className="nav-link" to="/auth">
+                                Sign in
+                            </Link>
+                        )}
                     </Nav>
                 </Navbar.Collapse>
             </Container>

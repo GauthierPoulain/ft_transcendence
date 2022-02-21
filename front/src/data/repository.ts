@@ -18,7 +18,10 @@ export type Repository<T> = {
     selectAll(state: State<T>): T[]
 }
 
-const addMany = <T extends Entity>(state: State<T>, entities: T[]): State<T> => {
+const addMany = <T extends Entity>(
+    state: State<T>,
+    entities: T[]
+): State<T> => {
     const new_entities = new Map(state)
 
     for (const entity of entities) {
@@ -44,5 +47,5 @@ export const createRepository = <T extends Entity>(): Repository<T> => ({
     removeOne,
     initialState,
     selectById: (state, id) => state.get(id),
-    selectAll: (state) => ([...state.values()])
+    selectAll: (state) => [...state.values()],
 })

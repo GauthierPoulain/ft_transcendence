@@ -1,31 +1,56 @@
-import { Context, createContext, Dispatch, SetStateAction, useEffect, useState } from "react"
+import {
+    Context,
+    createContext,
+    Dispatch,
+    SetStateAction,
+    useEffect,
+    useState,
+} from "react"
 import { Repository, Entity, State } from "./repository"
 import { useWebSocket } from "./use-websocket"
 
 type Service<T, U> = {
-    Context: Context<{ state: State<T>, loading: boolean }>
+    Context: Context<{ state: State<T>; loading: boolean }>
     Provider: U extends void
         ? ({ children }: { children: any }) => JSX.Element
-        : ({ children, settings }: { children: any, settings: U }) => JSX.Element
+        : ({
+              children,
+              settings,
+          }: {
+              children: any
+              settings: U
+          }) => JSX.Element
 }
 
 type ServiceSettings<T, ProviderSettings> = {
-    name: string,
+    name: string
 
-    repository: Repository<T>,
+    repository: Repository<T>
 
-    fetcher: (settings: ProviderSettings) => Promise<T[]>,
+    fetcher: (settings: ProviderSettings) => Promise<T[]>
 
-    onCreated: (data: any, setState: Dispatch<SetStateAction<State<T>>>, settings: ProviderSettings) => void,
-    onRemoved: (data: any, setState: Dispatch<SetStateAction<State<T>>>, settings: ProviderSettings) => void
+    onCreated: (
+        data: any,
+        setState: Dispatch<SetStateAction<State<T>>>,
+        settings: ProviderSettings
+    ) => void
+    onRemoved: (
+        data: any,
+        setState: Dispatch<SetStateAction<State<T>>>,
+        settings: ProviderSettings
+    ) => void
 }
 
-export function createService<T extends Entity, U>(serviceSettings: ServiceSettings<T, U>): Service<T, U> {
-    const Context = createContext(undefined) 
+export function createService<T extends Entity, U>(
+    serviceSettings: ServiceSettings<T, U>
+): Service<T, U> {
+    const Context = createContext(undefined)
 
-    function Provider({ children, settings }: { settings: U, children: any }) {
+    function Provider({ children, settings }: { settings: U; children: any }) {
         const { subscribe } = useWebSocket()
-        const [state, setState] = useState(serviceSettings.repository.initialState())
+        const [state, setState] = useState(
+            serviceSettings.repository.initialState()
+        )
         const [loading, setLoading] = useState(true)
 
         useEffect(() => {
@@ -39,7 +64,7 @@ export function createService<T extends Entity, U>(serviceSettings: ServiceSetti
         }, [settings])
 
         useEffect(() => {
-            if (loading) return;
+            if (loading) return
 
             const { unsubscribe } = subscribe((event, data) => {
                 if (event === `${serviceSettings.name}.created`) {
@@ -56,13 +81,13 @@ export function createService<T extends Entity, U>(serviceSettings: ServiceSetti
 
         return (
             <Context.Provider value={{ state, loading }}>
-                { children }
+                {children}
             </Context.Provider>
         )
     }
 
     return {
         Context,
-        Provider: Provider as any
+        Provider: Provider as any,
     }
 }

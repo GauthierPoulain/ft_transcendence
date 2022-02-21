@@ -14,9 +14,7 @@ function RootProvider({ children }) {
         <StrictMode>
             <AuthProvider>
                 <WebsocketProvider>
-                    <BrowserRouter>
-                        { children }
-                    </BrowserRouter>
+                    <BrowserRouter>{children}</BrowserRouter>
                 </WebsocketProvider>
             </AuthProvider>
         </StrictMode>
@@ -50,7 +48,11 @@ function WebsocketTokenIssuer({ children }) {
 export default function App() {
     return (
         <RootProvider>
-            <ErrorBoundary fallbackRender={({error}) => (<p>Error??? {error.toString()}</p>)}>
+            <ErrorBoundary
+                fallbackRender={({ error }) => (
+                    <p>Error??? {error.toString()}</p>
+                )}
+            >
                 <Suspense fallback={<p>No fallback so loading here :)</p>}>
                     <WebsocketTokenIssuer>
                         <Router />

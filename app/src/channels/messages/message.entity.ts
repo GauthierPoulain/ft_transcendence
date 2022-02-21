@@ -1,6 +1,12 @@
 import { Channel } from "../entities/channel.entity"
 import { User } from "src/users/entities/user.entity"
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm"
+import {
+    Column,
+    Entity,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    RelationId,
+} from "typeorm"
 import { Exclude } from "class-transformer"
 
 @Entity()
@@ -18,7 +24,9 @@ export class Message {
     @Column()
     content: string
 
-    @ManyToOne(() => Channel, (channel) => channel.messages, { onDelete: "CASCADE" })
+    @ManyToOne(() => Channel, (channel) => channel.messages, {
+        onDelete: "CASCADE",
+    })
     @Exclude()
     channel: Channel
 

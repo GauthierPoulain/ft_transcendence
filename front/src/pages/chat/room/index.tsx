@@ -3,17 +3,19 @@ import { Button, Form, InputGroup } from "react-bootstrap"
 import { Navigate, useParams } from "react-router-dom"
 import { useRemoveMember } from "../../../data/use-member"
 import { useChannel } from "../../../data/channels"
-import {
-    MessagesProvider,
-    useCreateMessage,
-} from "../../../data/messages"
+import { MessagesProvider, useCreateMessage } from "../../../data/messages"
 import "./style.scss"
 import { useAuth } from "../../../data/use-auth"
 import { ErrorBoundary } from "react-error-boundary"
 import { ErrorBox } from "../../../components/error/ErrorBox"
 import Messages from "./messages"
 import Members from "./members"
-import { MembersProvider, useMemberByUser, useMembers, useMembersLoading } from "../../../data/members"
+import {
+    MembersProvider,
+    useMemberByUser,
+    useMembers,
+    useMembersLoading,
+} from "../../../data/members"
 import Loading from "../../../components/Loading"
 
 function FormMessage({ channelId }) {

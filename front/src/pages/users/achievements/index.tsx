@@ -11,9 +11,8 @@ function Achievement({ title, desc, logo }) {
             />
 
             <div className="m-auto mx-4">
-                <span className="text-uppercase m-auto title">
-                    {title}
-                </span> <br />
+                <span className="text-uppercase m-auto title">{title}</span>{" "}
+                <br />
                 <span className="m-auto desc">{desc}</span>
             </div>
         </div>

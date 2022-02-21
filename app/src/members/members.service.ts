@@ -1,13 +1,13 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { OnEvent } from "@nestjs/event-emitter";
-import { InjectRepository } from "@nestjs/typeorm";
-import { verify } from "argon2";
-import { instanceToPlain } from "class-transformer";
-import { Channel } from "src/channels/entities/channel.entity";
-import { SocketsService } from "src/sockets/sockets.service";
-import { User } from "src/users/entities/user.entity";
-import { FindManyOptions, Repository } from "typeorm";
-import { Member, Role } from "./member.entity";
+import { Injectable, UnauthorizedException } from "@nestjs/common"
+import { OnEvent } from "@nestjs/event-emitter"
+import { InjectRepository } from "@nestjs/typeorm"
+import { verify } from "argon2"
+import { instanceToPlain } from "class-transformer"
+import { Channel } from "src/channels/entities/channel.entity"
+import { SocketsService } from "src/sockets/sockets.service"
+import { User } from "src/users/entities/user.entity"
+import { FindManyOptions, Repository } from "typeorm"
+import { Member, Role } from "./member.entity"
 
 @Injectable()
 export class MembersService {
@@ -15,7 +15,7 @@ export class MembersService {
         @InjectRepository(Member) private readonly members: Repository<Member>,
 
         private sockets: SocketsService
-    ) { }
+    ) {}
 
     async create(channel: Channel, user: User, role: Role): Promise<Member> {
         let member = new Member()
@@ -24,7 +24,11 @@ export class MembersService {
         member.role = role
         member = await this.members.save(member)
 
-        this.sockets.findSockets(`users.${member.userId}`).forEach((socket) => this.sockets.join(socket, `channels.${member.channelId}`))
+        this.sockets
+            .findSockets(`users.${member.userId}`)
+            .forEach((socket) =>
+                this.sockets.join(socket, `channels.${member.channelId}`)
+            )
         this.publish("created", instanceToPlain(member, {}))
 
         return member
@@ -33,16 +37,16 @@ export class MembersService {
     findByUser(userId: User["id"]): Promise<Member[]> {
         return this.members.find({
             where: {
-                user: { id: userId }
-            }
+                user: { id: userId },
+            },
         })
     }
 
     findByChannel(channelId: Channel["id"]): Promise<Member[]> {
         return this.members.find({
             where: {
-                channel: { id: channelId }
-            }
+                channel: { id: channelId },
+            },
         })
     }
 
@@ -50,12 +54,15 @@ export class MembersService {
         return this.members.findOne(memberId)
     }
 
-    findOneWithChannelAndUser(channelId: Channel["id"], userId: User["id"]): Promise<Member> {
+    findOneWithChannelAndUser(
+        channelId: Channel["id"],
+        userId: User["id"]
+    ): Promise<Member> {
         return this.members.findOne({
             where: {
                 user: { id: userId },
-                channel: { id: channelId }
-            }
+                channel: { id: channelId },
+            },
         })
     }
 
@@ -72,20 +79,35 @@ export class MembersService {
         const id = member.id
         await this.members.remove(member)
 
-        this.sockets.findSockets(`users.${member.userId}`).forEach((socket) => this.sockets.leave(socket, `channels.${member.channelId}`))
-        this.publish("removed", { id, channelId: member.channelId, userId: member.userId })
+        this.sockets
+            .findSockets(`users.${member.userId}`)
+            .forEach((socket) =>
+                this.sockets.leave(socket, `channels.${member.channelId}`)
+            )
+        this.publish("removed", {
+            id,
+            channelId: member.channelId,
+            userId: member.userId,
+        })
     }
 
     // Logic to run when an user wants to join a channel
-    async join(channel: Channel, user: User, password: string): Promise<Member> {
+    async join(
+        channel: Channel,
+        user: User,
+        password: string
+    ): Promise<Member> {
         // An user can't join a private channel
         if (channel.type === "private") {
-            throw new UnauthorizedException
+            throw new UnauthorizedException()
         }
 
         // An user can't join a protected channel with an incorrect password
-        if (channel.type === "protected" && !await verify(channel.password, password)) {
-            throw new UnauthorizedException
+        if (
+            channel.type === "protected" &&
+            !(await verify(channel.password, password))
+        ) {
+            throw new UnauthorizedException()
         }
 
         const member = await this.findOneWithChannelAndUser(channel.id, user.id)
@@ -108,6 +130,10 @@ export class MembersService {
     }
 
     private publish(event: string, data: any) {
-        this.sockets.publish([`channels.${data.channelId}`, `users.${data.userId}`], `members.${event}`, data)
+        this.sockets.publish(
+            [`channels.${data.channelId}`, `users.${data.userId}`],
+            `members.${event}`,
+            data
+        )
     }
 }

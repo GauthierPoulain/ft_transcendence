@@ -11,10 +11,10 @@ function OwnerOptions({ member }) {
     return (
         <>
             <Dropdown.Header>Moderation</Dropdown.Header>
-            { member.role === "admin" && <Dropdown.Item>Demote</Dropdown.Item> }
-            { member.role === "guest" && <Dropdown.Item>Promote</Dropdown.Item> }
-            { member.role !== "owner" && <Dropdown.Item>Kick</Dropdown.Item> }
-            { member.role !== "owner" && <Dropdown.Item>Mute</Dropdown.Item> }
+            {member.role === "admin" && <Dropdown.Item>Demote</Dropdown.Item>}
+            {member.role === "guest" && <Dropdown.Item>Promote</Dropdown.Item>}
+            {member.role !== "owner" && <Dropdown.Item>Kick</Dropdown.Item>}
+            {member.role !== "owner" && <Dropdown.Item>Mute</Dropdown.Item>}
         </>
     )
 }
@@ -23,8 +23,8 @@ function AdminOptions({ member }) {
     return (
         <>
             <Dropdown.Header>Moderation</Dropdown.Header>
-            { member.role === "guest" && <Dropdown.Item>Kick</Dropdown.Item> }
-            { member.role === "guest" && <Dropdown.Item>Mute</Dropdown.Item> }
+            {member.role === "guest" && <Dropdown.Item>Kick</Dropdown.Item>}
+            {member.role === "guest" && <Dropdown.Item>Mute</Dropdown.Item>}
         </>
     )
 }
@@ -54,11 +54,15 @@ function Options({ member }) {
 
     return (
         <Dropdown align="end">
-            <Dropdown.Toggle as={MoreVert} className="cursor-pointer" fontSize="small" />
+            <Dropdown.Toggle
+                as={MoreVert}
+                className="cursor-pointer"
+                fontSize="small"
+            />
 
             <Dropdown.Menu variant="dark">
-                { current.role === "owner" && <OwnerOptions member={member} /> }
-                { current.role === "admin" && <AdminOptions member={member} /> }
+                {current.role === "owner" && <OwnerOptions member={member} />}
+                {current.role === "admin" && <AdminOptions member={member} />}
                 <CommonOptions />
             </Dropdown.Menu>
         </Dropdown>
@@ -70,7 +74,10 @@ export default function Member({ member }) {
 
     return (
         <div className="d-flex align-items-center justify-content-between gap-x-2">
-            <Link className="member-links text-decoration-none d-flex align-items-center" to={`/users/${user.id}`}>
+            <Link
+                className="member-links text-decoration-none d-flex align-items-center"
+                to={`/users/${user.id}`}
+            >
                 <UserAvatar className="me-2 w-8" userId={user.id} />
                 <span className="ms-0">
                     {user.nickname} - {member.role}

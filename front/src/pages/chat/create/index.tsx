@@ -38,7 +38,13 @@ export default function ChannelCreate() {
 
                 <Form.Group className="mb-3">
                     <Form.Check>
-                        <Form.Check.Input checked={joinable} onChange={(event) => setJoinable(event.target.checked)} className="border-white" />
+                        <Form.Check.Input
+                            checked={joinable}
+                            onChange={(event) =>
+                                setJoinable(event.target.checked)
+                            }
+                            className="border-white"
+                        />
                         <Form.Check.Label>Publicly joinable</Form.Check.Label>
                     </Form.Check>
                 </Form.Group>
@@ -50,9 +56,13 @@ export default function ChannelCreate() {
                             type="password"
                             placeholder="Enter channel password"
                             value={password}
-                            onChange={(event) => setPassword(event.target.value)}
+                            onChange={(event) =>
+                                setPassword(event.target.value)
+                            }
                         />
-                        <Form.Text>No password means anyone can join.</Form.Text>
+                        <Form.Text>
+                            No password means anyone can join.
+                        </Form.Text>
                     </Form.Group>
                 )}
 

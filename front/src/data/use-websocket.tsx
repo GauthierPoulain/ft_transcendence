@@ -1,17 +1,17 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState } from "react"
 import useInner, { ReadyState } from "react-use-websocket"
 import { mutate } from "swr"
 import { Membership } from "./use-member"
-import { useAuth } from "./use-auth";
+import { useAuth } from "./use-auth"
 
 type State = {
-    sendMessage: any,
-    readyState: ReadyState,
+    sendMessage: any
+    readyState: ReadyState
     lastJsonMessage?: {
-        event: string,
+        event: string
         data: any
-    },
-    setHandlers: any,
+    }
+    setHandlers: any
     subscribe: (fn: (key: string, value: any) => void) => {
         unsubscribe: () => void
     }
@@ -24,11 +24,13 @@ export function WebsocketProvider({ children }) {
 
     const [handlers, setHandlers] = useState(new Map())
 
-    const { sendMessage: send, readyState, lastJsonMessage } = useInner(`ws://${document.location.hostname}:3005`, {
+    const {
+        sendMessage: send,
+        readyState,
+        lastJsonMessage,
+    } = useInner(`ws://${document.location.hostname}:3005`, {
         async onMessage(message) {
             const { event, data } = JSON.parse(message.data)
-
-
 
             console.log("websocket message", event, data, handlers)
 
@@ -54,8 +56,8 @@ export function WebsocketProvider({ children }) {
         onError(error) {
             console.error("websocket error", error)
         },
-        
-        shouldReconnect: () => true
+
+        shouldReconnect: () => true,
     })
 
     function sendMessage(event: string, data: any) {
@@ -79,13 +81,21 @@ export function WebsocketProvider({ children }) {
                     copy.delete(key)
                     return copy
                 })
-            }
+            },
         }
     }
 
     return (
-        <Context.Provider value={{ subscribe, setHandlers, sendMessage, readyState, lastJsonMessage }}>
-            { children }
+        <Context.Provider
+            value={{
+                subscribe,
+                setHandlers,
+                sendMessage,
+                readyState,
+                lastJsonMessage,
+            }}
+        >
+            {children}
         </Context.Provider>
     )
 }

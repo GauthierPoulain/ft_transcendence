@@ -9,7 +9,9 @@ export default function Members() {
             <h2>Members</h2>
 
             <div className="d-flex flex-column gap-y-2">
-                {members.map((member) => <Member key={member.id} member={member} />)}
+                {members.map((member) => (
+                    <Member key={member.id} member={member} />
+                ))}
             </div>
         </div>
     )
