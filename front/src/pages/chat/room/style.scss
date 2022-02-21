@@ -32,3 +32,14 @@
 {
     color: rgb(136, 136, 136);
 }
+
+.game-card {
+    background-color: rgb(73, 73, 73);
+    border-radius: 20px;
+
+    .author
+    {
+        color: grey;
+        text-align: center;
+    }
+}

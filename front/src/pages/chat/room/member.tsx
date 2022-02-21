@@ -38,6 +38,7 @@ function CommonOptions() {
             <Dropdown.Item>Follow</Dropdown.Item>
             <Dropdown.Item>Unfollow</Dropdown.Item>
             <Dropdown.Item>Message</Dropdown.Item>
+            <Dropdown.Item>Game Request</Dropdown.Item>
         </>
     )
 }

@@ -17,5 +17,5 @@ export default function Messages() {
                 <Message key={message.id} message={message} />
             ))}
         </div>
-    )
+    )   
 }
