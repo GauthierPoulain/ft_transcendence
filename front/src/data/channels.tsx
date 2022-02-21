@@ -1,8 +1,7 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import { useContext } from "react"
 import { fetcher, useSubmit } from "./use-fetch"
 import { Membership } from "./use-member"
-import { createRepository, State } from "./repository"
-import { useWebSocket } from "./use-websocket"
+import { createRepository } from "./repository"
 import { createService } from "./service"
 
 export type Channel = {
@@ -51,7 +50,7 @@ const service = createService<Channel, void>({
     },
 
     onRemoved(data, setState) {
-        setState((state) => repository.removeOne(state, data))
+        setState((state) => repository.removeOne(state, data.id))
     }
 })
 

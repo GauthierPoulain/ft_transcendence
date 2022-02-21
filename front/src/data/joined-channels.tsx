@@ -1,65 +1,41 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import { useContext } from "react"
 import { fetcher } from "./use-fetch"
 import { Membership } from "./use-member"
 import { Channel, useChannels } from "./channels"
-import { useWebSocket } from "./use-websocket"
-import { State, createRepository } from "./repository"
-import { useAuth } from "./use-auth"
+import { createRepository } from "./repository"
+import { createService } from "./service"
 
 const repository = createRepository<Membership>()
 
-const Context = createContext<{ state: State<Membership>, loading: boolean }>(undefined)
-
-export function JoinedChannelsProvider({ children }) {
-    const auth = useAuth()
-    const { subscribe } = useWebSocket()
-    const [state, setState] = useState(repository.initialState())
-    const [loading, setLoading] = useState(true)
-
-    useEffect(() => {
-        setLoading(true)
-        setState(repository.initialState())
-
-        fetcher(`/members`).then((response) => {
-            setState(repository.setAll(response))
-            setLoading(false)
-        })
-    }, [])
-
-    useEffect(() => {
-        if (loading) return;
-
-        const { unsubscribe } = subscribe((event, data) => {
-            if (event === "members.created") {
-                if (data.userId === auth.userId) {
-                    setState((state) => repository.addOne(state, data))
-                }
-            }
-
-            if (event === "members.removed") {
-                if (data.userId === auth.userId) {
-                    setState((state) => repository.removeOne(state, data.id))
-                }
-            }
-        })
-
-        return unsubscribe
-    }, [loading])
-
-    const value = {
-        loading,
-        state
-    }
-
-    return (
-        <Context.Provider value={value}>
-            { children }
-        </Context.Provider>
-    )
+type ProviderSettings = {
+    userId: number
 }
 
+const service = createService<Membership, ProviderSettings>({
+    name: "members",
+    repository,
+
+    fetcher() {
+        return fetcher("/members")
+    },
+
+    onCreated(data, setState, { userId }) {
+        if (data.userId === userId) {
+            setState((state) => repository.addOne(state, data))
+        }
+    },
+
+    onRemoved(data, setState, { userId }) {
+        if (data.userId === userId) {
+            setState((state) => repository.removeOne(state, data.id))
+        }
+    }
+})
+
+export const JoinedChannelsProvider = service.Provider
+
 export function useJoinedChannels(): Channel[] {
-    const { state } = useContext(Context)
+    const { state } = useContext(service.Context)
 
     const channels = useChannels()
     const members = repository.selectAll(state)
@@ -70,5 +46,5 @@ export function useJoinedChannels(): Channel[] {
 }
 
 export function useJoinedChannelsLoading(): boolean {
-    return useContext(Context).loading
+    return useContext(service.Context).loading
 }

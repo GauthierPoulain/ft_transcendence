@@ -184,8 +184,8 @@ export default function RoomView() {
     const channelId = parseInt(params.channelId as string, 10)
 
     return (
-        <ErrorBoundary FallbackComponent={ErrorBox} onError={() => {}}>
-            <MembersProvider channelId={channelId}>
+        <ErrorBoundary FallbackComponent={ErrorBox}>
+            <MembersProvider settings={{ channelId }}>
                 <MessagesProvider settings={{ channelId }}>
                     <Inner channelId={channelId} />
                 </MessagesProvider>

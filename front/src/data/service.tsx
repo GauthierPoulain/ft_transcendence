@@ -4,7 +4,9 @@ import { useWebSocket } from "./use-websocket"
 
 type Service<T, U> = {
     Context: Context<{ state: State<T>, loading: boolean }>
-    Provider: ({ children, settings }: { children: any, settings: U }) => JSX.Element
+    Provider: U extends void
+        ? ({ children }: { children: any }) => JSX.Element
+        : ({ children, settings }: { children: any, settings: U }) => JSX.Element
 }
 
 type ServiceSettings<T, ProviderSettings> = {
@@ -61,6 +63,6 @@ export function createService<T extends Entity, U>(serviceSettings: ServiceSetti
 
     return {
         Context,
-        Provider
+        Provider: Provider as any
     }
 }

@@ -1,62 +1,40 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import { useContext } from "react"
 import { fetcher } from "./use-fetch"
 import { Membership } from "./use-member"
-import { useWebSocket } from "./use-websocket"
-import { State, createRepository } from "./repository"
+import { createRepository } from "./repository"
+import { createService } from "./service"
 
 const repository = createRepository<Membership>()
 
-const Context = createContext<{ state: State<Membership>, loading: boolean }>(undefined)
-
-export function MembersProvider({ channelId, children }) {
-    const { subscribe } = useWebSocket()
-    const [state, setState] = useState(repository.initialState())
-    const [loading, setLoading] = useState(true)
-
-    useEffect(() => {
-        setLoading(true)
-        setState(repository.initialState())
-
-        fetcher(`/channels/${channelId}/members`).then((response) => {
-            setState(repository.setAll(response))
-            setLoading(false)
-        })
-    }, [channelId])
-
-    useEffect(() => {
-        if (loading) return;
-
-        const { unsubscribe } = subscribe((event, data) => {
-            if (event === "members.created") {
-                if (data.channelId === channelId) {
-                    setState((state) => repository.addOne(state, data))
-                }
-            }
-
-            if (event === "members.removed") {
-                if (data.channelId === channelId) {
-                    setState((state) => repository.removeOne(state, data.id))
-                }
-            }
-        })
-
-        return unsubscribe
-    }, [channelId, loading])
-
-    const value = {
-        loading,
-        state
-    }
-
-    return (
-        <Context.Provider value={value}>
-            { children }
-        </Context.Provider>
-    )
+type ProviderSettings = {
+    channelId: number
 }
 
+const service = createService<Membership, ProviderSettings>({
+    name: "members",
+    repository,
+
+    fetcher({ channelId }) {
+        return fetcher(`/channels/${channelId}/members`)
+    },
+
+    onCreated(data, setState, { channelId }) {
+        if (data.channelId === channelId) {
+            setState((state) => repository.addOne(state, data))
+        }
+    },
+
+    onRemoved(data, setState, { channelId }) {
+        if (data.channelId === channelId) {
+            setState((state) => repository.removeOne(state, data.id))
+        }
+    }
+})
+
+export const MembersProvider = service.Provider
+
 export function useMembers(): Membership[] {
-    const { state } = useContext(Context)
+    const { state } = useContext(service.Context)
 
     return repository.selectAll(state)
 }
@@ -66,5 +44,5 @@ export function useMemberByUser(userId: number): Membership | undefined {
 }
 
 export function useMembersLoading(): boolean {
-    return useContext(Context).loading
+    return useContext(service.Context).loading
 }

@@ -5,6 +5,7 @@ import { JoinedChannelsProvider, useJoinedChannels, useJoinedChannelsLoading } f
 import Loading from "../../components/Loading"
 
 import "./style.scss"
+import { useAuth } from "../../data/use-auth"
 
 function JoinedChannel({ channel }) {
     return (
@@ -56,9 +57,11 @@ function Inner() {
 }
 
 export default function Chat() {
+    const auth = useAuth()
+
     return (
         <ChannelsProvider>
-            <JoinedChannelsProvider>
+            <JoinedChannelsProvider settings={{ userId: auth.userId }}>
                 <Inner />
             </JoinedChannelsProvider>
         </ChannelsProvider>
