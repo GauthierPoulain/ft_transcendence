@@ -15,6 +15,7 @@ import { CurrentUser, CurrentUserId } from "src/users/user.decorator"
 import { MembersService } from "./members.service"
 import { CreateMemberDto } from "./members.dto"
 import { ChannelsService } from "src/channels/channels.service"
+import { Member } from "./member.entity"
 
 @Controller("members")
 export class MembersController {
@@ -54,5 +55,12 @@ export class MembersController {
         }
 
         await this.members.remove(target)
+    }
+
+    // Find only the memberships for the current user.
+    @Get()
+    @UseGuards(ConnectedGuard)
+    find(@CurrentUserId() userId: number): Promise<Member[]> {
+        return this.members.findByUser(userId)
     }
 }

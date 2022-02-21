@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react"
-import useFetch, { fetcher, useSubmit } from "./use-fetch"
+import { fetcher, useSubmit } from "./use-fetch"
 import { Membership } from "./use-member"
 import { createRepository, State } from "./repository"
 import { useWebSocket } from "./use-websocket"
@@ -8,10 +8,6 @@ export type Channel = {
     id: number
     name: string
     type: "public" | "private" | "protected"
-}
-
-export function useJoinedChannels(): number[] {
-    return useFetch(`/channels/joined`)
 }
 
 export type CreateChannelRequest = {

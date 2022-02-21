@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Button, Form, InputGroup } from "react-bootstrap"
-import { useParams } from "react-router-dom"
+import { Navigate, useParams } from "react-router-dom"
 import { useRemoveMember } from "../../../data/use-member"
 import { useChannel } from "../../../data/channels"
 import {
@@ -13,7 +13,7 @@ import { ErrorBoundary } from "react-error-boundary"
 import { ErrorBox } from "../../../components/error/ErrorBox"
 import Messages from "./messages"
 import Members from "./members"
-import { MembersProvider, useMembers, useMembersLoading } from "../../../data/members"
+import { MembersProvider, useMemberByUser, useMembers, useMembersLoading } from "../../../data/members"
 import Loading from "../../../components/Loading"
 
 function FormMessage({ channelId }) {
@@ -158,10 +158,16 @@ function Main({ channelId }) {
 }
 
 function Inner({ channelId }) {
+    const auth = useAuth()
     const loading = useMembersLoading()
+    const current = useMemberByUser(auth.userId)
 
     if (loading) {
         return <Loading />
+    }
+
+    if (!current) {
+        return <Navigate to="/chat" replace />
     }
 
     return (

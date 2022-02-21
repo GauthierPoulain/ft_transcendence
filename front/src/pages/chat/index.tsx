@@ -1,6 +1,8 @@
 import { Outlet } from "react-router-dom"
 import { Link } from "react-router-dom"
-import { ChannelsProvider, useChannels } from "../../data/channels"
+import { ChannelsProvider, useChannels, useChannelsLoading } from "../../data/channels"
+import { JoinedChannelsProvider, useJoinedChannels, useJoinedChannelsLoading } from "../../data/joined-channels"
+import Loading from "../../components/Loading"
 
 import "./style.scss"
 
@@ -13,8 +15,7 @@ function JoinedChannel({ channel }) {
 }
 
 function JoinedChannels() {
-    // TODO: Transformed to joined channels
-    const channels = useChannels()
+    const channels = useJoinedChannels()
 
     return (
         <ul className="list-unstyled mt-3">
@@ -39,6 +40,13 @@ function Sidebar() {
 }
 
 function Inner() {
+    const one = useChannelsLoading()
+    const two = useJoinedChannelsLoading()
+
+    if (one || two) {
+        return <Loading />
+    }
+
     return (
         <div className="d-flex flex-grow-1">
             <Sidebar />
@@ -50,7 +58,9 @@ function Inner() {
 export default function Chat() {
     return (
         <ChannelsProvider>
-            <Inner />
+            <JoinedChannelsProvider>
+                <Inner />
+            </JoinedChannelsProvider>
         </ChannelsProvider>
     )
 }

@@ -1,6 +1,7 @@
 import { useState } from "react"
 import "./chatjoin.scss"
 import { useJoinChannel, useChannels } from "../../../data/channels"
+import { useJoinedChannels } from "../../../data/joined-channels"
 import { useSWRConfig } from "swr"
 import { useNavigate } from "react-router-dom"
 import { Button, Card, Form, InputGroup } from 'react-bootstrap'
@@ -68,8 +69,7 @@ function ChannelJoinCard({ channel }) {
 
 export default function ChatBox() {
     const pubs = useChannels()
-    // TODO: Use joined channels
-    const joined = []
+    const joined = useJoinedChannels()
 
     const channels = pubs.filter((id) => !joined.includes(id))
 
