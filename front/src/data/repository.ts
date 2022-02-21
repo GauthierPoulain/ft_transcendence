@@ -1,10 +1,10 @@
-interface Entity {
+export interface Entity {
     id: number
 }
 
 export type State<T> = Map<number, T>
 
-type Repository<T> = {
+export type Repository<T> = {
     addOne(state: State<T>, entity: T): State<T>
     addMany(state: State<T>, entities: T[]): State<T>
 

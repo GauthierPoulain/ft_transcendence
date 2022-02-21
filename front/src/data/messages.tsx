@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react"
 import { fetcher, useSubmit } from "./use-fetch"
 import { useWebSocket } from "./use-websocket"
 import { State, createRepository } from "./repository"
+import { createService } from "./service"
 
 export type Message = {
     id: number
@@ -34,62 +35,41 @@ export function useRemoveMessage() {
     }, false))
 }
 
-const repository = createRepository<Message>()
-const Context = createContext<{ state: State<Message>, loading: boolean }>(undefined)
-
-export function MessagesProvider({ channelId, children }) {
-    const { subscribe } = useWebSocket()
-    const [state, setState] = useState(repository.initialState())
-    const [loading, setLoading] = useState(true)
-
-    useEffect(() => {
-        setLoading(true)
-        setState(repository.initialState())
-
-        fetcher(`/channels/${channelId}/messages`).then((response) => {
-            setState(repository.setAll(response))
-            setLoading(false)
-        })
-    }, [channelId])
-
-    useEffect(() => {
-        if (loading) return;
-
-        const { unsubscribe } = subscribe((event, data) => {
-            if (event === "messages.created") {
-                if (data.channelId === channelId) {
-                    setState((state) => repository.addOne(state, data))
-                }
-            }
-
-            if (event === "messages.removed") {
-                if (data.channelId === channelId) {
-                    setState((state) => repository.removeOne(state, data.id))
-                }
-            }
-        })
-
-        return unsubscribe
-    }, [channelId, loading])
-
-    const value = {
-        loading,
-        state
-    }
-
-    return (
-        <Context.Provider value={value}>
-            { children }
-        </Context.Provider>
-    )
+type ProviderSettings = {
+    channelId: number
 }
 
+const repository = createRepository<Message>()
+
+const service = createService<Message, ProviderSettings>({
+    name: "messages",
+    repository,
+
+    fetcher({ channelId }) {
+        return fetcher(`/channels/${channelId}/messages`)
+    },
+
+    onCreated(data, setState, { channelId }) {
+        if (data.channelId === channelId) {
+            setState((state) => repository.addOne(state, data))
+        }
+    },
+
+    onRemoved(data, setState, { channelId }) {
+        if (data.channelId === channelId) {
+            setState((state) => repository.removeOne(state, data))
+        }
+    }
+})
+
+export const MessagesProvider = service.Provider
+
 export function useMessages(): Message[] {
-    const { state } = useContext(Context)
+    const { state } = useContext(service.Context)
 
     return repository.selectAll(state)
 }
 
 export function useMessagesLoading(): boolean {
-    return useContext(Context).loading
+    return useContext(service.Context).loading
 }

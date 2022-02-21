@@ -3,6 +3,7 @@ import { fetcher, useSubmit } from "./use-fetch"
 import { Membership } from "./use-member"
 import { createRepository, State } from "./repository"
 import { useWebSocket } from "./use-websocket"
+import { createService } from "./service"
 
 export type Channel = {
     id: number
@@ -36,63 +37,38 @@ export function useJoinChannel() {
 }
 
 const repository = createRepository<Channel>()
-const Context = createContext<{ state: State<Channel>, loading: boolean }>(undefined)
 
-export function ChannelsProvider({ children }) {
-    const { subscribe } = useWebSocket()
-    const [state, setState] = useState(repository.initialState())
-    const [loading, setLoading] = useState(true)
+const service = createService<Channel, void>({
+    name: "channels",
+    repository,
 
-    useEffect(() => {
-        setLoading(true)
-        setState(repository.initialState())
+    fetcher() {
+        return fetcher("/channels")
+    },
 
-        fetcher("/channels").then((response) => {
-            setState(repository.setAll(response))
-            setLoading(false)
-        })
-    }, [])
+    onCreated(data, setState) {
+        setState((state) => repository.addOne(state, data))
+    },
 
-    useEffect(() => {
-        if (loading) return;
-
-        const { unsubscribe } = subscribe((event, data) => {
-            if (event === "channels.created") {
-                setState((state) => repository.addOne(state, data))
-            }
-
-            if (event === "channels.removed") {
-                setState((state) => repository.removeOne(state, data.id))
-            }
-        })
-
-        return unsubscribe
-    }, [loading])
-
-    const value = {
-        loading,
-        state
+    onRemoved(data, setState) {
+        setState((state) => repository.removeOne(state, data))
     }
+})
 
-    return (
-        <Context.Provider value={value}>
-            { children }
-        </Context.Provider>
-    )
-}
+export const ChannelsProvider = service.Provider
 
 export function useChannels(): Channel[] {
-    const { state } = useContext(Context)
+    const { state } = useContext(service.Context)
 
     return repository.selectAll(state)
 }
 
 export function useChannelsLoading(): boolean {
-    return useContext(Context).loading
+    return useContext(service.Context).loading
 }
 
 export function useChannel(id: number): Channel | undefined {
-    const { state } = useContext(Context)
+    const { state } = useContext(service.Context)
 
     return repository.selectById(state, id)
 }
