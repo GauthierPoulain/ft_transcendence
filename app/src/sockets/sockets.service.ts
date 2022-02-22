@@ -73,7 +73,7 @@ export class SocketsService {
         const message = JSON.stringify({ event, data })
 
         for (const socket of sockets) {
-            console.log(socket.send(message))
+            socket.send(message)
         }
     }
 

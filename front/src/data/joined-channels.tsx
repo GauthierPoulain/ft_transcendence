@@ -25,10 +25,8 @@ const service = createService<Membership, ProviderSettings>({
         }
     },
 
-    onRemoved(data, setState, { userId }) {
-        if (data.userId === userId) {
-            setState((state) => repository.removeOne(state, data.id))
-        }
+    onRemoved(id, setState) {
+        setState((state) => repository.removeOne(state, id))
     },
 })
 

@@ -24,10 +24,8 @@ const service = createService<Membership, ProviderSettings>({
         }
     },
 
-    onRemoved(data, setState, { channelId }) {
-        if (data.channelId === channelId) {
-            setState((state) => repository.removeOne(state, data.id))
-        }
+    onRemoved(id, setState) {
+        setState((state) => repository.removeOne(state, id))
     },
 })
 

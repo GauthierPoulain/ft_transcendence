@@ -51,8 +51,8 @@ const service = createService<Channel, void>({
         setState((state) => repository.addOne(state, data))
     },
 
-    onRemoved(data, setState) {
-        setState((state) => repository.removeOne(state, data.id))
+    onRemoved(id, setState) {
+        setState((state) => repository.removeOne(state, id))
     },
 })
 

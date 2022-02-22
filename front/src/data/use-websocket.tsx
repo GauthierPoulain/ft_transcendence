@@ -32,25 +32,9 @@ export function WebsocketProvider({ children }) {
         async onMessage(message) {
             const { event, data } = JSON.parse(message.data)
 
-            console.log("websocket message", event, data, handlers)
+            console.debug("websocket message", event, data, handlers)
 
             handlers.forEach((value) => value(event, data))
-
-            if (event === "members.created") {
-                const member = data as Membership
-
-                mutate(`/channels/${member.channelId}/members`)
-                if (auth.userId === data.userId) {
-                    mutate(`/channels/joined`)
-                }
-            } else if (event === "members.removed") {
-                mutate(`/channels/${data.channelId}/members`)
-                if (auth.userId === data.userId) {
-                    mutate(`/channels/joined`)
-                }
-            } else {
-                console.log("Unhandled websocket message", event)
-            }
         },
 
         onError(error) {
