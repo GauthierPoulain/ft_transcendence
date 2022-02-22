@@ -89,8 +89,6 @@ export class MessagesController {
             this.members.findOneWithChannelAndUser(channelId, userId),
         ])
 
-        console.log("remove", message, member, channelId, messageId, userId)
-
         if (!message || !member) {
             throw new NotFoundException()
         }
