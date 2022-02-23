@@ -123,3 +123,9 @@
 #bigAlert span {
     color: crimson;
 }
+
+#userIdentity {
+    position: absolute;
+    left: calc(50%);
+    transform: translateX(-50%);
+}
