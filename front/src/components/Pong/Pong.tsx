@@ -2,84 +2,66 @@ import React, { useEffect, useState } from "react"
 import game from "./game"
 import "./pong.css"
 import { useWebSocket } from "../../data/use-websocket"
-import { useAuth } from "../../data/use-auth"
+import { AuthState, useAuth } from "../../data/use-auth"
 import useUser, { User } from "../../data/use-user"
 
-function UserComponent({ userId, setUser, setUserReady }) {
-    const user = useUser(userId)
-    console.log(user)
-    setUser(user)
-    setUserReady(true)
-    return <React.Fragment />
+function GameComponent(user: User | null) {
+    const { subscribe, sendMessage } = useWebSocket()
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        setIsLoading(true)
+        game(sendMessage)
+        const unmount = () => {
+            document.dispatchEvent(new CustomEvent("stopRendering"))
+        }
+        setIsLoading(false)
+        return unmount
+    }, [])
+
+    useEffect(() => {
+        if (!isLoading) {
+            const { unsubscribe } = subscribe((event, data) => {
+                console.log(event, data)
+            })
+
+            return unsubscribe
+        }
+    }, [isLoading])
+
+    return (
+        <React.Fragment>
+            <div id="gameContainer">
+                <div id="gameHud">
+                    {user ? (
+                        <span id="userIdentity">Welcome {user.nickname}</span>
+                    ) : (
+                        <span id="userIdentity">Welcome guest</span>
+                    )}
+                    <div className="identity" id="one">
+                        <span className="name"></span>
+                        <span className="score"></span>
+                    </div>
+                    <div className="identity" id="two">
+                        <span className="name"></span>
+                        <span className="score"></span>
+                    </div>
+                    <div id="bigAlert">
+                        <p></p>
+                    </div>
+                </div>
+                <canvas />
+            </div>
+        </React.Fragment>
+    )
+}
+
+function AuthComponent(auth: AuthState) {
+    const user = useUser(auth.userId!)
+    return GameComponent(user)
 }
 
 export default function Pong() {
-    const { subscribe, sendMessage } = useWebSocket()
-    const [loading, setLoading] = useState(true)
     const auth = useAuth()
-    const [user, setUser] = useState<null | User>(null)
-    const [userReady, setUserReady] = useState(false)
-
-    useEffect(() => {
-        if (!userReady) return
-        setLoading(true)
-        game()
-
-        setLoading(false)
-        const stopRendering = () => {
-            document.dispatchEvent(new CustomEvent("stopRendering"))
-        }
-        return stopRendering
-    }, [userReady])
-
-    useEffect(() => {
-        if (loading) return
-
-        const { unsubscribe } = subscribe((event, data) => {
-            console.log(event, data)
-        })
-        return unsubscribe
-    }, [loading])
-
-    if (!userReady) {
-        if (auth.connected) {
-            UserComponent({
-                userId: auth.userId,
-                setUser: setUser,
-                setUserReady: setUserReady,
-            })
-        } else {
-            setUserReady(true)
-        }
-    } else
-        return (
-            <React.Fragment>
-                <div id="gameContainer" style={{ display: "none" }}>
-                    <div id="gameHud">
-                        {user ? (
-                            <span id="userIdentity">
-                                Welcome {user.nickname}
-                            </span>
-                        ) : (
-                            <span id="userIdentity">Welcome guest</span>
-                        )}
-                        <div className="identity" id="one">
-                            <span className="name"></span>
-                            <span className="score"></span>
-                        </div>
-                        <div className="identity" id="two">
-                            <span className="name"></span>
-                            <span className="score"></span>
-                        </div>
-                        <div id="bigAlert">
-                            <p></p>
-                        </div>
-                    </div>
-                    <canvas />
-                </div>
-                <div id="loadingContainer">
-                    <h1>Loadingz...</h1>
-                </div>
-            </React.Fragment>
-        )
+    return auth.connected ? AuthComponent(auth) : GameComponent(null)
 }

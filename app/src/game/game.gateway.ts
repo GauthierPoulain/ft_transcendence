@@ -26,7 +26,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     public handleConnection(@ConnectedSocket() s: WebSocket): void {
-        s.send(JSON.stringify({ event: "dummy" }))
+        // s.send(JSON.stringify({ event: "dummy" }))
         console.log(`[ws/game] new socket`)
         this.clientArray.push(s)
         this.clientArray.forEach((socket) => {

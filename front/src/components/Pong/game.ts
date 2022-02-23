@@ -9,7 +9,7 @@ function hexToRgb(hex: number) {
     }
 }
 
-export default function game(ws?: WebSocket) {
+export default function game(sendMessage: any) {
     var size = {
         x: document.getElementById("gameContainer")!.clientWidth,
         y: document.getElementById("gameContainer")!.clientHeight,
@@ -527,8 +527,6 @@ export default function game(ws?: WebSocket) {
     )
 
     {
-        document.getElementById("loadingContainer")!.style.display = "none"
-        document.getElementById("gameContainer")!.style.display = "block"
         resizeRenderer()
         console.log("game loaded")
     }
