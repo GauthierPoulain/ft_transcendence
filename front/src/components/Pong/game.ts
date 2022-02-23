@@ -1,6 +1,5 @@
 import * as THREE from "three"
 import Stats from "stats.js"
-import WebSocketService from "../../WebSocketService"
 
 function hexToRgb(hex: number) {
     return {
@@ -10,7 +9,7 @@ function hexToRgb(hex: number) {
     }
 }
 
-function main() {
+export default function game(ws?: WebSocket) {
     var size = {
         x: document.getElementById("gameContainer")!.clientWidth,
         y: document.getElementById("gameContainer")!.clientHeight,
@@ -104,7 +103,7 @@ function main() {
                 one: new Player("Player 1", 0xffffff, "player1"),
                 two: new Player("Player 2", 0xffffff, "player2"),
             },
-            ball: {
+            quoit: {
                 x: 0,
                 z: 0,
                 radius: 0.5,
@@ -133,7 +132,7 @@ function main() {
         Cbox?.applyMatrix4(box.matrixWorld)
         const Csphere = new THREE.Sphere(
             cyl.position,
-            currentGameData.ball.radius
+            currentGameData.quoit.radius
         )
         return Cbox?.intersectsSphere(Csphere)
     }
@@ -156,10 +155,10 @@ function main() {
         const playerP = engine.objects.get("player1") as THREE.Mesh
         const playerN = engine.objects.get("player2") as THREE.Mesh
 
-        quoit.position.x = currentGameData.ball.x
-        quoit.position.z = currentGameData.ball.z
-        quoit.scale.x = currentGameData.ball.radius
-        quoit.scale.z = currentGameData.ball.radius
+        quoit.position.x = currentGameData.quoit.x
+        quoit.position.z = currentGameData.quoit.z
+        quoit.scale.x = currentGameData.quoit.radius
+        quoit.scale.z = currentGameData.quoit.radius
 
         playerP.position.x = currentGameData.players.one.x
         playerP.scale.x = currentGameData.players.one.width
@@ -173,10 +172,10 @@ function main() {
         currentGameData.players.one.width = 3
         currentGameData.players.two.x = 0
         currentGameData.players.two.width = 3
-        currentGameData.ball.x = 0
-        currentGameData.ball.z = 0
-        currentGameData.ball.speed.x = 0
-        currentGameData.ball.speed.z = 10
+        currentGameData.quoit.x = 0
+        currentGameData.quoit.z = 0
+        currentGameData.quoit.speed.x = 0
+        currentGameData.quoit.speed.z = 10
     }
 
     function syncSimulation() {
@@ -206,34 +205,34 @@ function main() {
 
             {
                 if (collisionBoxCyl(playerP, quoit)) {
-                    currentGameData.ball.speed.z = -Math.abs(
-                        currentGameData.ball.speed.z
+                    currentGameData.quoit.speed.z = -Math.abs(
+                        currentGameData.quoit.speed.z
                     )
                     let xSpeed = -(playerP.position.x - quoit.position.x)
-                    currentGameData.ball.speed.x +=
-                        xSpeed * currentGameData.ball.speed.xMultiplicator
+                    currentGameData.quoit.speed.x +=
+                        xSpeed * currentGameData.quoit.speed.xMultiplicator
                 } else if (collisionBoxCyl(playerN, quoit)) {
-                    currentGameData.ball.speed.z = Math.abs(
-                        currentGameData.ball.speed.z
+                    currentGameData.quoit.speed.z = Math.abs(
+                        currentGameData.quoit.speed.z
                     )
                     let xSpeed = -(playerN.position.x - quoit.position.x)
-                    currentGameData.ball.speed.x +=
-                        xSpeed * currentGameData.ball.speed.xMultiplicator
+                    currentGameData.quoit.speed.x +=
+                        xSpeed * currentGameData.quoit.speed.xMultiplicator
                 }
 
                 if (collisionBoxCyl(wallP, quoit)) {
-                    currentGameData.ball.speed.x = -Math.abs(
-                        currentGameData.ball.speed.x
+                    currentGameData.quoit.speed.x = -Math.abs(
+                        currentGameData.quoit.speed.x
                     )
                 } else if (collisionBoxCyl(wallN, quoit)) {
-                    currentGameData.ball.speed.x = Math.abs(
-                        currentGameData.ball.speed.x
+                    currentGameData.quoit.speed.x = Math.abs(
+                        currentGameData.quoit.speed.x
                     )
                 }
             }
             {
-                quoit.position.x += currentGameData.ball.speed.x * delta
-                quoit.position.z += currentGameData.ball.speed.z * delta
+                quoit.position.x += currentGameData.quoit.speed.x * delta
+                quoit.position.z += currentGameData.quoit.speed.z * delta
             }
             {
                 playerN.position.x = quoit.position.x
@@ -633,8 +632,15 @@ function main() {
         }, 4000)
     }
 
+    // function initWs() {
+    //     ws.onmessage = (event) => {
+    //         console.log(event)
+    //     }
+    // }
+
     initGameData()
     initEngine()
+    // initWs()
     initScene()
     resetRound()
     syncSimulation()
@@ -645,14 +651,4 @@ function main() {
     simulationData.interval = setInterval(() => {
         localSimulation()
     }, 1)
-}
-
-export default function game(ws?: WebSocketService) {
-    // ws.onOpen(() => {
-    //     console.log("ws connected")
-    //     // ws.emit("login")
-    //     main()
-    // })
-
-    main()
 }

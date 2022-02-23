@@ -15,35 +15,31 @@ function UserComponent({ userId, setUser, setUserReady }) {
 
 export default function Pong() {
     const { subscribe, sendMessage } = useWebSocket()
-    const [isLoading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true)
     const auth = useAuth()
     const [user, setUser] = useState<null | User>(null)
     const [userReady, setUserReady] = useState(false)
 
     useEffect(() => {
-        if (isLoading) return
+        if (!userReady) return
+        setLoading(true)
+        game()
+
+        setLoading(false)
+        const stopRendering = () => {
+            document.dispatchEvent(new CustomEvent("stopRendering"))
+        }
+        return stopRendering
+    }, [userReady])
+
+    useEffect(() => {
+        if (loading) return
 
         const { unsubscribe } = subscribe((event, data) => {
             console.log(event, data)
         })
-
         return unsubscribe
-    }, [isLoading])
-
-    useEffect(() => {
-        if (!userReady) return
-        console.log("mount")
-
-        sendMessage("salut", "owomg")
-
-        game()
-
-        const stopRendering = () => {
-            document.dispatchEvent(new CustomEvent("stopRendering"))
-        }
-
-        return stopRendering
-    }, [userReady])
+    }, [loading])
 
     if (!userReady) {
         if (auth.connected) {
@@ -52,7 +48,9 @@ export default function Pong() {
                 setUser: setUser,
                 setUserReady: setUserReady,
             })
-        } else setUserReady(true)
+        } else {
+            setUserReady(true)
+        }
     } else
         return (
             <React.Fragment>
@@ -80,7 +78,7 @@ export default function Pong() {
                     <canvas />
                 </div>
                 <div id="loadingContainer">
-                    <h1>Loading...</h1>
+                    <h1>Loadingz...</h1>
                 </div>
             </React.Fragment>
         )

@@ -1,4 +1,3 @@
-// import { UseGuards } from "@nestjs/common";
 import {
     ConnectedSocket,
     MessageBody,
@@ -9,27 +8,47 @@ import {
     WebSocketServer,
 } from "@nestjs/websockets"
 import { Server, WebSocket } from "ws"
+import Game from "./class/Game"
 
 @WebSocketGateway()
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer() server: Server
+    clientArray: WebSocket[]
+    gameArray: Game[]
+    constructor() {
+        this.clientArray = new Array<WebSocket>()
+        this.gameArray = new Array<Game>()
+    }
 
     @SubscribeMessage("test")
-    test(@MessageBody() data: string, @ConnectedSocket() socket: WebSocket) {
-        console.log("test")
-        console.log(data)
+    test(@MessageBody() data: string, @ConnectedSocket() s: WebSocket) {
+        console.log("test", data)
     }
 
-    public handleConnection(@ConnectedSocket() socket: WebSocket): void {
-        // let client = this._clients.set(socket, new Client(socket)).get(socket)
-        // client._ws.send(JSON.stringify({ event: "salut", data: "owo" }))
-        // client.emit("salut", "pouet")
-        // console.info("[webSocket/game][%s] client connected", client.id)
+    public handleConnection(@ConnectedSocket() s: WebSocket): void {
+        s.send(JSON.stringify({ event: "dummy" }))
+        console.log(`[ws/game] new socket`)
+        this.clientArray.push(s)
+        this.clientArray.forEach((socket) => {
+            console.log(`send -> salut`)
+            socket.send(JSON.stringify({ event: "salut", data: "pouet" }))
+        })
+
+        console.log(`${this.clientArray.length} socket connected`)
+        if (this.clientArray[0] && this.clientArray[1]) {
+            const game =
+                this.gameArray[
+                    this.gameArray.push(
+                        new Game(this.clientArray[0], this.clientArray[1])
+                    ) - 1
+                ]
+            game.start()
+        }
     }
 
-    public handleDisconnect(@ConnectedSocket() socket: WebSocket): void {
-        // let client = this._clients.get(socket)
-        // this._clients.delete(socket)
-        // console.info("[webSocket/game][%s] client disconnected", client.id)
+    public handleDisconnect(@ConnectedSocket() s: WebSocket): void {
+        console.log(`[ws/game] socket disconnected`)
+        let index = this.clientArray.indexOf(s, 0)
+        if (index != -1) this.clientArray.splice(index, 1)
     }
 }
