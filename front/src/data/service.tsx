@@ -29,12 +29,17 @@ type ServiceSettings<T, ProviderSettings> = {
 
     fetcher: (settings: ProviderSettings) => Promise<T[]>
 
-    onCreated: (
+    onCreated?: (
         data: T,
         setState: Dispatch<SetStateAction<State<T>>>,
         settings: ProviderSettings
     ) => void
-    onRemoved: (
+    onUpdated?: (
+        data: T,
+        setState: Dispatch<SetStateAction<State<T>>>,
+        settings: ProviderSettings
+    ) => void
+    onRemoved?: (
         id: number,
         setState: Dispatch<SetStateAction<State<T>>>,
         settings: ProviderSettings
@@ -68,11 +73,15 @@ export function createService<T extends Entity, U>(
 
             const { unsubscribe } = subscribe((event, data) => {
                 if (event === `${serviceSettings.name}.created`) {
-                    serviceSettings.onCreated(data, setState, settings)
+                    serviceSettings.onCreated?.(data, setState, settings)
+                }
+
+                if (event === `${serviceSettings.name}.updated`) {
+                    serviceSettings.onUpdated?.(data, setState, settings)
                 }
 
                 if (event === `${serviceSettings.name}.removed`) {
-                    serviceSettings.onRemoved(data.id, setState, settings)
+                    serviceSettings.onRemoved?.(data.id, setState, settings)
                 }
             })
 

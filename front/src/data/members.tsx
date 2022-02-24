@@ -24,6 +24,10 @@ const service = createService<Membership, ProviderSettings>({
         }
     },
 
+    onUpdated(data, setState) {
+        setState((state) => repository.updateOne(state, data))
+    },
+
     onRemoved(id, setState) {
         setState((state) => repository.removeOne(state, id))
     },

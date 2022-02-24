@@ -79,6 +79,14 @@ export class MembersService {
         return this.members.save(member)
     }
 
+    async update(member: Member): Promise<Member> {
+        member = await this.members.save(member)
+
+        this.publish("updated", instanceToPlain(member, {}))
+
+        return member
+    }
+
     async remove(member: Member): Promise<void> {
         const id = member.id
         await this.members.remove(member)

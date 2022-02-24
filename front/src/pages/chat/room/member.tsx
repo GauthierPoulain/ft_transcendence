@@ -6,25 +6,46 @@ import { useAuth } from "../../../data/use-auth"
 import { Dropdown } from "react-bootstrap"
 import { MoreVert } from "@material-ui/icons"
 import { useMemberByUser } from "../../../data/members"
+import { useRemoveMember, useUpdateMember } from "../../../data/use-member"
 
 function OwnerOptions({ member }) {
+    const { submit: submitUpdate, isLoading: loadingUpdate } = useUpdateMember()
+    const { submit: submitRemove, isLoading: loadingRemove } = useRemoveMember()
+
+    const isLoading = loadingUpdate || loadingRemove
+
+    const submit = (action: any) => () => {
+        return action === "kick" ? submitRemove({ id: member.id }) : submitUpdate({ id: member.id, action })
+    }
+
     return (
         <>
             <Dropdown.Header>Moderation</Dropdown.Header>
-            {member.role === "admin" && <Dropdown.Item>Demote</Dropdown.Item>}
-            {member.role === "guest" && <Dropdown.Item>Promote</Dropdown.Item>}
-            {member.role !== "owner" && <Dropdown.Item>Kick</Dropdown.Item>}
-            {member.role !== "owner" && <Dropdown.Item>Mute</Dropdown.Item>}
+            {member.role === "admin" && <Dropdown.Item disabled={isLoading} onClick={submit("demote")}>Demote</Dropdown.Item>}
+            {member.role === "guest" && <Dropdown.Item disabled={isLoading} onClick={submit("promote")}>Promote</Dropdown.Item>}
+            <Dropdown.Item disabled={isLoading} onClick={submit("kick")}>Kick</Dropdown.Item>
+            {member.muted && <Dropdown.Item disabled={isLoading} onClick={submit("unmute")}>Unmute</Dropdown.Item>}
+            {!member.muted && <Dropdown.Item disabled={isLoading} onClick={submit("mute")}>Mute</Dropdown.Item>}
         </>
     )
 }
 
 function AdminOptions({ member }) {
+    const { submit: submitUpdate, isLoading: loadingUpdate } = useUpdateMember()
+    const { submit: submitRemove, isLoading: loadingRemove } = useRemoveMember()
+
+    const isLoading = loadingUpdate || loadingRemove
+
+    const submit = (action: any) => () => {
+        return action === "kick" ? submitRemove({ id: member.id }) : submitUpdate({ id: member.id, action })
+    }
+
     return (
         <>
             <Dropdown.Header>Moderation</Dropdown.Header>
-            {member.role === "guest" && <Dropdown.Item>Kick</Dropdown.Item>}
-            {member.role === "guest" && <Dropdown.Item>Mute</Dropdown.Item>}
+            <Dropdown.Item disabled={isLoading} onClick={submit("kick")}>Kick</Dropdown.Item>
+            {member.muted && <Dropdown.Item disabled={isLoading} onClick={submit("unmute")}>Unmute</Dropdown.Item>}
+            {!member.muted && <Dropdown.Item disabled={isLoading} onClick={submit("mute")}>Mute</Dropdown.Item>}
         </>
     )
 }
@@ -61,8 +82,8 @@ function Options({ member }) {
             />
 
             <Dropdown.Menu variant="dark">
-                {current.role === "owner" && <OwnerOptions member={member} />}
-                {current.role === "admin" && <AdminOptions member={member} />}
+                {current.role === "owner" && member.role !== "owner" && <OwnerOptions member={member} />}
+                {current.role === "admin" && member.role === "guest" && <AdminOptions member={member} />}
                 <CommonOptions />
             </Dropdown.Menu>
         </Dropdown>

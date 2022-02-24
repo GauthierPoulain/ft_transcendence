@@ -58,4 +58,7 @@ export class Member {
     get isAdmin(): boolean {
         return this.role === Role.ADMIN || this.role === Role.OWNER
     }
+
+    @Column({ default: false })
+    muted: boolean
 }

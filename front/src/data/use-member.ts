@@ -5,6 +5,7 @@ export type Membership = {
     role: string
     channelId: number
     userId: number
+    muted: boolean
 }
 
 //export function useMembers(channelId: number): Membership[] {
@@ -27,6 +28,24 @@ export function useRemoveMember() {
             `/members/${id}`,
             {
                 method: "DELETE",
+            },
+            false
+        )
+    )
+}
+
+export type UpdateMemberRequest = {
+    id: number
+    action: "mute" | "unmute" | "promote" | "demote",
+}
+
+export function useUpdateMember() {
+    return useSubmit<UpdateMemberRequest, Membership>(({ id, action }) =>
+        fetcher(
+            `/members/${id}`,
+            {
+                method: "PUT",
+                body: JSON.stringify({ action })
             },
             false
         )

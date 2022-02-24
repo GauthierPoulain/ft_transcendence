@@ -8,6 +8,8 @@ export type Repository<T> = {
     addOne(state: State<T>, entity: T): State<T>
     addMany(state: State<T>, entities: T[]): State<T>
 
+    updateOne(state: State<T>, entity: T): State<T>,
+
     setAll(entities: T[]): State<T>
 
     removeOne(state: State<T>, id: number): State<T>
@@ -31,6 +33,14 @@ const addMany = <T extends Entity>(
     return new_entities
 }
 
+const updateOne = <T extends Entity>(state: State<T>, entity: T): State<T> => {
+    if (state.has(entity.id)) {
+        return addMany(state, [entity])
+    }
+
+    return state
+}
+
 const removeOne = <T extends Entity>(state: State<T>, id: number): State<T> => {
     const entities = new Map(state)
     entities.delete(id)
@@ -44,6 +54,7 @@ export const createRepository = <T extends Entity>(): Repository<T> => ({
     addMany,
     addOne: (state, entity) => addMany(state, [entity]),
     setAll: (entities) => addMany(initialState(), entities),
+    updateOne,
     removeOne,
     initialState,
     selectById: (state, id) => state.get(id),
