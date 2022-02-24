@@ -19,9 +19,12 @@ import {
 import Loading from "../../../components/Loading"
 
 function FormMessage({ channelId }) {
+    const auth = useAuth()
+    const member = useMemberByUser(auth.userId)
     const channel = useChannel(channelId)
     const [content, setContent] = useState("")
     const { submit, isError, isLoading } = useCreateMessage()
+    const muted = member.muted && member.role === "guest"
 
     // Code to reset the content's state when naigating to another channel.
     useEffect(() => setContent(""), [channelId])
@@ -50,10 +53,10 @@ function FormMessage({ channelId }) {
                 className={`bg-dark border-${
                     isError ? "danger" : "dark"
                 } text-white`}
-                placeholder={`Enter a content for ${channel.name}`}
+                placeholder={muted ? "You're currently muted!" : `Enter a content for ${channel.name}`}
                 value={content}
                 onChange={(event) => setContent(event.target.value)}
-                disabled={isLoading}
+                disabled={isLoading || muted}
                 autoComplete={"off"}
             />
         </Form>

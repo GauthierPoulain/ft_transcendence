@@ -12,6 +12,7 @@ import {
     UseInterceptors,
 } from "@nestjs/common"
 import { ConnectedGuard } from "src/auth/connected.guard"
+import { Role } from "src/members/member.entity"
 import { MembersService } from "src/members/members.service"
 import { User } from "src/users/entities/user.entity"
 import { CurrentUser, CurrentUserId } from "src/users/user.decorator"
@@ -46,7 +47,7 @@ export class MessagesController {
             user.id
         )
 
-        if (!member) {
+        if (!member || (member.muted && member.role === Role.GUEST)) {
             throw new UnauthorizedException()
         }
 
