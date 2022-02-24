@@ -20,35 +20,45 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.gameArray = new Array<Game>()
     }
 
+    @SubscribeMessage("game.ready")
+    open(@ConnectedSocket() s: WebSocket) {
+        console.log(`[ws/game] new socket`)
+        s.send(JSON.stringify({ event: "salut", data: "pouet" }))
+        this.clientArray.push(s)
+        // this.clientArray.forEach((socket) => {
+        //     socket.send(JSON.stringify({ event: "salut", data: "pouet" }))
+        // })
+
+        // console.log(`${this.clientArray.length} socket connected`)
+        // if (this.clientArray[0] && this.clientArray[1]) {
+        //     const game =
+        //         this.gameArray[
+        //             this.gameArray.push(
+        //                 new Game(this.clientArray[0], this.clientArray[1])
+        //             ) - 1
+        //         ]
+        //     game.start()
+        // }
+    }
+
+    @SubscribeMessage("game.disconnect")
+    disconnect(@ConnectedSocket() s: WebSocket) {
+        this.handleDisconnect(s)
+    }
+
     @SubscribeMessage("test")
     test(@MessageBody() data: string, @ConnectedSocket() s: WebSocket) {
         console.log("test", data)
     }
 
-    public handleConnection(@ConnectedSocket() s: WebSocket): void {
-        // s.send(JSON.stringify({ event: "dummy" }))
-        console.log(`[ws/game] new socket`)
-        this.clientArray.push(s)
-        this.clientArray.forEach((socket) => {
-            console.log(`send -> salut`)
-            socket.send(JSON.stringify({ event: "salut", data: "pouet" }))
-        })
-
-        console.log(`${this.clientArray.length} socket connected`)
-        if (this.clientArray[0] && this.clientArray[1]) {
-            const game =
-                this.gameArray[
-                    this.gameArray.push(
-                        new Game(this.clientArray[0], this.clientArray[1])
-                    ) - 1
-                ]
-            game.start()
-        }
-    }
+    public handleConnection(@ConnectedSocket() s: WebSocket): void {}
 
     public handleDisconnect(@ConnectedSocket() s: WebSocket): void {
-        console.log(`[ws/game] socket disconnected`)
+        // console.log(`[ws/game] socket disconnected`)
         let index = this.clientArray.indexOf(s, 0)
-        if (index != -1) this.clientArray.splice(index, 1)
+        if (index != -1) {
+            this.clientArray.splice(index, 1)
+            console.log(`[ws/game] socket disconnected`)
+        }
     }
 }

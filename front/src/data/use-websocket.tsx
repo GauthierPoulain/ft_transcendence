@@ -5,7 +5,7 @@ import { Membership } from "./use-member"
 import { useAuth } from "./use-auth"
 
 type State = {
-    sendMessage: any
+    sendMessage: (event: string, data: any) => void
     readyState: ReadyState
     lastJsonMessage?: {
         event: string

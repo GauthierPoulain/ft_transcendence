@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react"
-import game from "./game"
+import React, { useEffect, useRef, useState } from "react"
+import Game from "./game"
 import "./pong.css"
 import { useWebSocket } from "../../data/use-websocket"
 import { AuthState, useAuth } from "../../data/use-auth"
@@ -7,31 +7,26 @@ import useUser, { User } from "../../data/use-user"
 
 function GameComponent(user: User | null) {
     const { subscribe, sendMessage } = useWebSocket()
-    const [isLoading, setIsLoading] = useState(true)
+    const gameContainer = useRef<null | HTMLObjectElement>(null)
 
     useEffect(() => {
-        setIsLoading(true)
-        game(sendMessage)
+        const localInstance = new Game(sendMessage, gameContainer.current!)
+        const { unsubscribe } = subscribe((event, data) => {
+            localInstance.socketEvents(event, data)
+        })
+        localInstance.setReady({ ws: true })
+
         const unmount = () => {
-            document.dispatchEvent(new CustomEvent("stopRendering"))
+            localInstance?.killEngine()
+            sendMessage("game.disconnect", null)
+            unsubscribe()
         }
-        setIsLoading(false)
         return unmount
     }, [])
 
-    useEffect(() => {
-        if (!isLoading) {
-            const { unsubscribe } = subscribe((event, data) => {
-                console.log(event, data)
-            })
-
-            return unsubscribe
-        }
-    }, [isLoading])
-
     return (
         <React.Fragment>
-            <div id="gameContainer">
+            <div id="gameContainer" ref={gameContainer}>
                 <div id="gameHud">
                     {user ? (
                         <span id="userIdentity">Welcome {user.nickname}</span>
@@ -50,7 +45,6 @@ function GameComponent(user: User | null) {
                         <p></p>
                     </div>
                 </div>
-                <canvas />
             </div>
         </React.Fragment>
     )
