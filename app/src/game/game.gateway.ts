@@ -8,37 +8,35 @@ import {
     WebSocketServer,
 } from "@nestjs/websockets"
 import { Server, WebSocket } from "ws"
-import Game from "./class/Game"
+import Lobby from "./class/Lobby"
 
 @WebSocketGateway()
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer() server: Server
     clientArray: WebSocket[]
-    gameArray: Game[]
+    relationalMap: Map<WebSocket, Lobby>
+    gameArray: Lobby[]
     constructor() {
         this.clientArray = new Array<WebSocket>()
-        this.gameArray = new Array<Game>()
+        this.gameArray = new Array<Lobby>()
+        this.relationalMap = new Map<WebSocket, Lobby>()
     }
 
     @SubscribeMessage("game.ready")
     open(@ConnectedSocket() s: WebSocket) {
         console.log(`[ws/game] new socket`)
-        s.send(JSON.stringify({ event: "salut", data: "pouet" }))
         this.clientArray.push(s)
-        // this.clientArray.forEach((socket) => {
-        //     socket.send(JSON.stringify({ event: "salut", data: "pouet" }))
-        // })
-
-        // console.log(`${this.clientArray.length} socket connected`)
-        // if (this.clientArray[0] && this.clientArray[1]) {
-        //     const game =
-        //         this.gameArray[
-        //             this.gameArray.push(
-        //                 new Game(this.clientArray[0], this.clientArray[1])
-        //             ) - 1
-        //         ]
-        //     game.start()
-        // }
+        if (this.clientArray[0] && this.clientArray[1]) {
+            const lobby =
+                this.gameArray[
+                    this.gameArray.push(
+                        new Lobby(this.clientArray[0], this.clientArray[1])
+                    ) - 1
+                ]
+            this.relationalMap.set(this.clientArray[0], lobby)
+            this.relationalMap.set(this.clientArray[1], lobby)
+            lobby.start()
+        }
     }
 
     @SubscribeMessage("game.disconnect")
@@ -47,14 +45,22 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @SubscribeMessage("test")
-    test(@MessageBody() data: string, @ConnectedSocket() s: WebSocket) {
+    test(@ConnectedSocket() s: WebSocket, @MessageBody() data: any) {
         console.log("test", data)
+    }
+
+    @SubscribeMessage("game.playerMove")
+    playerMove(@ConnectedSocket() s: WebSocket, @MessageBody() data: any) {
+        const lobby = this.relationalMap.get(s)
+        if (lobby) {
+            if (s == lobby._player_one) lobby.movePlayer("one", data.x)
+            if (s == lobby._player_two) lobby.movePlayer("two", data.x)
+        }
     }
 
     public handleConnection(@ConnectedSocket() s: WebSocket): void {}
 
     public handleDisconnect(@ConnectedSocket() s: WebSocket): void {
-        // console.log(`[ws/game] socket disconnected`)
         let index = this.clientArray.indexOf(s, 0)
         if (index != -1) {
             this.clientArray.splice(index, 1)

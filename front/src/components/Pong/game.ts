@@ -103,6 +103,8 @@ export default class Game {
 
     _gameAlertTimeout: any = null
 
+    _whoAmI: string | null = null
+
     constructor(
         sendMessage: (event: string, data: any) => void,
         gameContainer: HTMLObjectElement
@@ -168,7 +170,6 @@ export default class Game {
         this._simData.interval = setInterval(() => {
             this.localSimulation()
         }, 1)
-
         this.setReady({ engine: true })
     }
 
@@ -197,14 +198,10 @@ export default class Game {
         this._engine.camera.updateProjectionMatrix()
     }
 
-    private whoAmI() {
-        return "one"
-        // return "two"
-        // return "spe"
-    }
-
     currentPlayer(): Player | null {
-        return this._gameData.players[this.whoAmI()]
+        if (this._whoAmI == "one" || this._whoAmI == "two")
+            return this._gameData.players[this._whoAmI]
+        return null
     }
 
     resetRound() {
@@ -250,10 +247,9 @@ export default class Game {
     }
 
     localSimulation() {
+        if (!this._simData.running) return
         try {
             const delta = (Date.now() - this._simData.last) / 1000
-
-            if (!this._simData.running) return
             const quoit = this._engine.objects.get("quoit") as THREE.Mesh
             const wallP = this._engine.objects.get("map_border1") as THREE.Mesh
             const wallN = this._engine.objects.get("map_border2") as THREE.Mesh
@@ -322,11 +318,15 @@ export default class Game {
             action.getMixer().update(delta)
         })
         {
+            if (!this.currentPlayer()) return
+            let player = this._engine.objects.get(
+                this.currentPlayer()!.meshName
+            ) as THREE.Mesh
+            // console.log(player)
             if (
                 this._keyPressed.get("ArrowLeft") &&
                 !this._keyPressed.get("ArrowRight")
             ) {
-                let player = this._engine.objects.get("player1") as THREE.Mesh
                 if (
                     !collisionBoxBox(
                         player,
@@ -334,14 +334,15 @@ export default class Game {
                     )
                 ) {
                     player.position.x -= 10 * delta
+                    this._wsEmit("game.playerMove", {
+                        x: player.position.x,
+                    })
                 }
             }
             if (
                 this._keyPressed.get("ArrowRight") &&
                 !this._keyPressed.get("ArrowLeft")
             ) {
-                let player = this._engine.objects.get("player1") as THREE.Mesh
-
                 if (
                     !collisionBoxBox(
                         player,
@@ -349,6 +350,9 @@ export default class Game {
                     )
                 ) {
                     player.position.x += 10 * delta
+                    this._wsEmit("game.playerMove", {
+                        x: player.position.x,
+                    })
                 }
             }
         }
@@ -370,7 +374,7 @@ export default class Game {
     }
 
     initScene() {
-        this._engine.camera.position.set(0, 10, 25)
+        this._engine.camera.position.set(15, 20, 0)
         this._engine.camera.lookAt(0, 0, 0)
         {
             const light = new THREE.AmbientLight(0xffffff, 0.3)
@@ -670,7 +674,24 @@ export default class Game {
     }
 
     socketEvents(event: string, data: any) {
-        console.log("game socket event", event, data)
+        switch (event) {
+            case "game.syncData":
+                this._gameData = data
+                this.syncSimulation()
+                break
+
+            case "game.youAre":
+                this._whoAmI = data
+                if (data == "one") this._engine.camera.position.set(0, 10, 25)
+                else if (data == "two")
+                    this._engine.camera.position.set(0, 10, -25)
+                this._engine.camera.lookAt(0, 0, 0)
+                break
+
+            default:
+                console.log("game socket event", event, data)
+                break
+        }
     }
 
     killEngine() {

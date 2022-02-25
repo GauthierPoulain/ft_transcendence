@@ -32,7 +32,7 @@ export function WebsocketProvider({ children }) {
         async onMessage(message) {
             const { event, data } = JSON.parse(message.data)
 
-            console.debug("websocket message", event, data, handlers)
+            // console.debug("websocket message", event, data, handlers)
 
             handlers.forEach((value) => value(event, data))
         },
@@ -45,7 +45,6 @@ export function WebsocketProvider({ children }) {
     })
 
     function sendMessage(event: string, data: any) {
-        console.log("sending message")
         return send(JSON.stringify({ event, data }))
     }
 
