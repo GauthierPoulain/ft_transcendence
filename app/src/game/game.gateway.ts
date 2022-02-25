@@ -53,8 +53,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     playerMove(@ConnectedSocket() s: WebSocket, @MessageBody() data: any) {
         const lobby = this.relationalMap.get(s)
         if (lobby) {
-            if (s == lobby._player_one) lobby.movePlayer("one", data.x)
-            if (s == lobby._player_two) lobby.movePlayer("two", data.x)
+            if (s == lobby._player_one) lobby.movePlayer("one", data)
+            if (s == lobby._player_two) lobby.movePlayer("two", data)
         }
     }
 
@@ -62,7 +62,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     public handleDisconnect(@ConnectedSocket() s: WebSocket): void {
         let index = this.clientArray.indexOf(s, 0)
+        let lobby = this.relationalMap.get(s)
         if (index != -1) {
+            if (lobby) {
+                lobby.stop()
+            }
             this.clientArray.splice(index, 1)
             console.log(`[ws/game] socket disconnected`)
         }

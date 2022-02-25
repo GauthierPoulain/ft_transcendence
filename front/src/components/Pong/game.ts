@@ -8,11 +8,13 @@ class Player {
     width: number = 3
     color: number = 0xffffff
     meshName: string
+    last: number
 
     constructor(name: string, color: number, meshName: string) {
         this.name = name
         this.color = color
         this.meshName = meshName
+        this.last = Date.now()
     }
 }
 
@@ -49,6 +51,8 @@ function collisionBoxBox(box1: THREE.Mesh, box2: THREE.Mesh) {
 export default class Game {
     _size: { x: number; y: number }
     _gameContainer: HTMLObjectElement
+
+    _lastTime: number
 
     _wsEmit: (event: string, data: any) => void
 
@@ -115,6 +119,8 @@ export default class Game {
             y: gameContainer.clientWidth,
         }
         this._wsEmit = sendMessage
+
+        this._lastTime = Date.now()
 
         this._engine = {
             scene: new THREE.Scene(),
@@ -254,20 +260,24 @@ export default class Game {
                 this._keyPressed.get("ArrowLeft") &&
                 !this._keyPressed.get("ArrowRight")
             ) {
+                this._currentData.players[this._whoAmI!].x +=
+                    (this._whoAmI == "one" ? -10 : 10) * delta
+                let tmpX = this._currentData.players[this._whoAmI!].x
                 this._wsEmit("game.playerMove", {
-                    x:
-                        this._currentData.players[this._whoAmI!].x +
-                        (this._whoAmI == "one" ? -10 : 10) * delta,
+                    x: tmpX,
+                    time: Date.now(),
                 })
             }
             if (
                 this._keyPressed.get("ArrowRight") &&
                 !this._keyPressed.get("ArrowLeft")
             ) {
+                this._currentData.players[this._whoAmI!].x +=
+                    (this._whoAmI == "one" ? 10 : -10) * delta
+                let tmpX = this._currentData.players[this._whoAmI!].x
                 this._wsEmit("game.playerMove", {
-                    x:
-                        this._currentData.players[this._whoAmI!].x +
-                        (this._whoAmI == "one" ? 10 : -10) * delta,
+                    x: tmpX,
+                    time: Date.now(),
                 })
             }
             // }
@@ -650,8 +660,11 @@ export default class Game {
     socketEvents(event: string, data: any) {
         switch (event) {
             case "game.syncData":
-                this._currentData = data
-                this.syncSimulation()
+                if (this._lastTime < data.time) {
+                    this._currentData = data.data
+                    this.syncMeshs()
+                    this._lastTime = data.time
+                }
                 break
 
             case "game.youAre":

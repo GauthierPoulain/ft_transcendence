@@ -5,10 +5,12 @@ export default class Player {
     width: number = 3
     color: number = 0xffffff
     meshName: string
+    last: number
 
     constructor(name: string, color: number, meshName: string) {
         this.name = name
         this.color = color
         this.meshName = meshName
+        this.last = Date.now()
     }
 }

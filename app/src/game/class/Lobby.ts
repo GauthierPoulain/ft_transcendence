@@ -98,6 +98,7 @@ export default class Lobby {
         this.emit(this._player_two, "game.youAre", "two")
 
         this._simData.running = true
+        this._simData.last = Date.now()
         this._simData.interval = setInterval(() => {
             this.simulate()
         }, 1)
@@ -123,8 +124,11 @@ export default class Lobby {
         })
     }
 
-    movePlayer(player: string, x: number) {
-        this._currentData.players[player].x = x
+    movePlayer(player: string, data: any) {
+        if (this._currentData.players[player].last < data.time) {
+            this._currentData.players[player].x = data.x
+            this._currentData.players[player].last = data.time
+        }
     }
 
     private syncMeshs() {
@@ -233,12 +237,16 @@ export default class Lobby {
     }
 
     sendData() {
-        this.broadcast("game.syncData", this._currentData)
+        this.broadcast("game.syncData", {
+            data: this._currentData,
+            time: Date.now(),
+        })
     }
 
     stop() {
         this._simData.running = false
         clearInterval(this._simData.interval)
+        clearInterval(this._simData.sendInterval)
     }
 
     private addObj(name: string, obj: any) {
