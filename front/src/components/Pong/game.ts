@@ -167,9 +167,9 @@ export default class Game {
         this.registerAnimations()
         this.initKeyControl()
         this.animate()
-        this._simData.interval = setInterval(() => {
-            this.localSimulation()
-        }, 1)
+
+        this.startSimulation()
+
         this.setReady({ engine: true })
     }
 
@@ -239,11 +239,15 @@ export default class Game {
     startSimulation() {
         this._simData.last = Date.now()
         this._simData.running = true
+        this._simData.interval = setInterval(() => {
+            this.localSimulation()
+        }, 1)
         this.syncSimulation()
     }
 
     stopSimulation() {
         this._simData.running = false
+        clearInterval(this._simData.interval)
     }
 
     localSimulation() {
@@ -251,59 +255,94 @@ export default class Game {
         try {
             const delta = (Date.now() - this._simData.last) / 1000
             const quoit = this._engine.objects.get("quoit") as THREE.Mesh
-            const wallP = this._engine.objects.get("map_border1") as THREE.Mesh
-            const wallN = this._engine.objects.get("map_border2") as THREE.Mesh
+
+            const wallP = this._engine.objects.get(
+                "map_border" + (this._whoAmI == "one" ? "2" : "1")
+            ) as THREE.Mesh
+            const wallN = this._engine.objects.get(
+                "map_border" + (this._whoAmI == "one" ? "1" : "2")
+            ) as THREE.Mesh
+
             const playerP = this._engine.objects.get("player1") as THREE.Mesh
             const playerN = this._engine.objects.get("player2") as THREE.Mesh
-
             {
+                if (!this.currentPlayer()) return
+                let player = this._engine.objects.get(
+                    this.currentPlayer()!.meshName
+                ) as THREE.Mesh
                 if (
-                    collisionBoxCyl(playerP, quoit, this._gameData.quoit.radius)
+                    this._keyPressed.get("ArrowLeft") &&
+                    !this._keyPressed.get("ArrowRight")
                 ) {
-                    this._gameData.quoit.speed.z = -Math.abs(
-                        this._gameData.quoit.speed.z
-                    )
-                    let xSpeed = -(playerP.position.x - quoit.position.x)
-                    this._gameData.quoit.speed.x +=
-                        xSpeed * this._gameData.quoit.speed.xM
-                } else if (
-                    collisionBoxCyl(playerN, quoit, this._gameData.quoit.radius)
-                ) {
-                    this._gameData.quoit.speed.z = Math.abs(
-                        this._gameData.quoit.speed.z
-                    )
-                    let xSpeed = -(playerN.position.x - quoit.position.x)
-                    this._gameData.quoit.speed.x +=
-                        xSpeed * this._gameData.quoit.speed.xM
+                    if (!collisionBoxBox(player, wallP)) {
+                        this._wsEmit("game.playerMove", {
+                            x:
+                                this._gameData.players[this._whoAmI!].x +
+                                (this._whoAmI == "one" ? -10 : 10) * delta,
+                        })
+                    }
                 }
-
                 if (
-                    collisionBoxCyl(wallP, quoit, this._gameData.quoit.radius)
+                    this._keyPressed.get("ArrowRight") &&
+                    !this._keyPressed.get("ArrowLeft")
                 ) {
-                    this._gameData.quoit.speed.x = -Math.abs(
-                        this._gameData.quoit.speed.x
-                    )
-                } else if (
-                    collisionBoxCyl(wallN, quoit, this._gameData.quoit.radius)
-                ) {
-                    this._gameData.quoit.speed.x = Math.abs(
-                        this._gameData.quoit.speed.x
-                    )
+                    if (!collisionBoxBox(player, wallN)) {
+                        this._wsEmit("game.playerMove", {
+                            x:
+                                this._gameData.players[this._whoAmI!].x +
+                                (this._whoAmI == "one" ? 10 : -10) * delta,
+                        })
+                    }
                 }
             }
-            {
-                quoit.position.x += this._gameData.quoit.speed.x * delta
-                quoit.position.z += this._gameData.quoit.speed.z * delta
-            }
-            {
-                playerN.position.x = quoit.position.x
-            }
-            {
-                if (quoit.position.z > this._map.depth / 2)
-                    this.playerScore(this._gameData.players.two)
-                else if (quoit.position.z < -(this._map.depth / 2))
-                    this.playerScore(this._gameData.players.one)
-            }
+            // {
+            //     if (
+            //         collisionBoxCyl(playerP, quoit, this._gameData.quoit.radius)
+            //     ) {
+            //         this._gameData.quoit.speed.z = -Math.abs(
+            //             this._gameData.quoit.speed.z
+            //         )
+            //         let xSpeed = -(playerP.position.x - quoit.position.x)
+            //         this._gameData.quoit.speed.x +=
+            //             xSpeed * this._gameData.quoit.speed.xM
+            //     } else if (
+            //         collisionBoxCyl(playerN, quoit, this._gameData.quoit.radius)
+            //     ) {
+            //         this._gameData.quoit.speed.z = Math.abs(
+            //             this._gameData.quoit.speed.z
+            //         )
+            //         let xSpeed = -(playerN.position.x - quoit.position.x)
+            //         this._gameData.quoit.speed.x +=
+            //             xSpeed * this._gameData.quoit.speed.xM
+            //     }
+
+            //     if (
+            //         collisionBoxCyl(wallP, quoit, this._gameData.quoit.radius)
+            //     ) {
+            //         this._gameData.quoit.speed.x = -Math.abs(
+            //             this._gameData.quoit.speed.x
+            //         )
+            //     } else if (
+            //         collisionBoxCyl(wallN, quoit, this._gameData.quoit.radius)
+            //     ) {
+            //         this._gameData.quoit.speed.x = Math.abs(
+            //             this._gameData.quoit.speed.x
+            //         )
+            //     }
+            // }
+            // {
+            //     quoit.position.x += this._gameData.quoit.speed.x * delta
+            //     quoit.position.z += this._gameData.quoit.speed.z * delta
+            // }
+            // {
+            //     playerN.position.x = quoit.position.x
+            // }
+            // {
+            //     if (quoit.position.z > this._map.depth / 2)
+            //         this.playerScore(this._gameData.players.two)
+            //     else if (quoit.position.z < -(this._map.depth / 2))
+            //         this.playerScore(this._gameData.players.one)
+            // }
 
             this._simData.last = Date.now()
         } catch (error) {
@@ -317,45 +356,6 @@ export default class Game {
         this._engine.animationActions.forEach((action) => {
             action.getMixer().update(delta)
         })
-        {
-            if (!this.currentPlayer()) return
-            let player = this._engine.objects.get(
-                this.currentPlayer()!.meshName
-            ) as THREE.Mesh
-            // console.log(player)
-            if (
-                this._keyPressed.get("ArrowLeft") &&
-                !this._keyPressed.get("ArrowRight")
-            ) {
-                if (
-                    !collisionBoxBox(
-                        player,
-                        this._engine.objects.get("map_border2")
-                    )
-                ) {
-                    player.position.x -= 10 * delta
-                    this._wsEmit("game.playerMove", {
-                        x: player.position.x,
-                    })
-                }
-            }
-            if (
-                this._keyPressed.get("ArrowRight") &&
-                !this._keyPressed.get("ArrowLeft")
-            ) {
-                if (
-                    !collisionBoxBox(
-                        player,
-                        this._engine.objects.get("map_border1")
-                    )
-                ) {
-                    player.position.x += 10 * delta
-                    this._wsEmit("game.playerMove", {
-                        x: player.position.x,
-                    })
-                }
-            }
-        }
     }
 
     animate() {
@@ -697,7 +697,6 @@ export default class Game {
     killEngine() {
         console.log("Three.js instance killed")
         this.stopSimulation()
-        clearInterval(this._simData.interval)
         cancelAnimationFrame(this._engine.animationFrame)
         this._engine.objects.clear()
         this._engine.animationActions.clear()

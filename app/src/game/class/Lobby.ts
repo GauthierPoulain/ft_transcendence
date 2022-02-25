@@ -52,6 +52,11 @@ export default class Lobby {
         this.broadcast("game.ready", true)
         this.emit(this._player_one, "game.youAre", "one")
         this.emit(this._player_two, "game.youAre", "two")
+
+        this._simData.running = true
+        this._simData.interval = setInterval(() => {
+            this.simulate()
+        }, 200)
     }
 
     joinSpec(socket: WebSocket) {
@@ -76,7 +81,18 @@ export default class Lobby {
         this.sendData()
     }
 
-    simulate() {}
+    simulate() {
+        if (!this._simData.running) return
+        try {
+            const delta = (Date.now() - this._simData.last) / 1000
+            this.sendData()
+            this._simData.last = Date.now()
+        } catch (error) {
+            console.error(error)
+            this.stop()
+            return false
+        }
+    }
 
     sendData() {
         this.broadcast("game.syncData", this._currentData)
