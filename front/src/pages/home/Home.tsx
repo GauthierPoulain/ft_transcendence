@@ -16,6 +16,7 @@ function RunningMatches()
                 <tr>
                     <th>Player1</th>
                     <th>Player2</th>
+					<th>Score</th>
                     <th>View</th>
                 </tr>
             </thead>
@@ -37,6 +38,32 @@ function RunningMatches()
                         />
 						Pouet
 					</td>
+					<td>4 - 2</td>
+					<td>
+						<OverlayTrigger placement="right" overlay={<Tooltip>View Match</Tooltip>}>
+							<Visibility className="game-view"/>
+						</OverlayTrigger>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<img
+                        	className="player-logo me-4"
+                        	src="/assets/42.jpg"
+                        	alt=""
+                        />
+						Pouic
+					</td>
+					<td>
+						<img
+                        	className="player-logo me-4"
+                        	src="/assets/42.jpg"
+                        	alt=""
+                        />
+						Pouet
+					</td>
+					<td>4 - 2</td>
 					<td>
 						<OverlayTrigger placement="right" overlay={<Tooltip>View Match</Tooltip>}>
 							<Visibility className="game-view"/>
