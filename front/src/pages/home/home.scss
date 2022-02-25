@@ -29,3 +29,20 @@
         transition: 0.2s;
     }
 }
+
+.game-view
+{
+    color: white;
+    transition: 0.2s;
+}
+
+.game-view:hover
+{
+    color: red;
+    transition: 0.2s;
+}
+
+.game-title
+{
+    color: grey;
+}
