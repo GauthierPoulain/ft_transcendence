@@ -30,26 +30,8 @@ function RunningMatches()
 					</td>
 				</tr>
 				<tr>
-					<td>Pouic</td>
-					<td>Pouet</td>
-					<td>
-						<OverlayTrigger placement="right" overlay={<Tooltip>View Match</Tooltip>}>
-							<Visibility className="game-view"/>
-						</OverlayTrigger>
-					</td>
-				</tr>
-				<tr>
-					<td>Pouic</td>
-					<td>Pouet</td>
-					<td>
-						<OverlayTrigger placement="right" overlay={<Tooltip>View Match</Tooltip>}>
-							<Visibility className="game-view"/>
-						</OverlayTrigger>
-					</td>
-				</tr>
-				<tr>
-					<td>Pouic</td>
-					<td>Pouet</td>
+					<td>Pouit</td>
+					<td>Pouec</td>
 					<td>
 						<OverlayTrigger placement="right" overlay={<Tooltip>View Match</Tooltip>}>
 							<Visibility className="game-view"/>
@@ -69,7 +51,7 @@ function Home() {
                 <div className="text-center my-5">
                     <h1>Welcome to ft_pong</h1>
                     <p className="desc">Let's play a pong match !</p>
-                    <img src="/assets/pong.png" className="w-25" alt="" />
+                    <img src="/assets/pong.png" className="w-25 img" alt="" />
                 </div>
             </div>
             <div className="d-flex justify-content-center">

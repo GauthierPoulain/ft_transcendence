@@ -5,6 +5,10 @@
         color: grey;
     }
 
+    .img
+    {
+        filter:  brightness(1) invert(0.6);
+    }
 }
 
 .play-button
