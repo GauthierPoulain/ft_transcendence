@@ -242,47 +242,35 @@ export default class Game {
         if (!this._simData.running) return
         try {
             const delta = (Date.now() - this._simData.last) / 1000
-            const quoit = this._engine.objects.get("quoit") as THREE.Mesh
+            // const quoit = this._engine.objects.get("quoit") as THREE.Mesh
 
-            const wallP = this._engine.objects.get(
-                "map_border" + (this._whoAmI == "one" ? "2" : "1")
-            ) as THREE.Mesh
-            const wallN = this._engine.objects.get(
-                "map_border" + (this._whoAmI == "one" ? "1" : "2")
-            ) as THREE.Mesh
+            // const wallP = this._engine.objects.get("map_border1") as THREE.Mesh
+            // const wallN = this._engine.objects.get("map_border2") as THREE.Mesh
 
-            const playerP = this._engine.objects.get("player1") as THREE.Mesh
-            const playerN = this._engine.objects.get("player2") as THREE.Mesh
-            {
-                if (!this.currentPlayer()) return
-                let player = this._engine.objects.get(
-                    this.currentPlayer()!.meshName
-                ) as THREE.Mesh
-                if (
-                    this._keyPressed.get("ArrowLeft") &&
-                    !this._keyPressed.get("ArrowRight")
-                ) {
-                    if (!collisionBoxBox(player, wallP)) {
-                        this._wsEmit("game.playerMove", {
-                            x:
-                                this._currentData.players[this._whoAmI!].x +
-                                (this._whoAmI == "one" ? -10 : 10) * delta,
-                        })
-                    }
-                }
-                if (
-                    this._keyPressed.get("ArrowRight") &&
-                    !this._keyPressed.get("ArrowLeft")
-                ) {
-                    if (!collisionBoxBox(player, wallN)) {
-                        this._wsEmit("game.playerMove", {
-                            x:
-                                this._currentData.players[this._whoAmI!].x +
-                                (this._whoAmI == "one" ? 10 : -10) * delta,
-                        })
-                    }
-                }
+            // const playerP = this._engine.objects.get("player1") as THREE.Mesh
+            // const playerN = this._engine.objects.get("player2") as THREE.Mesh
+            // {
+            if (
+                this._keyPressed.get("ArrowLeft") &&
+                !this._keyPressed.get("ArrowRight")
+            ) {
+                this._wsEmit("game.playerMove", {
+                    x:
+                        this._currentData.players[this._whoAmI!].x +
+                        (this._whoAmI == "one" ? -10 : 10) * delta,
+                })
             }
+            if (
+                this._keyPressed.get("ArrowRight") &&
+                !this._keyPressed.get("ArrowLeft")
+            ) {
+                this._wsEmit("game.playerMove", {
+                    x:
+                        this._currentData.players[this._whoAmI!].x +
+                        (this._whoAmI == "one" ? 10 : -10) * delta,
+                })
+            }
+            // }
             // {
             //     if (
             //         collisionBoxCyl(playerP, quoit, this._gameData.quoit.radius)

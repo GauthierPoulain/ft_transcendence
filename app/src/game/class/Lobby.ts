@@ -56,10 +56,12 @@ export default class Lobby {
         running: boolean
         last: number
         interval: any
+        sendInterval: any
     } = {
         running: false,
         last: Date.now(),
         interval: undefined,
+        sendInterval: undefined,
     }
 
     constructor(player_one: WebSocket, player_two: WebSocket) {
@@ -76,8 +78,12 @@ export default class Lobby {
                 z: 0,
                 radius: 0.5,
                 color: 0xffffff,
-                speed: { x: 0, xM: 3, z: 0 },
+                speed: { x: 0, xM: 3, z: 10 },
             },
+        }
+        this._engine = {
+            scene: new THREE.Scene(),
+            objects: new Map<string, any>(),
         }
         this.initScene()
     }
@@ -94,7 +100,10 @@ export default class Lobby {
         this._simData.running = true
         this._simData.interval = setInterval(() => {
             this.simulate()
-        }, 100)
+        }, 1)
+        this._simData.sendInterval = setInterval(() => {
+            this.sendData()
+        }, 1000 / 144)
     }
 
     joinSpec(socket: WebSocket) {
@@ -116,14 +125,105 @@ export default class Lobby {
 
     movePlayer(player: string, x: number) {
         this._currentData.players[player].x = x
-        this.simulate()
+    }
+
+    private syncMeshs() {
+        const quoit = this._engine.objects.get("quoit") as THREE.Mesh
+        const playerP = this._engine.objects.get("player1") as THREE.Mesh
+        const playerN = this._engine.objects.get("player2") as THREE.Mesh
+
+        quoit.position.x = this._currentData.quoit.x
+        quoit.position.z = this._currentData.quoit.z
+        quoit.scale.x = this._currentData.quoit.radius
+        quoit.scale.z = this._currentData.quoit.radius
+
+        playerP.position.x = this._currentData.players.one.x
+        playerP.scale.x = this._currentData.players.one.width
+
+        playerN.position.x = this._currentData.players.two.x
+        playerN.scale.x = this._currentData.players.two.width
     }
 
     simulate() {
         if (!this._simData.running) return
         try {
             const delta = (Date.now() - this._simData.last) / 1000
-            this.sendData()
+
+            this.syncMeshs()
+
+            const quoit = this._engine.objects.get("quoit") as THREE.Mesh
+
+            const wallP = this._engine.objects.get("map_border1") as THREE.Mesh
+            const wallN = this._engine.objects.get("map_border2") as THREE.Mesh
+
+            const playerP = this._engine.objects.get("player1") as THREE.Mesh
+            const playerN = this._engine.objects.get("player2") as THREE.Mesh
+            {
+                if (
+                    collisionBoxCyl(
+                        playerP,
+                        quoit,
+                        this._currentData.quoit.radius
+                    )
+                ) {
+                    this._currentData.quoit.speed.z = -Math.abs(
+                        this._currentData.quoit.speed.z
+                    )
+                    let xSpeed = -(
+                        this._currentData.players.one.x -
+                        this._currentData.quoit.x
+                    )
+                    this._currentData.quoit.speed.x +=
+                        xSpeed * this._currentData.quoit.speed.xM
+                } else if (
+                    collisionBoxCyl(
+                        playerN,
+                        quoit,
+                        this._currentData.quoit.radius
+                    )
+                ) {
+                    this._currentData.quoit.speed.z = Math.abs(
+                        this._currentData.quoit.speed.z
+                    )
+                    let xSpeed = -(
+                        this._currentData.players.two.x -
+                        this._currentData.quoit.x
+                    )
+                    this._currentData.quoit.speed.x +=
+                        xSpeed * this._currentData.quoit.speed.xM
+                }
+
+                if (
+                    collisionBoxCyl(
+                        wallP,
+                        quoit,
+                        this._currentData.quoit.radius
+                    )
+                ) {
+                    this._currentData.quoit.speed.x = -Math.abs(
+                        this._currentData.quoit.speed.x
+                    )
+                } else if (
+                    collisionBoxCyl(
+                        wallN,
+                        quoit,
+                        this._currentData.quoit.radius
+                    )
+                ) {
+                    this._currentData.quoit.speed.x = Math.abs(
+                        this._currentData.quoit.speed.x
+                    )
+                }
+            }
+            {
+                this._currentData.quoit.x +=
+                    this._currentData.quoit.speed.x * delta
+                this._currentData.quoit.z +=
+                    this._currentData.quoit.speed.z * delta
+            }
+            {
+                playerN.position.x = this._currentData.quoit.x
+            }
             this._simData.last = Date.now()
         } catch (error) {
             console.error(error)
