@@ -16,22 +16,27 @@ function RunningMatches()
                 <tr>
                     <th>Player1</th>
                     <th>Player2</th>
-                    <th></th>
+                    <th>View</th>
                 </tr>
             </thead>
 			<tbody>
 				<tr>
-					<td>Pouic</td>
-					<td>Pouet</td>
 					<td>
-						<OverlayTrigger placement="right" overlay={<Tooltip>View Match</Tooltip>}>
-							<Visibility className="game-view"/>
-						</OverlayTrigger>
+						<img
+                        	className="player-logo me-4"
+                        	src="/assets/42.jpg"
+                        	alt=""
+                        />
+						Pouic
 					</td>
-				</tr>
-				<tr>
-					<td>Pouit</td>
-					<td>Pouec</td>
+					<td>
+						<img
+                        	className="player-logo me-4"
+                        	src="/assets/42.jpg"
+                        	alt=""
+                        />
+						Pouet
+					</td>
 					<td>
 						<OverlayTrigger placement="right" overlay={<Tooltip>View Match</Tooltip>}>
 							<Visibility className="game-view"/>
