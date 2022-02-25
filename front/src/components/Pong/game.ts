@@ -72,7 +72,7 @@ export default class Game {
         interval: any
     }
 
-    _gameData: {
+    _currentData: {
         players: { one: Player; two: Player }
         quoit: {
             x: number
@@ -145,7 +145,7 @@ export default class Game {
             interval: undefined,
         }
 
-        this._gameData = {
+        this._currentData = {
             players: {
                 one: new Player("pl1", 0xffffff, "player1"),
                 two: new Player("pl2", 0xffffff, "player2"),
@@ -161,7 +161,6 @@ export default class Game {
 
         this.initEngine()
         this.initScene()
-        this.resetRound()
         this.syncSimulation()
         this.updateHUD()
         this.registerAnimations()
@@ -200,19 +199,8 @@ export default class Game {
 
     currentPlayer(): Player | null {
         if (this._whoAmI == "one" || this._whoAmI == "two")
-            return this._gameData.players[this._whoAmI]
+            return this._currentData.players[this._whoAmI]
         return null
-    }
-
-    resetRound() {
-        this._gameData.players.one.x = 0
-        this._gameData.players.one.width = 3
-        this._gameData.players.two.x = 0
-        this._gameData.players.two.width = 3
-        this._gameData.quoit.x = 0
-        this._gameData.quoit.z = 0
-        this._gameData.quoit.speed.x = 0
-        this._gameData.quoit.speed.z = 10
     }
 
     syncMeshs() {
@@ -220,16 +208,16 @@ export default class Game {
         const playerP = this._engine.objects.get("player1") as THREE.Mesh
         const playerN = this._engine.objects.get("player2") as THREE.Mesh
 
-        quoit.position.x = this._gameData.quoit.x
-        quoit.position.z = this._gameData.quoit.z
-        quoit.scale.x = this._gameData.quoit.radius
-        quoit.scale.z = this._gameData.quoit.radius
+        quoit.position.x = this._currentData.quoit.x
+        quoit.position.z = this._currentData.quoit.z
+        quoit.scale.x = this._currentData.quoit.radius
+        quoit.scale.z = this._currentData.quoit.radius
 
-        playerP.position.x = this._gameData.players.one.x
-        playerP.scale.x = this._gameData.players.one.width
+        playerP.position.x = this._currentData.players.one.x
+        playerP.scale.x = this._currentData.players.one.width
 
-        playerN.position.x = this._gameData.players.two.x
-        playerN.scale.x = this._gameData.players.two.width
+        playerN.position.x = this._currentData.players.two.x
+        playerN.scale.x = this._currentData.players.two.width
     }
 
     syncSimulation() {
@@ -277,7 +265,7 @@ export default class Game {
                     if (!collisionBoxBox(player, wallP)) {
                         this._wsEmit("game.playerMove", {
                             x:
-                                this._gameData.players[this._whoAmI!].x +
+                                this._currentData.players[this._whoAmI!].x +
                                 (this._whoAmI == "one" ? -10 : 10) * delta,
                         })
                     }
@@ -289,7 +277,7 @@ export default class Game {
                     if (!collisionBoxBox(player, wallN)) {
                         this._wsEmit("game.playerMove", {
                             x:
-                                this._gameData.players[this._whoAmI!].x +
+                                this._currentData.players[this._whoAmI!].x +
                                 (this._whoAmI == "one" ? 10 : -10) * delta,
                         })
                     }
@@ -386,7 +374,6 @@ export default class Game {
             light.castShadow = this._graphicConfig.shadows
             this.addObj("light", light)
         }
-
         {
             const geo = new THREE.BoxGeometry(
                 this._map.width,
@@ -476,7 +463,7 @@ export default class Game {
             this.addObj("map_border2", obj)
         }
         {
-            let player = this._gameData.players.one
+            let player = this._currentData.players.one
             const geo = new THREE.BoxGeometry(1, 0.3, 0.4)
             const mat = new THREE.MeshPhongMaterial({ color: player.color })
             const obj = new THREE.Mesh(geo, mat)
@@ -485,7 +472,7 @@ export default class Game {
             this.addObj("player1", obj)
         }
         {
-            let player = this._gameData.players.two
+            let player = this._currentData.players.two
             const geo = new THREE.BoxGeometry(1, 0.3, 0.4)
             const mat = new THREE.MeshPhongMaterial({ color: player.color })
             const obj = new THREE.Mesh(geo, mat)
@@ -588,10 +575,10 @@ export default class Game {
             this._keyPressed.set(e.code, true)
             switch (e.code) {
                 case "Digit1":
-                    this.playerScore(this._gameData.players.one)
+                    this.playerScore(this._currentData.players.one)
                     break
                 case "Digit2":
-                    this.playerScore(this._gameData.players.two)
+                    this.playerScore(this._currentData.players.two)
                     break
                 case "Digit3":
                     this.startSimulation()
@@ -613,9 +600,9 @@ export default class Game {
     playerScore(winner: Player) {
         this.stopSimulation()
         var looser =
-            winner == this._gameData.players.one
-                ? this._gameData.players.two
-                : this._gameData.players.one
+            winner == this._currentData.players.one
+                ? this._currentData.players.two
+                : this._currentData.players.one
         const clip = this._engine.animationActions.get(
             "mapPannel_" + looser.meshName + ":blink"
         )
@@ -629,7 +616,6 @@ export default class Game {
         winner.score++
         this.updateHUD()
         setTimeout(() => {
-            this.resetRound()
             this.startSimulation()
         }, 3000)
     }
@@ -661,22 +647,22 @@ export default class Game {
     updateHUD() {
         this._gameContainer.querySelector(
             "#gameHud .identity#one .name"
-        )!.textContent = this._gameData.players.one.name
+        )!.textContent = this._currentData.players.one.name
         this._gameContainer.querySelector(
             "#gameHud .identity#one .score"
-        )!.textContent = String(this._gameData.players.one.score)
+        )!.textContent = String(this._currentData.players.one.score)
         this._gameContainer.querySelector(
             "#gameHud .identity#two .name"
-        )!.textContent = this._gameData.players.two.name
+        )!.textContent = this._currentData.players.two.name
         this._gameContainer.querySelector(
             "#gameHud .identity#two .score"
-        )!.textContent = String(this._gameData.players.two.score)
+        )!.textContent = String(this._currentData.players.two.score)
     }
 
     socketEvents(event: string, data: any) {
         switch (event) {
             case "game.syncData":
-                this._gameData = data
+                this._currentData = data
                 this.syncSimulation()
                 break
 
