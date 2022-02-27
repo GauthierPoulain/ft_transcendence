@@ -2,77 +2,82 @@ import Topbar from "../../components/topbar/Topbar"
 import Pong from "../../components/Pong/Pong"
 import React from "react"
 import { Link } from "react-router-dom"
-import "./home.scss"
 import { Button, Table, OverlayTrigger, Tooltip } from "react-bootstrap"
 import { Visibility } from "@material-ui/icons"
+import "./home.scss"
 
-function RunningMatches()
-{
+function RunningMatches() {
     return (
-		<>
-		<h1 className="mb-2 ms-2 game-title">Matches in progress</h1>
-		<Table striped bordered hover variant="dark">
-            <thead>
-                <tr>
-                    <th>Player1</th>
-                    <th>Player2</th>
-					<th>Score</th>
-                    <th>View</th>
-                </tr>
-            </thead>
-			<tbody>
-				<tr>
-					<td>
-						<img
-                        	className="player-logo me-4"
-                        	src="/assets/42.jpg"
-                        	alt=""
-                        />
-						Pouic
-					</td>
-					<td>
-						<img
-                        	className="player-logo me-4"
-                        	src="/assets/42.jpg"
-                        	alt=""
-                        />
-						Pouet
-					</td>
-					<td>4 - 2</td>
-					<td>
-						<OverlayTrigger placement="right" overlay={<Tooltip>View Match</Tooltip>}>
-							<Visibility className="game-view"/>
-						</OverlayTrigger>
-					</td>
-				</tr>
+        <>
+            <h1 className="mb-2 ms-2 game-title">Matches in progress</h1>
+            <Table striped bordered hover variant="dark">
+                <thead>
+                    <tr>
+                        <th>Player1</th>
+                        <th>Player2</th>
+                        <th>Score</th>
+                        <th>View</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <img
+                                className="player-logo me-4"
+                                src="/assets/42.jpg"
+                                alt=""
+                            />
+                            Pouic
+                        </td>
+                        <td>
+                            <img
+                                className="player-logo me-4"
+                                src="/assets/42.jpg"
+                                alt=""
+                            />
+                            Pouet
+                        </td>
+                        <td>4 - 2</td>
+                        <td>
+                            <OverlayTrigger
+                                placement="right"
+                                overlay={<Tooltip>View Match</Tooltip>}
+                            >
+                                <Visibility className="game-view" />
+                            </OverlayTrigger>
+                        </td>
+                    </tr>
 
-				<tr>
-					<td>
-						<img
-                        	className="player-logo me-4"
-                        	src="/assets/42.jpg"
-                        	alt=""
-                        />
-						Pouic
-					</td>
-					<td>
-						<img
-                        	className="player-logo me-4"
-                        	src="/assets/42.jpg"
-                        	alt=""
-                        />
-						Pouet
-					</td>
-					<td>4 - 2</td>
-					<td>
-						<OverlayTrigger placement="right" overlay={<Tooltip>View Match</Tooltip>}>
-							<Visibility className="game-view"/>
-						</OverlayTrigger>
-					</td>
-				</tr>
-			</tbody>
-        </Table>
-		</>
+                    <tr>
+                        <td>
+                            <img
+                                className="player-logo me-4"
+                                src="/assets/42.jpg"
+                                alt=""
+                            />
+                            Pouic
+                        </td>
+                        <td>
+                            <img
+                                className="player-logo me-4"
+                                src="/assets/42.jpg"
+                                alt=""
+                            />
+                            Pouet
+                        </td>
+                        <td>4 - 2</td>
+                        <td>
+                            <OverlayTrigger
+                                placement="right"
+                                overlay={<Tooltip>View Match</Tooltip>}
+                            >
+                                <Visibility className="game-view" />
+                            </OverlayTrigger>
+                        </td>
+                    </tr>
+                </tbody>
+            </Table>
+        </>
     )
 }
 
@@ -87,15 +92,19 @@ function Home() {
                 </div>
             </div>
             <div className="d-flex justify-content-center">
-                <Button className="play-button p-2" size="lg" variant="warning">
-                    <Link className="text" to="/game">
-                        PLAY
-                    </Link>
-                </Button>
+                <Link to="/game">
+                    <Button
+                        className="play-button p-2"
+                        size="lg"
+                        variant="warning"
+                    >
+                        <p>JVEU GAME</p>
+                    </Button>
+                </Link>
             </div>
-			<div className="mt-5">
-            	<RunningMatches />
-			</div>
+            <div className="mt-5">
+                <RunningMatches />
+            </div>
         </React.Fragment>
     )
 }
