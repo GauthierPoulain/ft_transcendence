@@ -260,9 +260,8 @@ export default class Game {
                 this._keyPressed.get("ArrowLeft") &&
                 !this._keyPressed.get("ArrowRight")
             ) {
-                this._currentData.players[this._whoAmI!].x +=
-                    (this._whoAmI == "one" ? -10 : 10) * delta
-                let tmpX = this._currentData.players[this._whoAmI!].x
+                let tmpX = (this._currentData.players[this._whoAmI!].x +=
+                    (this._whoAmI == "one" ? -10 : 10) * delta)
                 this._wsEmit("game.playerMove", {
                     x: tmpX,
                     time: Date.now(),
@@ -272,9 +271,8 @@ export default class Game {
                 this._keyPressed.get("ArrowRight") &&
                 !this._keyPressed.get("ArrowLeft")
             ) {
-                this._currentData.players[this._whoAmI!].x +=
-                    (this._whoAmI == "one" ? 10 : -10) * delta
-                let tmpX = this._currentData.players[this._whoAmI!].x
+                let tmpX = (this._currentData.players[this._whoAmI!].x +=
+                    (this._whoAmI == "one" ? 10 : -10) * delta)
                 this._wsEmit("game.playerMove", {
                     x: tmpX,
                     time: Date.now(),
@@ -661,7 +659,11 @@ export default class Game {
         switch (event) {
             case "game.syncData":
                 if (this._lastTime < data.time) {
-                    this._currentData = data.data
+                    this._currentData.quoit = data.data.quoit
+                    if (this._whoAmI != "one" || data.force)
+                        this._currentData.players.one = data.data.players.one
+                    if (this._whoAmI != "two" || data.force)
+                        this._currentData.players.two = data.data.players.two
                     this.syncMeshs()
                     this._lastTime = data.time
                 }

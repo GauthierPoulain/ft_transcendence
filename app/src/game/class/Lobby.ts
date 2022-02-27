@@ -105,6 +105,7 @@ export default class Lobby {
         this._simData.sendInterval = setInterval(() => {
             this.sendData()
         }, 1000 / 144)
+        this.sendData(true)
     }
 
     joinSpec(socket: WebSocket) {
@@ -236,10 +237,11 @@ export default class Lobby {
         }
     }
 
-    sendData() {
+    sendData(force: boolean = false) {
         this.broadcast("game.syncData", {
             data: this._currentData,
             time: Date.now(),
+            force: force,
         })
     }
 
