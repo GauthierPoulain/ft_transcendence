@@ -248,10 +248,12 @@ export default class Game {
         if (!this._simData.running) return
         try {
             const delta = (Date.now() - this._simData.last) / 1000
-            // const quoit = this._engine.objects.get("quoit") as THREE.Mesh
-
+            this.syncMeshs()
+            const quoit = this._engine.objects.get("quoit") as THREE.Mesh
             const wallP = this._engine.objects.get("map_border1") as THREE.Mesh
             const wallN = this._engine.objects.get("map_border2") as THREE.Mesh
+            const playerP = this._engine.objects.get("player1") as THREE.Mesh
+            const playerN = this._engine.objects.get("player2") as THREE.Mesh
 
             if (this._whoAmI == "one" || this._whoAmI == "two") {
                 const player = this._engine.objects.get(
@@ -297,13 +299,69 @@ export default class Game {
                     }
                 }
             }
+            {
+                if (
+                    collisionBoxCyl(
+                        playerP,
+                        quoit,
+                        this._currentData.quoit.radius
+                    )
+                ) {
+                    this._currentData.quoit.speed.z = -Math.abs(
+                        this._currentData.quoit.speed.z
+                    )
+                    let xSpeed = -(
+                        this._currentData.players.one.x -
+                        this._currentData.quoit.x
+                    )
+                    this._currentData.quoit.speed.x +=
+                        xSpeed * this._currentData.quoit.speed.xM
+                } else if (
+                    collisionBoxCyl(
+                        playerN,
+                        quoit,
+                        this._currentData.quoit.radius
+                    )
+                ) {
+                    this._currentData.quoit.speed.z = Math.abs(
+                        this._currentData.quoit.speed.z
+                    )
+                    let xSpeed = -(
+                        this._currentData.players.two.x -
+                        this._currentData.quoit.x
+                    )
+                    this._currentData.quoit.speed.x +=
+                        xSpeed * this._currentData.quoit.speed.xM
+                }
 
-            // {
-            //     if (quoit.position.z > this._map.depth / 2)
-            //         this.playerScore(this._gameData.players.two)
-            //     else if (quoit.position.z < -(this._map.depth / 2))
-            //         this.playerScore(this._gameData.players.one)
-            // }
+                if (
+                    collisionBoxCyl(
+                        wallP,
+                        quoit,
+                        this._currentData.quoit.radius
+                    )
+                ) {
+                    this._currentData.quoit.speed.x = -Math.abs(
+                        this._currentData.quoit.speed.x
+                    )
+                } else if (
+                    collisionBoxCyl(
+                        wallN,
+                        quoit,
+                        this._currentData.quoit.radius
+                    )
+                ) {
+                    this._currentData.quoit.speed.x = Math.abs(
+                        this._currentData.quoit.speed.x
+                    )
+                }
+            }
+            {
+                this._currentData.quoit.x +=
+                    this._currentData.quoit.speed.x * delta
+                this._currentData.quoit.z +=
+                    this._currentData.quoit.speed.z * delta
+            }
 
             this._simData.last = Date.now()
         } catch (error) {
@@ -636,25 +694,29 @@ export default class Game {
         switch (event) {
             case "game.syncData":
                 if (this._lastTime < data.time) {
-                    this._currentData.quoit = data.data.quoit
-                    if (
-                        this._whoAmI != "one" ||
-                        data.force ||
-                        Math.abs(
-                            data.data.players.one.x -
-                                this._currentData.players.one.x
-                        ) > 0.5
-                    )
-                        this._currentData.players.one = data.data.players.one
-                    if (
-                        this._whoAmI != "two" ||
-                        data.force ||
-                        Math.abs(
-                            data.data.players.two.x -
-                                this._currentData.players.two.x
-                        ) > 0.5
-                    )
-                        this._currentData.players.two = data.data.players.two
+                    if (data.force) {
+                        this._currentData = data.data
+                    } else {
+                        this._currentData.quoit = data.data.quoit
+                        if (
+                            this._whoAmI != "one" ||
+                            Math.abs(
+                                data.data.players.one.x -
+                                    this._currentData.players.one.x
+                            ) > 0.5
+                        )
+                            this._currentData.players.one =
+                                data.data.players.one
+                        if (
+                            this._whoAmI != "two" ||
+                            Math.abs(
+                                data.data.players.two.x -
+                                    this._currentData.players.two.x
+                            ) > 0.5
+                        )
+                            this._currentData.players.two =
+                                data.data.players.two
+                    }
                     this.syncMeshs()
                     this._lastTime = data.time
                 }

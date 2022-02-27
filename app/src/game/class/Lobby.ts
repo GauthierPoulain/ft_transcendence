@@ -104,7 +104,7 @@ export default class Lobby {
         }, 1)
         this._simData.sendInterval = setInterval(() => {
             this.sendData()
-        }, 1000 / 144)
+        }, 1000 / 60)
         this.sendData(true)
     }
 
@@ -134,18 +134,9 @@ export default class Lobby {
                 this._currentData.players[player].meshName
             ) as THREE.Mesh
             const dir = this._currentData.players[player].x - data.x
-
             if (
-                (dir < 0 &&
-                    !collisionBoxBox(
-                        meshPlayer,
-                        player == "one" ? wallN : wallP
-                    )) ||
-                (dir > 0 &&
-                    !collisionBoxBox(
-                        meshPlayer,
-                        player == "one" ? wallP : wallN
-                    ))
+                (dir < 0 && !collisionBoxBox(meshPlayer, wallP)) ||
+                (dir > 0 && !collisionBoxBox(meshPlayer, wallN))
             ) {
                 this._currentData.players[player].x = data.x
             }
@@ -175,14 +166,10 @@ export default class Lobby {
         if (!this._simData.running) return
         try {
             const delta = (Date.now() - this._simData.last) / 1000
-
             this.syncMeshs()
-
             const quoit = this._engine.objects.get("quoit") as THREE.Mesh
-
             const wallP = this._engine.objects.get("map_border1") as THREE.Mesh
             const wallN = this._engine.objects.get("map_border2") as THREE.Mesh
-
             const playerP = this._engine.objects.get("player1") as THREE.Mesh
             const playerN = this._engine.objects.get("player2") as THREE.Mesh
             {
