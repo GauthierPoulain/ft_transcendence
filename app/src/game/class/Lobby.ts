@@ -127,7 +127,29 @@ export default class Lobby {
 
     movePlayer(player: string, data: any) {
         if (this._currentData.players[player].last < data.time) {
-            this._currentData.players[player].x = data.x
+            this.syncMeshs()
+            const wallP = this._engine.objects.get("map_border1") as THREE.Mesh
+            const wallN = this._engine.objects.get("map_border2") as THREE.Mesh
+            const meshPlayer = this._engine.objects.get(
+                this._currentData.players[player].meshName
+            ) as THREE.Mesh
+            const dir = this._currentData.players[player].x - data.x
+
+            if (
+                (dir < 0 &&
+                    !collisionBoxBox(
+                        meshPlayer,
+                        player == "one" ? wallN : wallP
+                    )) ||
+                (dir > 0 &&
+                    !collisionBoxBox(
+                        meshPlayer,
+                        player == "one" ? wallP : wallN
+                    ))
+            ) {
+                this._currentData.players[player].x = data.x
+            }
+
             this._currentData.players[player].last = data.time
         }
     }
