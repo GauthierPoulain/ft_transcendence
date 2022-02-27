@@ -8,8 +8,11 @@ export function setAccessToken(token: string) {
     accessToken = token
 }
 
-const apiurl = (url: string) =>
-    `http://${document.location.hostname}:3005/api${url}`
+const apiurl = (url: string) => {
+    if (process.env["NODE_ENV"] == "production")
+        return `http://${document.location.hostname}/api${url}`
+    else return `http://${document.location.hostname}:3005/api${url}`
+}
 
 export const fetcher = async (
     url: string,

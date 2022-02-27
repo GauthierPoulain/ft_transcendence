@@ -30,7 +30,10 @@ import { Member } from "./members/member.entity"
         TypeOrmModule.forRoot({
             // TODO: Make them configurable.
             type: "postgres",
-            host: "localhost",
+            host:
+                process.env["NODE_ENV"] == "production"
+                    ? "db"
+                    : "localhost",
             port: 5432,
             username: "postgres",
             password: "postgres",

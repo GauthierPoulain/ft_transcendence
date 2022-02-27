@@ -17,6 +17,12 @@ type State = {
     }
 }
 
+const wsurl = () => {
+    if (process.env["NODE_ENV"] == "production")
+        return `ws://${document.location.hostname}/ws`
+    else return `ws://${document.location.hostname}:3005`
+}
+
 const Context = createContext<State>({} as State)
 
 export function WebsocketProvider({ children }) {
@@ -28,7 +34,7 @@ export function WebsocketProvider({ children }) {
         sendMessage: send,
         readyState,
         lastJsonMessage,
-    } = useInner(`ws://${document.location.hostname}:3005`, {
+    } = useInner(wsurl(), {
         async onMessage(message) {
             const { event, data } = JSON.parse(message.data)
 
