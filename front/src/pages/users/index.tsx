@@ -4,6 +4,8 @@ import { Edit } from "@material-ui/icons"
 import useUser from "../../data/use-user"
 import { useAuth } from "../../data/use-auth"
 import UserAvatar from "../../components/user/UserAvatar"
+import { PersonAdd, PersonAddDisabled } from "@material-ui/icons"
+import { useState } from "react"
 
 function Banner() {
     const { userId } = useParams()
@@ -47,6 +49,28 @@ function Navigation() {
     const isCurrentUser =
         auth.connected && auth.userId === parseInt(userId as string)
 
+    const [follow, setFollow] = useState(false)
+    
+
+
+    function Follow()
+    {
+        if (follow)
+        {
+            return (
+                <div className="btn btn-danger btn-lg rounded-0" onClick={() => setFollow(!follow)}>
+                    <PersonAddDisabled />
+                </div>
+            )
+        }
+
+        return (
+            <div className="btn btn-success btn-lg rounded-0" onClick={() => setFollow(!follow)}>
+                <PersonAdd />
+            </div>
+        )
+    }
+
     return (
         <div className="btn-group mb-3">
             <Link
@@ -78,6 +102,9 @@ function Navigation() {
                 >
                     <Edit />
                 </Link>
+            )}
+            {!isCurrentUser && (
+                Follow()
             )}
         </div>
     )
