@@ -26,18 +26,58 @@ export default function Achivements() {
             <div className="d-flex flex-wrap">
                 <Achievement
                     title="pong rookie"
-                    desc="win your first match"
+                    desc="Win your first match"
                     logo="/assets/achievements-bronze.png"
                 />
                 <Achievement
                     title="pong challenger"
-                    desc="win 5 matches"
+                    desc="Win 5 matches"
                     logo="/assets/achievements-silver.png"
                 />
                 <Achievement
                     title="pong master"
-                    desc="win 20 matches"
+                    desc="Win 20 matches"
                     logo="/assets/achievements-gold.png"
+                />
+                <Achievement
+                    title="Speaker"
+                    desc="Join a channel"
+                    logo="/assets/achievements-bronze.png"
+                />
+                <Achievement
+                    title="Owner"
+                    desc="Create a channel"
+                    logo="/assets/achievements-silver.png"
+                />
+                <Achievement
+                    title="Hey my friend !"
+                    desc="Follow your first friend"
+                    logo="/assets/achievements-bronze.png"
+                />
+                <Achievement
+                    title="Relationship !"
+                    desc="Follow 5 persons"
+                    logo="/assets/achievements-silver.png"
+                />
+                <Achievement
+                    title="Top 1"
+                    desc="You are the best player"
+                    logo="/assets/achievements-gold.png"
+                />
+                <Achievement
+                    title="I'm your father"
+                    desc="Perfect a game match"
+                    logo="/assets/achievements-gold.png"
+                />
+                <Achievement
+                    title="My name is..."
+                    desc="Change your nickname"
+                    logo="/assets/achievements-bronze.png"
+                />
+                <Achievement
+                    title="Better than that"
+                    desc="Change your PP"
+                    logo="/assets/achievements-bronze.png"
                 />
             </div>
         </Container>
