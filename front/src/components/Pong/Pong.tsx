@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef } from "react"
 import Game from "./game"
 import "./pong.css"
 import { useWebSocket } from "../../data/use-websocket"

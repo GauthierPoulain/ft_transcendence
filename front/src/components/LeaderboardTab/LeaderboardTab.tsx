@@ -1,5 +1,5 @@
 import "./style.css"
-import React, { Component } from "react"
+import React from "react"
 import { Table } from "react-bootstrap"
 
 class LeaderboardTab extends React.Component {

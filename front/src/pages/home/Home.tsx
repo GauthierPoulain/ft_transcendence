@@ -1,5 +1,3 @@
-import Topbar from "../../components/topbar/Topbar"
-import Pong from "../../components/Pong/Pong"
 import React from "react"
 import { Link } from "react-router-dom"
 import { Button, Table, OverlayTrigger, Tooltip } from "react-bootstrap"

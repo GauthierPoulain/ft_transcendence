@@ -38,13 +38,13 @@ function LoginIntra({ code }: { code: string }) {
             .catch(() => {
                 setState(1)
             })
-    }, [])
+    }, [auth, code])
 
-    if (state == 1) {
+    if (state === 1) {
         return <p>An errror during login occured...</p>
     }
 
-    if (state == 2) {
+    if (state === 2) {
         return <Navigate to="/" replace />
     }
 
@@ -69,13 +69,13 @@ function LoginFake({ user }) {
         return () => {
             console.log("unmounted")
         }
-    }, [])
+    }, [auth, user])
 
-    if (state == 1) {
+    if (state === 1) {
         return <p>An errror during login occured...</p>
     }
 
-    if (state == 2) {
+    if (state === 2) {
         return <Navigate to="/" replace />
     }
 

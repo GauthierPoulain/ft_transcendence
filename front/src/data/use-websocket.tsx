@@ -1,8 +1,5 @@
 import { createContext, useContext, useState } from "react"
 import useInner, { ReadyState } from "react-use-websocket"
-import { mutate } from "swr"
-import { Membership } from "./use-member"
-import { useAuth } from "./use-auth"
 
 type State = {
     sendMessage: (event: string, data: any) => void
@@ -18,7 +15,7 @@ type State = {
 }
 
 const wsurl = () => {
-    if (process.env["NODE_ENV"] == "production")
+    if (process.env["NODE_ENV"] === "production")
         return `ws://${document.location.hostname}/ws`
     else return `ws://${document.location.hostname}:3005`
 }
@@ -26,8 +23,6 @@ const wsurl = () => {
 const Context = createContext<State>({} as State)
 
 export function WebsocketProvider({ children }) {
-    const auth = useAuth()
-
     const [handlers, setHandlers] = useState(new Map())
 
     const {

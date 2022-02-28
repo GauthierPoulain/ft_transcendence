@@ -1,4 +1,4 @@
-import useFetch, { fetcher, useSubmit } from "./use-fetch"
+import { fetcher, useSubmit } from "./use-fetch"
 
 export type Membership = {
     id: number
@@ -36,7 +36,7 @@ export function useRemoveMember() {
 
 export type UpdateMemberRequest = {
     id: number
-    action: "mute" | "unmute" | "promote" | "demote",
+    action: "mute" | "unmute" | "promote" | "demote"
 }
 
 export function useUpdateMember() {
@@ -45,7 +45,7 @@ export function useUpdateMember() {
             `/members/${id}`,
             {
                 method: "PUT",
-                body: JSON.stringify({ action })
+                body: JSON.stringify({ action }),
             },
             false
         )

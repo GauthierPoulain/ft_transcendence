@@ -179,8 +179,8 @@ export default class Game {
     }
 
     setReady({ engine, ws }: { engine?: boolean; ws?: boolean }) {
-        if (engine != undefined) this._engineReady = engine
-        if (ws != undefined) this._wsReady = ws
+        if (engine !== undefined) this._engineReady = engine
+        if (ws !== undefined) this._wsReady = ws
         if (this._engineReady && this._wsReady) {
             this._wsEmit("game.ready", null)
         }
@@ -204,7 +204,7 @@ export default class Game {
     }
 
     currentPlayer(): Player | null {
-        if (this._whoAmI == "one" || this._whoAmI == "two")
+        if (this._whoAmI === "one" || this._whoAmI === "two")
             return this._currentData.players[this._whoAmI]
         return null
     }
@@ -255,7 +255,7 @@ export default class Game {
             const playerP = this._engine.objects.get("player1") as THREE.Mesh
             const playerN = this._engine.objects.get("player2") as THREE.Mesh
 
-            if (this._whoAmI == "one" || this._whoAmI == "two") {
+            if (this._whoAmI === "one" || this._whoAmI === "two") {
                 const player = this._engine.objects.get(
                     this._currentData.players[this._whoAmI!].meshName
                 ) as THREE.Mesh
@@ -267,12 +267,12 @@ export default class Game {
                     if (
                         !collisionBoxBox(
                             player,
-                            this._whoAmI == "one" ? wallN : wallP
+                            this._whoAmI === "one" ? wallN : wallP
                         )
                     ) {
                         let tmpX = (this._currentData.players[
                             this._whoAmI!
-                        ].x += (this._whoAmI == "one" ? -10 : 10) * delta)
+                        ].x += (this._whoAmI === "one" ? -10 : 10) * delta)
                         this._wsEmit("game.playerMove", {
                             x: tmpX,
                             time: Date.now(),
@@ -286,12 +286,12 @@ export default class Game {
                     if (
                         !collisionBoxBox(
                             player,
-                            this._whoAmI == "one" ? wallP : wallN
+                            this._whoAmI === "one" ? wallP : wallN
                         )
                     ) {
                         let tmpX = (this._currentData.players[
                             this._whoAmI!
-                        ].x += (this._whoAmI == "one" ? 10 : -10) * delta)
+                        ].x += (this._whoAmI === "one" ? 10 : -10) * delta)
                         this._wsEmit("game.playerMove", {
                             x: tmpX,
                             time: Date.now(),
@@ -631,7 +631,7 @@ export default class Game {
     playerScore(winner: Player) {
         this.stopSimulation()
         var looser =
-            winner == this._currentData.players.one
+            winner === this._currentData.players.one
                 ? this._currentData.players.two
                 : this._currentData.players.one
         const clip = this._engine.animationActions.get(
@@ -640,7 +640,7 @@ export default class Game {
         clip?.reset()
         clip?.play()
         this.gameAlert(
-            winner.name == this.currentPlayer()?.name
+            winner.name === this.currentPlayer()?.name
                 ? "You have scored"
                 : winner.name + " has scored"
         )
@@ -699,7 +699,7 @@ export default class Game {
                     } else {
                         this._currentData.quoit = data.data.quoit
                         if (
-                            this._whoAmI != "one" ||
+                            this._whoAmI !== "one" ||
                             Math.abs(
                                 data.data.players.one.x -
                                     this._currentData.players.one.x
@@ -708,7 +708,7 @@ export default class Game {
                             this._currentData.players.one =
                                 data.data.players.one
                         if (
-                            this._whoAmI != "two" ||
+                            this._whoAmI !== "two" ||
                             Math.abs(
                                 data.data.players.two.x -
                                     this._currentData.players.two.x
@@ -724,8 +724,8 @@ export default class Game {
 
             case "game.youAre":
                 this._whoAmI = data
-                if (data == "one") this._engine.camera.position.set(0, 10, 25)
-                else if (data == "two")
+                if (data === "one") this._engine.camera.position.set(0, 10, 25)
+                else if (data === "two")
                     this._engine.camera.position.set(0, 10, -25)
                 this._engine.camera.lookAt(0, 0, 0)
                 break
