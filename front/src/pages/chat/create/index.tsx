@@ -1,12 +1,11 @@
 import { useState } from "react"
 import { Button, Form } from "react-bootstrap"
-import { useSWRConfig } from "swr"
+import { useNavigate } from "react-router-dom"
 import { createChannel } from "../../../data/channels"
 import "./channelcreate.scss"
 
 export default function ChannelCreate() {
-    const { mutate } = useSWRConfig()
-
+    const navigate = useNavigate();
     const [name, setName] = useState("")
     const [joinable, setJoinable] = useState(false)
     const [password, setPassword] = useState("")
@@ -16,9 +15,7 @@ export default function ChannelCreate() {
 
         const channel = await createChannel({ name, joinable, password })
 
-        mutate(`/channels/${channel.id}`, channel)
-        mutate("/channels/joined")
-        mutate("/channels")
+        navigate(`/chat/room/${channel.id}`, { replace: true })
     }
 
     return (

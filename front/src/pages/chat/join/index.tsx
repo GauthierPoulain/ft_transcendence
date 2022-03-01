@@ -2,12 +2,10 @@ import { useState } from "react"
 import "./chatjoin.scss"
 import { useJoinChannel, useChannels } from "../../../data/channels"
 import { useJoinedChannels } from "../../../data/joined-channels"
-import { useSWRConfig } from "swr"
 import { useNavigate } from "react-router-dom"
 import { Button, Card, Form, InputGroup } from "react-bootstrap"
 
 function JoinPublic({ channel }) {
-    const { mutate } = useSWRConfig()
     const navigate = useNavigate()
     const { submit, isError, isLoading } = useJoinChannel()
 
@@ -25,7 +23,6 @@ function JoinPublic({ channel }) {
 
     async function join() {
         await submit({ channelId: channel.id, password: "" })
-        mutate("/channels/joined")
         navigate(`/chat/room/${channel.id}`, { replace: true })
     }
 
@@ -37,7 +34,6 @@ function JoinPublic({ channel }) {
 }
 
 function JoinProtected({ channel }) {
-    const { mutate } = useSWRConfig()
     const navigate = useNavigate()
     const { submit, isError, isLoading } = useJoinChannel()
     const [password, setPassword] = useState("")
@@ -51,7 +47,6 @@ function JoinProtected({ channel }) {
 
         await submit({ channelId: channel.id, password })
 
-        mutate("/channels/joined")
         navigate(`/chat/room/${channel.id}`, { replace: true })
     }
 
