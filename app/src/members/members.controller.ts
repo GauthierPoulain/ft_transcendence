@@ -16,7 +16,7 @@ import { CurrentUser, CurrentUserId } from "src/users/user.decorator"
 import { MembersService } from "./members.service"
 import { CreateMemberDto, UpdateMemberAction, UpdateMemberDto } from "./members.dto"
 import { ChannelsService } from "src/channels/channels.service"
-import { Member, Role } from "./member.entity"
+import { Member, Role, roleIsLess } from "./member.entity"
 
 @Controller("members")
 export class MembersController {
@@ -112,8 +112,8 @@ export class MembersController {
             throw new NotFoundException()
         }
 
-        // If the user is kicking someone which is an admin or without admin rights
-        if (target.id !== current.id && (target.isAdmin || !current.isAdmin)) {
+        // If the user is kicking someone with a higher rank
+        if (target.id !== current.id && roleIsLess(current.role, target.role)) {
             throw new UnauthorizedException()
         }
 

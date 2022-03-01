@@ -26,6 +26,10 @@ export function roleRank(role: Role): number {
     return roles[role]
 }
 
+export function roleIsLess(first: Role, second: Role): boolean {
+    return roleRank(first) < roleRank(second)
+}
+
 @Entity()
 export class Member {
     @PrimaryGeneratedColumn()
