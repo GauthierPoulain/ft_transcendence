@@ -41,21 +41,17 @@ export function useRemoveMessage() {
     )
 }
 
-type ProviderSettings = {
-    channelId: number
-}
-
 const repository = createRepository<Message>()
 
-const service = createService<Message, ProviderSettings>({
+const service = createService<Message, number>({
     name: "messages",
     repository,
 
-    fetcher({ channelId }) {
+    fetcher(channelId) {
         return fetcher(`/channels/${channelId}/messages`)
     },
 
-    onCreated(data, setState, { channelId }) {
+    onCreated(data, setState, channelId) {
         if (data.channelId === channelId) {
             setState((state) => repository.addOne(state, data))
         }

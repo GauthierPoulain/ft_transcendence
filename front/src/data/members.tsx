@@ -6,19 +6,15 @@ import { createService } from "./service"
 
 const repository = createRepository<Membership>()
 
-type ProviderSettings = {
-    channelId: number
-}
-
-const service = createService<Membership, ProviderSettings>({
+const service = createService<Membership, number>({
     name: "members",
     repository,
 
-    fetcher({ channelId }) {
+    fetcher(channelId) {
         return fetcher(`/channels/${channelId}/members`)
     },
 
-    onCreated(data, setState, { channelId }) {
+    onCreated(data, setState, channelId) {
         if (data.channelId === channelId) {
             setState((state) => repository.addOne(state, data))
         }

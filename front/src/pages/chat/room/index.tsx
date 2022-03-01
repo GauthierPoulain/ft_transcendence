@@ -190,8 +190,8 @@ export default function RoomView() {
 
     return (
         <ErrorBoundary FallbackComponent={ErrorBox}>
-            <MembersProvider settings={{ channelId }}>
-                <MessagesProvider settings={{ channelId }}>
+            <MembersProvider settings={channelId}>
+                <MessagesProvider settings={channelId}>
                     <Inner channelId={channelId} />
                 </MessagesProvider>
             </MembersProvider>
