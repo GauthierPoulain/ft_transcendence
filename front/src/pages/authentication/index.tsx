@@ -101,10 +101,15 @@ function LoginButtons({ setState }) {
 }
 
 export function Page() {
+    const auth = useAuth()
     const query = useQuery()
     const code = query.get("code")
 
     const [state, setState] = useState(code ? 4 : 0)
+
+    if (auth.connected) {
+        return <Navigate to="/" replace />
+    }
 
     return (
         <div className="m-auto">
