@@ -3,11 +3,8 @@ import {
     Get,
     Post,
     Body,
-    Patch,
     Param,
-    Delete,
     UseGuards,
-    ClassSerializerInterceptor,
     UseInterceptors,
     NotFoundException,
     UnauthorizedException,
@@ -23,7 +20,6 @@ import { UpdateChannelDto } from "./dto/update-channel.dto"
 import { Channel } from "./entities/channel.entity"
 
 @Controller("channels")
-@UseInterceptors(ClassSerializerInterceptor)
 export class ChannelsController {
     constructor(
         private readonly channels: ChannelsService,

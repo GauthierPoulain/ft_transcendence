@@ -1,6 +1,5 @@
 import {
     Body,
-    ClassSerializerInterceptor,
     Controller,
     Delete,
     Get,
@@ -21,7 +20,6 @@ import { ChannelsService } from "../channels.service"
 import { MessagesService } from "./messages.service"
 
 @Controller("channels/:channelId/messages")
-@UseInterceptors(ClassSerializerInterceptor)
 export class MessagesController {
     constructor(
         private messages: MessagesService,
