@@ -49,7 +49,7 @@ type ServiceSettings<T, ProviderSettings> = {
 export function createService<T extends Entity, U>(
     serviceSettings: ServiceSettings<T, U>
 ): Service<T, U> {
-    const Context = createContext(undefined)
+    const Context = createContext<{ state: State<T>, loading: boolean }>(undefined as any)
 
     function Provider({ children, settings }: { settings: U; children: any }) {
         const { subscribe } = useWebSocket()

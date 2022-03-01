@@ -7,11 +7,7 @@ import { createService } from "./service"
 
 const repository = createRepository<Membership>()
 
-type ProviderSettings = {
-    userId: number
-}
-
-const service = createService<Membership, ProviderSettings>({
+const service = createService<Membership, number>({
     name: "members",
     repository,
 
@@ -19,7 +15,7 @@ const service = createService<Membership, ProviderSettings>({
         return fetcher("/members")
     },
 
-    onCreated(data, setState, { userId }) {
+    onCreated(data, setState, userId) {
         if (data.userId === userId) {
             setState((state) => repository.addOne(state, data))
         }

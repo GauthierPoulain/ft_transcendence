@@ -20,6 +20,7 @@ export class SocketsGateway
     }
 
     async handleConnection(socket: any) {
+        this.sockets.join(socket, "all")
         await this.emitter.emitAsync("socket.connection", { socket })
     }
 }

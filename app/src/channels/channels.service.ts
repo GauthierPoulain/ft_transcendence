@@ -1,5 +1,4 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common"
-import { OnEvent } from "@nestjs/event-emitter"
 import { InjectRepository } from "@nestjs/typeorm"
 import { hash } from "argon2"
 import { instanceToPlain } from "class-transformer"
@@ -60,12 +59,7 @@ export class ChannelsService {
         this.publish("removed", { id })
     }
 
-    @OnEvent("socket.auth")
-    onAuthenticate({ socket }) {
-        this.sockets.join(socket, "channels")
-    }
-
     private publish(event: string, data: any) {
-        this.sockets.publish(["channels"], `channels.${event}`, data)
+        this.sockets.publish(["all"], `channels.${event}`, data)
     }
 }

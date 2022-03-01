@@ -3,27 +3,32 @@ import { InjectRepository } from "@nestjs/typeorm"
 
 import { Repository } from "typeorm"
 
-import { publicUser, User } from "./entities/user.entity"
+import { User } from "./entities/user.entity"
 import { IntraInfosDto } from "./dto/intra_infos.dto"
 
 import * as tfa from "node-2fa"
+import { SocketsService } from "src/sockets/sockets.service"
+import { instanceToPlain } from "class-transformer"
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectRepository(User)
-        private usersRepository: Repository<User>
+        private usersRepository: Repository<User>,
+
+        private sockets: SocketsService
     ) {}
 
-    create(input: IntraInfosDto): Promise<User> {
-        const user = new User()
-
+    async create(input: IntraInfosDto): Promise<User> {
+        let user = new User()
         user.intra_id = input.id
         user.intra_login = input.login
         user.intra_image_url = input.image_url
+        user = await this.usersRepository.save(user)
 
-        console.log("user", user)
-        return this.usersRepository.save(user)
+        this.publish("created", instanceToPlain(user, {}))
+
+        return user
     }
 
     updateIntra(user: User, intra_user: IntraInfosDto) {
@@ -32,6 +37,10 @@ export class UsersService {
         user.intra_image_url = intra_user.image_url
 
         return this.usersRepository.save(user)
+    }
+
+    findMany(): Promise<User[]> {
+        return this.usersRepository.find();
     }
 
     find(id: number, relations = []): Promise<User> {
@@ -67,45 +76,11 @@ export class UsersService {
         return result != null && result.delta > -2
     }
 
-    use42Image(user: User) {
-        user.image_seed = ""
-        return this.usersRepository.save(user)
-    }
-
-    useIdenticon(user: User) {
-        user.image_seed = Math.floor(Math.random() * 0xffffff)
-            .toString(16)
-            .padEnd(6, "0")
-        return this.usersRepository.save(user)
-    }
-
-    getImage(user: User) {
-        if (user.image_seed == "") return user.intra_image_url
-        else
-            return `https://avatars.dicebear.com/api/identicon/${user.image_seed}.svg`
-    }
-
     user42Login(user: User) {
-        user.nickname = ""
         return this.usersRepository.save(user)
     }
 
-    userCustomNickname(user: User, nickname: string) {
-        user.nickname = nickname
-        return this.usersRepository.save(user)
-    }
-
-    getNickname(user: User) {
-        if (user.nickname == "") return user.intra_login
-        else return user.nickname
-    }
-
-    getPublicUser(user: User): publicUser {
-        return {
-            id: user.id,
-            intra_login: user.intra_login,
-            nickname: this.getNickname(user),
-            image: this.getImage(user),
-        }
+    private publish(event: string, data: any) {
+        this.sockets.publish(["all"], `users.${event}`, data)
     }
 }

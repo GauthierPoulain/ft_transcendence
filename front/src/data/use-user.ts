@@ -1,12 +1,5 @@
-import useFetch from "./use-fetch"
+import { useUser } from "./users"
 
-export type User = {
-    id: number
-    intra_login: string
-    nickname: string
-    image: string
-}
+export type { User } from "./users"
 
-export default function useUser(id: number): User {
-    return useFetch(`/users/${id}`)
-}
+export default useUser

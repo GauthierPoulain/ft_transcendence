@@ -2,11 +2,11 @@ import { Member } from "src/members/member.entity"
 import { Message } from "src/channels/messages/message.entity"
 import { Match } from "src/matches/match.entity"
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from "typeorm"
-import { Exclude } from "class-transformer"
+import { Exclude, Expose } from "class-transformer"
 import { Relation } from "src/relations/relation.entity"
 
 @Entity()
-class User {
+export class User {
     @PrimaryGeneratedColumn()
     id: number
 
@@ -22,11 +22,15 @@ class User {
     @Column({ default: "" })
     tfa_secret: string
 
-    @Column({ default: "" })
-    image_seed: string
+    @Expose()
+    get image(): string {
+        return this.intra_image_url
+    }
 
-    @Column({ default: "" })
-    nickname: string
+    @Expose()
+    get nickname(): string {
+        return this.intra_login
+    }
 
     @Exclude()
     @OneToMany(() => Member, (member) => member.user)
@@ -52,12 +56,3 @@ class User {
     @ManyToOne(() => Relation, (relation) => relation.target)
     _relations_target: Relation[]
 }
-
-interface publicUser {
-    id: number
-    intra_login: string
-    nickname: string
-    image: string
-}
-
-export { User, publicUser }

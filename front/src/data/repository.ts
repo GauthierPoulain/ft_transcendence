@@ -58,5 +58,5 @@ export const createRepository = <T extends Entity>(): Repository<T> => ({
     removeOne,
     initialState,
     selectById: (state, id) => state.get(id),
-    selectAll: (state) => [...state.values()],
+    selectAll: (state) => Array.from(state.values()),
 })

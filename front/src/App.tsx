@@ -8,6 +8,7 @@ import { setAccessToken } from "./data/use-fetch"
 import Loading from "./components/Loading"
 
 import Router from "./pages/Router"
+import { UsersProvider, useUsersLoading } from "./data/users"
 
 function RootProvider({ children }) {
     return (
@@ -45,6 +46,16 @@ function WebsocketTokenIssuer({ children }) {
     return children
 }
 
+function Thisisatest() {
+    const loading = useUsersLoading()
+
+    if (loading) {
+        return <p>Loading lol</p>
+    }
+
+    return <Router/>
+}
+
 export default function App() {
     return (
         <RootProvider>
@@ -55,7 +66,9 @@ export default function App() {
             >
                 <Suspense fallback={<p>No fallback so loading here :)</p>}>
                     <WebsocketTokenIssuer>
-                        <Router />
+                        <UsersProvider>
+                            <Thisisatest />
+                        </UsersProvider>
                     </WebsocketTokenIssuer>
                 </Suspense>
             </ErrorBoundary>

@@ -81,7 +81,7 @@ export default function Chat() {
 
     return (
         <ChannelsProvider>
-            <JoinedChannelsProvider settings={{ userId: auth.userId }}>
+            <JoinedChannelsProvider settings={auth.userId}>
                 <Inner />
             </JoinedChannelsProvider>
         </ChannelsProvider>
