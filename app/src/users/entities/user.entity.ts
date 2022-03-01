@@ -11,16 +11,15 @@ export class User {
     id: number
 
     @Column()
+    @Exclude()
     intra_id: number
 
     @Column()
     intra_login: string
 
     @Column()
+    @Exclude()
     intra_image_url: string
-
-    @Column({ default: "" })
-    tfa_secret: string
 
     @Expose()
     get image(): string {
@@ -31,6 +30,10 @@ export class User {
     get nickname(): string {
         return this.intra_login
     }
+
+    @Column({ default: "" })
+    @Exclude()
+    tfa_secret: string
 
     @Exclude()
     @OneToMany(() => Member, (member) => member.user)
