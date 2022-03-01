@@ -18,6 +18,8 @@ import { Match } from "./matches/match.entity"
 import { MatchesModule } from "./matches/matches.module"
 import { MembersModule } from "./members/members.module"
 import { Member } from "./members/member.entity"
+import { Relation } from "./relations/relation.entity"
+import { RelationsModule } from "./relations/relations.module"
 
 @Module({
     imports: [
@@ -42,7 +44,7 @@ import { Member } from "./members/member.entity"
             // TODO: This can destroy production data, so we may want to remove this in the future.
             synchronize: true,
 
-            entities: [User, Channel, Message, Member, Match],
+            entities: [User, Channel, Message, Member, Match, Relation],
         }),
         GameModule,
         UsersModule,
@@ -51,6 +53,7 @@ import { Member } from "./members/member.entity"
         SocketsModule,
         MatchesModule,
         MembersModule,
+        RelationsModule
     ],
     controllers: [AppController],
     providers: [AppService],
