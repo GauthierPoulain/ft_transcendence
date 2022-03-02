@@ -3,6 +3,8 @@ import { Button } from "react-bootstrap"
 import { Navigate, useLocation } from "react-router-dom"
 import { useAuth } from "../../data/use-auth"
 import { Link } from "react-router-dom"
+import "./style.scss"
+import { Form } from "react-bootstrap"
 
 const redirect_uri = new URL("/auth", window.location as any).toString()
 const authorize_uri = new URL("https://api.intra.42.fr/oauth/authorize")
@@ -101,6 +103,23 @@ function LoginButtons({ setState }) {
     )
 }
 
+function TwoFactorAuth() {
+    return (
+        <div className="d-flex align-items-center">
+            <div className="container auth-card mt-5 p-3">
+                <h1>Two factor auth</h1>
+                <Form className="code-input">
+                    <Form.Group className="mb-3">
+                        <Form.Label>Verification code</Form.Label>
+                        <Form.Control type="text" placeholder="6 digits code" />
+                    </Form.Group>
+                </Form>
+                <h3>Scan QRcode to continue authentication</h3>
+            </div>
+        </div>
+    )
+}
+
 export function Page() {
     const auth = useAuth()
     const query = useQuery()
@@ -114,15 +133,16 @@ export function Page() {
 
     return (
         <div className="m-auto">
-            <h1>Authentication</h1>
-            <Link to="/2fa">
-                Go to 2fa page (test)
-            </Link> <br /> <br />
-            {state === 0 && <LoginButtons setState={setState} />}
-            {state === 1 && <RedirectIntra />}
-            {state === 2 && <LoginFake user="one" />}
-            {state === 3 && <LoginFake user="two" />}
-            {state === 4 && <LoginIntra code={code as string} />}
+            <h1 className="text-center">Authentication</h1>
+            <div className="d-flex justify-content-center">
+                {state === 0 && <LoginButtons setState={setState} />}
+                {state === 1 && <RedirectIntra />}
+                {state === 2 && <LoginFake user="one" />}
+                {state === 3 && <LoginFake user="two" />}
+                {state === 4 && <LoginIntra code={code as string} />}
+            </div>
+
+            <TwoFactorAuth />
         </div>
     )
 }
