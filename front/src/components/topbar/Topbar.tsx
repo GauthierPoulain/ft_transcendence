@@ -5,12 +5,21 @@ import { Container, Nav, Navbar } from "react-bootstrap"
 import UserAvatar from "../user/UserAvatar"
 import "./topbar.scss"
 
+function Logout()
+{
+    window.location.reload();
+
+    return (
+        <></>
+    )
+}
+
 function Profile({ userId }) {
     const user = useUser(userId)
 
     return (
         <div className="d-flex">
-            <span className="m-auto nav-link logout-but">Logout</span>
+            <span className="m-auto nav-link logout-but" onClick={Logout}>Logout</span>
             <Link className="nav-link d-flex" to={`/users/${user.id}`}>
                 <span className="m-auto">Profile</span>
                 <UserAvatar userId={user.id} className="w-8 ms-2" />
