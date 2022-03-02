@@ -57,7 +57,6 @@ export class AuthService {
     }
 
     verify(token: string): Promise<TokenPayload> {
-        console.log("verifying token", token)
         return this.jwt.verifyAsync(token)
     }
 }
