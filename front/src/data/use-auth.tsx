@@ -15,8 +15,8 @@ export type ExchangeCodeResponse = {
 
 export type AuthState = {
     connected: boolean
-    token?: string
-    userId?: number
+    token: string
+    userId: number
 
     login: (request: ExchangeCodeRequest) => Promise<void>,
     logout: () => void,

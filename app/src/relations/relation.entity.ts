@@ -1,6 +1,6 @@
 import { Exclude } from "class-transformer";
 import { User } from "src/users/entities/user.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, RelationId } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
 
 export enum RelationKind {
     FRIEND = "friend",
@@ -13,14 +13,14 @@ export class Relation {
     id: number
 
     @Exclude()
-    @OneToMany(() => User, (user) => user._relations_current)
+    @ManyToOne(() => User, (user) => user._relations_current)
     current: User
 
     @RelationId((relation: Relation) => relation.current)
     currentId: User
 
     @Exclude()
-    @OneToMany(() => User, (user) => user._relations_target)
+    @ManyToOne(() => User, (user) => user._relations_target)
     target: User
 
     @RelationId((relation: Relation) => relation.target)

@@ -1,7 +1,6 @@
 import { useContext } from "react"
 import { createRepository } from "./repository"
 import { createService } from "./service"
-import { useAuth } from "./use-auth"
 import { fetcher } from "./use-fetch"
 
 export type Relation = {

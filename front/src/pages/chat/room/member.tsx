@@ -69,7 +69,7 @@ function CommonOptions({ member }) {
 function Options({ member }) {
     const auth = useAuth()
 
-    const current = useMemberByUser(auth.userId)
+    const current = useMemberByUser(auth.userId!)!
 
     if (current.id === member.id) {
         return null

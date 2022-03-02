@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 import { HttpError } from "../errors/HttpError"
 
-let accessToken: string | null = null
+let accessToken: string = ""
 
 export function setAccessToken(token: string) {
     accessToken = token

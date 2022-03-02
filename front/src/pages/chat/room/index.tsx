@@ -20,8 +20,8 @@ import Loading from "../../../components/Loading"
 
 function FormMessage({ channelId }) {
     const auth = useAuth()
-    const member = useMemberByUser(auth.userId)
-    const channel = useChannel(channelId)
+    const member = useMemberByUser(auth.userId!)!
+    const channel = useChannel(channelId)!
     const [content, setContent] = useState("")
     const { submit, isError, isLoading } = useCreateMessage()
     const muted = member.muted && member.role === "guest"
@@ -65,7 +65,7 @@ function FormMessage({ channelId }) {
 
 function PasswordMaintenance({ channelId }) {
     const auth = useAuth()
-    const channel = useChannel(channelId)
+    const channel = useChannel(channelId)!
 
     const members = useMembers()
 
@@ -124,7 +124,7 @@ function PasswordMaintenance({ channelId }) {
 
 function Main({ channelId }) {
     const auth = useAuth()
-    const channel = useChannel(channelId)
+    const channel = useChannel(channelId)!
     const members = useMembers()
 
     const { submit, isLoading } = useRemoveMember()
@@ -165,7 +165,7 @@ function Main({ channelId }) {
 function Inner({ channelId }) {
     const auth = useAuth()
     const loading = useMembersLoading()
-    const current = useMemberByUser(auth.userId)
+    const current = useMemberByUser(auth.userId!)
 
     if (loading) {
         return <Loading />

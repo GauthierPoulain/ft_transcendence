@@ -58,7 +58,7 @@ function GameRequestCard({ author }) {
 export default function Message({ message }: { message: MessageType }) {
     const auth = useAuth()
     const author = useUser(message.authorId)
-    const self = useMemberByUser(auth.userId)
+    const self = useMemberByUser(auth.userId!)!
 
     return (
         <div className="d-flex flex-column">

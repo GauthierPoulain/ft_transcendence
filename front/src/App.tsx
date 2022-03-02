@@ -9,7 +9,7 @@ import Loading from "./components/Loading"
 
 import Router from "./pages/Router"
 import { UsersProvider, useUsersLoading } from "./data/users"
-import { RelationsProvider, useRelations } from "./data/relations"
+import { RelationsProvider } from "./data/relations"
 
 function RootProvider({ children }) {
     return (
@@ -53,7 +53,7 @@ function Thisisatest() {
     }
 
     return (
-        <RelationsProvider value={auth.connected}>
+        <RelationsProvider settings={auth.connected}>
             <Router />
         </RelationsProvider>
     )
