@@ -18,6 +18,8 @@ import ProfileSettings from "./users/settings"
 import Users from "./users"
 import Game from "./game/game"
 
+import TwoFactorAuth from "./twoFactorAuth"
+
 function Layout() {
     return (
         <>
@@ -74,6 +76,7 @@ export default function Router() {
                     <Route path="settings" element={<ProfileSettings />} />
                 </Route>
                 <Route path="auth" element={<Authentication />} />
+                <Route path="2fa" element={<TwoFactorAuth />} />
                 <Route path="*" element={<Navigate to="/" />} />
             </Route>
         </Routes>

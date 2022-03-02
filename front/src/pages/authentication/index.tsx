@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { Button } from "react-bootstrap"
 import { Navigate, useLocation } from "react-router-dom"
 import { useAuth } from "../../data/use-auth"
+import { Link } from "react-router-dom"
 
 const redirect_uri = new URL("/auth", window.location as any).toString()
 const authorize_uri = new URL("https://api.intra.42.fr/oauth/authorize")
@@ -114,7 +115,9 @@ export function Page() {
     return (
         <div className="m-auto">
             <h1>Authentication</h1>
-
+            <Link to="/2fa">
+                Go to 2fa page (test)
+            </Link> <br /> <br />
             {state === 0 && <LoginButtons setState={setState} />}
             {state === 1 && <RedirectIntra />}
             {state === 2 && <LoginFake user="one" />}
