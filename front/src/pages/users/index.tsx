@@ -50,22 +50,24 @@ function Navigation() {
         auth.connected && auth.userId === parseInt(userId as string)
 
     const [follow, setFollow] = useState(false)
-    
 
-
-    function Follow()
-    {
-        if (follow)
-        {
+    function Follow() {
+        if (follow) {
             return (
-                <div className="btn btn-danger btn-lg rounded-0" onClick={() => setFollow(!follow)}>
+                <div
+                    className="btn btn-danger btn-lg rounded-0"
+                    onClick={() => setFollow(!follow)}
+                >
                     <PersonAddDisabled />
                 </div>
             )
         }
 
         return (
-            <div className="btn btn-success btn-lg rounded-0" onClick={() => setFollow(!follow)}>
+            <div
+                className="btn btn-success btn-lg rounded-0"
+                onClick={() => setFollow(!follow)}
+            >
                 <PersonAdd />
             </div>
         )
@@ -87,13 +89,15 @@ function Navigation() {
             >
                 Achievements
             </Link>
-            <Link
-                to="friends"
-                className="btn btn-dark btn-lg rounded-0"
-                replace
-            >
-                Friends
-            </Link>
+            {isCurrentUser && (
+                <Link
+                    to="friends"
+                    className="btn btn-dark btn-lg rounded-0"
+                    replace
+                >
+                    Friends
+                </Link>
+            )}
             {isCurrentUser && (
                 <Link
                     to="settings"
@@ -103,9 +107,7 @@ function Navigation() {
                     <Edit />
                 </Link>
             )}
-            {!isCurrentUser && (
-                Follow()
-            )}
+            {!isCurrentUser && Follow()}
         </div>
     )
 }
