@@ -1,8 +1,10 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { Button, Table, OverlayTrigger, Tooltip } from "react-bootstrap"
+import { Button, Table, OverlayTrigger, Tooltip, Container } from "react-bootstrap"
 import { Visibility } from "@material-ui/icons"
 import "./home.scss"
+import { useAuth } from "../../data/use-auth"
+import SectionFriends from "./friends"
 
 function RunningMatches() {
     return (
@@ -80,6 +82,8 @@ function RunningMatches() {
 }
 
 function Home() {
+    const auth = useAuth();
+
     return (
         <React.Fragment>
             <div className="container-fluid welcome-bar">
@@ -100,9 +104,10 @@ function Home() {
                     </Button>
                 </Link>
             </div>
-            <div className="mt-5">
+            { auth.connected && <SectionFriends /> }
+            <Container>
                 <RunningMatches />
-            </div>
+            </Container>
         </React.Fragment>
     )
 }

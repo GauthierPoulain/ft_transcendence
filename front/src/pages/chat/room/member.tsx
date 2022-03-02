@@ -7,6 +7,7 @@ import { Dropdown } from "react-bootstrap"
 import { MoreVert } from "@material-ui/icons"
 import { useMemberByUser } from "../../../data/members"
 import { useRemoveMember, useUpdateMember } from "../../../data/use-member"
+import { useIsBlocked, useIsFriend } from "../../../data/relations"
 
 function OwnerOptions({ member }) {
     const { submit: submitUpdate, isLoading: loadingUpdate } = useUpdateMember()
@@ -50,14 +51,15 @@ function AdminOptions({ member }) {
     )
 }
 
-function CommonOptions() {
+function CommonOptions({ member }) {
+    const isBlocked = useIsBlocked(member.userId)
+    const isFriend = useIsFriend(member.userId)
+
     return (
         <>
             <Dropdown.Header>Interaction</Dropdown.Header>
-            <Dropdown.Item>Block</Dropdown.Item>
-            <Dropdown.Item>Unblock</Dropdown.Item>
-            <Dropdown.Item>Follow</Dropdown.Item>
-            <Dropdown.Item>Unfollow</Dropdown.Item>
+            <Dropdown.Item>{ isBlocked ? "Unblock" : "Block" }</Dropdown.Item>
+            <Dropdown.Item>{ isFriend ? "Remove friend" : "Add friend" }</Dropdown.Item>
             <Dropdown.Item>Message</Dropdown.Item>
             <Dropdown.Item>Game Request</Dropdown.Item>
         </>
@@ -84,7 +86,7 @@ function Options({ member }) {
             <Dropdown.Menu variant="dark">
                 {current.role === "owner" && member.role !== "owner" && <OwnerOptions member={member} />}
                 {current.role === "admin" && member.role === "guest" && <AdminOptions member={member} />}
-                <CommonOptions />
+                <CommonOptions member={member} />
             </Dropdown.Menu>
         </Dropdown>
     )

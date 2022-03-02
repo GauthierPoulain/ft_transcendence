@@ -9,6 +9,7 @@ import Loading from "./components/Loading"
 
 import Router from "./pages/Router"
 import { UsersProvider, useUsersLoading } from "./data/users"
+import { RelationsProvider, useRelations } from "./data/relations"
 
 function RootProvider({ children }) {
     return (
@@ -45,12 +46,17 @@ function WebsocketTokenIssuer({ children }) {
 
 function Thisisatest() {
     const loading = useUsersLoading()
+    const auth = useAuth();
 
     if (loading) {
         return <p>Loading lol</p>
     }
 
-    return <Router/>
+    return (
+        <RelationsProvider value={auth.connected}>
+            <Router />
+        </RelationsProvider>
+    )
 }
 
 export default function App() {

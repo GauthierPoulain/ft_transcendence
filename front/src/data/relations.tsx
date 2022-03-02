@@ -1,5 +1,7 @@
+import { useContext } from "react"
 import { createRepository } from "./repository"
 import { createService } from "./service"
+import { useAuth } from "./use-auth"
 import { fetcher } from "./use-fetch"
 
 export type Relation = {
@@ -11,19 +13,43 @@ export type Relation = {
 
 const repository = createRepository<Relation>()
 
-const service = createService<Relation, void>({
+const service = createService<Relation, boolean>({
     name: "relations",
     repository,
 
-    fetcher() {
-        return fetcher("/relations")
+    fetcher(connected) {
+        return connected ? fetcher("/relations") : Promise.resolve([])
     },
 
-    onCreated(data, setState) {
-        setState((state) => repository.addOne(state, data))
+    onCreated(data, setState, connected) {
+        if (connected) {
+            setState((state) => repository.addOne(state, data))
+        }
     },
 
-    onRemoved(id, setState) {
-        setState((state) => repository.removeOne(state, id))
+    onRemoved(id, setState, connected) {
+        if (connected) {
+            setState((state) => repository.removeOne(state, id))
+        }
     }
 })
+
+export const RelationsProvider = service.Provider;
+
+export function useRelationsLoading(): boolean {
+    return useContext(service.Context).loading
+}
+
+export function useRelations(): Relation[] {
+    const { state } = useContext(service.Context);
+
+    return repository.selectAll(state)
+}
+
+export function useIsFriend(userId: number): boolean {
+    return useRelations().some(({ targetId, kind }) => kind === "friend" && targetId === userId)
+}
+
+export function useIsBlocked(userId: number): boolean {
+    return useRelations().some(({ targetId, kind }) => kind === "blocked" && targetId === userId)
+}
