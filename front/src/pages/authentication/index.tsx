@@ -114,7 +114,6 @@ function TwoFactorAuth() {
                         <Form.Control type="text" placeholder="6 digits code" />
                     </Form.Group>
                 </Form>
-                <h3>Scan QRcode to continue authentication</h3>
             </div>
         </div>
     )
