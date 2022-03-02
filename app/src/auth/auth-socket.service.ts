@@ -1,5 +1,4 @@
 import { Injectable } from "@nestjs/common"
-import { EventEmitter2 } from "@nestjs/event-emitter"
 import { WebSocket } from "ws"
 import { AuthService } from "./auth.service"
 
@@ -8,25 +7,21 @@ export class AuthSocketService {
     // Association between a socket and an user id
     private sockets: Map<WebSocket, number> = new Map()
 
-    constructor(private auth: AuthService, private emitter: EventEmitter2) {}
+    constructor(private auth: AuthService) {}
 
-    async login(socket: WebSocket, token: string): Promise<void> {
+    async login(socket: WebSocket, token: string): Promise<number> {
         const { sub } = await this.auth.verify(token)
 
         this.sockets.set(socket, sub)
-
-        await this.emitter.emitAsync("socket.auth", {
-            socket,
-            userId: sub,
-        })
+        return sub
     }
 
     logout(socket: WebSocket): void {
         this.sockets.delete(socket)
     }
 
-    isConnected(userId: number): boolean {
-        return [...this.sockets.values()].some((id) => id === userId)
+    isConnected(socket: WebSocket): boolean {
+        return this.sockets.has(socket)
     }
 
     // Return a list of websocket owned by any user inside the id list.

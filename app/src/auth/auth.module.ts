@@ -8,7 +8,6 @@ import { AuthService } from "./auth.service"
 import { FortyTwoService } from "./fortytwo.service"
 import { JwtModule } from "@nestjs/jwt"
 import { JwtStrategy, AnonymousStrategy } from "./auth.strategy"
-import { AuthWebsocketGateway } from "./auth.websocket.gateway"
 import { AuthSocketService } from "./auth-socket.service"
 
 @Module({
@@ -25,7 +24,6 @@ import { AuthSocketService } from "./auth-socket.service"
         FortyTwoService,
         JwtStrategy,
         AnonymousStrategy,
-        AuthWebsocketGateway,
     ],
     controllers: [AuthController],
     exports: [AuthSocketService],

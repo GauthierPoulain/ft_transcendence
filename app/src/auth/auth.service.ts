@@ -1,7 +1,5 @@
 import { Injectable } from "@nestjs/common"
-import { OnEvent } from "@nestjs/event-emitter"
 import { JwtService } from "@nestjs/jwt"
-import { SocketsService } from "src/sockets/sockets.service"
 import { IntraInfosDto } from "src/users/dto/intra_infos.dto"
 import { User } from "src/users/entities/user.entity"
 import { UsersService } from "src/users/users.service"
@@ -17,8 +15,7 @@ export class AuthService {
     constructor(
         private fortytwo: FortyTwoService,
         private users: UsersService,
-        private jwt: JwtService,
-        private sockets: SocketsService
+        private jwt: JwtService
     ) {}
 
     async login(
@@ -60,11 +57,7 @@ export class AuthService {
     }
 
     verify(token: string): Promise<TokenPayload> {
+        console.log("verifying token", token)
         return this.jwt.verifyAsync(token)
-    }
-
-    @OnEvent("socket.auth")
-    onAuthentication({ socket, userId }) {
-        this.sockets.join(socket, `users.${userId}`)
     }
 }

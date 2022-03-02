@@ -18,7 +18,8 @@ export type AuthState = {
     token?: string
     userId?: number
 
-    login: (request: ExchangeCodeRequest) => Promise<void>
+    login: (request: ExchangeCodeRequest) => Promise<void>,
+    logout: () => void,
     fakeLogin: (name: "one" | "two") => Promise<void>
 }
 
@@ -52,12 +53,19 @@ export function AuthProvider({ children }) {
         setToken(response.token)
     }
 
+    const logout = () => {
+        setAccessToken("")
+        setUserId(0)
+        setToken("")
+    }
+
     const value = useMemo(() => {
         return {
             connected: !!token,
             userId,
             token,
             login,
+            logout,
             fakeLogin,
         }
     }, [token])

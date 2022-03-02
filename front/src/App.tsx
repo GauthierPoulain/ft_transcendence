@@ -28,12 +28,9 @@ function WebsocketTokenIssuer({ children }) {
 
     useEffect(() => {
         console.log("token issuer", readyState, ReadyState, token)
+
         if (readyState === ReadyState.OPEN) {
-            if (token) {
-                sendMessage("login", token)
-            } else {
-                sendMessage("logout")
-            }
+            sendMessage("login", token)
         }
 
         setAccessToken(token)
