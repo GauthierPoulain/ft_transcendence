@@ -1,11 +1,9 @@
-import { Brightness1 } from "@material-ui/icons"
 import { Link, Outlet, useParams } from "react-router-dom"
-import { Edit } from "@material-ui/icons"
 import useUser from "../../data/use-user"
 import { useAuth } from "../../data/use-auth"
 import UserAvatar from "../../components/user/UserAvatar"
-import { PersonAdd, PersonAddDisabled } from "@material-ui/icons"
 import { useState } from "react"
+import { Brightness1, Edit, PersonAdd, PersonAddDisabled } from "@mui/icons-material"
 
 function Banner() {
     const { userId } = useParams()

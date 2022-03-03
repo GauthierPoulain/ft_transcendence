@@ -4,11 +4,11 @@ import {
     useRemoveMessage,
 } from "../../../data/messages"
 import { OverlayTrigger, Tooltip } from "react-bootstrap"
-import { Delete } from "@material-ui/icons"
 import { useAuth } from "../../../data/use-auth"
 import { useMemberByUser } from "../../../data/members"
 import { Button, Card } from "react-bootstrap"
 import "./style.scss"
+import { Delete } from "@mui/icons-material"
 
 function DeleteButton({ message }) {
     const { submit, isLoading } = useRemoveMessage()

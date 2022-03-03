@@ -4,10 +4,10 @@ import { Link } from "react-router-dom"
 
 import { useAuth } from "../../../data/use-auth"
 import { Dropdown } from "react-bootstrap"
-import { MoreVert } from "@material-ui/icons"
 import { useMemberByUser } from "../../../data/members"
 import { useRemoveMember, useUpdateMember } from "../../../data/use-member"
 import { useIsBlocked, useIsFriend } from "../../../data/relations"
+import { MoreVert } from "@mui/icons-material"
 
 function OwnerOptions({ member }) {
     const { submit: submitUpdate, isLoading: loadingUpdate } = useUpdateMember()

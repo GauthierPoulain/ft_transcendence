@@ -1,6 +1,5 @@
 import * as THREE from "three"
 import Stats from "stats.js"
-import { ThreeDRotation } from "@material-ui/icons"
 
 class Player {
     name: string

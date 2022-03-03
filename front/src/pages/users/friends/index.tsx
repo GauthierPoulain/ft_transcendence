@@ -1,4 +1,4 @@
-import { Brightness1 } from "@material-ui/icons"
+import { Brightness1 } from "@mui/icons-material"
 import { Image, Container } from "react-bootstrap"
 import { Link } from "react-router-dom"
 import "./friends.scss"
