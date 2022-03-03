@@ -18,7 +18,7 @@ import ProfileSettings from "./users/settings"
 import Users from "./users"
 import Game from "./game/game"
 
-import TwoFactorAuth from "./twoFactorAuth"
+// import TwoFactorAuth from "./twoFactorAuth"
 
 function Layout() {
     return (

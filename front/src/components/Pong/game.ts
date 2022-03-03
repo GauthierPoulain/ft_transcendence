@@ -1,5 +1,6 @@
 import * as THREE from "three"
 import Stats from "stats.js"
+import { ThreeDRotation } from "@material-ui/icons"
 
 class Player {
     name: string
@@ -18,14 +19,6 @@ class Player {
     }
 }
 
-function hexToRgb(hex: number) {
-    return {
-        r: hex >> 16,
-        g: (hex >> 8) & 255,
-        b: hex & 255,
-    }
-}
-
 function collisionBoxCyl(box: THREE.Mesh, cyl: THREE.Mesh, cylR: number) {
     box.geometry.computeBoundingBox()
     box.updateMatrixWorld()
@@ -33,6 +26,17 @@ function collisionBoxCyl(box: THREE.Mesh, cyl: THREE.Mesh, cylR: number) {
     Cbox?.applyMatrix4(box.matrixWorld)
     const Csphere = new THREE.Sphere(cyl.position, cylR)
     return Cbox?.intersectsSphere(Csphere)
+}
+
+function collisionCylCyl(
+    cyl1: THREE.Mesh,
+    cyl1R: number,
+    cyl2: THREE.Mesh,
+    cyl2R: number
+) {
+    const Csp1 = new THREE.Sphere(cyl1.position, cyl1R)
+    const Csp2 = new THREE.Sphere(cyl2.position, cyl2R)
+    return Csp1.intersectsSphere(Csp2)
 }
 
 function collisionBoxBox(box1: THREE.Mesh, box2: THREE.Mesh) {
@@ -48,6 +52,97 @@ function collisionBoxBox(box1: THREE.Mesh, box2: THREE.Mesh) {
     return false
 }
 
+enum PowerUpTypes {
+    DEFAULT = "default",
+}
+
+class PowerUp {
+    _pos: { x: number; z: number }
+    _type: string
+    _id: number
+    _effect: (sender: Player) => void
+    _animation: (delta: number) => void
+    _mesh: THREE.Mesh
+    _ctx: Iengine
+    _radius: number = 0
+
+    constructor(
+        ctx: Iengine,
+        id: number,
+        type: PowerUpTypes,
+        x: number,
+        z: number,
+        r?: number
+    ) {
+        this._id = id
+        this._ctx = ctx
+        switch (type) {
+            case PowerUpTypes.DEFAULT:
+                if (!r)
+                    throw new Error("radius requiered for " + type + " powerUp")
+                this._pos = { x: x, z: z }
+                this._radius = r
+                this._type = type
+                this._effect = (sender: Player) => {
+                    console.log(`powerup ${this._type} triggered`, sender.name)
+                }
+                this._animation = (delta: number) => {
+                    this._mesh.rotation.y += 3 * delta
+                }
+                {
+                    const geo = new THREE.DodecahedronBufferGeometry(r)
+                    const mat = new THREE.MeshPhongMaterial({
+                        color: 0xffffff,
+                    })
+                    this._mesh = new THREE.Mesh(geo, mat)
+                    this._mesh.castShadow = true
+                    this._mesh.position.set(x, 0.3, z)
+                    this._ctx.scene.add(this._mesh)
+                }
+                break
+        }
+        this._ctx.powerUp.set(this._id, this)
+    }
+
+    trigger(sender: Player) {
+        this._effect(sender)
+        this._destroy()
+    }
+
+    animate(delta: number) {
+        this._animation(delta)
+    }
+
+    collisionCheck(quoitMesh: THREE.Mesh, quoitRadius: number) {
+        return collisionCylCyl(this._mesh, this._radius, quoitMesh, quoitRadius)
+    }
+
+    _destroy() {
+        this._ctx.powerUp.delete(this._id)
+        this._ctx.scene.remove(this._mesh)
+    }
+}
+
+function hexToRgb(hex: number) {
+    return {
+        r: hex >> 16,
+        g: (hex >> 8) & 255,
+        b: hex & 255,
+    }
+}
+
+interface Iengine {
+    scene: THREE.Scene
+    renderer: THREE.WebGLRenderer
+    camera: THREE.PerspectiveCamera
+    objects: Map<string, any>
+    powerUp: Map<number, PowerUp>
+    clock: THREE.Clock
+    animationFrame: number
+    animationActions: Map<string, THREE.AnimationAction>
+    stats: Stats | null
+}
+
 export default class Game {
     _size: { x: number; y: number }
     _gameContainer: HTMLObjectElement
@@ -59,16 +154,7 @@ export default class Game {
     _wsReady = false
     _engineReady = false
 
-    _engine: {
-        scene: THREE.Scene
-        renderer: THREE.WebGLRenderer
-        camera: THREE.PerspectiveCamera
-        objects: Map<string, any>
-        clock: THREE.Clock
-        animationFrame: number
-        animationActions: Map<string, THREE.AnimationAction>
-        stats: Stats | null
-    }
+    _engine: Iengine
 
     _simData: {
         running: boolean
@@ -109,6 +195,8 @@ export default class Game {
 
     _whoAmI: string | null = null
 
+    _lastHit: Player
+
     constructor(
         sendMessage: (event: string, data: any) => void,
         gameContainer: HTMLObjectElement
@@ -135,6 +223,7 @@ export default class Game {
                 40
             ),
             objects: new Map<string, any>(),
+            powerUp: new Map<number, PowerUp>(),
             clock: new THREE.Clock(),
             animationFrame: 0,
             animationActions: new Map<string, THREE.AnimationAction>(),
@@ -165,13 +254,15 @@ export default class Game {
             },
         }
 
+        this._lastHit = this._currentData.players.one
+
         this.initEngine()
         this.initScene()
         this.syncSimulation()
         this.updateHUD()
         this.registerAnimations()
         this.initKeyControl()
-        this.animate()
+        this.render()
 
         this.startSimulation()
 
@@ -231,6 +322,7 @@ export default class Game {
     }
 
     startSimulation() {
+        new PowerUp(this._engine, 1, PowerUpTypes.DEFAULT, 2, 3, 0.2)
         this._simData.last = Date.now()
         this._simData.running = true
         this._simData.interval = setInterval(() => {
@@ -254,6 +346,11 @@ export default class Game {
             const wallN = this._engine.objects.get("map_border2") as THREE.Mesh
             const playerP = this._engine.objects.get("player1") as THREE.Mesh
             const playerN = this._engine.objects.get("player2") as THREE.Mesh
+
+            this._engine.powerUp.forEach((pu) => {
+                if (pu.collisionCheck(quoit, this._currentData.quoit.radius))
+                    pu.trigger(this._lastHit)
+            })
 
             if (this._whoAmI === "one" || this._whoAmI === "two") {
                 const player = this._engine.objects.get(
@@ -307,6 +404,7 @@ export default class Game {
                         this._currentData.quoit.radius
                     )
                 ) {
+                    this._lastHit = this._currentData.players.one
                     this._currentData.quoit.speed.z = -Math.abs(
                         this._currentData.quoit.speed.z
                     )
@@ -323,6 +421,7 @@ export default class Game {
                         this._currentData.quoit.radius
                     )
                 ) {
+                    this._lastHit = this._currentData.players.two
                     this._currentData.quoit.speed.z = Math.abs(
                         this._currentData.quoit.speed.z
                     )
@@ -371,19 +470,22 @@ export default class Game {
         }
     }
 
-    render(delta: number) {
+    animate(delta: number) {
         this._engine.animationActions.forEach((action) => {
             action.getMixer().update(delta)
         })
+        this._engine.powerUp.forEach((e) => {
+            e.animate(delta)
+        })
     }
 
-    animate() {
+    render() {
         this._engine.stats?.begin()
-        this.render(this._engine.clock.getDelta())
+        this.animate(this._engine.clock.getDelta())
         this._engine.renderer.render(this._engine.scene, this._engine.camera)
         this._engine.stats?.end()
         this._engine.animationFrame = requestAnimationFrame(
-            this.animate.bind(this)
+            this.render.bind(this)
         )
     }
 
