@@ -37,7 +37,7 @@ export class RelationsController {
                 this.users.find(body.targetId),
                 this.relations.get({
                     where: {
-                        user: { id: userId },
+                        current: { id: userId },
                         target: { id: body.targetId },
                         kind
                     }
@@ -58,7 +58,7 @@ export class RelationsController {
         else {
             const relation = await this.relations.get({
                 where: {
-                    user: { id: userId },
+                    current: { id: userId },
                     target: { id: body.targetId },
                     kind
                 }

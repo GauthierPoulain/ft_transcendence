@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import { createRepository } from "./repository"
 import { createService } from "./service"
-import { fetcher } from "./use-fetch"
+import { fetcher, useSubmit } from "./use-fetch"
 
 export type Relation = {
     id: number
@@ -26,10 +26,8 @@ const service = createService<Relation, boolean>({
         }
     },
 
-    onRemoved(id, setState, connected) {
-        if (connected) {
-            setState((state) => repository.removeOne(state, id))
-        }
+    onRemoved(id, setState) {
+        setState((state) => repository.removeOne(state, id))
     }
 })
 
@@ -51,4 +49,15 @@ export function useIsFriend(userId: number): boolean {
 
 export function useIsBlocked(userId: number): boolean {
     return useRelations().some(({ targetId, kind }) => kind === "blocked" && targetId === userId)
+}
+
+export function useMutateRelation(action: "friend" | "unfriend" | "block" | "unblock") {
+    return useSubmit<number, void>((targetId) => fetcher( 
+        `/relations`,
+        {
+            method: "POST",
+            body: JSON.stringify({ targetId, action })
+        },
+        false
+    ))
 }
