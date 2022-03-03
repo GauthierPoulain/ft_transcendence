@@ -3,14 +3,45 @@ import useUser from "../../data/use-user"
 import { useAuth } from "../../data/use-auth"
 import UserAvatar from "../../components/user/UserAvatar"
 import { useState } from "react"
-import { Brightness1, Edit, PersonAdd, PersonAddDisabled } from "@mui/icons-material"
+import {
+    Brightness1,
+    Edit,
+    PersonAdd,
+    PersonAddDisabled,
+    RemoveCircle,
+    RemoveCircleOutline,
+} from "@mui/icons-material"
 import { statusColor, statusText, useStatus } from "../../data/status"
+import { Button, OverlayTrigger, Tooltip } from "react-bootstrap"
+
+function BlockButton() {
+    return (
+        <OverlayTrigger placement="top" overlay={<Tooltip>Block</Tooltip>}>
+            <Button variant="secondary" size="sm">
+                <RemoveCircle />
+            </Button>
+        </OverlayTrigger>
+    )
+}
+
+function FriendButton() {
+    return (
+        <OverlayTrigger placement="top" overlay={<Tooltip>Remove Friend</Tooltip>}>
+            <Button variant="danger" className="me-2" size="sm">
+                <PersonAddDisabled />
+            </Button>
+        </OverlayTrigger>
+    )
+}
 
 function Banner() {
     const { userId } = useParams()
     const user = useUser(parseInt(userId as string, 10))
+    const auth = useAuth()
 
     const status = useStatus(user.id)
+    const isCurrentUser =
+        auth.connected && auth.userId === parseInt(userId as string)
 
     return (
         <div
@@ -33,10 +64,14 @@ function Banner() {
                     Rank: <span style={{ color: "brown" }}>#4</span>
                 </p>
             </div>
-
-            <p className="text-dark text-uppercase mb-0 m-3">
-                { statusText(status) }
-                <Brightness1 className="mx-2" style={{ color: statusColor(status) }} />
+            {!isCurrentUser && <FriendButton />}
+            {!isCurrentUser && <BlockButton />}
+            <p className="text-dark text-uppercase m-3 my-1">
+                {statusText(status)}
+                <Brightness1
+                    className="mx-2 mb-1"
+                    style={{ color: statusColor(status) }}
+                />
             </p>
         </div>
     )
@@ -48,30 +83,6 @@ function Navigation() {
 
     const isCurrentUser =
         auth.connected && auth.userId === parseInt(userId as string)
-
-    const [follow, setFollow] = useState(false)
-
-    function Follow() {
-        if (follow) {
-            return (
-                <div
-                    className="btn btn-danger btn-lg rounded-0"
-                    onClick={() => setFollow(!follow)}
-                >
-                    <PersonAddDisabled />
-                </div>
-            )
-        }
-
-        return (
-            <div
-                className="btn btn-success btn-lg rounded-0"
-                onClick={() => setFollow(!follow)}
-            >
-                <PersonAdd />
-            </div>
-        )
-    }
 
     return (
         <div className="btn-group mb-3">
@@ -100,6 +111,15 @@ function Navigation() {
             )}
             {isCurrentUser && (
                 <Link
+                    to="block-list"
+                    className="btn btn-dark btn-lg rounded-0"
+                    replace
+                >
+                    Block List
+                </Link>
+            )}
+            {isCurrentUser && (
+                <Link
                     to="settings"
                     className="btn btn-warning btn-lg rounded-0"
                     replace
@@ -107,7 +127,6 @@ function Navigation() {
                     <Edit />
                 </Link>
             )}
-            {!isCurrentUser && Follow()}
         </div>
     )
 }

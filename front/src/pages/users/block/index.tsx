@@ -9,7 +9,7 @@ import { useStatus } from "../../../data/status"
 import { statusText } from "../../../data/status"
 import { statusColor } from "../../../data/status"
 
-function Friend({ userId }) {
+function BlockedUser({ userId }) {
     const user = useUser(userId)
     const url = "/users/" + user.id
     const status = useStatus(user.id)
@@ -37,28 +37,23 @@ function Friend({ userId }) {
     )
 }
 
-function Blocked({ userId }) {
-    const user = useUser(userId)
-
-    return <p>{user.id}</p>
-}
-
-export default function Friends() {
+export default function BlockedUsers() {
     const auth = useAuth()
     const relations = useRelations()
-    const friends = relations.filter(
-        ({ currentId, kind }) => currentId === auth.userId && kind === "friend"
+
+    const blocked = relations.filter(
+        ({ currentId, kind }) => currentId === auth.userId && kind === "blocked"
     )
 
-    if (friends.length === 0) {
-        return <p>You don't have any friend!</p>
+    if (blocked.length === 0) {
+        return <p>You don't have blocked user!</p>
     }
 
     return (
         <div className="container">
             <div className="d-flex">
-                {friends.map(({ targetId }) => (
-                    <Friend key={targetId} userId={targetId} />
+                {blocked.map(({ targetId }) => (
+                    <BlockedUser key={targetId} userId={targetId} />
                 ))}
             </div>
         </div>

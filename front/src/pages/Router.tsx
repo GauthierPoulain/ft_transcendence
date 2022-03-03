@@ -14,6 +14,7 @@ import ChannelCreate from "./chat/create"
 import Matches from "./users/matches"
 import Achievements from "./users/achievements"
 import Friends from "./users/friends"
+import BlockedUsers from "./users/block"
 import ProfileSettings from "./users/settings"
 import Users from "./users"
 import Game from "./game/game"
@@ -73,6 +74,7 @@ export default function Router() {
                     <Route path="matches" element={<Matches />} />
                     <Route path="achievements" element={<Achievements />} />
                     <Route path="friends" element={<Friends />} />
+                    <Route path="block-list" element={<BlockedUsers />} />
                     <Route path="settings" element={<ProfileSettings />} />
                 </Route>
                 <Route path="auth" element={<Authentication />} />
