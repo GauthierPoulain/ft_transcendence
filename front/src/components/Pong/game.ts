@@ -262,9 +262,7 @@ export default class Game {
         this.registerAnimations()
         this.initKeyControl()
         this.render()
-
         this.startSimulation()
-
         this.setReady({ engine: true })
     }
 
@@ -301,19 +299,28 @@ export default class Game {
 
     syncMeshs() {
         const quoit = this._engine.objects.get("quoit") as THREE.Mesh
-        const playerP = this._engine.objects.get("player1") as THREE.Mesh
-        const playerN = this._engine.objects.get("player2") as THREE.Mesh
+        const player1 = this._engine.objects.get("player1") as THREE.Mesh
+        const player2 = this._engine.objects.get("player2") as THREE.Mesh
 
         quoit.position.x = this._currentData.quoit.x
         quoit.position.z = this._currentData.quoit.z
         quoit.scale.x = this._currentData.quoit.radius
         quoit.scale.z = this._currentData.quoit.radius
 
-        playerP.position.x = this._currentData.players.one.x
-        playerP.scale.x = this._currentData.players.one.width
+        player1.position.x = this._currentData.players.one.x
+        player1.scale.x = this._currentData.players.one.width
 
-        playerN.position.x = this._currentData.players.two.x
-        playerN.scale.x = this._currentData.players.two.width
+        player2.position.x = this._currentData.players.two.x
+        player2.scale.x = this._currentData.players.two.width
+
+        // {
+        //     let mat = player1.material as THREE.MeshPhongMaterial
+        //     mat.color.setHex(this._currentData.players.one.color)
+        // }
+        // {
+        //     let mat = player2.material as THREE.MeshPhongMaterial
+        //     mat.color.setHex(this._currentData.players.two.color)
+        // }
     }
 
     syncSimulation() {
@@ -343,8 +350,8 @@ export default class Game {
             const quoit = this._engine.objects.get("quoit") as THREE.Mesh
             const wallP = this._engine.objects.get("map_border1") as THREE.Mesh
             const wallN = this._engine.objects.get("map_border2") as THREE.Mesh
-            const playerP = this._engine.objects.get("player1") as THREE.Mesh
-            const playerN = this._engine.objects.get("player2") as THREE.Mesh
+            const player1 = this._engine.objects.get("player1") as THREE.Mesh
+            const player2 = this._engine.objects.get("player2") as THREE.Mesh
 
             this._engine.powerUp.forEach((pu) => {
                 if (pu.collisionCheck(quoit, this._currentData.quoit.radius))
@@ -398,7 +405,7 @@ export default class Game {
             {
                 if (
                     collisionBoxCyl(
-                        playerP,
+                        player1,
                         quoit,
                         this._currentData.quoit.radius
                     )
@@ -415,7 +422,7 @@ export default class Game {
                         xSpeed * this._currentData.quoit.speed.xM
                 } else if (
                     collisionBoxCyl(
-                        playerN,
+                        player2,
                         quoit,
                         this._currentData.quoit.radius
                     )
@@ -460,7 +467,6 @@ export default class Game {
                 this._currentData.quoit.z +=
                     this._currentData.quoit.speed.z * delta
             }
-
             this._simData.last = Date.now()
         } catch (error) {
             console.log(error)
@@ -473,8 +479,8 @@ export default class Game {
         this._engine.animationActions.forEach((action) => {
             action.getMixer().update(delta)
         })
-        this._engine.powerUp.forEach((e) => {
-            e.animate(delta)
+        this._engine.powerUp.forEach((pu) => {
+            pu.animate(delta)
         })
     }
 
