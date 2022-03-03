@@ -20,6 +20,7 @@ import { MembersModule } from "./members/members.module"
 import { Member } from "./members/member.entity"
 import { Relation } from "./relations/relation.entity"
 import { RelationsModule } from "./relations/relations.module"
+import { StatusModule } from "./status/status.module"
 
 @Module({
     imports: [
@@ -53,7 +54,8 @@ import { RelationsModule } from "./relations/relations.module"
         SocketsModule,
         MatchesModule,
         MembersModule,
-        RelationsModule
+        RelationsModule,
+        StatusModule
     ],
     controllers: [AppController],
     providers: [AppService],

@@ -4,11 +4,13 @@ import { useAuth } from "../../data/use-auth"
 import UserAvatar from "../../components/user/UserAvatar"
 import { useState } from "react"
 import { Brightness1, Edit, PersonAdd, PersonAddDisabled } from "@mui/icons-material"
+import { statusColor, statusText, useStatus } from "../../data/status"
 
 function Banner() {
     const { userId } = useParams()
-
     const user = useUser(parseInt(userId as string, 10))
+
+    const status = useStatus(user.id)
 
     return (
         <div
@@ -33,8 +35,8 @@ function Banner() {
             </div>
 
             <p className="text-dark text-uppercase mb-0 m-3">
-                Online
-                <Brightness1 className="mx-2" style={{ color: "lime" }} />
+                { statusText(status) }
+                <Brightness1 className="mx-2" style={{ color: statusColor(status) }} />
             </p>
         </div>
     )

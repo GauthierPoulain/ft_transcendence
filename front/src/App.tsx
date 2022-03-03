@@ -10,6 +10,7 @@ import Loading from "./components/Loading"
 import Router from "./pages/Router"
 import { UsersProvider, useUsersLoading } from "./data/users"
 import { RelationsProvider } from "./data/relations"
+import { StatusProvider } from "./data/status"
 
 function RootProvider({ children }) {
     return (
@@ -70,7 +71,9 @@ export default function App() {
                 <Suspense fallback={<p>No fallback so loading here :)</p>}>
                     <WebsocketTokenIssuer>
                         <UsersProvider>
-                            <Thisisatest />
+                            <StatusProvider>
+                                <Thisisatest />
+                            </StatusProvider>
                         </UsersProvider>
                     </WebsocketTokenIssuer>
                 </Suspense>
