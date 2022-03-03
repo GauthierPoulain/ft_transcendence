@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react"
-import useSWR from "swr"
 import { HttpError } from "../errors/HttpError"
 
 let accessToken: string = ""
@@ -39,21 +38,6 @@ export const fetcher = async (
     }
 
     return jsonResponse ? response.json() : response
-}
-
-export default function useFetch(key: string, options = {}) {
-    const { data, error, mutate } = useSWR(key, fetcher, {
-        suspense: true,
-        shouldRetryOnError: false,
-        ...options,
-    })
-
-    if (error) {
-        mutate((v: any) => v, false)
-        throw error
-    }
-
-    return data
 }
 
 export function useSubmit<Request, Response>(
