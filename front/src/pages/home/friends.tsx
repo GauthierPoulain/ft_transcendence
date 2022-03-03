@@ -41,7 +41,7 @@ function Friends() {
     }
 
     return (
-        <div className="d-flex container">
+        <div className="d-  flex mb-3">
             { friends.map(({ targetId }) => <Friend key={targetId} userId={targetId} />) }
         </div>
     )

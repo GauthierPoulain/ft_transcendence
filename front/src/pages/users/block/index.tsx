@@ -1,7 +1,7 @@
 import { Brightness1 } from "@mui/icons-material"
 import { Image, Container } from "react-bootstrap"
 import { Link } from "react-router-dom"
-import "./friends.scss"
+import "./block.scss"
 import { useAuth } from "../../../data/use-auth"
 import { useUser } from "../../../data/users"
 import { useRelations } from "../../../data/relations"
@@ -15,7 +15,7 @@ function BlockedUser({ userId }) {
     const status = useStatus(user.id)
 
     return (
-        <div className="d-flex friends-card border border-dark border-2 m-2 p-2">
+        <div className="d-flex block-card border border-dark border-2 m-2 p-2">
             <Image
                 className="img"
                 src={user.image}
@@ -46,7 +46,7 @@ export default function BlockedUsers() {
     )
 
     if (blocked.length === 0) {
-        return <p>You don't have blocked user!</p>
+        return <p className="ms-3">You don't have any blocked user !</p>
     }
 
     return (

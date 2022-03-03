@@ -1,6 +1,12 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { Button, Table, OverlayTrigger, Tooltip, Container } from "react-bootstrap"
+import {
+    Button,
+    Table,
+    OverlayTrigger,
+    Tooltip,
+    Container,
+} from "react-bootstrap"
 import "./home.scss"
 import { useAuth } from "../../data/use-auth"
 import SectionFriends from "./friends"
@@ -82,7 +88,7 @@ function RunningMatches() {
 }
 
 function Home() {
-    const auth = useAuth();
+    const auth = useAuth()
 
     return (
         <React.Fragment>
@@ -104,7 +110,11 @@ function Home() {
                     </Button>
                 </Link>
             </div>
-            { auth.connected && <SectionFriends /> }
+            {auth.connected && (
+                <Container>
+                    <SectionFriends />
+                </Container>
+            )}
             <Container>
                 <RunningMatches />
             </Container>

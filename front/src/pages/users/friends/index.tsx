@@ -51,7 +51,7 @@ export default function Friends() {
     )
 
     if (friends.length === 0) {
-        return <p>You don't have any friend!</p>
+        return <p className="ms-3">You don't have any friend !</p>
     }
 
     return (
