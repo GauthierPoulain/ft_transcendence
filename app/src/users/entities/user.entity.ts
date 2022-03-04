@@ -4,6 +4,7 @@ import { Match } from "src/matches/match.entity"
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm"
 import { Exclude, Expose } from "class-transformer"
 import { Relation } from "src/relations/relation.entity"
+import { DirectChannel } from "src/channels/entities/channel.entity"
 
 @Entity()
 export class User {
@@ -58,4 +59,12 @@ export class User {
     @Exclude()
     @OneToMany(() => Relation, (relation) => relation.target)
     _relations_target: Relation[]
+
+    @Exclude()
+    @OneToMany(() => DirectChannel, (direct) => direct.userOne)
+    _directchannel_userone: DirectChannel[]
+
+    @Exclude()
+    @OneToMany(() => DirectChannel, (direct) => direct.userTwo)
+    _directchannel_usertwo: DirectChannel[]
 }

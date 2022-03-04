@@ -7,7 +7,7 @@ import { createService } from "./service"
 export type Channel = {
     id: number
     name: string
-    type: "public" | "private" | "protected"
+    type: "public" | "private" | "protected" | "direct"
 }
 
 export type CreateChannelRequest = {
@@ -21,6 +21,12 @@ export function createChannel(request: CreateChannelRequest): Promise<Channel> {
         method: "POST",
         body: JSON.stringify(request),
     })
+}
+
+export function useMutateDirectChannel() {
+    return useSubmit<number, Channel>((userId) => fetcher(`/channels/users/${userId}`, {
+        method: "POST"
+    }))
 }
 
 export type JoinChannelRequest = {

@@ -8,7 +8,6 @@ import {
     Post,
     UnauthorizedException,
     UseGuards,
-    UseInterceptors,
 } from "@nestjs/common"
 import { ConnectedGuard } from "src/auth/connected.guard"
 import { Role } from "src/members/member.entity"
@@ -83,7 +82,9 @@ export class MessagesController {
         @Param("channelId") channelId: number,
         @Param("messageId") messageId: number
     ) {
-        const [message, member] = await Promise.all([
+        // TODO: Maybe relation from message or member instead of different fetch.
+        const [channel, message, member] = await Promise.all([
+            this.channels.findOne(channelId),
             this.messages.findOne(channelId, messageId),
             this.members.findOneWithChannelAndUser(channelId, userId),
         ])
@@ -92,7 +93,8 @@ export class MessagesController {
             throw new NotFoundException()
         }
 
-        if (message.authorId !== userId && !member.isAdmin) {
+        // If the user is deleting someone else message and he's not an admin or is in a direct message channel.
+        if (message.authorId !== userId && (!member.isAdmin || channel.type === "direct")) {
             throw new UnauthorizedException()
         }
 

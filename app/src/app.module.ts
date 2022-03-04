@@ -9,7 +9,7 @@ import { AuthModule } from "./auth/auth.module"
 
 import { User } from "./users/entities/user.entity"
 import { ChannelsModule } from "./channels/channels.module"
-import { Channel } from "./channels/entities/channel.entity"
+import { Channel, DirectChannel } from "./channels/entities/channel.entity"
 import { Message } from "./channels/messages/message.entity"
 import { ConfigModule } from "@nestjs/config"
 import { SocketsModule } from "./sockets/sockets.module"
@@ -45,7 +45,7 @@ import { StatusModule } from "./status/status.module"
             // TODO: This can destroy production data, so we may want to remove this in the future.
             synchronize: true,
 
-            entities: [User, Channel, Message, Member, Match, Relation],
+            entities: [User, Channel, Message, Member, Match, Relation, DirectChannel],
         }),
         GameModule,
         UsersModule,

@@ -1,6 +1,6 @@
 import useUser from "../../../data/use-user"
 import UserAvatar from "../../../components/user/UserAvatar"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 import { useAuth } from "../../../data/use-auth"
 import { Dropdown } from "react-bootstrap"
@@ -8,6 +8,7 @@ import { useMemberByUser } from "../../../data/members"
 import { useRemoveMember, useUpdateMember } from "../../../data/use-member"
 import { useIsBlocked, useIsFriend, useMutateRelation } from "../../../data/relations"
 import { MoreVert } from "@mui/icons-material"
+import { useMutateDirectChannel } from "../../../data/channels"
 
 function OwnerOptions({ member }) {
     const { submit: submitUpdate, isLoading: loadingUpdate } = useUpdateMember()
@@ -52,18 +53,26 @@ function AdminOptions({ member }) {
 }
 
 function CommonOptions({ member }) {
+    const navigate = useNavigate()
     const isBlocked = useIsBlocked(member.userId)
     const isFriend = useIsFriend(member.userId)
 
     const mutateBlock = useMutateRelation(isBlocked ? "unblock" : "block")
     const mutateFriend = useMutateRelation(isFriend ? "unfriend" : "friend")
+    const mutateDirect = useMutateDirectChannel()
+
+    async function directMessage() {
+        const channel = await mutateDirect.submit(member.userId)
+
+        navigate(`/chat/room/${channel.id}`)
+    }
 
     return (
         <>
             <Dropdown.Header>Interaction</Dropdown.Header>
             <Dropdown.Item disabled={mutateBlock.isLoading} onClick={() => mutateBlock.submit(member.userId)}>{ isBlocked ? "Unblock" : "Block" }</Dropdown.Item>
             <Dropdown.Item disabled={mutateFriend.isLoading} onClick={() => mutateFriend.submit(member.userId)}>{ isFriend ? "Remove friend" : "Add friend" }</Dropdown.Item>
-            <Dropdown.Item>Message</Dropdown.Item>
+            <Dropdown.Item disabled={mutateDirect.isLoading} onClick={directMessage}>Message</Dropdown.Item>
             <Dropdown.Item>Game Request</Dropdown.Item>
         </>
     )

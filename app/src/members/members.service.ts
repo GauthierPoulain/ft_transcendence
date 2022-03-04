@@ -114,7 +114,7 @@ export class MembersService {
         password: string
     ): Promise<Member> {
         // An user can't join a private channel
-        if (channel.type === "private") {
+        if (channel.type === "private" || channel.type === "direct") {
             throw new UnauthorizedException()
         }
 
