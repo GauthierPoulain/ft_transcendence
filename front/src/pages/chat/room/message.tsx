@@ -9,6 +9,9 @@ import { useMemberByUser } from "../../../data/members"
 import { Button, Card } from "react-bootstrap"
 import "./style.scss"
 import { Delete } from "@mui/icons-material"
+import { useRelations } from "../../../data/relations"
+import VisibilityIcon from "@mui/icons-material/Visibility"
+import { useState } from "react"
 
 function DeleteButton({ message }) {
     const { submit, isLoading } = useRemoveMessage()
@@ -55,10 +58,55 @@ function GameRequestCard({ author }) {
     )
 }
 
+function IsBlockedUser(id: number) {
+    const auth = useAuth()
+    const relations = useRelations()
+    const user = useUser(id)
+
+    const blocked = relations.filter(
+        ({ currentId, kind }) => currentId === auth.userId && kind === "blocked"
+    )
+
+    for (let i = 0; i < blocked.length; i++) {
+        if (blocked[i].targetId === user.id) return true
+    }
+
+    return false
+}
+
 export default function Message({ message }: { message: MessageType }) {
     const auth = useAuth()
     const author = useUser(message.authorId)
     const self = useMemberByUser(auth.userId!)!
+    const [show, setShow] = useState(false)
+
+    if (IsBlockedUser(author.id) && !show) {
+        return (
+            <div className="d-flex flex-column">
+                <div className="d-flex justify-content-start align-items-center gap-x-2">
+                    <p className="fst-italic text-secondary">
+                        Message from blocked user
+                    </p>
+                    <OverlayTrigger
+                        placement="top"
+                        overlay={<Tooltip>Show</Tooltip>}
+                    >
+                        <VisibilityIcon
+                            className="text-secondary cursor-pointer mb-3"
+                            fontSize="inherit"
+                            onMouseDown={() => setShow(true)}
+                        />
+                    </OverlayTrigger>
+                    <div className="mb-3">
+                        {(self.userId === author.id ||
+                            self.role !== "guest") && (
+                            <DeleteButton message={message} />
+                        )}
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="d-flex flex-column">
