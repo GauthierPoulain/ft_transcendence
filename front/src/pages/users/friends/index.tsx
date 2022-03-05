@@ -33,12 +33,6 @@ function Friend({ userId }) {
     )
 }
 
-function Blocked({ userId }) {
-    const user = useUser(userId)
-
-    return <p>{user.id}</p>
-}
-
 export default function Friends() {
     const auth = useAuth()
     const relations = useRelations()
