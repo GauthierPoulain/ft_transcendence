@@ -1,7 +1,6 @@
 import { Brightness1 } from "@mui/icons-material"
 import { Container } from "react-bootstrap"
 import { Link } from "react-router-dom"
-import "./friends.scss"
 import { useAuth } from "../../../data/use-auth"
 import { useUser } from "../../../data/users"
 import { useRelations } from "../../../data/relations"
@@ -10,12 +9,14 @@ import { statusText } from "../../../data/status"
 import { statusColor } from "../../../data/status"
 import UserAvatar from "../../../components/user/UserAvatar"
 
-function Friend({ userId }) {
+import "./index.scss"
+
+function User({ userId }) {
     const user = useUser(userId)
     const status = useStatus(user.id)
 
     return (
-        <div className="d-flex friends-card border border-dark border-2 m-2 p-2">
+        <div className="d-flex relation-card border border-dark border-2 p-2">
             <UserAvatar userId={user.id} className="w-16 h-16" />
             <Link to={`/users/${user.id}`} className="m-auto mx-3 fs-4 text-decoration-none">
                 {user.nickname}
@@ -33,28 +34,33 @@ function Friend({ userId }) {
     )
 }
 
-export default function Friends() {
+function Users({ relations }) {
+    return (
+        <div className="d-flex">
+            { relations.map(({ targetId }) => <User userId={targetId} />) }
+        </div>
+    );
+}
+
+export default function Relations() {
     const auth = useAuth()
     const relations = useRelations()
+
     const friends = relations.filter(
         ({ currentId, kind }) => currentId === auth.userId && kind === "friend"
     )
 
-    if (friends.length === 0) {
-        return (
-            <Container>
-                <p className="ms-3">You don't have any friend !</p>
-            </Container>
-        );
-    }
+    const blocked = relations.filter(
+        ({ currentId, kind }) => currentId === auth.userId && kind === "blocked"
+    )
 
     return (
         <Container>
-            <div className="d-flex">
-                {friends.map(({ targetId }) => (
-                    <Friend key={targetId} userId={targetId} />
-                ))}
-            </div>
+            <h2>Friends</h2>
+            { friends.length === 0 ? <p className="mb-0">You don't have any friend.</p> : <Users relations={friends} /> }
+
+            <h2 className="mt-3">Blocked users</h2>
+            { blocked.length === 0 ? <p className="mb-0">You didn't block anyone.</p> : <Users relations={blocked} /> }
         </Container>
     )
 }

@@ -100,25 +100,14 @@ function Navigation() {
             >
                 Achievements
             </Link>
-            {isCurrentUser && (
+            {isCurrentUser && <>
                 <Link
-                    to="friends"
+                    to="relations"
                     className="btn btn-dark btn-lg rounded-0"
                     replace
                 >
-                    Friends
+                    Relations
                 </Link>
-            )}
-            {isCurrentUser && (
-                <Link
-                    to="block-list"
-                    className="btn btn-dark btn-lg rounded-0"
-                    replace
-                >
-                    Block List
-                </Link>
-            )}
-            {isCurrentUser && (
                 <Link
                     to="settings"
                     className="btn btn-warning btn-lg rounded-0"
@@ -126,7 +115,7 @@ function Navigation() {
                 >
                     <Edit />
                 </Link>
-            )}
+            </>}
         </div>
     )
 }

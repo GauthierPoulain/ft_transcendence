@@ -13,11 +13,10 @@ import ChannelCreate from "./chat/create"
 
 import Matches from "./users/matches"
 import Achievements from "./users/achievements"
-import Friends from "./users/friends"
-import BlockedUsers from "./users/block"
 import ProfileSettings from "./users/settings"
 import Users from "./users"
 import Game from "./game/game"
+import Relations from "./users/relations"
 
 // import TwoFactorAuth from "./twoFactorAuth"
 
@@ -36,6 +35,7 @@ function PrivateRoute({ children }) {
     return auth.connected ? children : <Navigate to="/auth" replace />
 }
 
+// TODO: Limit private routes in user.
 export default function Router() {
     return (
         <Routes>
@@ -73,8 +73,7 @@ export default function Router() {
                     <Route index element={<Navigate to="matches" replace />} />
                     <Route path="matches" element={<Matches />} />
                     <Route path="achievements" element={<Achievements />} />
-                    <Route path="friends" element={<Friends />} />
-                    <Route path="block-list" element={<BlockedUsers />} />
+                    <Route path="relations" element={<Relations />} />
                     <Route path="settings" element={<ProfileSettings />} />
                 </Route>
                 <Route path="auth" element={<Authentication />} />
