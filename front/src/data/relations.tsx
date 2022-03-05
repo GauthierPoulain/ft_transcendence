@@ -43,6 +43,16 @@ export function useRelations(): Relation[] {
     return repository.selectAll(state)
 }
 
+export function useRelations2() {
+    const { state } = useContext(service.Context);
+
+    return {
+        isBlockedBy: (userId: number): boolean => repository.selectAll(state).some(
+            ({ currentId, kind }) => currentId === userId && kind === "blocked"
+        )
+    }
+}
+
 export function useIsFriend(userId: number): boolean {
     return useRelations().some(({ targetId, kind }) => kind === "friend" && targetId === userId)
 }

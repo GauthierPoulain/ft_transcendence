@@ -10,12 +10,9 @@ import {
     UseGuards,
 } from "@nestjs/common"
 import { ConnectedGuard } from "src/auth/connected.guard"
-import { Role } from "src/members/member.entity"
 import { MembersService } from "src/members/members.service"
-import { RelationsService } from "src/relations/relations.service"
 import { User } from "src/users/entities/user.entity"
 import { CurrentUser, CurrentUserId } from "src/users/user.decorator"
-import { Not } from "typeorm"
 import { CreateMessageDto } from "../channels.dto"
 import { ChannelsService } from "../channels.service"
 import { MessagesService } from "./messages.service"

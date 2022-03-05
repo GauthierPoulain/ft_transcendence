@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react"
 import { Button, Form, InputGroup } from "react-bootstrap"
 import { Navigate, useParams } from "react-router-dom"
 import { useRemoveMember } from "../../../data/use-member"
 import { useChannel } from "../../../data/channels"
-import { MessagesProvider, useCreateMessage } from "../../../data/messages"
+import { MessagesProvider } from "../../../data/messages"
 import "./style.scss"
 import { useAuth } from "../../../data/use-auth"
 import { ErrorBoundary } from "react-error-boundary"
@@ -17,51 +16,8 @@ import {
     useMembersLoading,
 } from "../../../data/members"
 import Loading from "../../../components/Loading"
+import MessageInput from "./input"
 
-function FormMessage({ channelId }) {
-    const auth = useAuth()
-    const member = useMemberByUser(auth.userId!)!
-    const channel = useChannel(channelId)!
-    const [content, setContent] = useState("")
-    const { submit, isError, isLoading } = useCreateMessage()
-    const muted = member.muted && member.role === "guest"
-
-    // Code to reset the content's state when naigating to another channel.
-    useEffect(() => setContent(""), [channelId])
-
-    useEffect(() => {
-        if (!isLoading) {
-            document.getElementById("chatInput")?.focus()
-        }
-    }, [isLoading])
-
-    async function onSubmit(event: any) {
-        event.preventDefault()
-
-        if (content) {
-            await submit({ channelId, content })
-
-            setContent("")
-        }
-    }
-
-    return (
-        <Form onSubmit={onSubmit}>
-            <Form.Control
-                id="chatInput"
-                type="text"
-                className={`bg-dark border-${
-                    isError ? "danger" : "dark"
-                } text-white`}
-                placeholder={muted ? "You're currently muted!" : `Enter a content for ${channel.name}`}
-                value={content}
-                onChange={(event) => setContent(event.target.value)}
-                disabled={isLoading || muted}
-                autoComplete={"off"}
-            />
-        </Form>
-    )
-}
 
 function PasswordMaintenance({ channelId }) {
     const auth = useAuth()
@@ -155,9 +111,11 @@ function Main({ channelId }) {
                 </div>
             </div>
 
-            <Messages />
+            <MessagesProvider settings={channelId}>
+                <Messages channelId={channelId} />
+            </MessagesProvider>
 
-            <FormMessage channelId={channelId} />
+            <MessageInput channelId={channelId} />
         </div>
     )
 }
@@ -191,9 +149,7 @@ export default function RoomView() {
     return (
         <ErrorBoundary FallbackComponent={ErrorBox}>
             <MembersProvider settings={channelId}>
-                <MessagesProvider settings={channelId}>
-                    <Inner channelId={channelId} />
-                </MessagesProvider>
+                <Inner channelId={channelId} />
             </MembersProvider>
         </ErrorBoundary>
     )
