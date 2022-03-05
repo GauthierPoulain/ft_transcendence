@@ -42,23 +42,7 @@ export class MessagesController {
             throw new NotFoundException()
         }
 
-        const member = await this.members.findOneWithChannelAndUser(
-            channel.id,
-            user.id
-        )
-
-        if (channel.type === "direct") {
-            const other_member = await this.members.findOneReal({
-                where: {
-                    channel: { id: channel.id },
-                    user: { id: Not(user.id) }
-                }
-            })
-
-            if (other_member && await this.relations.isBlocking(other_member.userId, member.userId)) {
-                throw new UnauthorizedException()
-            }
-        } else if (!member || (member.muted && member.role === Role.GUEST)) {
+        if (this.messages.canSendMessage(channel, user.id)) {
             throw new UnauthorizedException()
         }
 
