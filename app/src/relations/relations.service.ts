@@ -44,6 +44,16 @@ export class RelationsService {
         })
     }
 
+    async isBlocking(currentUserId: number, targetUserId: number): Promise<boolean> {
+        const relation = await this.get({ where: {
+            current: { id: currentUserId },
+            target: { id: targetUserId },
+            kind: RelationKind.BLOCKED }
+        })
+
+        return !!relation
+    }
+
     private publish(event: string, data: any) {
         this.sockets.publish([`users.${data.currentId}`, `users.${data.targetId}`], `relations.${event}`, data)
     }

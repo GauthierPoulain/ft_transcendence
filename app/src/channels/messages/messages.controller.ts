@@ -12,8 +12,10 @@ import {
 import { ConnectedGuard } from "src/auth/connected.guard"
 import { Role } from "src/members/member.entity"
 import { MembersService } from "src/members/members.service"
+import { RelationsService } from "src/relations/relations.service"
 import { User } from "src/users/entities/user.entity"
 import { CurrentUser, CurrentUserId } from "src/users/user.decorator"
+import { Not } from "typeorm"
 import { CreateMessageDto } from "../channels.dto"
 import { ChannelsService } from "../channels.service"
 import { MessagesService } from "./messages.service"
@@ -23,7 +25,8 @@ export class MessagesController {
     constructor(
         private messages: MessagesService,
         private channels: ChannelsService,
-        private members: MembersService
+        private members: MembersService,
+        private relations: RelationsService
     ) {}
 
     @Post()
@@ -44,7 +47,18 @@ export class MessagesController {
             user.id
         )
 
-        if (!member || (member.muted && member.role === Role.GUEST)) {
+        if (channel.type === "direct") {
+            const other_member = await this.members.findOneReal({
+                where: {
+                    channel: { id: channel.id },
+                    user: { id: Not(user.id) }
+                }
+            })
+
+            if (other_member && await this.relations.isBlocking(other_member.userId, member.userId)) {
+                throw new UnauthorizedException()
+            }
+        } else if (!member || (member.muted && member.role === Role.GUEST)) {
             throw new UnauthorizedException()
         }
 

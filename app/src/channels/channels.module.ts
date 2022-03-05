@@ -12,6 +12,7 @@ import { AuthModule } from "src/auth/auth.module"
 import { MessagesService } from "./messages/messages.service"
 import { MembersModule } from "src/members/members.module"
 import { DirectChannelsService } from "./directchannels.service"
+import { RelationsModule } from "src/relations/relations.module"
 
 @Module({
     imports: [
@@ -19,6 +20,7 @@ import { DirectChannelsService } from "./directchannels.service"
         UsersModule,
         AuthModule,
         forwardRef(() => MembersModule),
+        RelationsModule
     ],
     controllers: [ChannelsController, MessagesController],
     providers: [ChannelsService, MessagesService, DirectChannelsService],
