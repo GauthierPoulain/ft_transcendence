@@ -12,6 +12,7 @@ import { Delete } from "@mui/icons-material"
 import { useRelations } from "../../../data/relations"
 import VisibilityIcon from "@mui/icons-material/Visibility"
 import { useState } from "react"
+import { useChannel } from "../../../data/channels"
 
 function DeleteButton({ message }) {
     const { submit, isLoading } = useRemoveMessage()
@@ -77,9 +78,11 @@ function IsBlockedUser(id: number) {
 export default function Message({ message }: { message: MessageType }) {
     const auth = useAuth()
     const author = useUser(message.authorId)
+    const channel = useChannel(message.channelId)!
     const self = useMemberByUser(auth.userId!)!
     const [show, setShow] = useState(false)
 
+    // TODO: Deduplicate code for message
     if (IsBlockedUser(author.id) && !show) {
         return (
             <div className="d-flex flex-column">
@@ -99,7 +102,7 @@ export default function Message({ message }: { message: MessageType }) {
                     </OverlayTrigger>
                     <div className="mb-3">
                         {(self.userId === author.id ||
-                            self.role !== "guest") && (
+                            (self.role !== "guest" && channel.type !== "direct")) && (
                             <DeleteButton message={message} />
                         )}
                     </div>
@@ -112,7 +115,8 @@ export default function Message({ message }: { message: MessageType }) {
         <div className="d-flex flex-column">
             <div className="d-flex justify-content-start align-items-center gap-x-2">
                 <span className="user-tag">{author.nickname}</span>
-                {(self.userId === author.id || self.role !== "guest") && (
+                {(self.userId === author.id ||
+                    (self.role !== "guest" && channel.type !== "direct")) && (
                     <DeleteButton message={message} />
                 )}
             </div>
