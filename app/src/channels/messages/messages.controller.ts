@@ -26,7 +26,6 @@ export class MessagesController {
         private messages: MessagesService,
         private channels: ChannelsService,
         private members: MembersService,
-        private relations: RelationsService
     ) {}
 
     @Post()
@@ -42,7 +41,7 @@ export class MessagesController {
             throw new NotFoundException()
         }
 
-        if (this.messages.canSendMessage(channel, user.id)) {
+        if (!this.messages.canSendMessage(channel, user.id)) {
             throw new UnauthorizedException()
         }
 
