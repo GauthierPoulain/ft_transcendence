@@ -3,10 +3,10 @@ import { useRelations, useRelationsLoading } from "../../data/relations"
 import { useAuth } from "../../data/use-auth";
 import { useUser } from "../../data/users";
 import { Link } from "react-router-dom";
-import { Image } from "react-bootstrap";
 import { Brightness1 } from "@mui/icons-material"
 import { statusText, useStatus, statusColor } from "../../data/status";
 import "./friends.scss"
+import UserAvatar from "../../components/user/UserAvatar";
 
 function Friend({ userId }) {
     const user = useUser(userId)
@@ -15,7 +15,7 @@ function Friend({ userId }) {
 
     return (
         <div className="d-flex friends-card border border-dark border-2 m-2 ms-0 p-2">
-            <Image className="img" src={user.image} style={{ height: "4em", width: "4em" }} />
+            <UserAvatar userId={user.id} className="w-16 h-16" />
             <Link to={url} className="m-auto mx-3 fs-4 text-decoration-none">
                 {user.nickname}
             </Link>
