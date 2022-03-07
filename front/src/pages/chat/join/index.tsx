@@ -86,7 +86,9 @@ export default function ChatBox() {
     const pubs = useChannels()
     const joined = useJoinedChannels()
 
-    const channels = pubs.filter((id) => !joined.includes(id))
+    const channels = pubs.filter(({ id, type }) => {
+        return !["direct", "private"].includes(type) && !joined.some((joined) => joined.id === id)
+    })
 
     return (
         <div className="chat-join-container p-3">

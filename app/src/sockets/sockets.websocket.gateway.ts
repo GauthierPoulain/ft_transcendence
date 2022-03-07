@@ -21,8 +21,11 @@ export class SocketsGateway
     ) {}
 
     async handleDisconnect(socket: any) {
+        const userId = this.auth.socketUserId(socket)
+
+        this.auth.logout(socket)
         this.sockets.deleteSocket(socket)
-        await this.emitter.emitAsync("socket.disconnect", { socket })
+        await this.emitter.emitAsync("socket.disconnect", { socket, userId })
     }
 
     async handleConnection(socket: any) {
@@ -33,8 +36,6 @@ export class SocketsGateway
     @SubscribeMessage("login")
     async onLogin(@MessageBody() token: string, @ConnectedSocket() socket: any) {
         if (this.auth.isConnected(socket) && !token) {
-            this.auth.logout(socket)
-            
             // Acts the same as if the user disconnected then reconnected.
             this.handleDisconnect(socket);
             this.handleConnection(socket);

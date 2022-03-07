@@ -1,6 +1,7 @@
 import { useContext } from "react"
 import { createRepository } from "./repository"
 import { createService } from "./service"
+import { useAuth } from "./use-auth"
 import { fetcher, useSubmit } from "./use-fetch"
 
 export type Relation = {
@@ -41,6 +42,17 @@ export function useRelations(): Relation[] {
     const { state } = useContext(service.Context);
 
     return repository.selectAll(state)
+}
+
+export function useRelations2() {
+    const auth = useAuth()
+    const { state } = useContext(service.Context);
+
+    return {
+        isBlockedBy: (userId: number): boolean => repository.selectAll(state).some(
+            ({ currentId, targetId, kind }) => currentId === userId && targetId === auth.userId && kind === "blocked"
+        )
+    }
 }
 
 export function useIsFriend(userId: number): boolean {

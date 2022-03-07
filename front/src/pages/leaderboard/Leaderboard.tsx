@@ -1,9 +1,9 @@
 import LeaderboardTab from "../../components/LeaderboardTab/LeaderboardTab"
-import "./leaderboard.css"
+import "./leaderboard.scss"
 
 function Leaderboard() {
     return (
-        <div>
+        <div className="container">
             <LeaderboardTab />
         </div>
     )

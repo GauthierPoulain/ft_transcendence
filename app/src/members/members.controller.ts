@@ -46,14 +46,17 @@ export class MembersController {
             throw new NotFoundException()
         }
 
-        const current = await this.members.findOneWithChannelAndUser(target.channelId, userId)
+        const [channel, current] = await Promise.all([
+            this.channels.findOne(target.channelId),
+            this.members.findOneWithChannelAndUser(target.channelId, userId)
+        ])
 
         if (!current) {
             throw new NotFoundException()
         }
 
         // Someone which is not an administrator can't update a member
-        if (!current.isAdmin) {
+        if (!current.isAdmin || channel.type === "direct") {
             throw new UnauthorizedException()
         }
 
@@ -103,17 +106,17 @@ export class MembersController {
             throw new NotFoundException()
         }
 
-        const current = await this.members.findOneWithChannelAndUser(
-            target.channelId,
-            userId
-        )
+        const [channel, current] = await Promise.all([
+            this.channels.findOne(target.channelId),
+            this.members.findOneWithChannelAndUser(target.channelId, userId)
+        ])
 
         if (!current || current.channelId !== target.channelId) {
             throw new NotFoundException()
         }
 
         // If the user is kicking someone with a higher rank
-        if (target.id !== current.id && roleIsLess(current.role, target.role)) {
+        if ((target.id !== current.id && roleIsLess(current.role, target.role)) || channel.type === "direct") {
             throw new UnauthorizedException()
         }
 

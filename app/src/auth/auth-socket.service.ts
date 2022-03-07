@@ -24,6 +24,10 @@ export class AuthSocketService {
         return this.sockets.has(socket)
     }
 
+    socketUserId(socket: WebSocket): number {
+        return this.sockets.get(socket) || 0
+    }
+
     // Return a list of websocket owned by any user inside the id list.
     getConnections(userIds: number[]): WebSocket[] {
         return [...this.sockets.entries()]

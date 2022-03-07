@@ -9,7 +9,7 @@ import { AuthModule } from "./auth/auth.module"
 
 import { User } from "./users/entities/user.entity"
 import { ChannelsModule } from "./channels/channels.module"
-import { Channel } from "./channels/entities/channel.entity"
+import { Channel, DirectChannel } from "./channels/entities/channel.entity"
 import { Message } from "./channels/messages/message.entity"
 import { ConfigModule } from "@nestjs/config"
 import { SocketsModule } from "./sockets/sockets.module"
@@ -20,6 +20,7 @@ import { MembersModule } from "./members/members.module"
 import { Member } from "./members/member.entity"
 import { Relation } from "./relations/relation.entity"
 import { RelationsModule } from "./relations/relations.module"
+import { StatusModule } from "./status/status.module"
 
 @Module({
     imports: [
@@ -44,7 +45,7 @@ import { RelationsModule } from "./relations/relations.module"
             // TODO: This can destroy production data, so we may want to remove this in the future.
             synchronize: true,
 
-            entities: [User, Channel, Message, Member, Match, Relation],
+            entities: [User, Channel, Message, Member, Match, Relation, DirectChannel],
         }),
         GameModule,
         UsersModule,
@@ -53,7 +54,8 @@ import { RelationsModule } from "./relations/relations.module"
         SocketsModule,
         MatchesModule,
         MembersModule,
-        RelationsModule
+        RelationsModule,
+        StatusModule
     ],
     controllers: [AppController],
     providers: [AppService],

@@ -23,7 +23,7 @@ class LeaderboardTab extends React.Component {
     render() {
         return (
             <div>
-                <h1 className="leaderboardTitle">Leaderboard</h1>
+                <h1 className="my-4 title-leaderboard">Leaderboard</h1>
                 <Table striped bordered hover variant="dark">
                     <thead>
                         <tr>
@@ -38,7 +38,7 @@ class LeaderboardTab extends React.Component {
                                 <td>{player.rank}</td>
                                 <td>
                                     <img
-                                        className="imgLead"
+                                        className="img-leaderboard"
                                         src="/assets/42.jpg"
                                         alt=""
                                     />

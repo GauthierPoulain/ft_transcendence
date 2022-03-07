@@ -11,7 +11,8 @@ import { RelationsService } from "./relations.service";
         UsersModule
     ],
     providers: [RelationsService],
-    controllers: [RelationsController]
+    controllers: [RelationsController],
+    exports: [RelationsService]
 })
 export class RelationsModule {
 }

@@ -16,11 +16,11 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./db:/docker-entrypoint-initdb.d/
 
-  # adminer:
-  #   image: adminer:latest
-  #   restart: always
-  #   ports:
-  #     - 8080:8080
+  adminer:
+    image: adminer:latest
+    restart: always
+    ports:
+      - 8080:8080
 
   # nginx:
   #   image: nginx:latest

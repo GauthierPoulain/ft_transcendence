@@ -7,7 +7,7 @@ import { ChannelsService } from "src/channels/channels.service"
 import { Channel } from "src/channels/entities/channel.entity"
 import { SocketsService } from "src/sockets/sockets.service"
 import { User } from "src/users/entities/user.entity"
-import { FindManyOptions, Repository } from "typeorm"
+import { FindManyOptions, FindOneOptions, Repository } from "typeorm"
 import { Member, Role } from "./member.entity"
 
 @Injectable()
@@ -56,6 +56,10 @@ export class MembersService {
 
     findOne(memberId: Member["id"]): Promise<Member> {
         return this.members.findOne(memberId)
+    }
+
+    findOneReal(options: FindOneOptions<Member>): Promise<Member | undefined> {
+        return this.members.findOne(options)
     }
 
     findOneWithChannelAndUser(
@@ -114,7 +118,7 @@ export class MembersService {
         password: string
     ): Promise<Member> {
         // An user can't join a private channel
-        if (channel.type === "private") {
+        if (channel.type === "private" || channel.type === "direct") {
             throw new UnauthorizedException()
         }
 

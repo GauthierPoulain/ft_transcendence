@@ -3,12 +3,94 @@ import useUser from "../../data/use-user"
 import { useAuth } from "../../data/use-auth"
 import UserAvatar from "../../components/user/UserAvatar"
 import { useState } from "react"
-import { Brightness1, Edit, PersonAdd, PersonAddDisabled } from "@mui/icons-material"
+import {
+    Brightness1,
+    Edit,
+    PersonAdd,
+    PersonAddDisabled,
+    RemoveCircle,
+    RemoveCircleOutline,
+} from "@mui/icons-material"
+import { statusColor, statusText, useStatus } from "../../data/status"
+import { Button, OverlayTrigger, Tooltip } from "react-bootstrap"
+import {
+    useIsFriend,
+    useMutateRelation,
+    useIsBlocked,
+} from "../../data/relations"
+
+function BlockButton() {
+    const { userId } = useParams()
+    const isBlocked = useIsBlocked(Number(userId))
+    const mutateBlock = useMutateRelation(isBlocked ? "unblock" : "block")
+
+    if (!isBlocked) {
+        return (
+            <OverlayTrigger placement="top" overlay={<Tooltip>Block</Tooltip>}>
+                <Button variant="dark" size="sm" onClick={() => mutateBlock.submit(Number(userId))}>
+                    <RemoveCircle />
+                </Button>
+            </OverlayTrigger>
+        )
+    }
+
+    return (
+        <OverlayTrigger placement="top" overlay={<Tooltip>Unblock</Tooltip>}>
+            <Button variant="secondary" size="sm" onClick={() => mutateBlock.submit(Number(userId))}>
+                <RemoveCircleOutline />
+            </Button>
+        </OverlayTrigger>
+    )
+}
+
+function FriendButton() {
+    const { userId } = useParams()
+    const isFriend = useIsFriend(Number(userId))
+    const mutateFriend = useMutateRelation(isFriend ? "unfriend" : "friend")
+
+    if (!isFriend) {
+        return (
+            <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip>Add Friend</Tooltip>}
+            >
+                <Button
+                    variant="success"
+                    className="me-2"
+                    size="sm"
+                    onClick={() => mutateFriend.submit(Number(userId))}
+                >
+                    <PersonAdd />
+                </Button>
+            </OverlayTrigger>
+        )
+    }
+
+    return (
+        <OverlayTrigger
+            placement="top"
+            overlay={<Tooltip>Remove Friend</Tooltip>}
+        >
+            <Button
+                variant="danger"
+                className="me-2"
+                size="sm"
+                onClick={() => mutateFriend.submit(Number(userId))}
+            >
+                <PersonAddDisabled />
+            </Button>
+        </OverlayTrigger>
+    )
+}
 
 function Banner() {
     const { userId } = useParams()
-
     const user = useUser(parseInt(userId as string, 10))
+    const auth = useAuth()
+
+    const status = useStatus(user.id)
+    const isCurrentUser =
+        auth.connected && auth.userId === parseInt(userId as string)
 
     return (
         <div
@@ -31,10 +113,14 @@ function Banner() {
                     Rank: <span style={{ color: "brown" }}>#4</span>
                 </p>
             </div>
-
-            <p className="text-dark text-uppercase mb-0 m-3">
-                Online
-                <Brightness1 className="mx-2" style={{ color: "lime" }} />
+            {!isCurrentUser && <FriendButton />}
+            {!isCurrentUser && <BlockButton />}
+            <p className="text-dark text-uppercase m-3 my-1">
+                {statusText(status)}
+                <Brightness1
+                    className="mx-2 mb-1"
+                    style={{ color: statusColor(status) }}
+                />
             </p>
         </div>
     )
@@ -46,30 +132,6 @@ function Navigation() {
 
     const isCurrentUser =
         auth.connected && auth.userId === parseInt(userId as string)
-
-    const [follow, setFollow] = useState(false)
-
-    function Follow() {
-        if (follow) {
-            return (
-                <div
-                    className="btn btn-danger btn-lg rounded-0"
-                    onClick={() => setFollow(!follow)}
-                >
-                    <PersonAddDisabled />
-                </div>
-            )
-        }
-
-        return (
-            <div
-                className="btn btn-success btn-lg rounded-0"
-                onClick={() => setFollow(!follow)}
-            >
-                <PersonAdd />
-            </div>
-        )
-    }
 
     return (
         <div className="btn-group mb-3">
@@ -88,24 +150,23 @@ function Navigation() {
                 Achievements
             </Link>
             {isCurrentUser && (
-                <Link
-                    to="friends"
-                    className="btn btn-dark btn-lg rounded-0"
-                    replace
-                >
-                    Friends
-                </Link>
+                <>
+                    <Link
+                        to="relations"
+                        className="btn btn-dark btn-lg rounded-0"
+                        replace
+                    >
+                        Relations
+                    </Link>
+                    <Link
+                        to="settings"
+                        className="btn btn-warning btn-lg rounded-0"
+                        replace
+                    >
+                        <Edit />
+                    </Link>
+                </>
             )}
-            {isCurrentUser && (
-                <Link
-                    to="settings"
-                    className="btn btn-warning btn-lg rounded-0"
-                    replace
-                >
-                    <Edit />
-                </Link>
-            )}
-            {!isCurrentUser && Follow()}
         </div>
     )
 }
