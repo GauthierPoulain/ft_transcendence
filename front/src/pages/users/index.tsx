@@ -13,6 +13,7 @@ import {
 } from "@mui/icons-material"
 import { statusColor, statusText, useStatus } from "../../data/status"
 import { Button, OverlayTrigger, Tooltip } from "react-bootstrap"
+import { useIsFriend, useMutateRelation } from "../../data/relations"
 
 function BlockButton() {
     return (
@@ -25,9 +26,29 @@ function BlockButton() {
 }
 
 function FriendButton() {
+    const { userId } = useParams()
+    const isFriend = useIsFriend(Number(userId))
+    const mutateFriend = useMutateRelation(isFriend ? "unfriend" : "friend")
+
+    if (!isFriend) {
+        return (
+            <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip>Add Friend</Tooltip>}
+            >
+                <Button variant="success" className="me-2" size="sm" onClick={() => mutateFriend.submit(Number(userId))}>
+                    <PersonAdd />
+                </Button>
+            </OverlayTrigger>
+        )
+    }
+
     return (
-        <OverlayTrigger placement="top" overlay={<Tooltip>Remove Friend</Tooltip>}>
-            <Button variant="danger" className="me-2" size="sm">
+        <OverlayTrigger
+            placement="top"
+            overlay={<Tooltip>Remove Friend</Tooltip>}
+        >
+            <Button variant="danger" className="me-2" size="sm" onClick={() => mutateFriend.submit(Number(userId))}>
                 <PersonAddDisabled />
             </Button>
         </OverlayTrigger>
@@ -100,22 +121,24 @@ function Navigation() {
             >
                 Achievements
             </Link>
-            {isCurrentUser && <>
-                <Link
-                    to="relations"
-                    className="btn btn-dark btn-lg rounded-0"
-                    replace
-                >
-                    Relations
-                </Link>
-                <Link
-                    to="settings"
-                    className="btn btn-warning btn-lg rounded-0"
-                    replace
-                >
-                    <Edit />
-                </Link>
-            </>}
+            {isCurrentUser && (
+                <>
+                    <Link
+                        to="relations"
+                        className="btn btn-dark btn-lg rounded-0"
+                        replace
+                    >
+                        Relations
+                    </Link>
+                    <Link
+                        to="settings"
+                        className="btn btn-warning btn-lg rounded-0"
+                        replace
+                    >
+                        <Edit />
+                    </Link>
+                </>
+            )}
         </div>
     )
 }
