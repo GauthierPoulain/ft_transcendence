@@ -1,21 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200&display=swap");
 
-.leaderboardTitle
-{
-    text-align: left;
-    color: white;
-    margin-left: 20px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    font-weight: 700;
-    text-decoration: underline;
-    font-family: "Roboto Mono", monospace;
-}
-
-.imgLead
+.img-leaderboard
 {
     margin-right: 30px;
     border-radius: 50%;
     height: 50px;
     width: 50px;
+}
+
+.title-leaderboard
+{
+    color: grey;
 }
