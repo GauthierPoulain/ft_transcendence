@@ -152,6 +152,7 @@ export default class Game {
 
     _wsReady = false
     _engineReady = false
+    _roundRunning = false
 
     _engine: Iengine
 
@@ -168,7 +169,7 @@ export default class Game {
             z: number
             radius: number
             color: number
-            speed: { x: number; xM: number; z: number }
+            speed: { x: number; z: number }
         }
     }
 
@@ -249,7 +250,7 @@ export default class Game {
                 z: 0,
                 radius: 0.5,
                 color: 0xffffff,
-                speed: { x: 0, xM: 3, z: 10 },
+                speed: { x: 0, z: 0 },
             },
         }
 
@@ -363,6 +364,7 @@ export default class Game {
                 ) as THREE.Mesh
 
                 if (
+                    this._roundRunning &&
                     this._keyPressed.get("ArrowLeft") &&
                     !this._keyPressed.get("ArrowRight")
                 ) {
@@ -382,6 +384,7 @@ export default class Game {
                     }
                 }
                 if (
+                    this._roundRunning &&
                     this._keyPressed.get("ArrowRight") &&
                     !this._keyPressed.get("ArrowLeft")
                 ) {
@@ -417,8 +420,7 @@ export default class Game {
                         this._currentData.players.one.x -
                         this._currentData.quoit.x
                     )
-                    this._currentData.quoit.speed.x +=
-                        xSpeed * this._currentData.quoit.speed.xM
+                    this._currentData.quoit.speed.x += xSpeed * 3
                 } else if (
                     collisionBoxCyl(
                         player2,
@@ -434,8 +436,7 @@ export default class Game {
                         this._currentData.players.two.x -
                         this._currentData.quoit.x
                     )
-                    this._currentData.quoit.speed.x +=
-                        xSpeed * this._currentData.quoit.speed.xM
+                    this._currentData.quoit.speed.x += xSpeed * 3
                 }
 
                 if (
@@ -799,6 +800,8 @@ export default class Game {
             case "game:syncData":
                 if (this._lastTime < data.time) {
                     if (data.force) {
+                        console.log("forced update")
+
                         this._currentData = data.data
                     } else {
                         this._currentData.quoit = data.data.quoit
@@ -833,6 +836,14 @@ export default class Game {
                     this._engine.camera.position.set(0, 10, -25)
                 this._engine.camera.lookAt(0, 0, 0)
                 this.updateHUD()
+                break
+
+            case "game:startRound":
+                this._roundRunning = true
+                break
+
+            case "game:stopRound":
+                this._roundRunning = false
                 break
 
             case "game:kill":

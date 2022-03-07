@@ -2,6 +2,8 @@ import { WebSocket } from "ws"
 import Player from "./Player"
 import * as THREE from "three"
 
+const TICKRATE = 60
+
 function collisionBoxCyl(box: THREE.Mesh, cyl: THREE.Mesh, cylR: number) {
     box.geometry.computeBoundingBox()
     box.updateMatrixWorld()
@@ -28,6 +30,7 @@ export default class Lobby {
     _player_one: WebSocket
     _player_two: WebSocket
     _spectators: WebSocket[]
+    _roundRunning = false
 
     _gameRules = {
         maxPoints: 11,
@@ -54,7 +57,7 @@ export default class Lobby {
             z: number
             radius: number
             color: number
-            speed: { x: number; xM: number; z: number }
+            speed: { x: number; z: number }
         }
     }
     _simData: {
@@ -76,14 +79,14 @@ export default class Lobby {
         this._currentData = {
             players: {
                 one: new Player("GogoLeDozo", 0xffffff, "player1"),
-                two: new Player("pl2", 0xffffff, "player2"),
+                two: new Player("bot", 0xffffff, "player2"),
             },
             quoit: {
                 x: 0,
                 z: 0,
                 radius: 0.5,
                 color: 0xffffff,
-                speed: { x: 0, xM: 3, z: 10 },
+                speed: { x: 0, z: 0 },
             },
         }
         this._engine = {
@@ -98,7 +101,7 @@ export default class Lobby {
     }
 
     start() {
-        this.sendData(true)
+        this.sendData()
         this.emit(this._player_one, "game:youAre", "one")
         this.emit(this._player_two, "game:youAre", "two")
 
@@ -109,8 +112,10 @@ export default class Lobby {
         }, 1)
         this._simData.sendInterval = setInterval(() => {
             this.sendData()
-        }, 1000 / 30)
-        this.sendData(true)
+        }, 1000 / TICKRATE)
+        setTimeout(() => {
+            this.startRound()
+        }, 3000)
     }
 
     joinSpec(socket: WebSocket) {
@@ -131,7 +136,10 @@ export default class Lobby {
     }
 
     movePlayer(player: string, data: any) {
-        if (this._currentData.players[player].last < data.time) {
+        if (
+            this._currentData.players[player].last < data.time &&
+            this._roundRunning
+        ) {
             this.syncMeshs()
             const wallP = this._engine.objects.get("map_border1") as THREE.Mesh
             const wallN = this._engine.objects.get("map_border2") as THREE.Mesh
@@ -162,6 +170,17 @@ export default class Lobby {
         this.sendData(true)
     }
 
+    stopRound() {
+        this._roundRunning = false
+        this.broadcast("game:stopRound")
+    }
+
+    startRound() {
+        this._roundRunning = true
+        this._currentData.quoit.speed.z = 10
+        this.broadcast("game:startRound")
+    }
+
     checkVictory() {
         if (this._currentData.players.one.score >= this._gameRules.maxPoints) {
             return true
@@ -173,6 +192,7 @@ export default class Lobby {
     }
 
     playerWin(player: Player) {
+        this.stopRound()
         this.stop()
         console.log(`${player.name} win the game`)
         this.broadcast("game:win", { player: player })
@@ -181,10 +201,16 @@ export default class Lobby {
     playerScore(player: Player) {
         player.score += 1
         this.resetRound()
+        this.stopRound()
         this.updateHUD()
         if (this.checkVictory()) {
             this.playerWin(player)
-        } else this.broadcast("game:score", { player: player })
+        } else {
+            this.broadcast("game:score", { player: player })
+            setTimeout(() => {
+                this.startRound()
+            }, 4000)
+        }
     }
 
     updateHUD() {
@@ -234,8 +260,7 @@ export default class Lobby {
                         this._currentData.players.one.x -
                         this._currentData.quoit.x
                     )
-                    this._currentData.quoit.speed.x +=
-                        xSpeed * this._currentData.quoit.speed.xM
+                    this._currentData.quoit.speed.x += xSpeed * 3
                 } else if (
                     collisionBoxCyl(
                         playerN,
@@ -250,8 +275,7 @@ export default class Lobby {
                         this._currentData.players.two.x -
                         this._currentData.quoit.x
                     )
-                    this._currentData.quoit.speed.x +=
-                        xSpeed * this._currentData.quoit.speed.xM
+                    this._currentData.quoit.speed.x += xSpeed * 3
                 }
 
                 if (
@@ -285,7 +309,6 @@ export default class Lobby {
             {
                 playerN.position.x = this._currentData.quoit.x
             }
-
             {
                 if (this._currentData.quoit.z > this._map.depth / 2)
                     this.playerScore(this._currentData.players.two)
