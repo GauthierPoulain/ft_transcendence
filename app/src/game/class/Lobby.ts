@@ -75,7 +75,7 @@ export default class Lobby {
         this._spectators = new Array<WebSocket>()
         this._currentData = {
             players: {
-                one: new Player("pl1", 0xffffff, "player1"),
+                one: new Player("GogoLeDozo", 0xffffff, "player1"),
                 two: new Player("pl2", 0xffffff, "player2"),
             },
             quoit: {
@@ -98,9 +98,9 @@ export default class Lobby {
     }
 
     start() {
-        this.broadcast("game.ready", true)
-        this.emit(this._player_one, "game.youAre", "one")
-        this.emit(this._player_two, "game.youAre", "two")
+        this.sendData(true)
+        this.emit(this._player_one, "game:youAre", "one")
+        this.emit(this._player_two, "game:youAre", "two")
 
         this._simData.running = true
         this._simData.last = Date.now()
@@ -109,7 +109,7 @@ export default class Lobby {
         }, 1)
         this._simData.sendInterval = setInterval(() => {
             this.sendData()
-        }, 1000 / 60)
+        }, 1000 / 30)
         this.sendData(true)
     }
 
@@ -159,7 +159,7 @@ export default class Lobby {
         this._currentData.quoit.z = 0
         this._currentData.quoit.speed.x = 0
         this._currentData.quoit.speed.z = 0
-        this.sendData()
+        this.sendData(true)
     }
 
     checkVictory() {
@@ -188,7 +188,7 @@ export default class Lobby {
     }
 
     updateHUD() {
-        this.sendData()
+        this.sendData(true)
         this.broadcast("game:updateHUD")
     }
 
@@ -302,7 +302,7 @@ export default class Lobby {
     }
 
     sendData(force: boolean = false) {
-        this.broadcast("game.syncData", {
+        this.broadcast("game:syncData", {
             data: this._currentData,
             time: Date.now(),
             force: force,

@@ -270,7 +270,7 @@ export default class Game {
         if (engine !== undefined) this._engineReady = engine
         if (ws !== undefined) this._wsReady = ws
         if (this._engineReady && this._wsReady) {
-            this._wsEmit("game.ready", null)
+            this._wsEmit("game:ready", null)
         }
     }
 
@@ -375,7 +375,7 @@ export default class Game {
                         let tmpX = (this._currentData.players[
                             this._whoAmI!
                         ].x += (this._whoAmI === "one" ? -10 : 10) * delta)
-                        this._wsEmit("game.playerMove", {
+                        this._wsEmit("game:playerMove", {
                             x: tmpX,
                             time: Date.now(),
                         })
@@ -394,7 +394,7 @@ export default class Game {
                         let tmpX = (this._currentData.players[
                             this._whoAmI!
                         ].x += (this._whoAmI === "one" ? 10 : -10) * delta)
-                        this._wsEmit("game.playerMove", {
+                        this._wsEmit("game:playerMove", {
                             x: tmpX,
                             time: Date.now(),
                         })
@@ -734,14 +734,7 @@ export default class Game {
         }
     }
 
-    deletePowerUps() {
-        this._engine.powerUp.forEach((po) => {
-            po._destroy()
-        })
-    }
-
     playerScore(winner: Player) {
-        this.deletePowerUps()
         var looser =
             winner === this._currentData.players.one
                 ? this._currentData.players.two
@@ -750,7 +743,7 @@ export default class Game {
             "mapPannel_" + looser.meshName + ":blink"
         )
         clip?.reset()
-        clip?.play()
+        // clip?.play()
         this.gameAlert(
             winner.name === this.currentPlayer()?.name
                 ? "You have scored"
@@ -803,7 +796,7 @@ export default class Game {
 
     socketEvents(event: string, data: any) {
         switch (event) {
-            case "game.syncData":
+            case "game:syncData":
                 if (this._lastTime < data.time) {
                     if (data.force) {
                         this._currentData = data.data
@@ -833,7 +826,7 @@ export default class Game {
                 }
                 break
 
-            case "game.youAre":
+            case "game:youAre":
                 this._whoAmI = data
                 if (data === "one") this._engine.camera.position.set(0, 10, 25)
                 else if (data === "two")

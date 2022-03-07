@@ -22,7 +22,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.relationalMap = new Map<WebSocket, Lobby>()
     }
 
-    @SubscribeMessage("game.ready")
+    @SubscribeMessage("game:ready")
     open(@ConnectedSocket() s: WebSocket) {
         console.log(`[ws/game] new socket`)
         this.clientArray.push(s)
@@ -39,7 +39,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }
     }
 
-    @SubscribeMessage("game.disconnect")
+    @SubscribeMessage("game:disconnect")
     disconnect(@ConnectedSocket() s: WebSocket) {
         this.handleDisconnect(s)
     }
@@ -49,7 +49,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         console.log("test", data)
     }
 
-    @SubscribeMessage("game.playerMove")
+    @SubscribeMessage("game:playerMove")
     playerMove(@ConnectedSocket() s: WebSocket, @MessageBody() data: any) {
         const lobby = this.relationalMap.get(s)
         if (lobby) {

@@ -18,7 +18,7 @@ function GameComponent(user: User | null) {
 
         const unmount = () => {
             localInstance?.killEngine()
-            sendMessage("game.disconnect", null)
+            sendMessage("game:disconnect", null)
             unsubscribe()
         }
         return unmount
