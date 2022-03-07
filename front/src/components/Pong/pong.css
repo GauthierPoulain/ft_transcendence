@@ -1,7 +1,3 @@
-/* #gameContainer #gameHud * {
-	border: 1px solid red;
-} */
-
 #loadingContainer {
     height: 100%;
     width: 100%;
@@ -19,6 +15,7 @@
 
 #gameContainer canvas {
     z-index: 1;
+    bottom: 0;
 }
 
 #gameHud {
@@ -120,12 +117,82 @@
     padding: 2rem;
 }
 
-#bigAlert span {
-    color: crimson;
-}
-
 #userIdentity {
     position: absolute;
     left: calc(50%);
     transform: translateX(-50%);
+}
+
+#endGameContainer {
+    position: absolute;
+    background-color: #00000000;
+    z-index: 3;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    display: none;
+    transition-property: background-color;
+    transition-timing-function: ease-in-out;
+    transition-duration: 1s;
+}
+
+#endGame {
+    background: rgb(51, 51, 51);
+    color: white;
+    height: 10%;
+    width: 50%;
+    border-radius: 2em;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transform: translateY(100vh);
+    transition-property: transform;
+    transition-timing-function: ease-in-out;
+    transition-duration: 1s;
+}
+
+@keyframes bgAnim {
+    from {
+        background-color: #00000000;
+    }
+
+    to {
+        background-color: #00000075;
+    }
+}
+
+@keyframes cardAnim {
+    from {
+        transform: translateY(100vh);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+.endGameBgTrigger {
+    display: flex !important;
+    animation-name: bgAnim;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+.endGameCardTrigger {
+    display: flex !important;
+    animation-name: cardAnim;
+    animation-duration: 0.75s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+#endGame p,
+#endGame h2 {
+    margin: 0;
 }

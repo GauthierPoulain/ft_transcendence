@@ -9,8 +9,10 @@ class Player {
     color: number = 0xffffff
     meshName: string
     last: number
+    id: number
 
-    constructor(name: string, color: number, meshName: string) {
+    constructor(id: number, name: string, color: number, meshName: string) {
+        this.id = id
         this.name = name
         this.color = color
         this.meshName = meshName
@@ -242,8 +244,8 @@ export default class Game {
 
         this._currentData = {
             players: {
-                one: new Player("pl1", 0xffffff, "player1"),
-                two: new Player("pl2", 0xffffff, "player2"),
+                one: new Player(1, "pl1", 0xffffff, "player1"),
+                two: new Player(2, "pl2", 0xffffff, "player2"),
             },
             quoit: {
                 x: 0,
@@ -745,11 +747,12 @@ export default class Game {
         )
         clip?.reset()
         // clip?.play()
-        this.gameAlert(
-            winner.name === this.currentPlayer()?.name
-                ? "You have scored"
-                : winner.name + " has scored"
-        )
+        if (winner.name === this.currentPlayer()?.name)
+            this.gameAlert(`<span style="color: green">You</span> have scored`)
+        else
+            this.gameAlert(
+                `<span style="color: red">${winner.name}</span> has scored`
+            )
     }
 
     gameAlert(text: string) {
@@ -774,6 +777,26 @@ export default class Game {
                 ?.classList.remove("bigAlertAnimation")
             this._gameAlertTimeout = null
         }, 4000)
+    }
+
+    winningEvent(player: Player) {
+        console.log(player)
+        document
+            .getElementById("endGameContainer")
+            ?.classList.add("endGameBgTrigger")
+        document.getElementById("endGame")?.classList.add("endGameCardTrigger")
+        if (document.querySelector("#endGame #mainText"))
+            document.querySelector(
+                "#endGame #mainText"
+            )!.innerHTML = `${player.name} win the game`
+        if (document.querySelector("#endGame #score"))
+            document.querySelector("#endGame #score")!.innerHTML = `${
+                player.score
+            } - ${
+                player.id === 1
+                    ? this._currentData.players.two.score
+                    : this._currentData.players.one.score
+            }`
     }
 
     updateHUD() {
@@ -857,6 +880,10 @@ export default class Game {
 
             case "game:updateHUD":
                 this.updateHUD()
+                break
+
+            case "game:win":
+                this.winningEvent(data.player)
                 break
 
             default:

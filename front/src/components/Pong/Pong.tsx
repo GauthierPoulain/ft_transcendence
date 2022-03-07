@@ -46,6 +46,12 @@ function GameComponent(user: User | null) {
                     </div>
                 </div>
             </div>
+            <div id="endGameContainer">
+                <div id="endGame">
+                    <h2 id="mainText">X win the game</h2>
+                    <p id="score">2 - 0</p>
+                </div>
+            </div>
         </React.Fragment>
     )
 }

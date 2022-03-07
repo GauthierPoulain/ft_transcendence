@@ -30,26 +30,12 @@ export default class Lobby {
     _player_one: WebSocket
     _player_two: WebSocket
     _spectators: WebSocket[]
-    _roundRunning = false
-
-    _gameRules = {
-        maxPoints: 11,
-        enablePowerUp: false,
-    }
-
-    _map = {
-        depth: 25,
-        width: 15,
-        height: 0.5,
-        color: 0x0000ff,
-        separator: { depth: 0.5, color: 0xffffff },
-        borders: { width: 0.3, height: 1.25, color: 0xffffff },
-    }
 
     _engine: {
         scene: THREE.Scene
         objects: Map<string, any>
     }
+
     _currentData: {
         players: { one: Player; two: Player }
         quoit: {
@@ -60,6 +46,23 @@ export default class Lobby {
             speed: { x: number; z: number }
         }
     }
+
+    _gameRules = {
+        maxPoints: 3,
+        enablePowerUp: false,
+    }
+
+    _roundRunning = false
+
+    _map = {
+        depth: 25,
+        width: 15,
+        height: 0.5,
+        color: 0x0000ff,
+        separator: { depth: 0.5, color: 0xffffff },
+        borders: { width: 0.3, height: 1.25, color: 0xffffff },
+    }
+
     _simData: {
         running: boolean
         last: number
@@ -78,8 +81,8 @@ export default class Lobby {
         this._spectators = new Array<WebSocket>()
         this._currentData = {
             players: {
-                one: new Player("GogoLeDozo", 0xffffff, "player1"),
-                two: new Player("bot", 0xffffff, "player2"),
+                one: new Player(1, "GogoLeDozo", 0xffffff, "player1"),
+                two: new Player(2, "bot", 0xffffff, "player2"),
             },
             quoit: {
                 x: 0,

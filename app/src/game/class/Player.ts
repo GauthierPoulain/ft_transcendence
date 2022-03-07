@@ -6,8 +6,10 @@ export default class Player {
     color: number = 0xffffff
     meshName: string
     last: number
+    id: number
 
-    constructor(name: string, color: number, meshName: string) {
+    constructor(id: number, name: string, color: number, meshName: string) {
+        this.id = id
         this.name = name
         this.color = color
         this.meshName = meshName
