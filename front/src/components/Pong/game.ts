@@ -328,7 +328,6 @@ export default class Game {
     }
 
     startSimulation() {
-        new PowerUp(this._engine, 1, PowerUpTypes.DEFAULT, 2, 3, 0.2)
         this._simData.last = Date.now()
         this._simData.running = true
         this._simData.interval = setInterval(() => {
@@ -634,7 +633,7 @@ export default class Game {
                 "mapPannel_player1"
             ) as THREE.Mesh
             let mat = obj.material as THREE.MeshPhongMaterial
-            let blinkColor = hexToRgb(0xff0000)
+            let blinkColor = hexToRgb(0x000aff)
             let colorsKF = new THREE.ColorKeyframeTrack(
                 ".material.color",
                 [0, 1],
@@ -663,7 +662,7 @@ export default class Game {
                 "mapPannel_player2"
             ) as THREE.Mesh
             let mat = obj.material as THREE.MeshPhongMaterial
-            let blinkColor = hexToRgb(0xff0000)
+            let blinkColor = hexToRgb(0x000aff)
             let colorsKF = new THREE.ColorKeyframeTrack(
                 ".material.color",
                 [0, 1],
@@ -735,8 +734,14 @@ export default class Game {
         }
     }
 
+    deletePowerUps() {
+        this._engine.powerUp.forEach((po) => {
+            po._destroy()
+        })
+    }
+
     playerScore(winner: Player) {
-        this.stopSimulation()
+        this.deletePowerUps()
         var looser =
             winner === this._currentData.players.one
                 ? this._currentData.players.two
@@ -751,11 +756,6 @@ export default class Game {
                 ? "You have scored"
                 : winner.name + " has scored"
         )
-        winner.score++
-        this.updateHUD()
-        setTimeout(() => {
-            this.startSimulation()
-        }, 3000)
     }
 
     gameAlert(text: string) {
@@ -785,13 +785,17 @@ export default class Game {
     updateHUD() {
         this._gameContainer.querySelector(
             "#gameHud .identity#one .name"
-        )!.textContent = this._currentData.players.one.name
+        )!.textContent =
+            this._currentData.players.one.name +
+            (this._whoAmI == "one" ? " (you)" : "")
         this._gameContainer.querySelector(
             "#gameHud .identity#one .score"
         )!.textContent = String(this._currentData.players.one.score)
         this._gameContainer.querySelector(
             "#gameHud .identity#two .name"
-        )!.textContent = this._currentData.players.two.name
+        )!.textContent =
+            this._currentData.players.two.name +
+            (this._whoAmI == "two" ? " (you)" : "")
         this._gameContainer.querySelector(
             "#gameHud .identity#two .score"
         )!.textContent = String(this._currentData.players.two.score)
@@ -835,6 +839,20 @@ export default class Game {
                 else if (data === "two")
                     this._engine.camera.position.set(0, 10, -25)
                 this._engine.camera.lookAt(0, 0, 0)
+                this.updateHUD()
+                break
+
+            case "game:kill":
+                this.stopSimulation()
+                break
+
+            case "game:score":
+                console.log(data)
+                this.playerScore(data.player)
+                break
+
+            case "game:updateHUD":
+                this.updateHUD()
                 break
 
             default:

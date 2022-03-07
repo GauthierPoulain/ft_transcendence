@@ -29,6 +29,11 @@ export default class Lobby {
     _player_two: WebSocket
     _spectators: WebSocket[]
 
+    _gameRules = {
+        maxPoints: 11,
+        enablePowerUp: false,
+    }
+
     _map = {
         depth: 25,
         width: 15,
@@ -145,6 +150,48 @@ export default class Lobby {
         }
     }
 
+    resetRound() {
+        this._currentData.players.one.width = 3
+        this._currentData.players.two.width = 3
+        this._currentData.players.one.x = 0
+        this._currentData.players.two.x = 0
+        this._currentData.quoit.x = 0
+        this._currentData.quoit.z = 0
+        this._currentData.quoit.speed.x = 0
+        this._currentData.quoit.speed.z = 0
+        this.sendData()
+    }
+
+    checkVictory() {
+        if (this._currentData.players.one.score >= this._gameRules.maxPoints) {
+            return true
+        } else if (
+            this._currentData.players.two.score >= this._gameRules.maxPoints
+        ) {
+            return true
+        } else return false
+    }
+
+    playerWin(player: Player) {
+        this.stop()
+        console.log(`${player.name} win the game`)
+        this.broadcast("game:win", { player: player })
+    }
+
+    playerScore(player: Player) {
+        player.score += 1
+        this.resetRound()
+        this.updateHUD()
+        if (this.checkVictory()) {
+            this.playerWin(player)
+        } else this.broadcast("game:score", { player: player })
+    }
+
+    updateHUD() {
+        this.sendData()
+        this.broadcast("game:updateHUD")
+    }
+
     private syncMeshs() {
         const quoit = this._engine.objects.get("quoit") as THREE.Mesh
         const playerP = this._engine.objects.get("player1") as THREE.Mesh
@@ -238,10 +285,18 @@ export default class Lobby {
             {
                 playerN.position.x = this._currentData.quoit.x
             }
+
+            {
+                if (this._currentData.quoit.z > this._map.depth / 2)
+                    this.playerScore(this._currentData.players.two)
+                else if (this._currentData.quoit.z < -this._map.depth / 2)
+                    this.playerScore(this._currentData.players.one)
+            }
             this._simData.last = Date.now()
         } catch (error) {
             console.error(error)
             this.stop()
+            this.broadcast("game:kill")
             return false
         }
     }
