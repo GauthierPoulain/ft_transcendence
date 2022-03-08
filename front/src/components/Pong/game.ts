@@ -355,11 +355,6 @@ export default class Game {
             const player1 = this._engine.objects.get("player1") as THREE.Mesh
             const player2 = this._engine.objects.get("player2") as THREE.Mesh
 
-            // this._engine.powerUp.forEach((pu) => {
-            //     if (pu.collisionCheck(quoit, this._currentData.quoit.radius))
-            //         pu.trigger(this._lastHit)
-            // })
-
             if (this._whoAmI === "one" || this._whoAmI === "two") {
                 const player = this._engine.objects.get(
                     this._currentData.players[this._whoAmI!].meshName
@@ -887,8 +882,20 @@ export default class Game {
                 break
 
             case "game:powerupSpawn":
-                    new PowerUp(this._engine, data.id, data.type, data.x, data.z, data.r);
-                    break
+                new PowerUp(
+                    this._engine,
+                    data.id,
+                    data.type,
+                    data.x,
+                    data.z,
+                    data.r
+                )
+                break
+
+            case "game:powerupTrigger":
+                let pu = this._engine.powerUp.get(data.id) as PowerUp
+                pu.trigger(data.sender)
+                break
 
             default:
                 console.log("game socket event", event, data)

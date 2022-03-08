@@ -1,6 +1,8 @@
 import { WebSocket } from "ws"
 import Player from "./Player"
 import * as THREE from "three"
+import PowerUp from "./Powerup"
+import { Iengine } from "./Interface"
 
 const TICKRATE = 60
 
@@ -31,11 +33,8 @@ export default class Lobby {
     _player_two: WebSocket
     _spectators: WebSocket[]
 
-    _engine: {
-        scene: THREE.Scene
-        objects: Map<string, any>
-    }
-
+    _engine: Iengine
+    _lastHit: Player
     _currentData: {
         players: { one: Player; two: Player }
         quoit: {
@@ -95,7 +94,9 @@ export default class Lobby {
         this._engine = {
             scene: new THREE.Scene(),
             objects: new Map<string, any>(),
+            powerUps: new Map<number, PowerUp>(),
         }
+        this._lastHit = this._currentData.players.one
         this.initScene()
     }
 
@@ -182,14 +183,7 @@ export default class Lobby {
         this._roundRunning = true
         this._currentData.quoit.speed.z = 10
         this.broadcast("game:startRound")
-        this.broadcast("game:powerupSpawn", 
-        {
-            id: 1,
-            type: "default",
-            x: 3,
-            z: 0,
-            r: 1
-        });
+        new PowerUp(this._engine, this, 1, "default", 3, 0, 1);
     }
 
     checkVictory() {
@@ -231,19 +225,19 @@ export default class Lobby {
 
     private syncMeshs() {
         const quoit = this._engine.objects.get("quoit") as THREE.Mesh
-        const playerP = this._engine.objects.get("player1") as THREE.Mesh
-        const playerN = this._engine.objects.get("player2") as THREE.Mesh
+        const playerOne = this._engine.objects.get("player1") as THREE.Mesh
+        const playerTwo = this._engine.objects.get("player2") as THREE.Mesh
 
         quoit.position.x = this._currentData.quoit.x
         quoit.position.z = this._currentData.quoit.z
         quoit.scale.x = this._currentData.quoit.radius
         quoit.scale.z = this._currentData.quoit.radius
 
-        playerP.position.x = this._currentData.players.one.x
-        playerP.scale.x = this._currentData.players.one.width
+        playerOne.position.x = this._currentData.players.one.x
+        playerOne.scale.x = this._currentData.players.one.width
 
-        playerN.position.x = this._currentData.players.two.x
-        playerN.scale.x = this._currentData.players.two.width
+        playerTwo.position.x = this._currentData.players.two.x
+        playerTwo.scale.x = this._currentData.players.two.width
     }
 
     simulate() {
@@ -254,16 +248,24 @@ export default class Lobby {
             const quoit = this._engine.objects.get("quoit") as THREE.Mesh
             const wallP = this._engine.objects.get("map_border1") as THREE.Mesh
             const wallN = this._engine.objects.get("map_border2") as THREE.Mesh
-            const playerP = this._engine.objects.get("player1") as THREE.Mesh
-            const playerN = this._engine.objects.get("player2") as THREE.Mesh
+            const playerOne = this._engine.objects.get("player1") as THREE.Mesh
+            const playerTwo = this._engine.objects.get("player2") as THREE.Mesh
             {
+                this._engine.powerUps.forEach((pu) => {
+                    console.log(pu.collisionCheck(quoit, this._currentData.quoit.radius))
+                    if (
+                        pu.collisionCheck(quoit, this._currentData.quoit.radius)
+                    )
+                        pu.trigger(this._lastHit)
+                })
                 if (
                     collisionBoxCyl(
-                        playerP,
+                        playerOne,
                         quoit,
                         this._currentData.quoit.radius
                     )
                 ) {
+                    this._lastHit = this._currentData.players.one
                     this._currentData.quoit.speed.z = -Math.abs(
                         this._currentData.quoit.speed.z
                     )
@@ -274,11 +276,12 @@ export default class Lobby {
                     this._currentData.quoit.speed.x += xSpeed * 3
                 } else if (
                     collisionBoxCyl(
-                        playerN,
+                        playerTwo,
                         quoit,
                         this._currentData.quoit.radius
                     )
                 ) {
+                    this._lastHit = this._currentData.players.two
                     this._currentData.quoit.speed.z = Math.abs(
                         this._currentData.quoit.speed.z
                     )
@@ -318,7 +321,7 @@ export default class Lobby {
                     this._currentData.quoit.speed.z * delta
             }
             {
-                playerN.position.x = this._currentData.quoit.x
+                playerTwo.position.x = this._currentData.quoit.x
             }
             {
                 if (this._currentData.quoit.z > this._map.depth / 2)
