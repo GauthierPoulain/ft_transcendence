@@ -7,6 +7,7 @@ export type User = {
     id: number
     nickname: string
     image: string
+    tfa: boolean
 }
 
 const repository = createRepository<User>();

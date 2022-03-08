@@ -11,11 +11,11 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
+    @Column({ unique: true })
     @Exclude()
     intra_id: number
 
-    @Column()
+    @Column({ unique: true })
     @Exclude()
     intra_login: string
 
@@ -23,8 +23,8 @@ export class User {
     @Exclude()
     intra_image_url: string
 
-    @Column({ default: "" })
-    custom_name: string
+    @Column({ nullable: true, unique: true })
+    custom_name: string | null
 
     @Expose()
     get image(): string {
@@ -36,9 +36,14 @@ export class User {
         return this.custom_name ? this.custom_name : this.intra_login
     }
 
-    @Column({ default: "" })
+    @Column({ nullable: true })
     @Exclude()
-    tfa_secret: string
+    tfa_secret: string | null
+
+    @Expose()
+    get tfa(): boolean {
+        return this.tfa_secret.length !== 0
+    }
 
     @Exclude()
     @OneToMany(() => Member, (member) => member.user)
