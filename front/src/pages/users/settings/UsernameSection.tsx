@@ -24,20 +24,16 @@ export default function UsernameSection() {
     }
 
     return (
-        <div className="mb-3">
-            <h3>Username</h3>
+        <Form className="mb-3" onSubmit={submitForm}>
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label>Your custom username</Form.Label>
+                <Form.Control type="text" className="border-dark bg-dark" placeholder="Enter custom username" value={name} onChange={(event) => setName(event.target.value)}/>
+                <Form.Text className="text-muted">Use an empty username to remove it.</Form.Text>
+            </Form.Group>
 
-            <Form onSubmit={submitForm}>
-                <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Label>Your custom username</Form.Label>
-                    <Form.Control type="text" className="border-dark bg-dark" placeholder="Enter custom username" value={name} onChange={(event) => setName(event.target.value)}/>
-                    <Form.Text className="text-muted">Use an empty username to remove it.</Form.Text>
-                </Form.Group>
-
-                <Button size="sm" variant="primary" type="submit" disabled={isLoading}>
-                    { name.length === 0 ? "Remove" : "Change" } custom username
-                </Button>
-            </Form>
-        </div>
+            <Button size="sm" variant="primary" type="submit" disabled={isLoading}>
+                { name.length === 0 ? "Remove" : "Change" } custom username
+            </Button>
+        </Form>
     )
 }

@@ -8,8 +8,11 @@ export default function ProfileSettings() {
         <Container>
             <h2>Settings</h2>
 
+            <h3>Profile</h3>
             <UsernameSection />
             <AvatarSection />
+
+            <h3>Security</h3>
             <TwofactorSection />
         </Container>
     )
