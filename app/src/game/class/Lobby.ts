@@ -118,7 +118,7 @@ export default class Lobby {
         }, 1000 / TICKRATE)
         setTimeout(() => {
             this.startRound()
-        }, 3000)
+        }, 0)
     }
 
     joinSpec(socket: WebSocket) {
@@ -182,6 +182,14 @@ export default class Lobby {
         this._roundRunning = true
         this._currentData.quoit.speed.z = 10
         this.broadcast("game:startRound")
+        this.broadcast("game:powerupSpawn", 
+        {
+            id: 1,
+            type: "default",
+            x: 3,
+            z: 0,
+            r: 1
+        });
     }
 
     checkVictory() {
