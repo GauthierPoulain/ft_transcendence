@@ -37,7 +37,7 @@ function User({ userId }) {
 function Users({ relations }) {
     return (
         <div className="d-flex">
-            { relations.map(({ targetId }) => <User userId={targetId} />) }
+            { relations.map(({ targetId }) => <User key={targetId} userId={targetId} />) }
         </div>
     );
 }
