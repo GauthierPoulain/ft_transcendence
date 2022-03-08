@@ -2,15 +2,15 @@ import { Injectable } from "@nestjs/common"
 import { PassportStrategy } from "@nestjs/passport"
 import { ExtractJwt, Strategy as InnerJwtStrategy } from "passport-jwt"
 import { Strategy as InnerAnonymousStrategy } from "passport-anonymous"
+import { ConfigService } from "@nestjs/config"
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(InnerJwtStrategy) {
-    constructor() {
+    constructor(config: ConfigService) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey:
-                "TODO: this should be generated with cryptogaphic random later",
+            secretOrKey: Buffer.from(config.get<string>("JWT_SECRET"), "base64")
         })
     }
 

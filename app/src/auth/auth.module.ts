@@ -9,13 +9,18 @@ import { FortyTwoService } from "./fortytwo.service"
 import { JwtModule } from "@nestjs/jwt"
 import { JwtStrategy, AnonymousStrategy } from "./auth.strategy"
 import { AuthSocketService } from "./auth-socket.service"
+import { ConfigModule, ConfigService } from "@nestjs/config"
 
 @Module({
     imports: [
         HttpModule,
         UsersModule,
-        JwtModule.register({
-            secret: "TODO: this should be generated with cryptogaphic random later",
+        JwtModule.registerAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (service: ConfigService) => ({
+                secret: Buffer.from(service.get<string>("JWT_SECRET"), "base64")
+            })
         }),
     ],
     providers: [
