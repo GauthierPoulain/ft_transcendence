@@ -16,11 +16,15 @@ export class User {
     intra_id: number
 
     @Column()
+    @Exclude()
     intra_login: string
 
     @Column()
     @Exclude()
     intra_image_url: string
+
+    @Column({ default: "" })
+    custom_name: string
 
     @Expose()
     get image(): string {
@@ -29,7 +33,7 @@ export class User {
 
     @Expose()
     get nickname(): string {
-        return this.intra_login
+        return this.custom_name ? this.custom_name : this.intra_login
     }
 
     @Column({ default: "" })

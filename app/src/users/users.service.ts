@@ -31,6 +31,11 @@ export class UsersService {
         return user
     }
 
+    async update(user: User) {
+        user = await this.usersRepository.save(user)
+        this.publish("updated", instanceToPlain(user, {}))
+    }
+
     updateIntra(user: User, intra_user: IntraInfosDto) {
         user.intra_id = intra_user.id
         user.intra_login = intra_user.login
