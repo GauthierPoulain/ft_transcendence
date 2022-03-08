@@ -5,7 +5,6 @@ import { fetcher } from "./use-fetch"
 
 export type User = {
     id: number
-    intra_login: string
     nickname: string
     image: string
 }
@@ -22,6 +21,10 @@ const service = createService<User, void>({
 
     onCreated(data, setState) {
         setState((state) => repository.addOne(state, data))
+    },
+
+    onUpdated(data, setState) {
+        setState((state) => repository.updateOne(state, data))
     }
 })
 

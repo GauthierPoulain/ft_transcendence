@@ -21,6 +21,7 @@ import { Member } from "./members/member.entity"
 import { Relation } from "./relations/relation.entity"
 import { RelationsModule } from "./relations/relations.module"
 import { StatusModule } from "./status/status.module"
+import { SettingsModule } from "./users/settings/settings.module"
 
 @Module({
     imports: [
@@ -55,7 +56,8 @@ import { StatusModule } from "./status/status.module"
         MatchesModule,
         MembersModule,
         RelationsModule,
-        StatusModule
+        StatusModule,
+        SettingsModule
     ],
     controllers: [AppController],
     providers: [AppService],
