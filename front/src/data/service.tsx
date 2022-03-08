@@ -57,6 +57,7 @@ export function createService<T extends Entity, U>(
             serviceSettings.repository.initialState()
         )
         const [loading, setLoading] = useState(true)
+        const [mounted, setMounted] = useState(true);
 
         useEffect(() => {
             console.log("Provider.Fetching", serviceSettings.name, settings)
@@ -64,9 +65,13 @@ export function createService<T extends Entity, U>(
             setState(serviceSettings.repository.initialState())
 
             serviceSettings.fetcher(settings).then((state) => {
-                setState(serviceSettings.repository.setAll(state))
-                setLoading(false)
+                if (mounted) {
+                    setState(serviceSettings.repository.setAll(state))
+                    setLoading(false)
+                }
             })
+
+            return () => setMounted(false)
         }, [settings])
 
         useEffect(() => {
