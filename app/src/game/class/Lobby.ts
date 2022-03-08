@@ -176,6 +176,9 @@ export default class Lobby {
 
     stopRound() {
         this._roundRunning = false
+        this._engine.powerUps.forEach(pu => {
+            pu._destroy();
+        })
         this.broadcast("game:stopRound")
     }
 
@@ -252,7 +255,6 @@ export default class Lobby {
             const playerTwo = this._engine.objects.get("player2") as THREE.Mesh
             {
                 this._engine.powerUps.forEach((pu) => {
-                    console.log(pu.collisionCheck(quoit, this._currentData.quoit.radius))
                     if (
                         pu.collisionCheck(quoit, this._currentData.quoit.radius)
                     )

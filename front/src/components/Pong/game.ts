@@ -893,8 +893,18 @@ export default class Game {
                 break
 
             case "game:powerupTrigger":
-                let pu = this._engine.powerUp.get(data.id) as PowerUp
-                pu.trigger(data.sender)
+                {
+                    let pu = this._engine.powerUp.get(data.id) as PowerUp
+                    if (pu)
+                        pu.trigger(data.sender)
+                }
+                break
+
+            case "game:powerupDestroy":
+                {
+                    let pu = this._engine.powerUp.get(data.id) as PowerUp
+                        pu?._destroy()
+                }
                 break
 
             default:

@@ -82,6 +82,7 @@ export default class PowerUp {
     _destroy() {
         this._ctx.powerUps.delete(this._id)
         this._ctx.scene.remove(this._mesh)
+		this._lobbyCtx.broadcast("game:powerupDestroy", {id: this._id});
     }
 }
 
