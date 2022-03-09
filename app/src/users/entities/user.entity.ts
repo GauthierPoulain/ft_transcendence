@@ -42,7 +42,7 @@ export class User {
 
     @Expose()
     get tfa(): boolean {
-        return this.tfa_secret.length !== 0
+        return !!this.tfa_secret
     }
 
     @Exclude()

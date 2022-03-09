@@ -39,7 +39,6 @@ export class FortyTwoService {
         })
 
         const { data } = await firstValueFrom(request)
-        console.log(data)
 
         return data.access_token
     }
