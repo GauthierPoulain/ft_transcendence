@@ -22,7 +22,7 @@ export class AuthController {
         // another type of token.
 
         return {
-            token: await this.auth.createToken(user),
+            token: await this.auth.createToken(user, user.tfa),
             created,
             user,
         }
@@ -41,7 +41,7 @@ export class AuthController {
         const user = await this.auth.fake_login(payload)
 
         return {
-            token: await this.auth.createToken(user),
+            token: await this.auth.createToken(user, user.tfa),
             created: true,
             user,
         }
@@ -58,7 +58,7 @@ export class AuthController {
         const user = await this.auth.fake_login(payload)
 
         return {
-            token: await this.auth.createToken(user),
+            token: await this.auth.createToken(user, user.tfa),
             created: false,
             user,
         }

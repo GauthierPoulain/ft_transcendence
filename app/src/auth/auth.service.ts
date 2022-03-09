@@ -3,12 +3,8 @@ import { JwtService } from "@nestjs/jwt"
 import { IntraInfosDto } from "src/users/dto/intra_infos.dto"
 import { User } from "src/users/entities/user.entity"
 import { UsersService } from "src/users/users.service"
-import { ConnectDto } from "./auth.dto"
+import { ConnectDto, TokenPayload } from "./auth.dto"
 import { FortyTwoService } from "./fortytwo.service"
-
-type TokenPayload = {
-    sub: number
-}
 
 @Injectable()
 export class AuthService {
@@ -48,9 +44,10 @@ export class AuthService {
         return user
     }
 
-    createToken(user: User): Promise<string> {
+    createToken(user: User, tfa: boolean): Promise<string> {
         const payload = {
             sub: user.id,
+            aud: tfa ? "tfa" : "auth"
         }
 
         return this.jwt.signAsync(payload)

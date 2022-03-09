@@ -10,3 +10,9 @@ export class AuthResponse {
     created: boolean
     user: User
 }
+
+export type TokenPayload = {
+    sub: number,
+    aud: string
+}
+

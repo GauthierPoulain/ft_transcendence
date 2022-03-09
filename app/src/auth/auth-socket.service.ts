@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common"
+import { Injectable, UnauthorizedException } from "@nestjs/common"
 import { WebSocket } from "ws"
 import { AuthService } from "./auth.service"
 
@@ -10,7 +10,11 @@ export class AuthSocketService {
     constructor(private auth: AuthService) {}
 
     async login(socket: WebSocket, token: string): Promise<number> {
-        const { sub } = await this.auth.verify(token)
+        const { sub, aud } = await this.auth.verify(token)
+
+        if (aud !== "auth") {
+            throw new UnauthorizedException();
+        }
 
         this.sockets.set(socket, sub)
         return sub
