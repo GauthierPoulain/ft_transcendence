@@ -895,15 +895,14 @@ export default class Game {
             case "game:powerupTrigger":
                 {
                     let pu = this._engine.powerUp.get(data.id) as PowerUp
-                    if (pu)
-                        pu.trigger(data.sender)
+                    if (pu) pu.trigger(data.sender)
                 }
                 break
 
             case "game:powerupDestroy":
                 {
                     let pu = this._engine.powerUp.get(data.id) as PowerUp
-                        pu?._destroy()
+                    pu?._destroy()
                 }
                 break
 

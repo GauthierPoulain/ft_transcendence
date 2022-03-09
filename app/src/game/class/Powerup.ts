@@ -5,6 +5,10 @@ import Lobby from "./Lobby"
 
 enum PowerUpTypes {
     DEFAULT = "default",
+    SPEED = "speed",
+    LARGE = "large",
+    SMALL = "small",
+    RANDOMDIR = "random_direction",
 }
 
 export default class PowerUp {
@@ -68,7 +72,10 @@ export default class PowerUp {
     trigger(sender: Player) {
         this._effect(sender)
         this._destroy()
-        this._lobbyCtx.broadcast("game:powerupTrigger", { id: this._id, sender: sender})
+        this._lobbyCtx.broadcast("game:powerupTrigger", {
+            id: this._id,
+            sender: sender,
+        })
     }
 
     animate(delta: number) {
@@ -82,7 +89,7 @@ export default class PowerUp {
     _destroy() {
         this._ctx.powerUps.delete(this._id)
         this._ctx.scene.remove(this._mesh)
-		this._lobbyCtx.broadcast("game:powerupDestroy", {id: this._id});
+        this._lobbyCtx.broadcast("game:powerupDestroy", { id: this._id })
     }
 }
 
