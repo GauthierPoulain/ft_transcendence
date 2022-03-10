@@ -1,10 +1,46 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button } from "react-bootstrap"
-import { Navigate, useLocation } from "react-router-dom"
-import { useAuth } from "../../data/use-auth"
-import { Link } from "react-router-dom"
+import { Navigate, useLocation, useNavigate } from "react-router-dom"
+import { ExchangeCodeResponse, useAuth } from "../../data/use-auth"
 import "./style.scss"
 import { Form } from "react-bootstrap"
+import { fetcher, useSubmit } from "../../data/use-fetch"
+
+function TwoFactorAuth({ token }) {
+    const auth = useAuth()
+    const [tfa, setTfa] = useState("")
+
+    const { submit, isLoading } = useSubmit<{ token: string, tfa: string }, ExchangeCodeResponse>(({ token, tfa }) => fetcher("/auth/upgrade", {
+        method: "POST",
+        body: JSON.stringify({ token, tfa })
+    }))
+
+
+    async function submitForm(event: any) {
+        event.preventDefault()
+        const response = await submit({ token, tfa })
+
+        auth.login(response)
+    }
+
+    return (
+        <div className="d-flex align-items-center">
+            <div className="container auth-card mt-5 p-3">
+                <h1>Two factor auth</h1>
+                <Form className="code-input" onSubmit={submitForm}>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Verification code</Form.Label>
+                        <Form.Control type="text" placeholder="6 digits code" value={tfa} onChange={(event) => setTfa(event.target.value)} />
+                    </Form.Group>
+
+                    <Button size="sm" variant="primary" type="submit" disabled={isLoading}>
+                        Submit token
+                    </Button>
+                </Form>
+            </div>
+        </div>
+    )
+}
 
 const redirect_uri = new URL("/auth", window.location as any).toString()
 const authorize_uri = new URL("https://api.intra.42.fr/oauth/authorize")
@@ -30,13 +66,21 @@ function RedirectIntra() {
 }
 
 function LoginIntra({ code }: { code: string }) {
+    const navigate = useNavigate()
     const auth = useAuth()
     const [state, setState] = useState(0)
+    const [token, setToken] = useState("")
 
     useEffect(() => {
-        auth.login({ code, redirect_uri })
-            .then(() => {
-                setState(2)
+        auth.exchange({ code, redirect_uri })
+            .then((response) => {
+                if (response.user.tfa) {
+                    setToken(response.token)
+                    setState(2)
+                } else {
+                    auth.login(response)
+                    navigate("/", { replace: true })
+                }
             })
             .catch(() => {
                 setState(1)
@@ -48,7 +92,7 @@ function LoginIntra({ code }: { code: string }) {
     }
 
     if (state === 2) {
-        return <Navigate to="/" replace />
+        return <TwoFactorAuth token={token} />
     }
 
     return <p>Exchanging intra token with our server...</p>
@@ -56,22 +100,26 @@ function LoginIntra({ code }: { code: string }) {
 
 function LoginFake({ user }) {
     const auth = useAuth()
+    const navigate = useNavigate()
     const [state, setState] = useState(0)
+    const [token, setToken] = useState("")
 
     useEffect(() => {
         console.log("fake login")
 
-        auth.fakeLogin(user)
-            .then(() => {
-                setState(2)
+        auth.fakeExchange(user)
+            .then((response) => {
+                if (response.user.tfa) {
+                    setToken(response.token)
+                    setState(2)
+                } else {
+                    auth.login(response)
+                    navigate("/", { replace: true })
+                }
             })
             .catch(() => {
                 setState(1)
             })
-
-        return () => {
-            console.log("unmounted")
-        }
     }, [auth, user])
 
     if (state === 1) {
@@ -79,7 +127,7 @@ function LoginFake({ user }) {
     }
 
     if (state === 2) {
-        return <Navigate to="/" replace />
+        return <TwoFactorAuth token={token} />
     }
 
     return <p>Connecting with a the fake account {user} to our server...</p>
@@ -100,22 +148,6 @@ function LoginButtons({ setState }) {
                 Fake login two
             </Button>
         </>
-    )
-}
-
-function TwoFactorAuth() {
-    return (
-        <div className="d-flex align-items-center">
-            <div className="container auth-card mt-5 p-3">
-                <h1>Two factor auth</h1>
-                <Form className="code-input">
-                    <Form.Group className="mb-3">
-                        <Form.Label>Verification code</Form.Label>
-                        <Form.Control type="text" placeholder="6 digits code" />
-                    </Form.Group>
-                </Form>
-            </div>
-        </div>
     )
 }
 
@@ -140,8 +172,6 @@ export function Page() {
                 {state === 3 && <LoginFake user="two" />}
                 {state === 4 && <LoginIntra code={code as string} />}
             </div>
-
-            <TwoFactorAuth />
         </div>
     )
 }
