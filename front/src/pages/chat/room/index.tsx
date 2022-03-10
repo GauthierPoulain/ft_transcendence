@@ -18,7 +18,6 @@ import {
 import Loading from "../../../components/Loading"
 import MessageInput from "./input"
 
-
 function PasswordMaintenance({ channelId }) {
     const auth = useAuth()
     const channel = useChannel(channelId)!
@@ -98,6 +97,7 @@ function Main({ channelId }) {
                     <h2>{channel.name}</h2>
                     <h4 className="ms-2 chan-type">[{channel.type}]</h4>
                 </div>
+                {channel.type !== "direct" &&
                 <div className="d-flex">
                     <Button
                         variant="danger"
@@ -108,7 +108,7 @@ function Main({ channelId }) {
                         Leave channel
                     </Button>
                     <PasswordMaintenance channelId={channelId} />
-                </div>
+                </div>}
             </div>
 
             <MessagesProvider settings={channelId}>
