@@ -62,6 +62,7 @@ export function createService<T extends Entity, U>(
         useEffect(() => {
             console.log("Provider.Fetching", serviceSettings.name, settings)
             setLoading(true)
+            setMounted(true)
             setState(serviceSettings.repository.initialState())
 
             serviceSettings.fetcher(settings).then((state) => {
