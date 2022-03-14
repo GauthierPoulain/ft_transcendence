@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Form } from "react-bootstrap"
 import { useChannel } from "../../../data/channels"
 import { useMembers } from "../../../data/members"
-import { useCreateMessage } from "../../../data/messages"
 import { useRelations2 } from "../../../data/relations"
 import { useAuth } from "../../../data/use-auth"
+import { fetcherPost, useSubmit } from "../../../data/use-fetch"
 
 function useCanSendMessage(channelId: number): boolean {
     const auth = useAuth()
@@ -30,18 +30,14 @@ function useCanSendMessage(channelId: number): boolean {
 export default function MessageInput({ channelId }) {
     const channel = useChannel(channelId)!
     const [content, setContent] = useState("")
-    const { submit, isError, isLoading } = useCreateMessage()
+    const canSend = useCanSendMessage(channelId)
+    const inputElement = useRef<HTMLInputElement>(null);
 
-    const canSendMessage = useCanSendMessage(channelId)
-
-    // Code to reset the content's state when naigating to another channel.
-    useEffect(() => setContent(""), [channelId])
-
-    useEffect(() => {
-        if (!isLoading) {
-            document.getElementById("chatInput")?.focus()
-        }
-    }, [isLoading])
+    // Message sending hook.
+    const { submit, isError, isLoading } = useSubmit(
+        ({ channelId, content }: { channelId: number, content: string }) =>
+            fetcherPost(`/channels/${channelId}/messages`, { content }),
+    )
 
     async function onSubmit(event: any) {
         event.preventDefault()
@@ -52,18 +48,31 @@ export default function MessageInput({ channelId }) {
         }
     }
 
+    // Focus input when loading state change (when the input is no longer disabled).
+    useEffect(() => {
+        if (!isLoading) {
+            inputElement.current?.focus()
+        }
+    }, [isLoading])
+
+    // Code to reset the content's state when naigating to another channel.
+    useEffect(() => {
+        setContent("")
+    }, [channelId])
+
+
     return (
         <Form onSubmit={onSubmit}>
             <Form.Control
-                id="chatInput"
+                ref={inputElement}
                 type="text"
                 className={`bg-dark border-${
                     isError ? "danger" : "dark"
                 } text-white`}
-                placeholder={canSendMessage ? `Enter a content for ${channel.name}` : "You can't send a message"}
+                placeholder={canSend ? `Enter a message for ${channel.name}` : "You can't send a message"}
                 value={content}
                 onChange={(event) => setContent(event.target.value)}
-                disabled={isLoading || !canSendMessage}
+                disabled={isLoading || !canSend}
                 autoComplete={"off"}
             />
         </Form>
