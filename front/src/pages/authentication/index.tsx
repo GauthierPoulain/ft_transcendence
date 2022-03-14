@@ -5,16 +5,21 @@ import { ExchangeCodeResponse, useAuth } from "../../data/use-auth"
 import "./style.scss"
 import { Form } from "react-bootstrap"
 import { fetcher, useSubmit } from "../../data/use-fetch"
+import ReactCodeInput from "react-code-input"
 
 function TwoFactorAuth({ token }) {
     const auth = useAuth()
     const [tfa, setTfa] = useState("")
 
-    const { submit, isLoading } = useSubmit<{ token: string, tfa: string }, ExchangeCodeResponse>(({ token, tfa }) => fetcher("/auth/upgrade", {
-        method: "POST",
-        body: JSON.stringify({ token, tfa })
-    }))
-
+    const { submit, isLoading } = useSubmit<
+        { token: string; tfa: string },
+        ExchangeCodeResponse
+    >(({ token, tfa }) =>
+        fetcher("/auth/upgrade", {
+            method: "POST",
+            body: JSON.stringify({ token, tfa }),
+        })
+    )
 
     async function submitForm(event: any) {
         event.preventDefault()
@@ -25,15 +30,28 @@ function TwoFactorAuth({ token }) {
 
     return (
         <div className="d-flex align-items-center">
-            <div className="container auth-card mt-5 p-3">
-                <h1>Two factor auth</h1>
+            <div className="container auth-card mt-1 p-3">
                 <Form className="code-input" onSubmit={submitForm}>
                     <Form.Group className="mb-3">
-                        <Form.Label>Verification code</Form.Label>
-                        <Form.Control type="text" placeholder="6 digits code" value={tfa} onChange={(event) => setTfa(event.target.value)} />
+                        <Form.Label>Verification code (2fa)</Form.Label>
+                        <br />
+                        <ReactCodeInput
+                            type="number"
+                            className=""
+                            name="2facode"
+                            value={tfa}
+                            inputMode="numeric"
+                            fields={6}
+                            onChange={(event) => setTfa(event)}
+                        />
                     </Form.Group>
 
-                    <Button size="sm" variant="primary" type="submit" disabled={isLoading}>
+                    <Button
+                        size="sm"
+                        variant="primary"
+                        type="submit"
+                        disabled={isLoading}
+                    >
                         Submit token
                     </Button>
                 </Form>
