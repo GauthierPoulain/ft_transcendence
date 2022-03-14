@@ -1,7 +1,6 @@
 import { Brightness1 } from "@mui/icons-material"
 import { Container } from "react-bootstrap"
 import { Link } from "react-router-dom"
-import { useAuth } from "../../../data/use-auth"
 import { useUser } from "../../../data/users"
 import { useRelations } from "../../../data/relations"
 import { useStatus } from "../../../data/status"
@@ -43,16 +42,7 @@ function Users({ relations }) {
 }
 
 export default function Relations() {
-    const auth = useAuth()
-    const relations = useRelations()
-
-    const friends = relations.filter(
-        ({ currentId, kind }) => currentId === auth.userId && kind === "friend"
-    )
-
-    const blocked = relations.filter(
-        ({ currentId, kind }) => currentId === auth.userId && kind === "blocked"
-    )
+    const { friends, blocked } = useRelations()
 
     return (
         <Container>

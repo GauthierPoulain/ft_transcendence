@@ -1,6 +1,5 @@
 import { Container } from "react-bootstrap"
 import { useRelations, useRelationsLoading } from "../../data/relations"
-import { useAuth } from "../../data/use-auth";
 import { useUser } from "../../data/users";
 import { Link } from "react-router-dom";
 import { Brightness1 } from "@mui/icons-material"
@@ -30,11 +29,7 @@ function Friend({ userId }) {
 }
 
 function Friends() {
-    const auth = useAuth();
-    const relations = useRelations();
-    const friends = relations.filter(
-        ({ currentId, kind }) => currentId === auth.userId && kind === "friend"
-    )
+    const { friends } = useRelations();
 
     if (friends.length === 0) {
         return <p>You don't have any friend!</p>

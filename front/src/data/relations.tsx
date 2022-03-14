@@ -2,7 +2,7 @@ import { useContext } from "react"
 import { createRepository } from "./repository"
 import { createService } from "./service"
 import { useAuth } from "./use-auth"
-import { fetcher, useSubmit } from "./use-fetch"
+import { fetcher, fetcherPost, useSubmit } from "./use-fetch"
 
 export type Relation = {
     id: number
@@ -38,38 +38,42 @@ export function useRelationsLoading(): boolean {
     return useContext(service.Context).loading
 }
 
-export function useRelations(): Relation[] {
-    const { state } = useContext(service.Context);
-
-    return repository.selectAll(state)
-}
-
-export function useRelations2() {
+export function useRelations() {
     const auth = useAuth()
     const { state } = useContext(service.Context);
+    const relations = repository.selectAll(state)
+
+    const friends = relations.filter(({ kind, currentId }) => kind === "friend" && currentId === auth.userId)
+    const blocked = relations.filter(({ kind, currentId }) => kind === "blocked" && currentId === auth.userId)
 
     return {
-        isBlockedBy: (userId: number): boolean => repository.selectAll(state).some(
+        relations,
+        friends,
+        blocked,
+
+        isBlockedBy: (userId: number): boolean => relations.some(
             ({ currentId, targetId, kind }) => currentId === userId && targetId === auth.userId && kind === "blocked"
-        )
+        ),
     }
 }
 
-export function useIsFriend(userId: number): boolean {
-    return useRelations().some(({ targetId, kind }) => kind === "friend" && targetId === userId)
+export function useRelation(userId: number) {
+    const { friends, blocked, isBlockedBy } = useRelations()
+
+    return {
+        isBlockedBy: isBlockedBy(userId),
+
+        isBlocking: blocked.some(({ targetId }) => targetId === userId),
+
+        isFriendWith: friends.some(({ targetId }) => targetId === userId),
+
+        block: useMutateRelation(userId, "block"),
+        unblock: useMutateRelation(userId, "unblock"),
+        friend: useMutateRelation(userId, "friend"),
+        unfriend: useMutateRelation(userId, "unfriend")
+    }
 }
 
-export function useIsBlocked(userId: number): boolean {
-    return useRelations().some(({ targetId, kind }) => kind === "blocked" && targetId === userId)
-}
-
-export function useMutateRelation(action: "friend" | "unfriend" | "block" | "unblock") {
-    return useSubmit<number, void>((targetId) => fetcher( 
-        `/relations`,
-        {
-            method: "POST",
-            body: JSON.stringify({ targetId, action })
-        },
-        false
-    ))
+export function useMutateRelation(userId: number, action: "friend" | "unfriend" | "block" | "unblock") {
+    return useSubmit(() => fetcherPost("/relations", { targetId: userId, action }))
 }

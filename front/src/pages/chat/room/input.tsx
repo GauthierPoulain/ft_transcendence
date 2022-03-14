@@ -2,14 +2,14 @@ import { useEffect, useRef, useState } from "react"
 import { Form } from "react-bootstrap"
 import { useChannel } from "../../../data/channels"
 import { useMembers } from "../../../data/members"
-import { useRelations2 } from "../../../data/relations"
+import { useRelations } from "../../../data/relations"
 import { useAuth } from "../../../data/use-auth"
 import { fetcherPost, useSubmit } from "../../../data/use-fetch"
 
 function useCanSendMessage(channelId: number): boolean {
     const auth = useAuth()
     const channel = useChannel(channelId)
-    const relations = useRelations2()
+    const { isBlockedBy } = useRelations()
     const members = useMembers()
 
     if (!channel) {
@@ -17,7 +17,7 @@ function useCanSendMessage(channelId: number): boolean {
     }
 
     if (channel.type === "direct") {
-        return !members.some(({ userId }) => relations.isBlockedBy(userId))
+        return !members.some(({ userId }) => isBlockedBy(userId))
     }
 
     const { muted } = members.find(

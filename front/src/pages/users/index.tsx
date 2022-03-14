@@ -2,7 +2,6 @@ import { Link, Outlet, useParams } from "react-router-dom"
 import useUser from "../../data/use-user"
 import { useAuth } from "../../data/use-auth"
 import UserAvatar from "../../components/user/UserAvatar"
-import { useState } from "react"
 import {
     Brightness1,
     Edit,
@@ -13,71 +12,29 @@ import {
 } from "@mui/icons-material"
 import { statusColor, statusText, useStatus } from "../../data/status"
 import { Button, OverlayTrigger, Tooltip } from "react-bootstrap"
-import {
-    useIsFriend,
-    useMutateRelation,
-    useIsBlocked,
-} from "../../data/relations"
+import { useRelation } from "../../data/relations"
 
-function BlockButton() {
-    const { userId } = useParams()
-    const isBlocked = useIsBlocked(Number(userId))
-    const mutateBlock = useMutateRelation(isBlocked ? "unblock" : "block")
-
-    if (!isBlocked) {
-        return (
-            <OverlayTrigger placement="top" overlay={<Tooltip>Block</Tooltip>}>
-                <Button variant="dark" size="sm" onClick={() => mutateBlock.submit(Number(userId))}>
-                    <RemoveCircle />
-                </Button>
-            </OverlayTrigger>
-        )
-    }
+function BlockButton({ userId }) {
+    const { isBlocking, block, unblock } = useRelation(userId)
+    const { submit, isLoading } = isBlocking ? unblock : block
 
     return (
-        <OverlayTrigger placement="top" overlay={<Tooltip>Unblock</Tooltip>}>
-            <Button variant="secondary" size="sm" onClick={() => mutateBlock.submit(Number(userId))}>
-                <RemoveCircleOutline />
+        <OverlayTrigger placement="top" overlay={<Tooltip>{ isBlocking ? "Unblock" : "Block" }</Tooltip>}>
+            <Button variant={isBlocking ? "secondary" : "dark"} size="sm" onClick={submit} disabled={isLoading}>
+                { isBlocking ? <RemoveCircleOutline /> : <RemoveCircle /> }
             </Button>
         </OverlayTrigger>
     )
 }
 
-function FriendButton() {
-    const { userId } = useParams()
-    const isFriend = useIsFriend(Number(userId))
-    const mutateFriend = useMutateRelation(isFriend ? "unfriend" : "friend")
-
-    if (!isFriend) {
-        return (
-            <OverlayTrigger
-                placement="top"
-                overlay={<Tooltip>Add Friend</Tooltip>}
-            >
-                <Button
-                    variant="success"
-                    className="me-2"
-                    size="sm"
-                    onClick={() => mutateFriend.submit(Number(userId))}
-                >
-                    <PersonAdd />
-                </Button>
-            </OverlayTrigger>
-        )
-    }
+function FriendButton({ userId }) {
+    const { isFriendWith, friend, unfriend } = useRelation(userId)
+    const { submit, isLoading } = isFriendWith ? unfriend : friend
 
     return (
-        <OverlayTrigger
-            placement="top"
-            overlay={<Tooltip>Remove Friend</Tooltip>}
-        >
-            <Button
-                variant="danger"
-                className="me-2"
-                size="sm"
-                onClick={() => mutateFriend.submit(Number(userId))}
-            >
-                <PersonAddDisabled />
+        <OverlayTrigger placement="top" overlay={<Tooltip>{ isFriendWith ? "Remove friend" : "Add friend" }</Tooltip>}>
+            <Button variant={isFriendWith ? "danger" : "success"} size="sm" onClick={submit} disabled={isLoading}>
+                { isFriendWith ? <PersonAddDisabled /> : <PersonAdd /> }
             </Button>
         </OverlayTrigger>
     )
@@ -113,8 +70,8 @@ function Banner() {
                     Rank: <span style={{ color: "brown" }}>#4</span>
                 </p>
             </div>
-            {!isCurrentUser && <FriendButton />}
-            {!isCurrentUser && <BlockButton />}
+            {!isCurrentUser && <FriendButton userId={user.id} />}
+            {!isCurrentUser && <BlockButton userId={user.id} />}
             <p className="text-dark text-uppercase m-3 my-1">
                 {statusText(status)}
                 <Brightness1
