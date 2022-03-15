@@ -64,7 +64,6 @@ function EnableTfaForm() {
                 <Form.Label>Token associated with this QR Code</Form.Label>
                 <br />
                 <ReactCodeInput
-                    type="number"
                     className=""
                     name="2facode"
                     value={token}

@@ -36,7 +36,6 @@ function TwoFactorAuth({ token }) {
                         <Form.Label>Verification code (2fa)</Form.Label>
                         <br />
                         <ReactCodeInput
-                            type="number"
                             className=""
                             name="2facode"
                             value={tfa}
