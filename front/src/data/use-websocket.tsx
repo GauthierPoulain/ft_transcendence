@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from "react"
 import useInner, { ReadyState } from "react-use-websocket"
 
 type State = {
-    sendMessage: (event: string, data: any) => void
+    sendMessage: (event: string, data?: any) => void
     readyState: ReadyState
     lastJsonMessage?: {
         event: string
@@ -45,7 +45,7 @@ export function WebsocketProvider({ children }) {
         shouldReconnect: () => true,
     })
 
-    function sendMessage(event: string, data: any) {
+    function sendMessage(event: string, data?: any) {
         return send(JSON.stringify({ event, data }))
     }
 

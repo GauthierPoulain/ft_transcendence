@@ -1,7 +1,5 @@
 import Pong from "../../components/Pong/Pong"
 
-function Game() {
+export default function Game() {
     return <Pong />
 }
-
-export default Game

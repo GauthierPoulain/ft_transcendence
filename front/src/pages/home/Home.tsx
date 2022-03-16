@@ -197,7 +197,7 @@ function Home() {
                     </div>
                 </div>
                 <div className="d-flex justify-content-center">
-                    <Link to="/game">
+                    <Link to="/game/matchmaking">
                         <Button
                             className="play-button p-2"
                             size="lg"

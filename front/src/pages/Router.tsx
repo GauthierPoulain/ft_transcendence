@@ -17,6 +17,7 @@ import ProfileSettings from "./users/settings"
 import Users from "./users"
 import Game from "./game/game"
 import Relations from "./users/relations"
+import Matchmaking from "./game/matchmaking"
 
 // import TwoFactorAuth from "./twoFactorAuth"
 
@@ -41,7 +42,10 @@ export default function Router() {
         <Routes>
             <Route path="/" element={<Layout />}>
                 <Route index element={<Home />} />
-                <Route path="game" element={<Game />} />
+                <Route path="game" element={<Outlet />}>
+                    <Route path="matchmaking" element={<Matchmaking />} />
+                    <Route path=":gameId" element={<Game />} />
+                </Route>
                 <Route
                     path="chat"
                     element={
