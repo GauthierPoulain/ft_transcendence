@@ -66,6 +66,20 @@ export class SocketsService {
         this.sockets.delete(socket)
     }
 
+    removeRoom(room: string) {
+        if (!this.rooms.has(room)) {
+            return
+        }
+
+        const sockets = this.rooms.get(room)
+
+        for (const socket of sockets) {
+            this._remove_room_from_socket(socket, room)
+        }
+
+        this.rooms.delete(room)
+    }
+
     publish(rooms: string[], event: string, data: any) {
         const sockets = new Set(
             rooms.flatMap((room) => [...(this.rooms.get(room) ?? [])])

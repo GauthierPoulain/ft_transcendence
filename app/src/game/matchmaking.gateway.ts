@@ -1,14 +1,11 @@
-import { OnEvent } from "@nestjs/event-emitter";
 import { ConnectedSocket, SubscribeMessage, WebSocketGateway } from "@nestjs/websockets";
 import { AuthSocketService } from "src/auth/auth-socket.service";
+import { SocketsService } from "src/sockets/sockets.service";
 import { WebSocket } from "ws";
 
-// TODO: Maybe use socket service and rooms instead of managing the socket here.
 @WebSocketGateway()
 export class MatchmakingGateway {
-    private waiting: WebSocket | null = null
-
-    constructor(private auth: AuthSocketService) {
+    constructor(private auth: AuthSocketService, private sockets: SocketsService) {
     }
 
     @SubscribeMessage("matchmaking.subscribe")
@@ -18,38 +15,33 @@ export class MatchmakingGateway {
             return
         }
 
+        const sockets = [...this.sockets.findSockets("matchmaking")]
+
         // Wait for another user if no one is waiting.
-        if (this.waiting === null) {
-            this.waiting = socket
+        if (sockets.length === 0) {
+            this.sockets.join(socket, "matchmaking")
             return
         }
 
+        const [waiting] = sockets;
+
         // If the user is already waiting on another socet.
-        if (this.auth.socketUserId(this.waiting) === this.auth.socketUserId(socket)) {
+        if (this.auth.socketUserId(waiting) === this.auth.socketUserId(socket)) {
             socket.send(JSON.stringify({ event: "matchmaking.error.alreadysubscribed" }))
             return;
         }
 
+        this.sockets.join(socket, "matchmaking")
+
         // TODO: Game creation
         const game = { id: 1 }
-        const message = JSON.stringify({ event: "matchmaking.success", data: game })
 
-        this.waiting.send(message)
-        socket.send(message)
-
-        this.waiting = null;
+        this.sockets.publish(["matchmaking"], "matchmaking.success", game)
+        this.sockets.removeRoom("matchmaking")
     }
 
     @SubscribeMessage("matchmaking.unsubscribe")
     unsubscribe(@ConnectedSocket() socket: WebSocket) {
-        console.log("unsubscribe")
-        if (this.waiting === socket) {
-            this.waiting = null;
-        }
-    }
-
-    @OnEvent("socket.disconnect")
-    onDisconnect({ socket }) {
-        this.unsubscribe(socket)
+        this.sockets.leave(socket, "matchmaking")
     }
 }
