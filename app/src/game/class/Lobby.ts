@@ -354,6 +354,15 @@ export default class Lobby {
         clearInterval(this._simData.sendInterval)
     }
 
+    disconnect(socket: WebSocket) {
+        if (socket === this._player_one) {
+            this.playerWin(this._currentData.players.two)
+        }
+        else if (socket === this._player_two) {
+            this.playerWin(this._currentData.players.one)
+        }
+    }
+
     private addObj(name: string, obj: any) {
         this._engine.objects.set(name, obj)
         this._engine.scene.add(obj)

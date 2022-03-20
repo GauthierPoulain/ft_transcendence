@@ -18,7 +18,7 @@ export class GameGateway {
         const lobby = this.game.lobbyBySocket(socket)
 
         if (lobby) {
-            // TODO: Lose condition
+            lobby.disconnect(socket)
             this.game.close(lobby)
         }
     }
