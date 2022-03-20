@@ -2,10 +2,11 @@ import { ConnectedSocket, SubscribeMessage, WebSocketGateway } from "@nestjs/web
 import { AuthSocketService } from "src/auth/auth-socket.service";
 import { SocketsService } from "src/sockets/sockets.service";
 import { WebSocket } from "ws";
+import { GameService } from "./game.service";
 
 @WebSocketGateway()
 export class MatchmakingGateway {
-    constructor(private auth: AuthSocketService, private sockets: SocketsService) {
+    constructor(private auth: AuthSocketService, private sockets: SocketsService, private game: GameService) {
     }
 
     @SubscribeMessage("matchmaking.subscribe")
@@ -38,6 +39,7 @@ export class MatchmakingGateway {
 
         this.sockets.publish(["matchmaking"], "matchmaking.success", game)
         this.sockets.removeRoom("matchmaking")
+        this.game.open(waiting, socket)
     }
 
     @SubscribeMessage("matchmaking.unsubscribe")

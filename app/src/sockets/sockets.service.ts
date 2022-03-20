@@ -24,10 +24,12 @@ export class SocketsService {
     private _remove_socket_from_room(socket: WebSocket, room: string) {
         const sockets = this.rooms.get(room)
 
-        sockets.delete(socket)
+        if (sockets) {
+            sockets.delete(socket)
 
-        if (sockets.size === 0) {
-            this.rooms.delete(room)
+            if (sockets.size === 0) {
+                this.rooms.delete(room)
+            }
         }
     }
 
@@ -36,10 +38,12 @@ export class SocketsService {
     private _remove_room_from_socket(socket: WebSocket, room: string) {
         const rooms = this.sockets.get(socket)
 
-        rooms.delete(room)
+        if (rooms) {
+            rooms.delete(room)
 
-        if (rooms.size === 0) {
-            this.sockets.delete(socket)
+            if (rooms.size === 0) {
+                this.sockets.delete(socket)
+            }
         }
     }
 
