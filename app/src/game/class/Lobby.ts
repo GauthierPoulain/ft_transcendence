@@ -74,9 +74,13 @@ export default class Lobby {
         sendInterval: undefined,
     }
 
-    constructor(player_one: WebSocket, player_two: WebSocket) {
+    // Function to unregister the current lobby from the game service once the game was won.
+    private unregister: (lobby: Lobby) => void;
+
+    constructor(player_one: WebSocket, player_two: WebSocket, unregister: (lobby: Lobby) => void) {
         this._player_one = player_one
         this._player_two = player_two
+        this.unregister = unregister;
         this._spectators = new Array<WebSocket>()
         this._currentData = {
             players: {
@@ -348,7 +352,10 @@ export default class Lobby {
         })
     }
 
-    stop() {
+    stop(unregister = true) {
+        if (unregister) {
+            this.unregister(this)
+        }
         this._simData.running = false
         clearInterval(this._simData.interval)
         clearInterval(this._simData.sendInterval)

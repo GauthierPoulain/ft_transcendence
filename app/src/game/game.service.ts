@@ -12,7 +12,7 @@ export class GameService {
     }
 
     open(one: WebSocket, two: WebSocket) {
-        const lobby = new Lobby(one, two)
+        const lobby = new Lobby(one, two, this.close.bind(this))
 
         this.lobbies.add(lobby)
         this.players.set(one, lobby)
@@ -22,11 +22,14 @@ export class GameService {
     }
 
     close(lobby: Lobby) {
-        lobby.stop()
+        console.log("Close lobby", this.lobbies.size)
+        if (this.lobbies.has(lobby)) {
+            lobby.stop(false)
 
-        this.players.delete(lobby._player_one)
-        this.players.delete(lobby._player_two)
-        this.lobbies.delete(lobby)
+            this.players.delete(lobby._player_one)
+            this.players.delete(lobby._player_two)
+            this.lobbies.delete(lobby)
+        }
     }
 
     lobbyBySocket(socket: WebSocket) {
