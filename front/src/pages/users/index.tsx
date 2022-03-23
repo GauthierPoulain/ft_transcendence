@@ -124,6 +124,7 @@ function Navigation() {
                     </Link>
                 </>
             )}
+            {!isCurrentUser && auth.connected && <Link to="challenge" className="btn btn-dark btn-lg rounded-0" replace>Challenge</Link>}
         </div>
     )
 }

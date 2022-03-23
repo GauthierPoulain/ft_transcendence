@@ -19,6 +19,7 @@ import Relations from "./users/relations"
 import Matchmaking from "./game/matchmaking"
 import GameLayout from "./game/layout"
 import GameView from "./game/view"
+import ChallengeUser from "./users/challenge"
 
 // import TwoFactorAuth from "./twoFactorAuth"
 
@@ -80,6 +81,7 @@ export default function Router() {
                     <Route path="achievements" element={<Achievements />} />
                     <Route path="relations" element={<Relations />} />
                     <Route path="settings" element={<ProfileSettings />} />
+                    <Route path="challenge" element={<ChallengeUser />} />
                 </Route>
                 <Route path="auth" element={<Authentication />} />
                 <Route path="*" element={<Navigate to="/" />} />
