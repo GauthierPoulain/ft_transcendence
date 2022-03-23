@@ -1,5 +1,6 @@
 import Visibility from "@mui/icons-material/Visibility"
 import { OverlayTrigger, Table, Tooltip } from "react-bootstrap"
+import { Link } from "react-router-dom"
 import UserAvatar from "../../components/user/UserAvatar"
 import { Match, useMatches, useMatchesLoading } from "../../data/matches"
 import { useUser } from "../../data/users"
@@ -24,12 +25,7 @@ function MatchComponent({ match }: { match: Match }) {
             </td>
             <td>? - ?</td>
             <td>
-                <OverlayTrigger
-                    placement="right"
-                    overlay={<Tooltip>View Match</Tooltip>}
-                >
-                    <Visibility className="game-view" />
-                </OverlayTrigger>
+                <Link className="btn btn-light" to={`/game/${match.id}`}>View</Link>
             </td>
         </tr>
     )
@@ -45,7 +41,7 @@ function Matches() {
                     <th>Player one</th>
                     <th>Player two</th>
                     <th>Score</th>
-                    <th>View</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
