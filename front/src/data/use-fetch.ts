@@ -40,11 +40,11 @@ export const fetcher = async (
     return jsonResponse ? response.json() : response
 }
 
-export function fetcherPost<T>(url: string, body: T) {
+export function fetcherPost<T>(url: string, body: T, jsonResponse=false) {
     return fetcher(url, { 
         method: "POST",
         body: JSON.stringify(body)
-    }, false)
+    }, jsonResponse)
 }
 
 export function fetcherDelete(url: string) {

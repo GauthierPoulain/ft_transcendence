@@ -1,10 +1,27 @@
 import { Button, Container, Form } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Match } from "../../../data/matches";
+import { fetcherPost, useSubmit } from "../../../data/use-fetch";
 import { useUser } from "../../../data/users";
 
+type MatchCreation = {
+    opponent: number
+}
+
+function useMutateChallenge() {
+    return useSubmit<MatchCreation, Match>((match) => fetcherPost("/matches", match, true))
+}
+
 function ChallengeForm({ userId }) {
-    function submitForm(event: any) {
+    const { submit, isLoading } = useMutateChallenge()
+    const navigate = useNavigate()
+
+    async function submitForm(event: any) {
         event.preventDefault()
+
+        const match = await submit({ opponent: userId })
+
+        navigate(`/game/${match.id}`, { replace: true })
     }
 
     return (
@@ -14,6 +31,7 @@ function ChallengeForm({ userId }) {
                 size="sm"
                 variant="primary"
                 type="submit"
+                disabled={isLoading}
             >
                 Challenge
             </Button>

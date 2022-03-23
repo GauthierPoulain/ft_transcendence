@@ -11,12 +11,16 @@ function MatchComponent({ match }: { match: Match }) {
     return (
         <tr>
             <td>
-                <UserAvatar userId={userOne.id} className="w-16 h-16" />
-                { userOne.nickname }
+                <div className="d-flex align-items-center">
+                    <UserAvatar userId={userOne.id} className="w-8 h-8 me-2" />
+                    { userOne.nickname }
+                </div>
             </td>
             <td>
-                <UserAvatar userId={userTwo.id} className="w-16 h-16" />
-                { userTwo.nickname }
+                <div className="d-flex align-items-center">
+                    <UserAvatar userId={userTwo.id} className="w-8 h-8 me-2" />
+                    { userTwo.nickname }
+                </div>
             </td>
             <td>? - ?</td>
             <td>
