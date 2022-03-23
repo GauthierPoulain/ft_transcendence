@@ -12,81 +12,7 @@ import { useAuth } from "../../data/use-auth"
 import SectionFriends from "./friends"
 import { Visibility } from "@mui/icons-material"
 import Particles from "react-tsparticles"
-
-function RunningMatches() {
-    return (
-        <>
-            <h1 className="mb-2 ms-2 game-title">Matches in progress</h1>
-            <Table striped bordered hover variant="dark">
-                <thead>
-                    <tr>
-                        <th>Player1</th>
-                        <th>Player2</th>
-                        <th>Score</th>
-                        <th>View</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <img
-                                className="player-logo me-4"
-                                src="/assets/42.jpg"
-                                alt=""
-                            />
-                            Pouic
-                        </td>
-                        <td>
-                            <img
-                                className="player-logo me-4"
-                                src="/assets/42.jpg"
-                                alt=""
-                            />
-                            Pouet
-                        </td>
-                        <td>4 - 2</td>
-                        <td>
-                            <OverlayTrigger
-                                placement="right"
-                                overlay={<Tooltip>View Match</Tooltip>}
-                            >
-                                <Visibility className="game-view" />
-                            </OverlayTrigger>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <img
-                                className="player-logo me-4"
-                                src="/assets/42.jpg"
-                                alt=""
-                            />
-                            Pouic
-                        </td>
-                        <td>
-                            <img
-                                className="player-logo me-4"
-                                src="/assets/42.jpg"
-                                alt=""
-                            />
-                            Pouet
-                        </td>
-                        <td>4 - 2</td>
-                        <td>
-                            <OverlayTrigger
-                                placement="right"
-                                overlay={<Tooltip>View Match</Tooltip>}
-                            >
-                                <Visibility className="game-view" />
-                            </OverlayTrigger>
-                        </td>
-                    </tr>
-                </tbody>
-            </Table>
-        </>
-    )
-}
+import SectionMatches from "./matches"
 
 function Animation(props: any) {
     return (
@@ -178,14 +104,14 @@ function Animation(props: any) {
     )
 }
 
-function Home() {
+export default function Home() {
     const auth = useAuth()
 
     return (
         <div>
             <Animation />
-            <React.Fragment>
-                <div className="container-fluid welcome-bar">
+            <Container>
+                <div className="welcome-bar">
                     <div className="text-center my-5">
                         <h1>Welcome to ft_pong</h1>
                         <p className="desc">Let's play a pong match !</p>
@@ -207,17 +133,9 @@ function Home() {
                         </Button>
                     </Link>
                 </div>
-                {auth.connected && (
-                    <Container>
-                        <SectionFriends />
-                    </Container>
-                )}
-                <Container>
-                    <RunningMatches />
-                </Container>
-            </React.Fragment>
+                {auth.connected && <SectionFriends />}
+                <SectionMatches />
+            </Container>
         </div>
     )
 }
-
-export default Home

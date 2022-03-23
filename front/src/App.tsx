@@ -11,6 +11,7 @@ import Router from "./pages/Router"
 import { UsersProvider, useUsersLoading } from "./data/users"
 import { RelationsProvider } from "./data/relations"
 import { StatusProvider } from "./data/status"
+import { MatchesProvider } from "./data/matches"
 
 function RootProvider({ children }) {
     return (
@@ -72,7 +73,9 @@ export default function App() {
                     <WebsocketTokenIssuer>
                         <UsersProvider>
                             <StatusProvider>
-                                <Thisisatest />
+                                <MatchesProvider>
+                                    <Thisisatest />
+                                </MatchesProvider>
                             </StatusProvider>
                         </UsersProvider>
                     </WebsocketTokenIssuer>

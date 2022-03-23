@@ -15,9 +15,10 @@ import Matches from "./users/matches"
 import Achievements from "./users/achievements"
 import ProfileSettings from "./users/settings"
 import Users from "./users"
-import Game from "./game/game"
 import Relations from "./users/relations"
 import Matchmaking from "./game/matchmaking"
+import GameLayout from "./game/layout"
+import GameView from "./game/view"
 
 // import TwoFactorAuth from "./twoFactorAuth"
 
@@ -42,9 +43,9 @@ export default function Router() {
         <Routes>
             <Route path="/" element={<Layout />}>
                 <Route index element={<Home />} />
-                <Route path="game" element={<Outlet />}>
+                <Route path="game" element={<GameLayout />}>
                     <Route path="matchmaking" element={<Matchmaking />} />
-                    <Route path=":gameId" element={<Game />} />
+                    <Route path=":gameId" element={<GameView />} />
                 </Route>
                 <Route
                     path="chat"

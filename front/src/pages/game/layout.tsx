@@ -1,10 +1,10 @@
-import Pong from "../../components/Pong/Pong"
+import { Outlet } from "react-router-dom"
 import PongProvider from "./Provider"
 
-export default function Game() {
+export default function GameLayout() {
     return (
         <PongProvider>
-            <Pong />
+            <Outlet />
         </PongProvider>
     )
 }

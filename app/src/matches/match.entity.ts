@@ -19,6 +19,7 @@ export enum State {
     PLAYER_TWO_WON = "player_two_won",
 }
 
+// TODO: Add score and maybe win reason
 @Entity()
 export class Match {
     @PrimaryGeneratedColumn()
