@@ -4,7 +4,8 @@ import * as THREE from "three"
 import PowerUp from "./Powerup"
 import { Iengine } from "./Interface"
 
-const TICKRATE = 60
+const SIMTICKRATE = 60
+const TICKRATE = 30
 
 function collisionBoxCyl(box: THREE.Mesh, cyl: THREE.Mesh, cylR: number) {
     box.geometry.computeBoundingBox()
@@ -75,12 +76,16 @@ export default class Lobby {
     }
 
     // Function to unregister the current lobby from the game service once the game was won.
-    private unregister: (lobby: Lobby) => void;
+    private unregister: (lobby: Lobby) => void
 
-    constructor(player_one: WebSocket, player_two: WebSocket, unregister: (lobby: Lobby) => void) {
+    constructor(
+        player_one: WebSocket,
+        player_two: WebSocket,
+        unregister: (lobby: Lobby) => void
+    ) {
         this._player_one = player_one
         this._player_two = player_two
-        this.unregister = unregister;
+        this.unregister = unregister
         this._spectators = new Array<WebSocket>()
         this._currentData = {
             players: {
@@ -117,7 +122,7 @@ export default class Lobby {
         this._simData.last = Date.now()
         this._simData.interval = setInterval(() => {
             this.simulate()
-        }, 1)
+        }, 1000 / SIMTICKRATE)
         this._simData.sendInterval = setInterval(() => {
             this.sendData()
         }, 1000 / TICKRATE)
@@ -180,8 +185,8 @@ export default class Lobby {
 
     stopRound() {
         this._roundRunning = false
-        this._engine.powerUps.forEach(pu => {
-            pu._destroy();
+        this._engine.powerUps.forEach((pu) => {
+            pu._destroy()
         })
         this.broadcast("game:stopRound")
     }
@@ -190,7 +195,7 @@ export default class Lobby {
         this._roundRunning = true
         this._currentData.quoit.speed.z = 10
         this.broadcast("game:startRound")
-        new PowerUp(this._engine, this, 1, "default", 3, 0, 1);
+        new PowerUp(this._engine, this, 1, "default", 3, 0, 1)
     }
 
     checkVictory() {
@@ -261,8 +266,9 @@ export default class Lobby {
                 this._engine.powerUps.forEach((pu) => {
                     if (
                         pu.collisionCheck(quoit, this._currentData.quoit.radius)
-                    )
+                    ) {                        
                         pu.trigger(this._lastHit)
+                    }
                 })
                 if (
                     collisionBoxCyl(
@@ -364,8 +370,7 @@ export default class Lobby {
     disconnect(socket: WebSocket) {
         if (socket === this._player_one) {
             this.playerWin(this._currentData.players.two)
-        }
-        else if (socket === this._player_two) {
+        } else if (socket === this._player_two) {
             this.playerWin(this._currentData.players.one)
         }
     }

@@ -16,11 +16,14 @@ export default class PowerUp {
     _type: string
     _id: number
     _effect: (sender: Player) => void
+    _reset: () => void
     _animation: (delta: number) => void
+    _sender: Player
     _mesh: THREE.Mesh
     _ctx: Iengine
     _radius: number = 0
     _lobbyCtx: Lobby
+    _actionTimeout: any | undefined = undefined
 
     constructor(
         ctx: Iengine,
@@ -43,6 +46,16 @@ export default class PowerUp {
                 this._type = type
                 this._effect = (sender: Player) => {
                     console.log(`powerup ${this._type} triggered`, sender.name)
+                    this._sender = sender
+                    this._actionTimeout = setTimeout(() => {
+                        this._reset.bind(this)
+                    }, 1000)
+                }
+                this._reset = () => {
+                    console.log(
+                        `powerup ${this._type} reset`,
+                        this._sender!.name
+                    )
                 }
                 this._animation = (delta: number) => {
                     this._mesh.rotation.y += 3 * delta
@@ -71,7 +84,7 @@ export default class PowerUp {
 
     trigger(sender: Player) {
         this._effect(sender)
-        this._destroy()
+        // this._destroy()
         this._lobbyCtx.broadcast("game:powerupTrigger", {
             id: this._id,
             sender: sender,
@@ -87,6 +100,8 @@ export default class PowerUp {
     }
 
     _destroy() {
+        if (this._actionTimeout != undefined) clearTimeout(this._actionTimeout)
+        if (this._reset) this._reset()
         this._ctx.powerUps.delete(this._id)
         this._ctx.scene.remove(this._mesh)
         this._lobbyCtx.broadcast("game:powerupDestroy", { id: this._id })

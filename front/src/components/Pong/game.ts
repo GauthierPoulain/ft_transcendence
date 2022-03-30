@@ -62,7 +62,9 @@ class PowerUp {
     _type: string
     _id: number
     _effect: (sender: Player) => void
+    _reset: () => void
     _animation: (delta: number) => void
+    _sender: Player | undefined
     _mesh: THREE.Mesh
     _ctx: Iengine
     _radius: number = 0
@@ -84,8 +86,16 @@ class PowerUp {
                 this._pos = { x: x, z: z }
                 this._radius = r
                 this._type = type
+                this._sender = undefined
                 this._effect = (sender: Player) => {
                     console.log(`powerup ${this._type} triggered`, sender.name)
+                    this._sender = sender
+                }
+                this._reset = () => {
+                    console.log(
+                        `powerup ${this._type} reset`,
+                        this._sender!.name
+                    )
                 }
                 this._animation = (delta: number) => {
                     this._mesh.rotation.y += 3 * delta
@@ -107,7 +117,7 @@ class PowerUp {
 
     trigger(sender: Player) {
         this._effect(sender)
-        this._destroy()
+        // this._destroy()
     }
 
     animate(delta: number) {
@@ -119,6 +129,7 @@ class PowerUp {
     }
 
     _destroy() {
+        if (this._reset) this._reset()
         this._ctx.powerUp.delete(this._id)
         this._ctx.scene.remove(this._mesh)
     }
@@ -333,9 +344,6 @@ export default class Game {
     startSimulation() {
         this._simData.last = Date.now()
         this._simData.running = true
-        this._simData.interval = setInterval(() => {
-            this.localSimulation()
-        }, 1)
         this.syncSimulation()
     }
 
@@ -483,6 +491,7 @@ export default class Game {
 
     render() {
         this._engine.stats?.begin()
+        if (this._simData.running) this.localSimulation()
         this.animate(this._engine.clock.getDelta())
         this._engine.renderer.render(this._engine.scene, this._engine.camera)
         this._engine.stats?.end()
