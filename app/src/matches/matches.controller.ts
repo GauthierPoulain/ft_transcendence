@@ -13,7 +13,7 @@ import {
 import { ConnectedGuard } from "src/auth/connected.guard"
 import { CurrentUserId } from "src/users/user.decorator"
 import { UsersService } from "src/users/users.service"
-import { Match, State } from "./match.entity"
+import { Match, MatchState } from "./match.entity"
 import { CreateMatchDto } from "./matches.dto"
 import { MatchesService } from "./matches.service"
 
@@ -39,12 +39,12 @@ export class MatchesController {
                 {
                     playerOne: { id: playerOneId },
                     playerTwo: { id: playerTwo.id },
-                    state: State.WAITING,
+                    state: MatchState.WAITING,
                 },
                 {
                     playerOne: { id: playerTwo.id },
                     playerTwo: { id: playerOneId },
-                    state: State.WAITING,
+                    state: MatchState.WAITING,
                 },
             ],
         })
@@ -82,7 +82,7 @@ export class MatchesController {
         // If the user is not one of the two players involved or the game is not in the first stage.
         if (
             !(match.playerOneId === userId || match.playerTwoId === userId) ||
-            match.state !== State.WAITING
+            match.state !== MatchState.WAITING
         ) {
             throw new UnauthorizedException()
         }

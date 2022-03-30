@@ -8,7 +8,7 @@ import {
     RelationId,
 } from "typeorm"
 
-export enum State {
+export enum MatchState {
     // If we're waiting for both players to accept the game.
     WAITING = "waiting",
 
@@ -45,8 +45,8 @@ export class Match {
 
     @Column({
         type: "enum",
-        enum: State,
-        default: State.WAITING,
+        enum: MatchState,
+        default: MatchState.WAITING,
     })
-    state: State
+    state: MatchState
 }

@@ -9,19 +9,19 @@ export default function Matchmaking() {
 
     useEffect(() => {
         const { unsubscribe } = subscribe((event, data) => {
-            if (event === "matchmaking.error.alreadysubscribed") {
+            if (event === "game.waiting.error.alreadysubscribed") {
                 setError(true)
             }
 
-            if (event === "matchmaking.success") {
+            if (event === "game.waiting.success") {
                 navigate(`/game/${data.id}`, { replace: true })
             }
         })
 
-        sendMessage("matchmaking.subscribe")
+        sendMessage("game.waiting.ready", { id: 0 })
 
         return () => {
-            sendMessage("matchmaking.unsubscribe")
+            sendMessage("game.waiting.unready", { id: 0 })
             unsubscribe()
         }
     }, [])

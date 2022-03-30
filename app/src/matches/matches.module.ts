@@ -9,5 +9,6 @@ import { MatchesService } from "./matches.service"
     imports: [TypeOrmModule.forFeature([Match]), UsersModule],
     providers: [MatchesService],
     controllers: [MatchesController],
+    exports: [MatchesService]
 })
 export class MatchesModule {}

@@ -21,6 +21,14 @@ export class MatchesService {
         return match
     }
 
+    async update(match: Match): Promise<Match> {
+        match = await this.matches.save(match)
+
+        this.publish("updated", instanceToPlain(match, {}))
+
+        return match
+    }
+
     get(options: FindOneOptions<Match>): Promise<Match | undefined> {
         return this.matches.findOne(options)
     }

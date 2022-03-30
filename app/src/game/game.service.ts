@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { Match } from "src/matches/match.entity";
 import { WebSocket } from "ws";
 import Lobby from "./class/Lobby";
 
@@ -11,7 +12,8 @@ export class GameService {
 
     }
 
-    open(one: WebSocket, two: WebSocket) {
+    open(one: WebSocket, two: WebSocket, match: Match) {
+        // TODO: Use match with lobby to update state
         const lobby = new Lobby(one, two, this.close.bind(this))
 
         this.lobbies.add(lobby)
