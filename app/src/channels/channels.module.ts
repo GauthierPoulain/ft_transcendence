@@ -20,7 +20,7 @@ import { RelationsModule } from "src/relations/relations.module"
         UsersModule,
         AuthModule,
         forwardRef(() => MembersModule),
-        RelationsModule
+        RelationsModule,
     ],
     controllers: [ChannelsController, MessagesController],
     providers: [ChannelsService, MessagesService, DirectChannelsService],

@@ -34,10 +34,7 @@ import { SettingsModule } from "./users/settings/settings.module"
         TypeOrmModule.forRoot({
             // TODO: Make them configurable.
             type: "postgres",
-            host:
-                process.env["NODE_ENV"] == "production"
-                    ? "db"
-                    : "localhost",
+            host: process.env["NODE_ENV"] == "production" ? "db" : "localhost",
             port: 5432,
             username: "postgres",
             password: "postgres",
@@ -46,7 +43,15 @@ import { SettingsModule } from "./users/settings/settings.module"
             // TODO: This can destroy production data, so we may want to remove this in the future.
             synchronize: true,
 
-            entities: [User, Channel, Message, Member, Match, Relation, DirectChannel],
+            entities: [
+                User,
+                Channel,
+                Message,
+                Member,
+                Match,
+                Relation,
+                DirectChannel,
+            ],
         }),
         GameModule,
         UsersModule,
@@ -57,7 +62,7 @@ import { SettingsModule } from "./users/settings/settings.module"
         MembersModule,
         RelationsModule,
         StatusModule,
-        SettingsModule
+        SettingsModule,
     ],
     controllers: [AppController],
     providers: [AppService],

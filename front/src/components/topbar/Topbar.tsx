@@ -11,7 +11,12 @@ function Profile({ userId }) {
 
     return (
         <div className="d-flex">
-            <span className="m-auto nav-link logout-but" onClick={() => auth.logout()}>Logout</span>
+            <span
+                className="m-auto nav-link logout-but"
+                onClick={() => auth.logout()}
+            >
+                Logout
+            </span>
             <Link className="nav-link d-flex" to={`/users/${user.id}`}>
                 <span className="m-auto">Profile</span>
                 <UserAvatar userId={user.id} className="w-8 ms-2" />

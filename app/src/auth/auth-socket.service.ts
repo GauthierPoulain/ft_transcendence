@@ -13,7 +13,7 @@ export class AuthSocketService {
         const { sub, aud } = await this.auth.verify(token)
 
         if (aud !== "auth") {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException()
         }
 
         this.sockets.set(socket, sub)

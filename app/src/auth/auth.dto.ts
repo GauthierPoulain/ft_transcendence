@@ -28,7 +28,6 @@ export class AuthResponse {
 }
 
 export type TokenPayload = {
-    sub: number,
+    sub: number
     aud: "auth" | "tfa"
 }
-

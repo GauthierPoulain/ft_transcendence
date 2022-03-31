@@ -1,16 +1,24 @@
-import { BadRequestException, Body, Controller, Delete, Get, Post, UnauthorizedException, UseGuards } from "@nestjs/common";
-import { generateSecret, verifyToken } from "node-2fa";
-import { ConnectedGuard } from "src/auth/connected.guard";
-import { QueryFailedError } from "typeorm";
-import { User } from "../entities/user.entity";
-import { CurrentUser, CurrentUserId } from "../user.decorator";
-import { UsersService } from "../users.service";
-import { EnableTfaDto, SetNameDto } from "./settings.dto";
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Post,
+    UnauthorizedException,
+    UseGuards,
+} from "@nestjs/common"
+import { generateSecret, verifyToken } from "node-2fa"
+import { ConnectedGuard } from "src/auth/connected.guard"
+import { QueryFailedError } from "typeorm"
+import { User } from "../entities/user.entity"
+import { CurrentUser, CurrentUserId } from "../user.decorator"
+import { UsersService } from "../users.service"
+import { EnableTfaDto, SetNameDto } from "./settings.dto"
 
 @Controller("/settings")
 export class SettingsController {
-    constructor(private users: UsersService) {
-    }
+    constructor(private users: UsersService) {}
 
     @Post("name")
     @UseGuards(ConnectedGuard)
@@ -22,8 +30,13 @@ export class SettingsController {
             await this.users.update(user)
         } catch (error) {
             // Check if the error was caused by a duplicate usage of the name
-            if (error instanceof QueryFailedError && error.message.includes("duplicate key value violates unique constraint")) {
-                throw new BadRequestException("custom name already taken")                
+            if (
+                error instanceof QueryFailedError &&
+                error.message.includes(
+                    "duplicate key value violates unique constraint"
+                )
+            ) {
+                throw new BadRequestException("custom name already taken")
             }
 
             throw error

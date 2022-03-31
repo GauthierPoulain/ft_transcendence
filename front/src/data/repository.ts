@@ -8,7 +8,7 @@ export type Repository<T> = {
     addOne(state: State<T>, entity: T): State<T>
     addMany(state: State<T>, entities: T[]): State<T>
 
-    updateOne(state: State<T>, entity: T): State<T>,
+    updateOne(state: State<T>, entity: T): State<T>
 
     setAll(entities: T[]): State<T>
 

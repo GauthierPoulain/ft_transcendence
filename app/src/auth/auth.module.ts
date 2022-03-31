@@ -19,8 +19,11 @@ import { ConfigModule, ConfigService } from "@nestjs/config"
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: (service: ConfigService) => ({
-                secret: Buffer.from(service.get<string>("JWT_SECRET"), "base64")
-            })
+                secret: Buffer.from(
+                    service.get<string>("JWT_SECRET"),
+                    "base64"
+                ),
+            }),
         }),
     ],
     providers: [

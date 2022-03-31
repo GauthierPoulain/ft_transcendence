@@ -48,7 +48,7 @@ function WebsocketTokenIssuer({ children }) {
 
 function Thisisatest() {
     const loading = useUsersLoading()
-    const auth = useAuth();
+    const auth = useAuth()
 
     if (loading) {
         return <p>Loading lol</p>

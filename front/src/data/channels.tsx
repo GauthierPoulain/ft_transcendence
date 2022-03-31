@@ -24,9 +24,11 @@ export function createChannel(request: CreateChannelRequest): Promise<Channel> {
 }
 
 export function useMutateDirectChannel() {
-    return useSubmit<number, Channel>((userId) => fetcher(`/channels/users/${userId}`, {
-        method: "POST"
-    }))
+    return useSubmit<number, Channel>((userId) =>
+        fetcher(`/channels/users/${userId}`, {
+            method: "POST",
+        })
+    )
 }
 
 export type JoinChannelRequest = {

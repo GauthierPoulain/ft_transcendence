@@ -45,7 +45,7 @@ export class UsersService {
     }
 
     findMany(): Promise<User[]> {
-        return this.usersRepository.find();
+        return this.usersRepository.find()
     }
 
     find(id: number, relations = []): Promise<User> {

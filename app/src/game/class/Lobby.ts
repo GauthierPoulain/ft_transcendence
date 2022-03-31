@@ -1,7 +1,7 @@
 import { WebSocket } from "ws"
 import Player from "./Player"
 import * as THREE from "three"
-import PowerUp from "./Powerup"
+import PowerUp, { PowerUpStates, PowerUpTypes } from "./Powerup"
 import { Iengine } from "./Interface"
 
 const SIMTICKRATE = 60
@@ -27,6 +27,20 @@ function collisionBoxBox(box1: THREE.Mesh, box2: THREE.Mesh) {
     Cbox2?.applyMatrix4(box2.matrixWorld)
     if (Cbox2) return Cbox1?.intersectsBox(Cbox2)
     return false
+}
+
+function getPowerUpInfos(list: Map<number, PowerUp>) {
+    let res = new Array<{
+        id: number
+        typeName: string
+        pos: { x: number; z: number }
+        sender: number | null
+        state: PowerUpStates
+    }>()
+    list.forEach((pu) => {
+        res.push(pu.getBasicInfos())
+    })
+    return res
 }
 
 export default class Lobby {
@@ -103,7 +117,7 @@ export default class Lobby {
         this._engine = {
             scene: new THREE.Scene(),
             objects: new Map<string, any>(),
-            powerUps: new Map<number, PowerUp>(),
+            powerUp: new Map<number, PowerUp>(),
         }
         this._lastHit = this._currentData.players.one
         this.initScene()
@@ -185,9 +199,10 @@ export default class Lobby {
 
     stopRound() {
         this._roundRunning = false
-        this._engine.powerUps.forEach((pu) => {
+        this._engine.powerUp.forEach((pu) => {
             pu._destroy()
         })
+        this._engine.powerUp.clear()
         this.broadcast("game:stopRound")
     }
 
@@ -195,7 +210,18 @@ export default class Lobby {
         this._roundRunning = true
         this._currentData.quoit.speed.z = 10
         this.broadcast("game:startRound")
-        new PowerUp(this._engine, this, 1, "default", 3, 0, 1)
+        this._engine.powerUp.set(
+            1,
+            new PowerUp({
+                ctx: this._engine,
+                lobbyCtx: this,
+                id: 1,
+                type: PowerUpTypes.BIGBAR,
+                x: 3,
+                z: 0,
+                r: 1,
+            })
+        )
     }
 
     checkVictory() {
@@ -263,10 +289,10 @@ export default class Lobby {
             const playerOne = this._engine.objects.get("player1") as THREE.Mesh
             const playerTwo = this._engine.objects.get("player2") as THREE.Mesh
             {
-                this._engine.powerUps.forEach((pu) => {
+                this._engine.powerUp.forEach((pu) => {
                     if (
                         pu.collisionCheck(quoit, this._currentData.quoit.radius)
-                    ) {                        
+                    ) {
                         pu.trigger(this._lastHit)
                     }
                 })
@@ -355,6 +381,16 @@ export default class Lobby {
             data: this._currentData,
             time: Date.now(),
             force: force,
+        })
+        this.broadcast("game:powerupCompare", {
+            list: getPowerUpInfos(this._engine.powerUp),
+        })
+    }
+
+    sendPowerup(client: WebSocket, id: number) {
+        this.emit(client, "game:powerupSync", {
+            id: id,
+            pu: this._engine.powerUp.get(id)?.getBasicInfos(),
         })
     }
 

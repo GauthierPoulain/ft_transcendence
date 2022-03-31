@@ -40,17 +40,25 @@ export const fetcher = async (
     return jsonResponse ? response.json() : response
 }
 
-export function fetcherPost<T>(url: string, body: T, jsonResponse=false) {
-    return fetcher(url, { 
-        method: "POST",
-        body: JSON.stringify(body)
-    }, jsonResponse)
+export function fetcherPost<T>(url: string, body: T, jsonResponse = false) {
+    return fetcher(
+        url,
+        {
+            method: "POST",
+            body: JSON.stringify(body),
+        },
+        jsonResponse
+    )
 }
 
 export function fetcherDelete(url: string) {
-    return fetcher(url, {
-        method: "DELETE",
-    }, false)
+    return fetcher(
+        url,
+        {
+            method: "DELETE",
+        },
+        false
+    )
 }
 
 export function useSubmit<Request, Response>(

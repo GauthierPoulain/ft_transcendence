@@ -41,11 +41,14 @@ export class ChannelsController {
     // Create a direct message channel
     @Post("users/:id")
     @UseGuards(ConnectedGuard)
-    async createDirect(@CurrentUser() user: User, @Param("id") targetId: number): Promise<Channel> {
+    async createDirect(
+        @CurrentUser() user: User,
+        @Param("id") targetId: number
+    ): Promise<Channel> {
         const target = await this.users.find(targetId)
 
         if (!target) {
-            throw new NotFoundException();
+            throw new NotFoundException()
         }
 
         return this.directChannels.create(user, target)

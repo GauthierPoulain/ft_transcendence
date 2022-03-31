@@ -1,7 +1,7 @@
-import { useContext } from "react";
-import { createRepository } from "./repository";
-import { createService } from "./service";
-import { fetcher } from "./use-fetch";
+import { useContext } from "react"
+import { createRepository } from "./repository"
+import { createService } from "./service"
+import { fetcher } from "./use-fetch"
 
 export type Match = {
     id: number
@@ -31,10 +31,10 @@ const service = createService<Match, void>({
 
     onRemoved(id, setState) {
         setState((state) => repository.removeOne(state, id))
-    }
+    },
 })
 
-export const MatchesProvider = service.Provider;
+export const MatchesProvider = service.Provider
 
 export function useMatchesLoading(): boolean {
     return useContext(service.Context).loading

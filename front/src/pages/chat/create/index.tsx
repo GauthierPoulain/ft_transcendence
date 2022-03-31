@@ -5,7 +5,7 @@ import { createChannel } from "../../../data/channels"
 import "./channelcreate.scss"
 
 export default function ChannelCreate() {
-    const navigate = useNavigate();
+    const navigate = useNavigate()
     const [name, setName] = useState("")
     const [joinable, setJoinable] = useState(false)
     const [password, setPassword] = useState("")

@@ -29,10 +29,10 @@ const service = createService<Relation, boolean>({
 
     onRemoved(id, setState) {
         setState((state) => repository.removeOne(state, id))
-    }
+    },
 })
 
-export const RelationsProvider = service.Provider;
+export const RelationsProvider = service.Provider
 
 export function useRelationsLoading(): boolean {
     return useContext(service.Context).loading
@@ -40,20 +40,28 @@ export function useRelationsLoading(): boolean {
 
 export function useRelations() {
     const auth = useAuth()
-    const { state } = useContext(service.Context);
+    const { state } = useContext(service.Context)
     const relations = repository.selectAll(state)
 
-    const friends = relations.filter(({ kind, currentId }) => kind === "friend" && currentId === auth.userId)
-    const blocked = relations.filter(({ kind, currentId }) => kind === "blocked" && currentId === auth.userId)
+    const friends = relations.filter(
+        ({ kind, currentId }) => kind === "friend" && currentId === auth.userId
+    )
+    const blocked = relations.filter(
+        ({ kind, currentId }) => kind === "blocked" && currentId === auth.userId
+    )
 
     return {
         relations,
         friends,
         blocked,
 
-        isBlockedBy: (userId: number): boolean => relations.some(
-            ({ currentId, targetId, kind }) => currentId === userId && targetId === auth.userId && kind === "blocked"
-        ),
+        isBlockedBy: (userId: number): boolean =>
+            relations.some(
+                ({ currentId, targetId, kind }) =>
+                    currentId === userId &&
+                    targetId === auth.userId &&
+                    kind === "blocked"
+            ),
     }
 }
 
@@ -70,10 +78,15 @@ export function useRelation(userId: number) {
         block: useMutateRelation(userId, "block"),
         unblock: useMutateRelation(userId, "unblock"),
         friend: useMutateRelation(userId, "friend"),
-        unfriend: useMutateRelation(userId, "unfriend")
+        unfriend: useMutateRelation(userId, "unfriend"),
     }
 }
 
-export function useMutateRelation(userId: number, action: "friend" | "unfriend" | "block" | "unblock") {
-    return useSubmit(() => fetcherPost("/relations", { targetId: userId, action }))
+export function useMutateRelation(
+    userId: number,
+    action: "friend" | "unfriend" | "block" | "unblock"
+) {
+    return useSubmit(() =>
+        fetcherPost("/relations", { targetId: userId, action })
+    )
 }

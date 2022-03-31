@@ -10,8 +10,7 @@ import { GameService } from "./game.service"
 
 @WebSocketGateway()
 export class GameGateway {
-    constructor(private game: GameService) {
-    }
+    constructor(private game: GameService) {}
 
     @SubscribeMessage("game:disconnect")
     disconnect(@ConnectedSocket() socket: WebSocket) {
@@ -23,11 +22,6 @@ export class GameGateway {
         }
     }
 
-    @SubscribeMessage("test")
-    test(@MessageBody() data: any) {
-        console.log("test", data)
-    }
-
     @SubscribeMessage("game:playerMove")
     playerMove(@ConnectedSocket() socket: WebSocket, @MessageBody() data: any) {
         const lobby = this.game.lobbyBySocket(socket)
@@ -35,6 +29,18 @@ export class GameGateway {
         if (lobby) {
             if (socket == lobby._player_one) lobby.movePlayer("one", data)
             if (socket == lobby._player_two) lobby.movePlayer("two", data)
+        }
+    }
+
+    @SubscribeMessage("game:requestPowerup")
+    requestPowerup(
+        @ConnectedSocket() socket: WebSocket,
+        @MessageBody() data: any
+    ) {
+        const lobby = this.game.lobbyBySocket(socket)
+
+        if (lobby) {
+            lobby.sendPowerup(socket, data.id)
         }
     }
 

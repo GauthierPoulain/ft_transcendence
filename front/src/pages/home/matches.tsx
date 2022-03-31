@@ -14,18 +14,20 @@ function MatchComponent({ match }: { match: Match }) {
             <td>
                 <div className="d-flex align-items-center">
                     <UserAvatar userId={userOne.id} className="w-8 h-8 me-2" />
-                    { userOne.nickname }
+                    {userOne.nickname}
                 </div>
             </td>
             <td>
                 <div className="d-flex align-items-center">
                     <UserAvatar userId={userTwo.id} className="w-8 h-8 me-2" />
-                    { userTwo.nickname }
+                    {userTwo.nickname}
                 </div>
             </td>
             <td>? - ?</td>
             <td>
-                <Link className="btn btn-light" to={`/game/${match.id}`}>View</Link>
+                <Link className="btn btn-light" to={`/game/${match.id}`}>
+                    View
+                </Link>
             </td>
         </tr>
     )
@@ -45,7 +47,9 @@ function Matches() {
                 </tr>
             </thead>
             <tbody>
-                { matches.map((match) => <MatchComponent key={match.id} match={match} /> ) }
+                {matches.map((match) => (
+                    <MatchComponent key={match.id} match={match} />
+                ))}
             </tbody>
         </Table>
     )
@@ -58,7 +62,7 @@ export default function SectionMatches() {
         <section>
             <h2>Matches in progress</h2>
 
-            { loading ? <p>Loading...</p> : <Matches /> }
+            {loading ? <p>Loading...</p> : <Matches />}
         </section>
     )
 }

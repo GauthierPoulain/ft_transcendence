@@ -1,4 +1,9 @@
-import { forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common"
+import {
+    forwardRef,
+    Inject,
+    Injectable,
+    UnauthorizedException,
+} from "@nestjs/common"
 import { OnEvent } from "@nestjs/event-emitter"
 import { InjectRepository } from "@nestjs/typeorm"
 import { verify } from "argon2"

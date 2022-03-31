@@ -10,7 +10,6 @@ export type Message = {
     channelId: number
 }
 
-
 const repository = createRepository<Message>()
 
 const service = createService<Message, number>({

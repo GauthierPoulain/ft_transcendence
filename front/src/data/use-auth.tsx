@@ -18,11 +18,11 @@ export type AuthState = {
     token: string
     userId: number
 
-    exchange: (request: ExchangeCodeRequest) => Promise<ExchangeCodeResponse>,
+    exchange: (request: ExchangeCodeRequest) => Promise<ExchangeCodeResponse>
     fakeExchange: (name: "one" | "two") => Promise<ExchangeCodeResponse>
 
-    login: (response: ExchangeCodeResponse) => void,
-    logout: () => void,
+    login: (response: ExchangeCodeResponse) => void
+    logout: () => void
 }
 
 const Context = createContext<AuthState>({} as AuthState)
@@ -37,7 +37,7 @@ export function AuthProvider({ children }) {
             body: JSON.stringify(request),
         })
 
-        return response;
+        return response
     }
 
     const login = (response: ExchangeCodeResponse) => {

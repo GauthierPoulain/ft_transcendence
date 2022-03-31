@@ -11,7 +11,9 @@ async function bootstrap() {
     // To avoid conflict with frontend, move all routes inside /api/.
     app.setGlobalPrefix("api")
     app.useGlobalPipes(new ValidationPipe({ transform: true }))
-    app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)))
+    app.useGlobalInterceptors(
+        new ClassSerializerInterceptor(app.get(Reflector))
+    )
 
     app.useWebSocketAdapter(new WsAdapter(app))
 

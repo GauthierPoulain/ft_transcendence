@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import { createRepository } from "./repository";
+import { useContext } from "react"
+import { createRepository } from "./repository"
 import { createService } from "./service"
 import { fetcher } from "./use-fetch"
 
@@ -10,7 +10,7 @@ export type User = {
     tfa: boolean
 }
 
-const repository = createRepository<User>();
+const repository = createRepository<User>()
 
 const service = createService<User, void>({
     name: "users",
@@ -26,7 +26,7 @@ const service = createService<User, void>({
 
     onUpdated(data, setState) {
         setState((state) => repository.updateOne(state, data))
-    }
+    },
 })
 
 export const UsersProvider = service.Provider

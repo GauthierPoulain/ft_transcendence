@@ -1,4 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, RelationId, OneToOne, JoinColumn } from "typeorm"
+import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    OneToMany,
+    ManyToOne,
+    RelationId,
+    OneToOne,
+    JoinColumn,
+} from "typeorm"
 
 import { Message } from "src/channels/messages/message.entity"
 import { Exclude, Expose } from "class-transformer"
@@ -51,13 +60,17 @@ export class DirectChannel {
     @PrimaryGeneratedColumn()
     id: number
 
-    @ManyToOne(() => User, (user) => user._directchannel_userone, { onDelete: "CASCADE" })
+    @ManyToOne(() => User, (user) => user._directchannel_userone, {
+        onDelete: "CASCADE",
+    })
     userOne: User
 
     @RelationId((direct: DirectChannel) => direct.userOne)
     userOneId: number
 
-    @ManyToOne(() => User, (user) => user._directchannel_usertwo, { onDelete: "CASCADE" })
+    @ManyToOne(() => User, (user) => user._directchannel_usertwo, {
+        onDelete: "CASCADE",
+    })
     userTwo: User
 
     @RelationId((direct: DirectChannel) => direct.userTwo)

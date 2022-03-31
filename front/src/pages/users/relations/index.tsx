@@ -17,7 +17,10 @@ function User({ userId }) {
     return (
         <div className="d-flex relation-card border border-dark border-2 p-2">
             <UserAvatar userId={user.id} className="w-16 h-16" />
-            <Link to={`/users/${user.id}`} className="m-auto mx-3 fs-4 text-decoration-none">
+            <Link
+                to={`/users/${user.id}`}
+                className="m-auto mx-3 fs-4 text-decoration-none"
+            >
                 {user.nickname}
             </Link>
             <div className="m-auto d-flex">
@@ -36,9 +39,11 @@ function User({ userId }) {
 function Users({ relations }) {
     return (
         <div className="d-flex">
-            { relations.map(({ targetId }) => <User key={targetId} userId={targetId} />) }
+            {relations.map(({ targetId }) => (
+                <User key={targetId} userId={targetId} />
+            ))}
         </div>
-    );
+    )
 }
 
 export default function Relations() {
@@ -47,10 +52,18 @@ export default function Relations() {
     return (
         <Container>
             <h2>Friends</h2>
-            { friends.length === 0 ? <p className="mb-0">You don't have any friend.</p> : <Users relations={friends} /> }
+            {friends.length === 0 ? (
+                <p className="mb-0">You don't have any friend.</p>
+            ) : (
+                <Users relations={friends} />
+            )}
 
             <h2 className="mt-3">Blocked users</h2>
-            { blocked.length === 0 ? <p className="mb-0">You didn't block anyone.</p> : <Users relations={blocked} /> }
+            {blocked.length === 0 ? (
+                <p className="mb-0">You didn't block anyone.</p>
+            ) : (
+                <Users relations={blocked} />
+            )}
         </Container>
     )
 }

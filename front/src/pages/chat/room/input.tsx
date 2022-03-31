@@ -13,16 +13,14 @@ function useCanSendMessage(channelId: number): boolean {
     const members = useMembers()
 
     if (!channel) {
-        return false;
+        return false
     }
 
     if (channel.type === "direct") {
         return !members.some(({ userId }) => isBlockedBy(userId))
     }
 
-    const { muted } = members.find(
-        ({ userId }) => userId === auth.userId!
-    )!
+    const { muted } = members.find(({ userId }) => userId === auth.userId!)!
 
     return !muted
 }
@@ -31,12 +29,12 @@ export default function MessageInput({ channelId }) {
     const channel = useChannel(channelId)!
     const [content, setContent] = useState("")
     const canSend = useCanSendMessage(channelId)
-    const inputElement = useRef<HTMLInputElement>(null);
+    const inputElement = useRef<HTMLInputElement>(null)
 
     // Message sending hook.
     const { submit, isError, isLoading } = useSubmit(
-        ({ channelId, content }: { channelId: number, content: string }) =>
-            fetcherPost(`/channels/${channelId}/messages`, { content }),
+        ({ channelId, content }: { channelId: number; content: string }) =>
+            fetcherPost(`/channels/${channelId}/messages`, { content })
     )
 
     async function onSubmit(event: any) {
@@ -60,7 +58,6 @@ export default function MessageInput({ channelId }) {
         setContent("")
     }, [channelId])
 
-
     return (
         <Form onSubmit={onSubmit}>
             <Form.Control
@@ -69,7 +66,11 @@ export default function MessageInput({ channelId }) {
                 className={`bg-dark border-${
                     isError ? "danger" : "dark"
                 } text-white`}
-                placeholder={canSend ? `Enter a message for ${channel.name}` : "You can't send a message"}
+                placeholder={
+                    canSend
+                        ? `Enter a message for ${channel.name}`
+                        : "You can't send a message"
+                }
                 value={content}
                 onChange={(event) => setContent(event.target.value)}
                 disabled={isLoading || !canSend}

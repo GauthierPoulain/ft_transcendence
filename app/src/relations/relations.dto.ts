@@ -1,10 +1,10 @@
-import { IsEnum, IsNumber } from "class-validator";
+import { IsEnum, IsNumber } from "class-validator"
 
 export enum RelationAction {
     BLOCK = "block",
     UNBLOCK = "unblock",
     FRIEND = "friend",
-    UNFRIEND = "unfriend"
+    UNFRIEND = "unfriend",
 }
 
 export class RelationActionDto {

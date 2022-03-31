@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useWebSocket } from "../../data/use-websocket";
+import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { useWebSocket } from "../../data/use-websocket"
 
 export default function Matchmaking() {
     const navigate = useNavigate()

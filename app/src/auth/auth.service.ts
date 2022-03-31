@@ -47,7 +47,7 @@ export class AuthService {
     createToken(user: User, tfa: boolean): Promise<string> {
         const payload = {
             sub: user.id,
-            aud: tfa ? "tfa" : "auth"
+            aud: tfa ? "tfa" : "auth",
         }
 
         return this.jwt.signAsync(payload)

@@ -11,13 +11,16 @@ export class JwtStrategy extends PassportStrategy(InnerJwtStrategy) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: Buffer.from(config.get<string>("JWT_SECRET"), "base64")
+            secretOrKey: Buffer.from(
+                config.get<string>("JWT_SECRET"),
+                "base64"
+            ),
         })
     }
 
     async validate({ sub, aud }: TokenPayload) {
         if (aud !== "auth") {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException()
         }
 
         return { id: sub }

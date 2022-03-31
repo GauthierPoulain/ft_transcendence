@@ -1,4 +1,11 @@
-import { Controller, Post, Body, UnauthorizedException, BadRequestException, NotFoundException } from "@nestjs/common"
+import {
+    Controller,
+    Post,
+    Body,
+    UnauthorizedException,
+    BadRequestException,
+    NotFoundException,
+} from "@nestjs/common"
 import { IntraInfosDto } from "src/users/dto/intra_infos.dto"
 
 import { AuthService } from "./auth.service"
@@ -53,7 +60,7 @@ export class AuthController {
         return {
             token: await this.auth.createToken(user, false),
             created: false,
-            user
+            user,
         }
     }
 

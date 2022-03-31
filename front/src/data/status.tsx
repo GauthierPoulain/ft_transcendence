@@ -1,16 +1,16 @@
-import { useContext } from "react";
-import { createRepository } from "./repository";
-import { createService } from "./service";
-import { fetcher } from "./use-fetch";
+import { useContext } from "react"
+import { createRepository } from "./repository"
+import { createService } from "./service"
+import { fetcher } from "./use-fetch"
 
 type Status = {
     // It corresponds to the id of an User.
     id: number
 
     status: number
-};
+}
 
-const repository = createRepository<Status>();
+const repository = createRepository<Status>()
 
 const service = createService<Status, void>({
     name: "status",
@@ -19,9 +19,10 @@ const service = createService<Status, void>({
     async fetcher() {
         const response = await fetcher("/status")
 
-        return Object.entries(response).map(
-            ([id, status]) => ({ id: parseInt(id, 10), status: status as number })
-        )
+        return Object.entries(response).map(([id, status]) => ({
+            id: parseInt(id, 10),
+            status: status as number,
+        }))
     },
 
     onCreated(data, setState) {
@@ -48,7 +49,7 @@ export function useStatus(userId: number) {
             isOnline: false,
             isOffline: true,
             isInGame: false,
-            gameId: 0
+            gameId: 0,
         }
     }
 
@@ -56,7 +57,7 @@ export function useStatus(userId: number) {
         isOnline: true,
         isOffline: false,
         isInGame: status.status > 0,
-        gameId: status.status
+        gameId: status.status,
     }
 }
 

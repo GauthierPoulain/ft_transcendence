@@ -74,10 +74,13 @@ export class MessagesService {
     }
 
     async canSendMessage(channel: Channel, authorId: number): Promise<boolean> {
-        const member = await this.members.findOneWithChannelAndUser(channel.id, authorId)
+        const member = await this.members.findOneWithChannelAndUser(
+            channel.id,
+            authorId
+        )
 
         if (!member) {
-            return false;
+            return false
         }
 
         // If the channel is a direct message channel, check if the other user hasn't blocked.
@@ -86,11 +89,14 @@ export class MessagesService {
             const other = await this.members.findOneReal({
                 where: {
                     channel: { id: channel.id },
-                    user: { id: Not(authorId) }
-                }
+                    user: { id: Not(authorId) },
+                },
             })
 
-            return other && !(await this.relations.isBlocking(other.userId, authorId))
+            return (
+                other &&
+                !(await this.relations.isBlocking(other.userId, authorId))
+            )
         }
 
         // Otherwise, check if the user isn't muted or is an admin.

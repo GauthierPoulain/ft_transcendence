@@ -87,7 +87,10 @@ export default function ChatBox() {
     const joined = useJoinedChannels()
 
     const channels = pubs.filter(({ id, type }) => {
-        return !["direct", "private"].includes(type) && !joined.some((joined) => joined.id === id)
+        return (
+            !["direct", "private"].includes(type) &&
+            !joined.some((joined) => joined.id === id)
+        )
     })
 
     return (

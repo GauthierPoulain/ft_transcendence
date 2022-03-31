@@ -3,7 +3,7 @@ import PowerUp from "./Powerup"
 interface Iengine {
     scene: THREE.Scene
     objects: Map<string, any>
-    powerUps: Map<number, PowerUp>
+    powerUp: Map<number, PowerUp>
 }
 
-export {Iengine}
+export { Iengine }

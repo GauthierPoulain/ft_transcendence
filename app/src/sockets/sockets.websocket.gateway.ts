@@ -34,20 +34,21 @@ export class SocketsGateway
     }
 
     @SubscribeMessage("login")
-    async onLogin(@MessageBody() token: string, @ConnectedSocket() socket: any) {
+    async onLogin(
+        @MessageBody() token: string,
+        @ConnectedSocket() socket: any
+    ) {
         if (this.auth.isConnected(socket) && !token) {
             // Acts the same as if the user disconnected then reconnected.
-            this.handleDisconnect(socket);
-            this.handleConnection(socket);
-        }
-
-        else if (!this.auth.isConnected(socket) && token) {
-            const userId = await this.auth.login(socket, token);
+            this.handleDisconnect(socket)
+            this.handleConnection(socket)
+        } else if (!this.auth.isConnected(socket) && token) {
+            const userId = await this.auth.login(socket, token)
 
             this.sockets.join(socket, `users.${userId}`)
             await this.emitter.emitAsync("socket.auth", {
                 socket,
-                userId
+                userId,
             })
         }
     }

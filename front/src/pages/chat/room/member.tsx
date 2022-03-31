@@ -17,17 +17,37 @@ function OwnerOptions({ member }) {
     const isLoading = loadingUpdate || loadingRemove
 
     const submit = (action: any) => () => {
-        return action === "kick" ? submitRemove({ id: member.id }) : submitUpdate({ id: member.id, action })
+        return action === "kick"
+            ? submitRemove({ id: member.id })
+            : submitUpdate({ id: member.id, action })
     }
 
     return (
         <>
             <Dropdown.Header>Moderation</Dropdown.Header>
-            {member.role === "admin" && <Dropdown.Item disabled={isLoading} onClick={submit("demote")}>Demote</Dropdown.Item>}
-            {member.role === "guest" && <Dropdown.Item disabled={isLoading} onClick={submit("promote")}>Promote</Dropdown.Item>}
-            <Dropdown.Item disabled={isLoading} onClick={submit("kick")}>Kick</Dropdown.Item>
-            {member.muted && <Dropdown.Item disabled={isLoading} onClick={submit("unmute")}>Unmute</Dropdown.Item>}
-            {!member.muted && <Dropdown.Item disabled={isLoading} onClick={submit("mute")}>Mute</Dropdown.Item>}
+            {member.role === "admin" && (
+                <Dropdown.Item disabled={isLoading} onClick={submit("demote")}>
+                    Demote
+                </Dropdown.Item>
+            )}
+            {member.role === "guest" && (
+                <Dropdown.Item disabled={isLoading} onClick={submit("promote")}>
+                    Promote
+                </Dropdown.Item>
+            )}
+            <Dropdown.Item disabled={isLoading} onClick={submit("kick")}>
+                Kick
+            </Dropdown.Item>
+            {member.muted && (
+                <Dropdown.Item disabled={isLoading} onClick={submit("unmute")}>
+                    Unmute
+                </Dropdown.Item>
+            )}
+            {!member.muted && (
+                <Dropdown.Item disabled={isLoading} onClick={submit("mute")}>
+                    Mute
+                </Dropdown.Item>
+            )}
         </>
     )
 }
@@ -39,15 +59,27 @@ function AdminOptions({ member }) {
     const isLoading = loadingUpdate || loadingRemove
 
     const submit = (action: any) => () => {
-        return action === "kick" ? submitRemove({ id: member.id }) : submitUpdate({ id: member.id, action })
+        return action === "kick"
+            ? submitRemove({ id: member.id })
+            : submitUpdate({ id: member.id, action })
     }
 
     return (
         <>
             <Dropdown.Header>Moderation</Dropdown.Header>
-            <Dropdown.Item disabled={isLoading} onClick={submit("kick")}>Kick</Dropdown.Item>
-            {member.muted && <Dropdown.Item disabled={isLoading} onClick={submit("unmute")}>Unmute</Dropdown.Item>}
-            {!member.muted && <Dropdown.Item disabled={isLoading} onClick={submit("mute")}>Mute</Dropdown.Item>}
+            <Dropdown.Item disabled={isLoading} onClick={submit("kick")}>
+                Kick
+            </Dropdown.Item>
+            {member.muted && (
+                <Dropdown.Item disabled={isLoading} onClick={submit("unmute")}>
+                    Unmute
+                </Dropdown.Item>
+            )}
+            {!member.muted && (
+                <Dropdown.Item disabled={isLoading} onClick={submit("mute")}>
+                    Mute
+                </Dropdown.Item>
+            )}
         </>
     )
 }
@@ -57,7 +89,9 @@ function CommonOptions({ member }) {
     const relation = useRelation(member.userId)
 
     const mutateBlock = relation.isBlocking ? relation.unblock : relation.block
-    const mutateFriend = relation.isFriendWith ? relation.unfriend : relation.friend
+    const mutateFriend = relation.isFriendWith
+        ? relation.unfriend
+        : relation.friend
     const mutateDirect = useMutateDirectChannel()
 
     async function directMessage() {
@@ -69,9 +103,24 @@ function CommonOptions({ member }) {
     return (
         <>
             <Dropdown.Header>Interaction</Dropdown.Header>
-            <Dropdown.Item disabled={mutateBlock.isLoading} onClick={() => mutateBlock.submit(member.userId)}>{ relation.isBlocking ? "Unblock" : "Block" }</Dropdown.Item>
-            <Dropdown.Item disabled={mutateFriend.isLoading} onClick={() => mutateFriend.submit(member.userId)}>{ relation.isFriendWith ? "Remove friend" : "Add friend" }</Dropdown.Item>
-            <Dropdown.Item disabled={mutateDirect.isLoading} onClick={directMessage}>Message</Dropdown.Item>
+            <Dropdown.Item
+                disabled={mutateBlock.isLoading}
+                onClick={() => mutateBlock.submit(member.userId)}
+            >
+                {relation.isBlocking ? "Unblock" : "Block"}
+            </Dropdown.Item>
+            <Dropdown.Item
+                disabled={mutateFriend.isLoading}
+                onClick={() => mutateFriend.submit(member.userId)}
+            >
+                {relation.isFriendWith ? "Remove friend" : "Add friend"}
+            </Dropdown.Item>
+            <Dropdown.Item
+                disabled={mutateDirect.isLoading}
+                onClick={directMessage}
+            >
+                Message
+            </Dropdown.Item>
             <Dropdown.Item>Game Request</Dropdown.Item>
         </>
     )
@@ -95,8 +144,12 @@ function Options({ member }) {
             />
 
             <Dropdown.Menu variant="dark">
-                {current.role === "owner" && member.role !== "owner" && <OwnerOptions member={member} />}
-                {current.role === "admin" && member.role === "guest" && <AdminOptions member={member} />}
+                {current.role === "owner" && member.role !== "owner" && (
+                    <OwnerOptions member={member} />
+                )}
+                {current.role === "admin" && member.role === "guest" && (
+                    <AdminOptions member={member} />
+                )}
                 <CommonOptions member={member} />
             </Dropdown.Menu>
         </Dropdown>

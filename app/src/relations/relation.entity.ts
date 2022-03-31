@@ -1,10 +1,16 @@
-import { Exclude } from "class-transformer";
-import { User } from "src/users/entities/user.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
+import { Exclude } from "class-transformer"
+import { User } from "src/users/entities/user.entity"
+import {
+    Column,
+    Entity,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    RelationId,
+} from "typeorm"
 
 export enum RelationKind {
     FRIEND = "friend",
-    BLOCKED = "blocked"
+    BLOCKED = "blocked",
 }
 
 @Entity()
@@ -28,7 +34,7 @@ export class Relation {
 
     @Column({
         type: "enum",
-        enum: RelationKind
+        enum: RelationKind,
     })
     kind: RelationKind
 }

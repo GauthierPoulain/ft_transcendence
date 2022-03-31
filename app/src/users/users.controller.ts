@@ -7,6 +7,6 @@ export class UsersController {
 
     @Get()
     async find() {
-        return this.users.findMany();
+        return this.users.findMany()
     }
 }

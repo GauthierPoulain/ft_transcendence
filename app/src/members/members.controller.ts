@@ -14,7 +14,11 @@ import { ConnectedGuard } from "src/auth/connected.guard"
 import { User } from "src/users/entities/user.entity"
 import { CurrentUser, CurrentUserId } from "src/users/user.decorator"
 import { MembersService } from "./members.service"
-import { CreateMemberDto, UpdateMemberAction, UpdateMemberDto } from "./members.dto"
+import {
+    CreateMemberDto,
+    UpdateMemberAction,
+    UpdateMemberDto,
+} from "./members.dto"
 import { ChannelsService } from "src/channels/channels.service"
 import { Member, Role, roleIsLess } from "./member.entity"
 
@@ -39,7 +43,11 @@ export class MembersController {
 
     @Put(":id")
     @UseGuards(ConnectedGuard)
-    async update(@CurrentUserId() userId: number, @Param("id") targetId: number, @Body() body: UpdateMemberDto) {
+    async update(
+        @CurrentUserId() userId: number,
+        @Param("id") targetId: number,
+        @Body() body: UpdateMemberDto
+    ) {
         const target = await this.members.findOne(targetId)
 
         if (!target) {
@@ -48,7 +56,7 @@ export class MembersController {
 
         const [channel, current] = await Promise.all([
             this.channels.findOne(target.channelId),
-            this.members.findOneWithChannelAndUser(target.channelId, userId)
+            this.members.findOneWithChannelAndUser(target.channelId, userId),
         ])
 
         if (!current) {
@@ -61,15 +69,15 @@ export class MembersController {
         }
 
         if (body.action === UpdateMemberAction.MUTE) {
-            target.muted = true;
+            target.muted = true
             await this.members.update(target)
-            return;
+            return
         }
 
         if (body.action === UpdateMemberAction.UNMUTE) {
-            target.muted = false;
+            target.muted = false
             await this.members.update(target)
-            return;
+            return
         }
 
         // These actions are limited to the owner
@@ -82,7 +90,7 @@ export class MembersController {
                 target.role = Role.ADMIN
                 await this.members.update(target)
             }
-            return;
+            return
         }
 
         if (body.action === UpdateMemberAction.DEMOTE) {
@@ -90,7 +98,7 @@ export class MembersController {
                 target.role = Role.GUEST
                 await this.members.update(target)
             }
-            return;
+            return
         }
     }
 
@@ -108,7 +116,7 @@ export class MembersController {
 
         const [channel, current] = await Promise.all([
             this.channels.findOne(target.channelId),
-            this.members.findOneWithChannelAndUser(target.channelId, userId)
+            this.members.findOneWithChannelAndUser(target.channelId, userId),
         ])
 
         if (!current || current.channelId !== target.channelId) {
@@ -116,7 +124,11 @@ export class MembersController {
         }
 
         // If the user is kicking someone with a higher rank
-        if ((target.id !== current.id && roleIsLess(current.role, target.role)) || channel.type === "direct") {
+        if (
+            (target.id !== current.id &&
+                roleIsLess(current.role, target.role)) ||
+            channel.type === "direct"
+        ) {
             throw new UnauthorizedException()
         }
 

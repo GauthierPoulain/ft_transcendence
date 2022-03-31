@@ -23,11 +23,23 @@ export class ChannelsService {
     ) {}
 
     async create(input: CreateChannelDto, owner: User): Promise<Channel> {
-        return this.createComplex(input.name, input.joinable, input.password, false, [owner])
+        return this.createComplex(
+            input.name,
+            input.joinable,
+            input.password,
+            false,
+            [owner]
+        )
     }
 
     // Use dto for this.
-    async createComplex(name: string, joinable: boolean, password: string, direct: boolean, owners: User[]) {
+    async createComplex(
+        name: string,
+        joinable: boolean,
+        password: string,
+        direct: boolean,
+        owners: User[]
+    ) {
         let channel = new Channel()
         channel.name = name
         channel.joinable = joinable
@@ -39,7 +51,9 @@ export class ChannelsService {
 
         try {
             await Promise.all(
-                owners.map((owner) => this.members.create(channel, owner, Role.OWNER))
+                owners.map((owner) =>
+                    this.members.create(channel, owner, Role.OWNER)
+                )
             )
         } catch (e) {
             await this.channelsRepository.remove(channel)

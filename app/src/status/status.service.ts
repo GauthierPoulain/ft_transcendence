@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
-import { OnEvent } from "@nestjs/event-emitter";
-import { SocketsService } from "src/sockets/sockets.service";
+import { Injectable } from "@nestjs/common"
+import { OnEvent } from "@nestjs/event-emitter"
+import { SocketsService } from "src/sockets/sockets.service"
 
 @Injectable()
 export class StatusService {
@@ -8,9 +8,7 @@ export class StatusService {
     // A status of 0 means online, otherwise it's the current game id.
     private users: Map<number, number> = new Map()
 
-    constructor(private sockets: SocketsService) {
-
-    }
+    constructor(private sockets: SocketsService) {}
 
     find() {
         return this.users
@@ -45,10 +43,6 @@ export class StatusService {
     }
 
     private publish(event: string, data: any) {
-        this.sockets.publish(
-            ["all"],
-            `status.${event}`,
-            data
-        )
+        this.sockets.publish(["all"], `status.${event}`, data)
     }
 }

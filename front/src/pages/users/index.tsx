@@ -19,9 +19,17 @@ function BlockButton({ userId }) {
     const { submit, isLoading } = isBlocking ? unblock : block
 
     return (
-        <OverlayTrigger placement="top" overlay={<Tooltip>{ isBlocking ? "Unblock" : "Block" }</Tooltip>}>
-            <Button variant={isBlocking ? "secondary" : "dark"} size="sm" onClick={submit} disabled={isLoading}>
-                { isBlocking ? <RemoveCircleOutline /> : <RemoveCircle /> }
+        <OverlayTrigger
+            placement="top"
+            overlay={<Tooltip>{isBlocking ? "Unblock" : "Block"}</Tooltip>}
+        >
+            <Button
+                variant={isBlocking ? "secondary" : "dark"}
+                size="sm"
+                onClick={submit}
+                disabled={isLoading}
+            >
+                {isBlocking ? <RemoveCircleOutline /> : <RemoveCircle />}
             </Button>
         </OverlayTrigger>
     )
@@ -32,9 +40,21 @@ function FriendButton({ userId }) {
     const { submit, isLoading } = isFriendWith ? unfriend : friend
 
     return (
-        <OverlayTrigger placement="top" overlay={<Tooltip>{ isFriendWith ? "Remove friend" : "Add friend" }</Tooltip>}>
-            <Button variant={isFriendWith ? "danger" : "success"} size="sm" onClick={submit} disabled={isLoading}>
-                { isFriendWith ? <PersonAddDisabled /> : <PersonAdd /> }
+        <OverlayTrigger
+            placement="top"
+            overlay={
+                <Tooltip>
+                    {isFriendWith ? "Remove friend" : "Add friend"}
+                </Tooltip>
+            }
+        >
+            <Button
+                variant={isFriendWith ? "danger" : "success"}
+                size="sm"
+                onClick={submit}
+                disabled={isLoading}
+            >
+                {isFriendWith ? <PersonAddDisabled /> : <PersonAdd />}
             </Button>
         </OverlayTrigger>
     )
@@ -124,7 +144,15 @@ function Navigation() {
                     </Link>
                 </>
             )}
-            {!isCurrentUser && auth.connected && <Link to="challenge" className="btn btn-dark btn-lg rounded-0" replace>Challenge</Link>}
+            {!isCurrentUser && auth.connected && (
+                <Link
+                    to="challenge"
+                    className="btn btn-dark btn-lg rounded-0"
+                    replace
+                >
+                    Challenge
+                </Link>
+            )}
         </div>
     )
 }

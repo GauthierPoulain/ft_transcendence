@@ -49,7 +49,9 @@ type ServiceSettings<T, ProviderSettings> = {
 export function createService<T extends Entity, U>(
     serviceSettings: ServiceSettings<T, U>
 ): Service<T, U> {
-    const Context = createContext<{ state: State<T>, loading: boolean }>({} as any)
+    const Context = createContext<{ state: State<T>; loading: boolean }>(
+        {} as any
+    )
 
     function Provider({ children, settings }: { settings: U; children: any }) {
         const { subscribe } = useWebSocket()
@@ -57,7 +59,7 @@ export function createService<T extends Entity, U>(
             serviceSettings.repository.initialState()
         )
         const [loading, setLoading] = useState(true)
-        const [mounted, setMounted] = useState(true);
+        const [mounted, setMounted] = useState(true)
 
         useEffect(() => {
             console.log("Provider.Fetching", serviceSettings.name, settings)

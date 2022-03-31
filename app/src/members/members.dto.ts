@@ -12,7 +12,7 @@ export enum UpdateMemberAction {
     PROMOTE = "promote",
     DEMOTE = "demote",
     MUTE = "mute",
-    UNMUTE = "unmute"
+    UNMUTE = "unmute",
 }
 
 export class UpdateMemberDto {

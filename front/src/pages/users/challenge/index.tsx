@@ -1,15 +1,17 @@
-import { Button, Container, Form } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
-import { Match } from "../../../data/matches";
-import { fetcherPost, useSubmit } from "../../../data/use-fetch";
-import { useUser } from "../../../data/users";
+import { Button, Container, Form } from "react-bootstrap"
+import { useNavigate, useParams } from "react-router-dom"
+import { Match } from "../../../data/matches"
+import { fetcherPost, useSubmit } from "../../../data/use-fetch"
+import { useUser } from "../../../data/users"
 
 type MatchCreation = {
     opponent: number
 }
 
 function useMutateChallenge() {
-    return useSubmit<MatchCreation, Match>((match) => fetcherPost("/matches", match, true))
+    return useSubmit<MatchCreation, Match>((match) =>
+        fetcherPost("/matches", match, true)
+    )
 }
 
 function ChallengeForm({ userId }) {
@@ -47,7 +49,7 @@ export default function ChallengeUser() {
     return (
         <Container>
             <h2>Challenge</h2>
-            <p>Let's challenge { user.nickname } to a pong game!</p>
+            <p>Let's challenge {user.nickname} to a pong game!</p>
 
             <ChallengeForm userId={user.id} />
         </Container>

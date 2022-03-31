@@ -53,71 +53,138 @@ function collisionBoxBox(box1: THREE.Mesh, box2: THREE.Mesh) {
     return false
 }
 
-enum PowerUpTypes {
-    DEFAULT = "default",
+const PowerUpTypes = {
+    DEFAULT: {
+        name: "DEFAULT",
+        effect: (ctx: PowerUp) => {
+            console.log(`template triggered by ${ctx._sender}`)
+        },
+        reset: (ctx: PowerUp) => {
+            console.log(`template reset`)
+        },
+        initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => {
+            const geo = new THREE.DodecahedronBufferGeometry(r)
+            const mat = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+            })
+            let mesh = new THREE.Mesh(geo, mat)
+            mesh.castShadow = true
+            mesh.position.set(x, 0.3, z)
+            ctx._ctx.scene.add(mesh)
+            return mesh
+        },
+        animation: (ctx: PowerUp, delta: number) => {
+            ctx._mesh.rotation.y += 3 * delta
+        },
+        time: 3000,
+    },
+    BIGBAR: {
+        name: "BIGBAR",
+        effect: (ctx: PowerUp) => {
+            ctx._sender!.width = 5
+        },
+        reset: (ctx: PowerUp) => {
+            ctx._sender!.width = 3
+        },
+        initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => {
+            const geo = new THREE.DodecahedronBufferGeometry(r)
+            const mat = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+            })
+            let mesh = new THREE.Mesh(geo, mat)
+            mesh.castShadow = true
+            mesh.position.set(x, 0.3, z)
+            ctx._ctx.scene.add(mesh)
+            return mesh
+        },
+        animation: (ctx: PowerUp, delta: number) => {
+            ctx._mesh.rotation.y += 3 * delta
+        },
+        time: 7000,
+    },
+    // SPEED = "speed",
+    // LARGE = "large",
+    // SMALL = "small",
+    // RANDOMDIR = "random_direction",
+}
+
+enum PowerUpStates {
+    IDLE = 0,
+    TRIGGERED = 1,
+    DESTROYED = 2,
 }
 
 class PowerUp {
     _pos: { x: number; z: number }
-    _type: string
+    _type: {
+        name: string
+        effect: (ctx: PowerUp) => void
+        reset: (ctx: PowerUp) => void
+        initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => THREE.Mesh
+        animation: (ctx: PowerUp, delta: number) => void
+        time: number
+    }
     _id: number
-    _effect: (sender: Player) => void
-    _reset: () => void
+    _effect: () => void
+    _reset: (fromDestroy: boolean) => void
     _animation: (delta: number) => void
-    _sender: Player | undefined
+    _sender: Player | null = null
     _mesh: THREE.Mesh
     _ctx: Iengine
     _radius: number = 0
+    _actionTimeout: any | undefined = undefined
+    _state: PowerUpStates
 
-    constructor(
-        ctx: Iengine,
-        id: number,
-        type: PowerUpTypes,
-        x: number,
-        z: number,
+    constructor({
+        ctx,
+        id,
+        type,
+        x,
+        z,
+        r,
+    }: {
+        ctx: Iengine
+        id: number
+        type: {
+            name: string
+            effect: (ctx: PowerUp) => void
+            reset: (ctx: PowerUp) => void
+            initMesh: (
+                ctx: PowerUp,
+                x: number,
+                z: number,
+                r?: number
+            ) => THREE.Mesh
+            animation: (ctx: PowerUp, delta: number) => void
+            time: number
+        }
+        x: number
+        z: number
         r?: number
-    ) {
+    }) {
+        this._pos = { x: x, z: z }
         this._id = id
         this._ctx = ctx
-        switch (type) {
-            case PowerUpTypes.DEFAULT:
-                if (!r)
-                    throw new Error("radius requiered for " + type + " powerUp")
-                this._pos = { x: x, z: z }
-                this._radius = r
-                this._type = type
-                this._sender = undefined
-                this._effect = (sender: Player) => {
-                    console.log(`powerup ${this._type} triggered`, sender.name)
-                    this._sender = sender
-                }
-                this._reset = () => {
-                    console.log(
-                        `powerup ${this._type} reset`,
-                        this._sender!.name
-                    )
-                }
-                this._animation = (delta: number) => {
-                    this._mesh.rotation.y += 3 * delta
-                }
-                {
-                    const geo = new THREE.DodecahedronBufferGeometry(r)
-                    const mat = new THREE.MeshPhongMaterial({
-                        color: 0xffffff,
-                    })
-                    this._mesh = new THREE.Mesh(geo, mat)
-                    this._mesh.castShadow = true
-                    this._mesh.position.set(x, 0.3, z)
-                    this._ctx.scene.add(this._mesh)
-                }
-                break
+        this._type = type
+        this._mesh = this._type.initMesh(this, x, z)
+        this._animation = (delta: number) => {
+            this._type.animation(this, delta)
         }
-        this._ctx.powerUp.set(this._id, this)
+        this._effect = () => {
+            this._type.effect(this)
+        }
+        this._reset = (fromDestroy: boolean = false) => {
+            this._type.reset(this)
+            if (!fromDestroy) this._destroy()
+        }
+        this._state = PowerUpStates.IDLE
     }
 
     trigger(sender: Player) {
-        this._effect(sender)
-        // this._destroy()
+        this._sender = sender
+        this._effect()
+        this._state = PowerUpStates.TRIGGERED
+        this._ctx.scene.remove(this._mesh)
     }
 
     animate(delta: number) {
@@ -128,10 +195,22 @@ class PowerUp {
         return collisionCylCyl(this._mesh, this._radius, quoitMesh, quoitRadius)
     }
 
+    getBasicInfos() {
+        return {
+            id: this._id,
+            typeName: this._type.name,
+            pos: this._pos,
+            sender: this._sender ? this._sender.id : null,
+            state: this._state,
+            radius: this._radius,
+        }
+    }
+
     _destroy() {
-        if (this._reset) this._reset()
-        this._ctx.powerUp.delete(this._id)
+        if (this._actionTimeout != undefined) clearTimeout(this._actionTimeout)
+        if (this._reset && this._sender) this._reset(true)
         this._ctx.scene.remove(this._mesh)
+        this._state = PowerUpStates.DESTROYED
     }
 }
 
@@ -141,6 +220,30 @@ function hexToRgb(hex: number) {
         g: (hex >> 8) & 255,
         b: hex & 255,
     }
+}
+
+function getPowerUpInfos(list: Map<number, PowerUp>) {
+    let res = new Array<{
+        id: number
+        typeName: string
+        pos: { x: number; z: number }
+        sender: number | null
+        state: PowerUpStates
+    }>()
+    list.forEach((pu) => {
+        res.push(pu.getBasicInfos())
+    })
+    return res
+}
+
+function compareArrays(a1: Array<any>, a2: Array<any>): boolean {
+    return (
+        a1.length === a2.length &&
+        a1.every(
+            (value, index) =>
+                JSON.stringify(value) === JSON.stringify(a2[index])
+        )
+    )
 }
 
 interface Iengine {
@@ -828,7 +931,6 @@ export default class Game {
                 if (this._lastTime < data.time) {
                     if (data.force) {
                         console.log("forced update")
-
                         this._currentData = data.data
                     } else {
                         this._currentData.quoit = data.data.quoit
@@ -890,15 +992,106 @@ export default class Game {
                 this.winningEvent(data.player)
                 break
 
-            case "game:powerupSpawn":
-                new PowerUp(
-                    this._engine,
-                    data.id,
-                    data.type,
-                    data.x,
-                    data.z,
-                    data.r
-                )
+            case "game:powerupCompare":
+                let list = data.list as {
+                    id: number
+                    typeName: string
+                    pos: {
+                        x: number
+                        z: number
+                    }
+                    sender: number | null
+                    state: PowerUpStates
+                    radius: number
+                }[]
+
+                if (
+                    !compareArrays(list, getPowerUpInfos(this._engine.powerUp))
+                ) {
+                    list.forEach((e) => {
+                        if (this._engine.powerUp.get(e.id) == undefined)
+                            this._wsEmit("game:requestPowerup", { id: e.id })
+                        else {
+                            if (
+                                e.sender !=
+                                this._engine.powerUp.get(e.id)!._sender?.id
+                            ) {
+                                this._engine.powerUp.get(e.id)!._sender =
+                                    e.sender
+                                        ? e.sender! == 1
+                                            ? this._currentData.players.one
+                                            : this._currentData.players.two
+                                        : null
+                            }
+                            if (
+                                e.state !=
+                                this._engine.powerUp.get(e.id)!._state
+                            ) {
+                                switch (e.state) {
+                                    case PowerUpStates.IDLE:
+                                        this._engine.powerUp.delete(e.id)
+                                        this._wsEmit("game:requestPowerup", {
+                                            id: e.id,
+                                        })
+                                        break
+                                    case PowerUpStates.TRIGGERED:
+                                        if (e.sender)
+                                            this._engine.powerUp
+                                                .get(e.id)!
+                                                .trigger(
+                                                    e.sender! == 1
+                                                        ? this._currentData
+                                                              .players.one
+                                                        : this._currentData
+                                                              .players.two
+                                                )
+                                        break
+                                    case PowerUpStates.DESTROYED:
+                                        this._engine.powerUp
+                                            .get(e.id)!
+                                            ._destroy()
+                                        break
+
+                                    default:
+                                        break
+                                }
+                            }
+                        }
+                    })
+                    const map = new Map(list.map((obj) => [obj.id, obj]))
+                    this._engine.powerUp.forEach((e) => {
+                        if (map.get(e._id) == undefined) {
+                            e._destroy()
+                            this._engine.powerUp.delete(e._id)
+                        }
+                    })
+                }
+                break
+
+            case "game:powerupSync":
+                const pu = data.pu as {
+                    id: number
+                    typeName: string
+                    pos: {
+                        x: number
+                        z: number
+                    }
+                    sender: number | null
+                    state: PowerUpStates
+                    radius: number
+                }
+                if (this._engine.powerUp.get(data.id as number) == undefined)
+                    this._engine.powerUp.set(
+                        data.id as number,
+                        new PowerUp({
+                            ctx: this._engine,
+                            id: pu.id,
+                            type: PowerUpTypes[pu.typeName],
+                            x: pu.pos.x,
+                            z: pu.pos.z,
+                            r: pu.radius,
+                        })
+                    )
                 break
 
             case "game:powerupTrigger":

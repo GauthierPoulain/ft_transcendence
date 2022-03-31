@@ -1,10 +1,9 @@
-import { Controller, Get } from "@nestjs/common";
-import { StatusService } from "./status.service";
+import { Controller, Get } from "@nestjs/common"
+import { StatusService } from "./status.service"
 
 @Controller("/status")
 export class StatusController {
-    constructor(private service: StatusService) {
-    }
+    constructor(private service: StatusService) {}
 
     @Get()
     find() {

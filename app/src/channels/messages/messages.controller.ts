@@ -22,7 +22,7 @@ export class MessagesController {
     constructor(
         private messages: MessagesService,
         private channels: ChannelsService,
-        private members: MembersService,
+        private members: MembersService
     ) {}
 
     @Post()
@@ -88,7 +88,10 @@ export class MessagesController {
         }
 
         // If the user is deleting someone else message and he's not an admin or is in a direct message channel.
-        if (message.authorId !== userId && (!member.isAdmin || channel.type === "direct")) {
+        if (
+            message.authorId !== userId &&
+            (!member.isAdmin || channel.type === "direct")
+        ) {
             throw new UnauthorizedException()
         }
 

@@ -1,7 +1,5 @@
 import useUser from "../../../../data/use-user"
-import {
-    Message as MessageType
-} from "../../../../data/messages"
+import { Message as MessageType } from "../../../../data/messages"
 import { OverlayTrigger, Tooltip } from "react-bootstrap"
 import { useAuth } from "../../../../data/use-auth"
 import { useMemberByUser } from "../../../../data/members"
@@ -63,7 +61,8 @@ export default function Message({ message }: { message: MessageType }) {
                     </OverlayTrigger>
                     <div className="mb-3">
                         {(self.userId === author.id ||
-                            (self.role !== "guest" && channel.type !== "direct")) && (
+                            (self.role !== "guest" &&
+                                channel.type !== "direct")) && (
                             <DeleteButton message={message} />
                         )}
                     </div>
