@@ -1,5 +1,4 @@
-import Visibility from "@mui/icons-material/Visibility"
-import { OverlayTrigger, Table, Tooltip } from "react-bootstrap"
+import { Table } from "react-bootstrap"
 import { Link } from "react-router-dom"
 import UserAvatar from "../../components/user/UserAvatar"
 import { Match, useMatches, useMatchesLoading } from "../../data/matches"
@@ -23,7 +22,7 @@ function MatchComponent({ match }: { match: Match }) {
                     {userTwo.nickname}
                 </div>
             </td>
-            <td>? - ?</td>
+            <td>? - ? ({ match.state })</td>
             <td>
                 <Link className="btn btn-light" to={`/game/${match.id}`}>
                     View

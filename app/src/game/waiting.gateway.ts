@@ -22,6 +22,7 @@ export class GameWaitingGateway {
         private matches: MatchesService
     ) {}
 
+    // TODO: IMPORTANT, CHECK THAT THE USER WANTING TO WAIT IS ONE OF THE PLAYER
     // Tell the server the user is ready for the game to start.
     @SubscribeMessage("game.waiting.ready")
     async iamready(
@@ -46,7 +47,7 @@ export class GameWaitingGateway {
             // register the socket.
             if (
                 body.id === 0 ||
-                (!match && match.state === MatchState.WAITING)
+                (match && match.state === MatchState.WAITING)
             ) {
                 this.sockets.join(socket, `gamewaiting.${body.id}`)
             }
