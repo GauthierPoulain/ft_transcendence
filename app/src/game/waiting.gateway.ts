@@ -22,7 +22,6 @@ export class GameWaitingGateway {
         private matches: MatchesService
     ) {}
 
-    // TODO: IMPORTANT, CHECK THAT THE USER WANTING TO WAIT IS ONE OF THE PLAYER
     // Tell the server the user is ready for the game to start.
     @SubscribeMessage("game.waiting.ready")
     async iamready(
@@ -40,17 +39,25 @@ export class GameWaitingGateway {
                 ? undefined
                 : await this.matches.get({ where: { id: body.id } })
 
+        // Filter valid match and socket.
+        if (body.id !== 0) {
+            // If there's no match or not in a state of waiting for players.
+            if (!match || match.state !== MatchState.WAITING) {
+                return
+            }
+
+            const userId = this.auth.socketUserId(socket)
+
+            // If the player is not one of the player that can wait for it to start.
+            if (userId !== match.playerOneId && userId !== match.playerTwoId) {
+                return
+            }
+        }
+
         const sockets = [...this.sockets.findSockets(`gamewaiting.${body.id}`)]
 
         if (sockets.length === 0) {
-            // If the match's id is zero for matchmaking or the match exists and is in waiting mode,
-            // register the socket.
-            if (
-                body.id === 0 ||
-                (match && match.state === MatchState.WAITING)
-            ) {
-                this.sockets.join(socket, `gamewaiting.${body.id}`)
-            }
+            this.sockets.join(socket, `gamewaiting.${body.id}`)
             return
         }
 
