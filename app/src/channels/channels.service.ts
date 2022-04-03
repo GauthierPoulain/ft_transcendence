@@ -63,6 +63,13 @@ export class ChannelsService {
         return channel
     }
 
+    async update(channel: Channel): Promise<Channel> {
+        channel = await this.channelsRepository.save(channel)
+
+        this.publish("updated", instanceToPlain(channel, {}))
+        return channel
+    }
+
     find(options: FindManyOptions<Channel>): Promise<Channel[]> {
         return this.channelsRepository.find(options)
     }

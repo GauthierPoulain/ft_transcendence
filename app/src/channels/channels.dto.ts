@@ -1,4 +1,4 @@
-import { IsBoolean, IsString } from "class-validator"
+import { IsBoolean, IsNotEmpty, IsString } from "class-validator"
 import { Transform } from "class-transformer"
 
 export class CreateMessageDto {
@@ -19,4 +19,10 @@ export class QueryChannelsDto {
         return value
     })
     joined: boolean
+}
+
+export class SetProtectedChannelDto {
+    @IsString()
+    @IsNotEmpty()
+    password: string
 }

@@ -9,12 +9,14 @@ import {
     NotFoundException,
     UnauthorizedException,
 } from "@nestjs/common"
+import { hash } from "argon2"
 import { ConnectedGuard } from "src/auth/connected.guard"
-import { Member } from "src/members/member.entity"
+import { Member, Role } from "src/members/member.entity"
 import { MembersService } from "src/members/members.service"
 import { User } from "src/users/entities/user.entity"
 import { CurrentUser, CurrentUserId } from "src/users/user.decorator"
 import { UsersService } from "src/users/users.service"
+import { SetProtectedChannelDto } from "./channels.dto"
 import { ChannelsService } from "./channels.service"
 import { DirectChannelsService } from "./directchannels.service"
 import { CreateChannelDto } from "./dto/create-channel.dto"
@@ -92,5 +94,64 @@ export class ChannelsController {
         }
 
         return members
+    }
+
+    private async checkChannelMember(channelId: number, userId: number): Promise<[Channel, Member]> {
+        const [channel, member] = await Promise.all([
+            this.channels.findOne(channelId),
+            this.members.findOneWithChannelAndUser(channelId, userId)
+        ])
+
+        if (!channel) {
+            throw new NotFoundException()
+        }
+
+        if (!member) {
+            throw new UnauthorizedException()
+        }
+
+        return [channel, member]
+    }
+
+    @Post(":id/state/public")
+    @UseGuards(ConnectedGuard)
+    async setPublic(@CurrentUserId() userId: number, @Param("id") channelId: number) {
+        const [channel, member] = await this.checkChannelMember(channelId, userId)
+
+        if (member.role !== Role.OWNER) {
+            throw new UnauthorizedException()
+        }
+
+        channel.joinable = true;
+        channel.password = "";
+        await this.channels.update(channel)
+    }
+
+    @Post(":id/state/private")
+    @UseGuards(ConnectedGuard)
+    async setPrivate(@CurrentUserId() userId: number, @Param("id") channelId: number) {
+        const [channel, member] = await this.checkChannelMember(channelId, userId)
+
+        if (member.role !== Role.OWNER) {
+            throw new UnauthorizedException()
+        }
+
+        channel.joinable = false;
+        channel.password = "";
+        await this.channels.update(channel)
+    }
+
+    @Post(":id/state/protected")
+    @UseGuards(ConnectedGuard)
+    async setProtected(@CurrentUserId() userId: number, @Param("id") channelId: number, @Body() body: SetProtectedChannelDto) {
+        const [channel, member] = await this.checkChannelMember(channelId, userId)
+
+        if (member.role !== Role.OWNER) {
+            throw new UnauthorizedException()
+        }
+
+        channel.joinable = true;
+        channel.password = await hash(body.password);
+        await this.channels.update(channel)
     }
 }
