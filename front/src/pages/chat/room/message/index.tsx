@@ -1,37 +1,66 @@
 import useUser from "../../../../data/use-user"
 import { Message as MessageType } from "../../../../data/messages"
-import { OverlayTrigger, Tooltip } from "react-bootstrap"
+import { Button, Card, OverlayTrigger, Tooltip } from "react-bootstrap"
 import { useAuth } from "../../../../data/use-auth"
 import { useMemberByUser } from "../../../../data/members"
-// import { Button, Card } from "react-bootstrap"
 import "../style.scss"
-import { useRelation, useRelations } from "../../../../data/relations"
+import { useRelation } from "../../../../data/relations"
 import VisibilityIcon from "@mui/icons-material/Visibility"
 import { useState } from "react"
 import { useChannel } from "../../../../data/channels"
 import DeleteButton from "./delete"
+import { useMatch } from "../../../../data/matches"
 
-// function GameRequestCard({ author }) {
-//     return (
-//         <Card
-//             style={{
-//                 backgroundColor: "black",
-//                 width: "20rem",
-//                 borderRadius: "22px",
-//             }}
-//         >
-//             <Card.Body className="game-card">
-//                 <Card.Title className="mb-2">Game Request</Card.Title>
-//                 <div className="author mb-2">
-//                     {author.nickname} asking for a game !
-//                 </div>
-//                 <Button variant="warning" style={{ width: "100%" }}>
-//                     Play
-//                 </Button>
-//             </Card.Body>
-//         </Card>
-//     )
-// }
+function KnownGameCard({ game }) {
+    const playerOne = useUser(game.playerOneId)
+    const playerTwo = useUser(game.playerTwoId)
+
+    return (
+        <Card className="bg-dark">
+            <Card.Body>
+                <Card.Title className="mb-2">Game #{game.id}</Card.Title>
+                <div className="mb-2">
+                    { playerOne.nickname } vs { playerTwo.nickname }
+                </div>
+                <Button style={{ width: "100%" }}>
+                    Go to the game
+                </Button>
+            </Card.Body>
+        </Card>
+    )
+}
+
+function GameCard({ gameId }) {
+    const game = useMatch(gameId)
+
+    if (!game) {
+        return (
+            <Card className="bg-dark">
+                <Card.Body>
+                    <Card.Title className="mb-2">Game #{gameId}</Card.Title>
+                    <div className="mb-2">
+                        Game not found!
+                    </div>
+                </Card.Body>
+            </Card>
+        )
+    }
+
+    return <KnownGameCard game={game} />
+}
+
+
+function MessageContent({ content }) {
+    const match = content.match(/^#game:(\d+)#$/)
+
+    if (!match) {
+        return <div>{ content }</div>
+    }
+
+    const number = parseInt(match[1], 10)
+
+    return <GameCard gameId={number} />
+}
 
 export default function Message({ message }: { message: MessageType }) {
     const auth = useAuth()
@@ -41,46 +70,34 @@ export default function Message({ message }: { message: MessageType }) {
     const [show, setShow] = useState(false)
     const { isBlocking } = useRelation(author.id)
 
-    // TODO: Deduplicate code for message
-    if (isBlocking && !show) {
-        return (
-            <div className="d-flex flex-column">
-                <div className="d-flex justify-content-start align-items-center gap-x-2">
-                    <p className="fst-italic text-secondary">
-                        Message from blocked user
-                    </p>
-                    <OverlayTrigger
-                        placement="top"
-                        overlay={<Tooltip>Show</Tooltip>}
-                    >
-                        <VisibilityIcon
-                            className="text-secondary cursor-pointer mb-3"
-                            fontSize="inherit"
-                            onMouseDown={() => setShow(true)}
-                        />
-                    </OverlayTrigger>
-                    <div className="mb-3">
-                        {(self.userId === author.id ||
-                            (self.role !== "guest" &&
-                                channel.type !== "direct")) && (
-                            <DeleteButton message={message} />
-                        )}
-                    </div>
-                </div>
-            </div>
-        )
-    }
+    const hidden = isBlocking && !show
 
     return (
         <div className="d-flex flex-column">
             <div className="d-flex justify-content-start align-items-center gap-x-2">
-                <span className="user-tag">{author.nickname}</span>
-                {(self.userId === author.id ||
-                    (self.role !== "guest" && channel.type !== "direct")) && (
-                    <DeleteButton message={message} />
-                )}
+                { hidden
+                    ? <span className="fst-italic text-secondary">Blocked message</span>
+                    : <span className="user-tag">{author.nickname}</span>
+                }
+                { hidden && <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip>Show</Tooltip>}
+                >
+                    <VisibilityIcon
+                        className="text-secondary cursor-pointer"
+                        fontSize="inherit"
+                        onMouseDown={() => setShow(true)}
+                    />
+                </OverlayTrigger>
+                }
+                    {(self.userId === author.id ||
+                        (self.role !== "guest" &&
+                            channel.type !== "direct")) && (
+                        <DeleteButton message={message} />
+                    )}
             </div>
-            <div>{message.content}</div>
+
+            { !hidden && <MessageContent content={message.content} /> }
         </div>
     )
 }
