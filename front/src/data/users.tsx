@@ -6,6 +6,7 @@ import { fetcher } from "./use-fetch"
 export type User = {
     id: number
     nickname: string
+    has_custom_image: boolean
     image: string
     tfa: boolean
 }

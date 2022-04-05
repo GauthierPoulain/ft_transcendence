@@ -27,9 +27,18 @@ export class User {
     custom_name: string | null
 
     @Expose()
-    get image(): string {
-        return this.intra_image_url
+    get has_custom_image(): boolean {
+        return this.custom_image !== null
     }
+
+    @Expose()
+    get image(): string {
+        return this.has_custom_image ? this.custom_image : this.intra_image_url
+    }
+
+    @Column({ nullable: true })
+    @Exclude()
+    custom_image: string | null
 
     @Expose()
     get nickname(): string {

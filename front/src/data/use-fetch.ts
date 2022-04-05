@@ -15,14 +15,15 @@ const apiurl = (url: string) => {
 
 export const fetcher = async (
     url: string,
-    options = {},
+    options: any = {},
     jsonResponse = true
 ) => {
     const response = await fetch(apiurl(url), {
         ...options,
         headers: {
-            "Content-Type": "application/json",
+            ...(options.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
             ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+            ...(options.headers ? options.headers : {})
         },
     })
 

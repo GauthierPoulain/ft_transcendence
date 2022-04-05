@@ -6,8 +6,12 @@ import {
     Get,
     Post,
     UnauthorizedException,
+    UploadedFile,
     UseGuards,
+    UseInterceptors,
 } from "@nestjs/common"
+import { FileInterceptor } from "@nestjs/platform-express"
+import { diskStorage } from "multer"
 import { generateSecret, verifyToken } from "node-2fa"
 import { ConnectedGuard } from "src/auth/connected.guard"
 import { QueryFailedError } from "typeorm"
@@ -78,6 +82,39 @@ export class SettingsController {
         }
 
         user.tfa_secret = null
+        await this.users.update(user)
+    }
+
+    // TODO: Check if the file is valid (mimetype and max size)
+    // TODO: Use docker volume
+    @Post("avatar")
+    @UseGuards(ConnectedGuard)
+    @UseInterceptors(FileInterceptor("avatar", { storage: diskStorage({
+        destination(_req, _file, cb) {
+            cb(null, "/tmp/lol")
+        },
+
+        filename(_req, file, cb) {
+            const MIME_TYPE_MAP = {
+                'image/png': 'png',
+                'image/jpeg': 'jpg',
+                'image/jpg': 'jpg'
+            }
+
+            cb(null, `${file.fieldname}-${Date.now()}-${Math.round(Math.random() * 1E9)}.${MIME_TYPE_MAP[file.mimetype]}`)
+        }
+    }) }))
+    async uploadAvatar(@UploadedFile() file: Express.Multer.File, @CurrentUser() user: User) {
+        if (file) {
+            user.custom_image = file.filename
+            await this.users.update(user)
+        }
+    }
+
+    @Delete("avatar")
+    @UseGuards(ConnectedGuard)
+    async removeAvatar(@CurrentUser() user: User) {
+        user.custom_image = null
         await this.users.update(user)
     }
 }
