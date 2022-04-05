@@ -1,6 +1,6 @@
 import useUser from "../../../../data/use-user"
 import { Message as MessageType } from "../../../../data/messages"
-import { Button, Card, OverlayTrigger, Tooltip } from "react-bootstrap"
+import { Card, OverlayTrigger, Tooltip } from "react-bootstrap"
 import { useAuth } from "../../../../data/use-auth"
 import { useMemberByUser } from "../../../../data/members"
 import "../style.scss"
@@ -10,6 +10,7 @@ import { useState } from "react"
 import { useChannel } from "../../../../data/channels"
 import DeleteButton from "./delete"
 import { useMatch } from "../../../../data/matches"
+import { Link } from "react-router-dom"
 
 function KnownGameCard({ game }) {
     const playerOne = useUser(game.playerOneId)
@@ -22,9 +23,7 @@ function KnownGameCard({ game }) {
                 <div className="mb-2">
                     { playerOne.nickname } vs { playerTwo.nickname }
                 </div>
-                <Button style={{ width: "100%" }}>
-                    Go to the game
-                </Button>
+                <Link to={`/game/${game.id}`} className="btn btn-primary" style={{ width: "100%" }}>Go to the game</Link>
             </Card.Body>
         </Card>
     )
