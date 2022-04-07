@@ -9,6 +9,8 @@ export type Match = {
     playerTwoId: number
     matchmaking: boolean
     state: "waiting" | "playing" | "player_one_won" | "player_two_won"
+    scorePOne: number
+    scorePTwo: number
 }
 
 const repository = createRepository<Match>()

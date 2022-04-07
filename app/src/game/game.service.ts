@@ -35,7 +35,8 @@ export class GameService {
             two,
             this.playerTwoInfos.nickname,
             this.close.bind(this),
-            this.updateEntityState.bind(this)
+            this.updateEntityState.bind(this),
+            this.updateScore.bind(this)
         )
         this.lobbies.add(lobby)
         this.players.set(one, lobby)
@@ -56,6 +57,14 @@ export class GameService {
 
     async updateEntityState(state: MatchState) {
         this.matchEntity.state = state
+        this.matchEntity = await this.matches.update(this.matchEntity)
+    }
+
+    async updateScore(pOne: number, pTwo: number) {
+        console.log(pOne, pTwo)
+
+        this.matchEntity.scorePOne = pOne
+        this.matchEntity.scorePTwo = pTwo
         this.matchEntity = await this.matches.update(this.matchEntity)
     }
 

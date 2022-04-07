@@ -43,6 +43,12 @@ export class Match {
     @Column({ default: false })
     matchmaking: boolean
 
+    @Column({ default: 0 })
+    scorePOne: number
+
+    @Column({ default: 0 })
+    scorePTwo: number
+
     @Column({
         type: "enum",
         enum: MatchState,

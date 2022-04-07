@@ -4,6 +4,26 @@ import UserAvatar from "../../components/user/UserAvatar"
 import { Match, useMatches, useMatchesLoading } from "../../data/matches"
 import { useUser } from "../../data/users"
 
+function getMatchStatus(str: string, pOneNick: string, pTwoNick: string) {
+    switch (str) {
+        case "waiting":
+            return "waiting"
+            break
+        case "playing":
+            return "playing"
+            break
+        case "player_one_won":
+            return pOneNick + " won"
+            break
+        case "player_two_won":
+            return pTwoNick + " won"
+            break
+        default:
+            return "bizarre"
+            break
+    }
+}
+
 function MatchComponent({ match }: { match: Match }) {
     const userOne = useUser(match.playerOneId)
     const userTwo = useUser(match.playerTwoId)
@@ -22,7 +42,15 @@ function MatchComponent({ match }: { match: Match }) {
                     {userTwo.nickname}
                 </div>
             </td>
-            <td>? - ? ({ match.state })</td>
+            <td>
+                {match.scorePOne} - {match.scorePTwo} (
+                {getMatchStatus(
+                    match.state,
+                    userOne.nickname,
+                    userTwo.nickname
+                )}
+                )
+            </td>
             <td>
                 <Link className="btn btn-light" to={`/game/${match.id}`}>
                     View

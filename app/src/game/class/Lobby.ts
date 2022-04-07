@@ -93,6 +93,7 @@ export default class Lobby {
     // Function to unregister the current lobby from the game service once the game was won.
     private unregister: (lobby: Lobby) => void
     private changeState: (state: MatchState) => void
+    private changeScore: (pOne: number, pTwo: number) => void
 
     constructor(
         player_one: WebSocket,
@@ -100,12 +101,14 @@ export default class Lobby {
         player_two: WebSocket,
         pTwoName: string,
         unregister: (lobby: Lobby) => void,
-        changeState: (state: MatchState) => void
+        changeState: (state: MatchState) => void,
+        changeScore: (pOne: number, pTwo: number) => void
     ) {
         this._player_one = player_one
         this._player_two = player_two
         this.unregister = unregister
         this.changeState = changeState
+        this.changeScore = changeScore
         this._spectators = new Array<WebSocket>()
         this._currentData = {
             players: {
@@ -254,6 +257,10 @@ export default class Lobby {
 
     playerScore(player: Player) {
         player.score += 1
+        this.changeScore(
+            this._currentData.players.one.score,
+            this._currentData.players.two.score
+        )
         this.resetRound()
         this.stopRound()
         this.updateHUD()
