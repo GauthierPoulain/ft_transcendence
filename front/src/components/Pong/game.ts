@@ -932,7 +932,26 @@ export default class Game {
                     if (data.force) {
                         console.log("forced update")
                         this._currentData = data.data
+                        this.updateHUD()
                     } else {
+                        let needHUDUpdate = false
+                        if (
+                            this._currentData.players.one.name !=
+                            data.data.players.one.name
+                        ) {
+                            this._currentData.players.one.name =
+                                data.data.players.one.name
+                            needHUDUpdate = true
+                        }
+                        if (
+                            this._currentData.players.two.name !=
+                            data.data.players.two.name
+                        ) {
+                            this._currentData.players.two.name =
+                                data.data.players.two.name
+                            needHUDUpdate = true
+                        }
+                        if (needHUDUpdate) this.updateHUD()
                         this._currentData.quoit = data.data.quoit
                         if (
                             this._whoAmI !== "one" ||
