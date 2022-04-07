@@ -3,6 +3,7 @@ import Player from "./Player"
 import * as THREE from "three"
 import PowerUp, { PowerUpStates, PowerUpTypes } from "./Powerup"
 import { Iengine } from "./Interface"
+import { MatchState } from "src/matches/match.entity"
 
 const SIMTICKRATE = 60
 const TICKRATE = 30
@@ -91,15 +92,18 @@ export default class Lobby {
 
     // Function to unregister the current lobby from the game service once the game was won.
     private unregister: (lobby: Lobby) => void
+    private changeState: (state: MatchState) => void
 
     constructor(
         player_one: WebSocket,
         player_two: WebSocket,
-        unregister: (lobby: Lobby) => void
+        unregister: (lobby: Lobby) => void,
+        changeState: (state: MatchState) => void
     ) {
         this._player_one = player_one
         this._player_two = player_two
         this.unregister = unregister
+        this.changeState = changeState
         this._spectators = new Array<WebSocket>()
         this._currentData = {
             players: {
@@ -239,6 +243,11 @@ export default class Lobby {
         this.stop()
         console.log(`${player.name} win the game`)
         this.broadcast("game:win", { player: player })
+        this.changeState(
+            player == this._currentData.players.one
+                ? MatchState.PLAYER_ONE_WON
+                : MatchState.PLAYER_TWO_WON
+        )
     }
 
     playerScore(player: Player) {
