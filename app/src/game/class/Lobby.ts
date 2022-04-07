@@ -96,7 +96,9 @@ export default class Lobby {
 
     constructor(
         player_one: WebSocket,
+        pOneName: string,
         player_two: WebSocket,
+        pTwoName: string,
         unregister: (lobby: Lobby) => void,
         changeState: (state: MatchState) => void
     ) {
@@ -107,8 +109,8 @@ export default class Lobby {
         this._spectators = new Array<WebSocket>()
         this._currentData = {
             players: {
-                one: new Player(1, "GogoLeDozo", 0xffffff, "player1"),
-                two: new Player(2, "bot", 0xffffff, "player2"),
+                one: new Player(1, pOneName, 0xffffff, "player1"),
+                two: new Player(2, pTwoName, 0xffffff, "player2"),
             },
             quoit: {
                 x: 0,

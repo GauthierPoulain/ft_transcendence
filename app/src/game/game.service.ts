@@ -1,6 +1,8 @@
 import { Injectable } from "@nestjs/common"
 import { Match, MatchState } from "src/matches/match.entity"
 import { MatchesService } from "src/matches/matches.service"
+import { User } from "src/users/entities/user.entity"
+import { UsersService } from "src/users/users.service"
 import { WebSocket } from "ws"
 import Lobby from "./class/Lobby"
 
@@ -9,27 +11,32 @@ export class GameService {
     private lobbies: Set<Lobby> = new Set()
     private players: Map<WebSocket, Lobby> = new Map()
     private matchEntity: Match
-    private matchesServ: MatchesService
+    private playerOneInfos: User
+    private playerTwoInfos: User
 
-    constructor() {}
+    constructor(
+        private readonly users: UsersService,
+        private matches: MatchesService
+    ) {}
 
-    open(
-        one: WebSocket,
-        two: WebSocket,
-        match: Match,
-        matches: MatchesService
-    ) {
-        // TODO: Use match with lobby to update state
+    async open(one: WebSocket, two: WebSocket, match: Match) {
         this.matchEntity = match
-        this.matchesServ = matches
+
+        this.playerOneInfos = await this.users.find(
+            this.matchEntity.playerOneId
+        )
+        this.playerTwoInfos = await this.users.find(
+            this.matchEntity.playerTwoId
+        )
 
         const lobby = new Lobby(
             one,
+            this.playerOneInfos.nickname,
             two,
+            this.playerTwoInfos.nickname,
             this.close.bind(this),
             this.updateEntityState.bind(this)
         )
-
         this.lobbies.add(lobby)
         this.players.set(one, lobby)
         this.players.set(two, lobby)
@@ -49,7 +56,7 @@ export class GameService {
 
     async updateEntityState(state: MatchState) {
         this.matchEntity.state = state
-        this.matchEntity = await this.matchesServ.update(this.matchEntity)
+        this.matchEntity = await this.matches.update(this.matchEntity)
     }
 
     lobbyBySocket(socket: WebSocket) {

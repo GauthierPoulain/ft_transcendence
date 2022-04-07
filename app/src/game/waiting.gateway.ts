@@ -102,7 +102,7 @@ export class GameWaitingGateway {
                 ? [waiting, socket]
                 : [socket, waiting]
 
-        this.game.open(playerOne, playerTwo, match, this.matches)
+        this.game.open(playerOne, playerTwo, match)
     }
 
     // Tell the server the user is not ready for the game to start.
