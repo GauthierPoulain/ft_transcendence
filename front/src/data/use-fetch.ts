@@ -21,9 +21,11 @@ export const fetcher = async (
     const response = await fetch(apiurl(url), {
         ...options,
         headers: {
-            ...(options.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
+            ...(options.body instanceof FormData
+                ? {}
+                : { "Content-Type": "application/json" }),
             ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-            ...(options.headers ? options.headers : {})
+            ...(options.headers ? options.headers : {}),
         },
     })
 

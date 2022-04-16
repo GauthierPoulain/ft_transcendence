@@ -89,22 +89,34 @@ export class SettingsController {
     // TODO: Use docker volume
     @Post("avatar")
     @UseGuards(ConnectedGuard)
-    @UseInterceptors(FileInterceptor("avatar", { storage: diskStorage({
-        destination(_req, _file, cb) {
-            cb(null, "/tmp/lol")
-        },
+    @UseInterceptors(
+        FileInterceptor("avatar", {
+            storage: diskStorage({
+                destination(_req, _file, cb) {
+                    cb(null, "/tmp/lol")
+                },
 
-        filename(_req, file, cb) {
-            const MIME_TYPE_MAP = {
-                'image/png': 'png',
-                'image/jpeg': 'jpg',
-                'image/jpg': 'jpg'
-            }
+                filename(_req, file, cb) {
+                    const MIME_TYPE_MAP = {
+                        "image/png": "png",
+                        "image/jpeg": "jpg",
+                        "image/jpg": "jpg",
+                    }
 
-            cb(null, `${file.fieldname}-${Date.now()}-${Math.round(Math.random() * 1E9)}.${MIME_TYPE_MAP[file.mimetype]}`)
-        }
-    }) }))
-    async uploadAvatar(@UploadedFile() file: Express.Multer.File, @CurrentUser() user: User) {
+                    cb(
+                        null,
+                        `${file.fieldname}-${Date.now()}-${Math.round(
+                            Math.random() * 1e9
+                        )}.${MIME_TYPE_MAP[file.mimetype]}`
+                    )
+                },
+            }),
+        })
+    )
+    async uploadAvatar(
+        @UploadedFile() file: Express.Multer.File,
+        @CurrentUser() user: User
+    ) {
         if (file) {
             user.custom_image = file.filename
             await this.users.update(user)

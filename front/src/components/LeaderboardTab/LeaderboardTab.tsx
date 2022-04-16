@@ -43,8 +43,6 @@ function formatTable(matches: Match[]) {
 
 function LeaderBoardComponent({ player }: { player: Player }) {
     const user = useUser(player.id)
-    console.log(user)
-
     if (user)
         return (
             <tr>

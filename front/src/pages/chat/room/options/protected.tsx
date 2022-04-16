@@ -1,16 +1,18 @@
-import { useState } from "react";
-import { Button, Form, InputGroup } from "react-bootstrap";
-import { fetcherPost, useSubmit } from "../../../../data/use-fetch";
+import { useState } from "react"
+import { Button, Form, InputGroup } from "react-bootstrap"
+import { fetcherPost, useSubmit } from "../../../../data/use-fetch"
 
 export default function MakeProtectedButton({ channelId }) {
     const [password, setPassword] = useState("")
 
     const { submit, isLoading } = useSubmit<string, void>((password) => {
-        return fetcherPost(`/channels/${channelId}/state/protected`, { password })
-    });
+        return fetcherPost(`/channels/${channelId}/state/protected`, {
+            password,
+        })
+    })
 
     async function submitWrapper(event: any) {
-        event.preventDefault();
+        event.preventDefault()
 
         await submit(password)
     }
@@ -26,7 +28,14 @@ export default function MakeProtectedButton({ channelId }) {
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                 />
-                <Button type="submit" variant="secondary" size="sm" disabled={password.length === 0 || isLoading}>Protect channel</Button>
+                <Button
+                    type="submit"
+                    variant="secondary"
+                    size="sm"
+                    disabled={password.length === 0 || isLoading}
+                >
+                    Protect channel
+                </Button>
             </InputGroup>
         </Form>
     )

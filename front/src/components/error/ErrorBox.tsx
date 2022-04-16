@@ -22,7 +22,11 @@ function subtitle(error: any) {
         }
 
         if (error.status === 404) {
-            return <Link to="/" className="text-decoration-none text-white">Go back to home page</Link>
+            return (
+                <Link to="/" className="text-decoration-none text-white">
+                    Go back to home page
+                </Link>
+            )
         }
     }
 

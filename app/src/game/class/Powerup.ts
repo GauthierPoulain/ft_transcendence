@@ -1,7 +1,7 @@
 import Player from "./Player"
 import * as THREE from "three"
 import { Iengine } from "./Interface"
-import Lobby from "./Lobby"
+import Lobby, { collisionBoxBox } from "./Lobby"
 
 const PowerUpTypes = {
     DEFAULT: {
@@ -31,17 +31,42 @@ const PowerUpTypes = {
     BIGBAR: {
         name: "BIGBAR",
         effect: (ctx: PowerUp) => {
-            console.log(`template triggered by ${ctx._sender}`)
-            ctx._sender!.width = 5
+            console.log(`bigbar triggered by ${ctx._sender}`)
+            {
+                const wallP = ctx._ctx.objects.get("map_border1") as THREE.Mesh
+                const wallN = ctx._ctx.objects.get("map_border2") as THREE.Mesh
+                ctx._sender.width = 5
+                ctx._lobbyCtx.syncMeshs()
+                let to: number
+                if (
+                    collisionBoxBox(
+                        ctx._ctx.objects.get(ctx._sender.meshName),
+                        wallP
+                    )
+                )
+                    to = ctx._lobbyCtx._map.width / 2 - 2.5
+                if (
+                    collisionBoxBox(
+                        ctx._ctx.objects.get(ctx._sender.meshName),
+                        wallN
+                    )
+                )
+                    to = -(ctx._lobbyCtx._map.width / 2 - 2.5)
+                ctx._lobbyCtx.movePlayer(
+                    ctx._sender.id == 1 ? "one" : "two",
+                    { x: to },
+                    true
+                )
+            }
         },
         reset: (ctx: PowerUp) => {
-            console.log(`template reset`)
+            console.log(`bigbar reset`)
             ctx._sender!.width = 3
         },
         initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => {
             const geo = new THREE.DodecahedronBufferGeometry(r)
             const mat = new THREE.MeshPhongMaterial({
-                color: 0xffffff,
+                color: 0x00ffff,
             })
             let mesh = new THREE.Mesh(geo, mat)
             mesh.castShadow = true
@@ -54,8 +79,68 @@ const PowerUpTypes = {
         },
         time: 7000,
     },
+    SMOLBAR: {
+        name: "SMOLBAR",
+        effect: (ctx: PowerUp) => {
+            console.log(`smolbar triggered by ${ctx._sender}`)
+            if (ctx._sender == ctx._lobbyCtx._currentData.players.one) {
+                ctx._lobbyCtx._currentData.players.two.width = 1
+            } else {
+                ctx._lobbyCtx._currentData.players.one.width = 1
+            }
+        },
+        reset: (ctx: PowerUp) => {
+            console.log(`smolbar reset`)
+            let _target: Player
+            if (ctx._sender == ctx._lobbyCtx._currentData.players.one) {
+                _target = ctx._lobbyCtx._currentData.players.two
+            } else {
+                _target = ctx._lobbyCtx._currentData.players.one
+            }
+            {
+                const wallP = ctx._ctx.objects.get("map_border1") as THREE.Mesh
+                const wallN = ctx._ctx.objects.get("map_border2") as THREE.Mesh
+                _target.width = 3
+                ctx._lobbyCtx.syncMeshs()
+                let to: number
+                if (
+                    collisionBoxBox(
+                        ctx._ctx.objects.get(_target.meshName),
+                        wallP
+                    )
+                )
+                    to = ctx._lobbyCtx._map.width / 2 - 1.5
+                if (
+                    collisionBoxBox(
+                        ctx._ctx.objects.get(_target.meshName),
+                        wallN
+                    )
+                )
+                    to = -(ctx._lobbyCtx._map.width / 2 - 1.5)
+                ctx._lobbyCtx.movePlayer(
+                    _target.id == 1 ? "one" : "two",
+                    { x: to },
+                    true
+                )
+            }
+        },
+        initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => {
+            const geo = new THREE.DodecahedronBufferGeometry(r)
+            const mat = new THREE.MeshPhongMaterial({
+                color: 0x00ff00,
+            })
+            let mesh = new THREE.Mesh(geo, mat)
+            mesh.castShadow = true
+            mesh.position.set(x, 0.3, z)
+            ctx._ctx.scene.add(mesh)
+            return mesh
+        },
+        animation: (ctx: PowerUp, delta: number) => {
+            ctx._mesh.rotation.y -= 3 * delta
+        },
+        time: 7000,
+    },
     // SPEED = "speed",
-    // LARGE = "large",
     // SMALL = "small",
     // RANDOMDIR = "random_direction",
 }
@@ -131,16 +216,16 @@ class PowerUp {
             this._type.effect(this)
             lobbyCtx.sendData(true)
         }
-        this._reset = (fromDestroy: boolean = false) => {
+        this._reset = () => {
             this._type.reset(this)
-            if (!fromDestroy) this._destroy()
+            this._destroy()
             lobbyCtx.sendData(true)
         }
         this._state = PowerUpStates.IDLE
     }
 
     trigger(sender: Player) {
-        if (this._state) return
+        if (this._state != PowerUpStates.IDLE) return
         this._state = PowerUpStates.TRIGGERED
         this._sender = sender
         this._effect()
@@ -172,9 +257,10 @@ class PowerUp {
 
     _destroy() {
         if (this._actionTimeout != undefined) clearTimeout(this._actionTimeout)
-        if (this._reset && this._sender) this._reset(true)
-        this._ctx.scene.remove(this._mesh)
+        if (this._state == PowerUpStates.DESTROYED) return
         this._state = PowerUpStates.DESTROYED
+        if (this._reset && this._sender) this._reset()
+        this._ctx.scene.remove(this._mesh)
     }
 }
 

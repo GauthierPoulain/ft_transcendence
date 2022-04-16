@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { Button, Container } from "react-bootstrap";
-import { useMatch } from "../../../data/matches";
-import { useAuth } from "../../../data/use-auth";
-import { useWebSocket } from "../../../data/use-websocket";
-import { useUser } from "../../../data/users";
+import { useEffect, useState } from "react"
+import { Button, Container } from "react-bootstrap"
+import { useMatch } from "../../../data/matches"
+import { useAuth } from "../../../data/use-auth"
+import { useWebSocket } from "../../../data/use-websocket"
+import { useUser } from "../../../data/users"
 
 function ReadyButton({ matchId }) {
     const [ready, setReady] = useState(false)
@@ -52,9 +52,14 @@ export default function GameViewWaiting({ matchId }) {
         <Container>
             <h2>Game waiting</h2>
             <p>Waiting for the match to start</p>
-            <p>{ playerOne.nickname } vs { playerTwo.nickname }</p>
+            <p>
+                {playerOne.nickname} vs {playerTwo.nickname}
+            </p>
 
-            { auth.connected && [playerOne.id, playerTwo.id].includes(auth.userId) && <ReadyButton matchId={match.id} /> }
+            {auth.connected &&
+                [playerOne.id, playerTwo.id].includes(auth.userId) && (
+                    <ReadyButton matchId={match.id} />
+                )}
         </Container>
     )
 }

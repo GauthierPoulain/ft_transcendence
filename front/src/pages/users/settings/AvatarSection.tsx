@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Button, Form } from "react-bootstrap";
-import { fetcher, fetcherDelete, useSubmit } from "../../../data/use-fetch";
-import "./style.scss";
+import { useState } from "react"
+import { Button, Form } from "react-bootstrap"
+import { fetcher, fetcherDelete, useSubmit } from "../../../data/use-fetch"
+import "./style.scss"
 
 export default function AvatarSection() {
     const [file, setFile] = useState<File | undefined>(undefined)
@@ -10,7 +10,7 @@ export default function AvatarSection() {
         const body = new FormData()
         body.append("avatar", file)
 
-        return fetcher("/settings/avatar", { method: "POST", body }, false);
+        return fetcher("/settings/avatar", { method: "POST", body }, false)
     })
 
     const remove = useSubmit<void, void>(() => {
@@ -36,7 +36,9 @@ export default function AvatarSection() {
                         type="file"
                         className="border-dark bg-dark"
                         placeholder="Enter custom username"
-                        onChange={(event: any) => setFile(event.target.files[0])}
+                        onChange={(event: any) =>
+                            setFile(event.target.files[0])
+                        }
                     />
                 </Form.Group>
 

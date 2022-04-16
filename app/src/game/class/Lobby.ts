@@ -17,7 +17,7 @@ function collisionBoxCyl(box: THREE.Mesh, cyl: THREE.Mesh, cylR: number) {
     return Cbox?.intersectsSphere(Csphere)
 }
 
-function collisionBoxBox(box1: THREE.Mesh, box2: THREE.Mesh) {
+export function collisionBoxBox(box1: THREE.Mesh, box2: THREE.Mesh) {
     box1.geometry.computeBoundingBox()
     box1.updateMatrixWorld()
     box2.geometry.computeBoundingBox()
@@ -171,9 +171,10 @@ export default class Lobby {
         })
     }
 
-    movePlayer(player: string, data: any) {
+    movePlayer(player: string, data: any, fromServer = false) {
         if (
-            this._currentData.players[player].last < data.time &&
+            (this._currentData.players[player].last < data.time ||
+                fromServer) &&
             this._roundRunning
         ) {
             this.syncMeshs()
@@ -189,8 +190,7 @@ export default class Lobby {
             ) {
                 this._currentData.players[player].x = data.x
             }
-
-            this._currentData.players[player].last = data.time
+            if (!fromServer) this._currentData.players[player].last = data.time
         }
     }
 
@@ -279,7 +279,7 @@ export default class Lobby {
         this.broadcast("game:updateHUD")
     }
 
-    private syncMeshs() {
+    syncMeshs() {
         const quoit = this._engine.objects.get("quoit") as THREE.Mesh
         const playerOne = this._engine.objects.get("player1") as THREE.Mesh
         const playerTwo = this._engine.objects.get("player2") as THREE.Mesh

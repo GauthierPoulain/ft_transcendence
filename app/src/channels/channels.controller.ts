@@ -96,10 +96,13 @@ export class ChannelsController {
         return members
     }
 
-    private async checkChannelMember(channelId: number, userId: number): Promise<[Channel, Member]> {
+    private async checkChannelMember(
+        channelId: number,
+        userId: number
+    ): Promise<[Channel, Member]> {
         const [channel, member] = await Promise.all([
             this.channels.findOne(channelId),
-            this.members.findOneWithChannelAndUser(channelId, userId)
+            this.members.findOneWithChannelAndUser(channelId, userId),
         ])
 
         if (!channel) {
@@ -115,43 +118,62 @@ export class ChannelsController {
 
     @Post(":id/state/public")
     @UseGuards(ConnectedGuard)
-    async setPublic(@CurrentUserId() userId: number, @Param("id") channelId: number) {
-        const [channel, member] = await this.checkChannelMember(channelId, userId)
+    async setPublic(
+        @CurrentUserId() userId: number,
+        @Param("id") channelId: number
+    ) {
+        const [channel, member] = await this.checkChannelMember(
+            channelId,
+            userId
+        )
 
         if (member.role !== Role.OWNER) {
             throw new UnauthorizedException()
         }
 
-        channel.joinable = true;
-        channel.password = "";
+        channel.joinable = true
+        channel.password = ""
         await this.channels.update(channel)
     }
 
     @Post(":id/state/private")
     @UseGuards(ConnectedGuard)
-    async setPrivate(@CurrentUserId() userId: number, @Param("id") channelId: number) {
-        const [channel, member] = await this.checkChannelMember(channelId, userId)
+    async setPrivate(
+        @CurrentUserId() userId: number,
+        @Param("id") channelId: number
+    ) {
+        const [channel, member] = await this.checkChannelMember(
+            channelId,
+            userId
+        )
 
         if (member.role !== Role.OWNER) {
             throw new UnauthorizedException()
         }
 
-        channel.joinable = false;
-        channel.password = "";
+        channel.joinable = false
+        channel.password = ""
         await this.channels.update(channel)
     }
 
     @Post(":id/state/protected")
     @UseGuards(ConnectedGuard)
-    async setProtected(@CurrentUserId() userId: number, @Param("id") channelId: number, @Body() body: SetProtectedChannelDto) {
-        const [channel, member] = await this.checkChannelMember(channelId, userId)
+    async setProtected(
+        @CurrentUserId() userId: number,
+        @Param("id") channelId: number,
+        @Body() body: SetProtectedChannelDto
+    ) {
+        const [channel, member] = await this.checkChannelMember(
+            channelId,
+            userId
+        )
 
         if (member.role !== Role.OWNER) {
             throw new UnauthorizedException()
         }
 
-        channel.joinable = true;
-        channel.password = await hash(body.password);
+        channel.joinable = true
+        channel.password = await hash(body.password)
         await this.channels.update(channel)
     }
 }

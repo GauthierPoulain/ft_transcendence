@@ -81,15 +81,17 @@ const PowerUpTypes = {
     BIGBAR: {
         name: "BIGBAR",
         effect: (ctx: PowerUp) => {
+            console.log(`template triggered by ${ctx._sender}`)
             ctx._sender!.width = 5
         },
         reset: (ctx: PowerUp) => {
+            console.log(`template reset`)
             ctx._sender!.width = 3
         },
         initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => {
             const geo = new THREE.DodecahedronBufferGeometry(r)
             const mat = new THREE.MeshPhongMaterial({
-                color: 0xffffff,
+                color: 0x00ffff,
             })
             let mesh = new THREE.Mesh(geo, mat)
             mesh.castShadow = true
@@ -102,8 +104,41 @@ const PowerUpTypes = {
         },
         time: 7000,
     },
+    SMOLBAR: {
+        name: "SMOLBAR",
+        effect: (ctx: PowerUp) => {
+            console.log(`template triggered by ${ctx._sender}`)
+
+            if (ctx._sender == ctx._lobbyCtx._currentData.players.one) {
+                ctx._lobbyCtx._currentData.players.two.width = 1
+            } else {
+                ctx._lobbyCtx._currentData.players.one.width = 1
+            }
+        },
+        reset: (ctx: PowerUp) => {
+            if (ctx._sender == ctx._lobbyCtx._currentData.players.one) {
+                ctx._lobbyCtx._currentData.players.two.width = 3
+            } else {
+                ctx._lobbyCtx._currentData.players.one.width = 3
+            }
+        },
+        initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => {
+            const geo = new THREE.DodecahedronBufferGeometry(r)
+            const mat = new THREE.MeshPhongMaterial({
+                color: 0x00ff00,
+            })
+            let mesh = new THREE.Mesh(geo, mat)
+            mesh.castShadow = true
+            mesh.position.set(x, 0.3, z)
+            ctx._ctx.scene.add(mesh)
+            return mesh
+        },
+        animation: (ctx: PowerUp, delta: number) => {
+            ctx._mesh.rotation.y -= 3 * delta
+        },
+        time: 7000,
+    },
     // SPEED = "speed",
-    // LARGE = "large",
     // SMALL = "small",
     // RANDOMDIR = "random_direction",
 }
@@ -129,14 +164,28 @@ class PowerUp {
     _reset: (fromDestroy: boolean) => void
     _animation: (delta: number) => void
     _sender: Player | null = null
+    _notsender: Player | null = null
     _mesh: THREE.Mesh
     _ctx: Iengine
     _radius: number = 0
     _actionTimeout: any | undefined = undefined
     _state: PowerUpStates
+    _lobbyCtx: {
+        _currentData: {
+            players: { one: Player; two: Player }
+            quoit: {
+                x: number
+                z: number
+                radius: number
+                color: number
+                speed: { x: number; z: number }
+            }
+        }
+    }
 
     constructor({
         ctx,
+        currentData,
         id,
         type,
         x,
@@ -144,6 +193,16 @@ class PowerUp {
         r,
     }: {
         ctx: Iengine
+        currentData: {
+            players: { one: Player; two: Player }
+            quoit: {
+                x: number
+                z: number
+                radius: number
+                color: number
+                speed: { x: number; z: number }
+            }
+        }
         id: number
         type: {
             name: string
@@ -164,6 +223,9 @@ class PowerUp {
     }) {
         this._pos = { x: x, z: z }
         this._id = id
+        this._lobbyCtx = {
+            _currentData: currentData,
+        }
         this._ctx = ctx
         this._type = type
         this._mesh = this._type.initMesh(this, x, z)
@@ -1104,6 +1166,7 @@ export default class Game {
                         data.id as number,
                         new PowerUp({
                             ctx: this._engine,
+                            currentData: this._currentData,
                             id: pu.id,
                             type: PowerUpTypes[pu.typeName],
                             x: pu.pos.x,

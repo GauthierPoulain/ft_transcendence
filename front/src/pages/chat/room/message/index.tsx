@@ -21,9 +21,15 @@ function KnownGameCard({ game }) {
             <Card.Body>
                 <Card.Title className="mb-2">Game #{game.id}</Card.Title>
                 <div className="mb-2">
-                    { playerOne.nickname } vs { playerTwo.nickname }
+                    {playerOne.nickname} vs {playerTwo.nickname}
                 </div>
-                <Link to={`/game/${game.id}`} className="btn btn-primary" style={{ width: "100%" }}>Go to the game</Link>
+                <Link
+                    to={`/game/${game.id}`}
+                    className="btn btn-primary"
+                    style={{ width: "100%" }}
+                >
+                    Go to the game
+                </Link>
             </Card.Body>
         </Card>
     )
@@ -37,9 +43,7 @@ function GameCard({ gameId }) {
             <Card className="bg-dark">
                 <Card.Body>
                     <Card.Title className="mb-2">Game #{gameId}</Card.Title>
-                    <div className="mb-2">
-                        Game not found!
-                    </div>
+                    <div className="mb-2">Game not found!</div>
                 </Card.Body>
             </Card>
         )
@@ -48,12 +52,11 @@ function GameCard({ gameId }) {
     return <KnownGameCard game={game} />
 }
 
-
 function MessageContent({ content }) {
     const match = content.match(/^#game:(\d+)#$/)
 
     if (!match) {
-        return <div>{ content }</div>
+        return <div>{content}</div>
     }
 
     const number = parseInt(match[1], 10)
@@ -74,29 +77,32 @@ export default function Message({ message }: { message: MessageType }) {
     return (
         <div className="d-flex flex-column">
             <div className="d-flex justify-content-start align-items-center gap-x-2">
-                { hidden
-                    ? <span className="fst-italic text-secondary">Blocked message</span>
-                    : <span className="user-tag">{author.nickname}</span>
-                }
-                { hidden && <OverlayTrigger
-                    placement="top"
-                    overlay={<Tooltip>Show</Tooltip>}
-                >
-                    <VisibilityIcon
-                        className="text-secondary cursor-pointer"
-                        fontSize="inherit"
-                        onMouseDown={() => setShow(true)}
-                    />
-                </OverlayTrigger>
-                }
-                    {(self.userId === author.id ||
-                        (self.role !== "guest" &&
-                            channel.type !== "direct")) && (
-                        <DeleteButton message={message} />
-                    )}
+                {hidden ? (
+                    <span className="fst-italic text-secondary">
+                        Blocked message
+                    </span>
+                ) : (
+                    <span className="user-tag">{author.nickname}</span>
+                )}
+                {hidden && (
+                    <OverlayTrigger
+                        placement="top"
+                        overlay={<Tooltip>Show</Tooltip>}
+                    >
+                        <VisibilityIcon
+                            className="text-secondary cursor-pointer"
+                            fontSize="inherit"
+                            onMouseDown={() => setShow(true)}
+                        />
+                    </OverlayTrigger>
+                )}
+                {(self.userId === author.id ||
+                    (self.role !== "guest" && channel.type !== "direct")) && (
+                    <DeleteButton message={message} />
+                )}
             </div>
 
-            { !hidden && <MessageContent content={message.content} /> }
+            {!hidden && <MessageContent content={message.content} />}
         </div>
     )
 }
