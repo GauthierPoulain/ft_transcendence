@@ -1,58 +1,101 @@
 import "./style.css"
 import React from "react"
 import { Table } from "react-bootstrap"
+import { useUser } from "../../data/users"
+import { Match, useMatches } from "../../data/matches"
 
-class LeaderboardTab extends React.Component {
-    state = {
-        players: [
-            { rank: "1", login: "arpascal", victories: "32" },
-            { rank: "2", login: "ckurt", victories: "29" },
-            { rank: "3", login: "gapoulai", victories: "12" },
-            { rank: "4", login: "ldevilla", victories: "4" },
-            //DB
-            //Make button on players to redirect to their profile
-        ],
-    }
+interface Player {
+    id: number
+    rank: number
+    victories: number
+}
 
-    add() {
-        let player = this.state.players
-        player.push({ rank: "?", login: "newPlayer", victories: "?" })
-        this.setState(player)
-    }
+function formatTable(matches: Match[]) {
+    const res = new Map<number, Player>()
 
-    render() {
+    matches.forEach((match) => {
+        const p1 = match.playerOneId
+        const p2 = match.playerTwoId
+        if (!res.get(p1)) res.set(p1, { id: p1, rank: -1, victories: 0 })
+        if (!res.get(p2)) res.set(p2, { id: p2, rank: -1, victories: 0 })
+        const winner =
+            match.state == "player_one_won"
+                ? p1
+                : match.state == "player_two_won"
+                ? p2
+                : undefined
+        if (winner) {
+            const currentData = res.get(winner)
+            currentData!.victories++
+            res.set(winner, currentData!)
+        }
+    })
+    const final = Array.from(res.values())
+    final.sort((a, b) => {
+        if (a.victories > b.victories) return -1
+        else if (a.victories < b.victories) return 1
+        else return 0
+    })
+    for (let index = 0; index < final.length; index++)
+        final[index].rank = index + 1
+    return final
+}
+
+function LeaderBoardComponent({ player }: { player: Player }) {
+    const user = useUser(player.id)
+    console.log(user)
+
+    if (user)
         return (
-            <div>
-                <h1 className="my-4 title-leaderboard">Leaderboard</h1>
-                <Table striped bordered hover variant="dark">
-                    <thead>
-                        <tr>
-                            <th>#rank</th>
-                            <th>Login</th>
-                            <th>Victories</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.players.map((player) => (
-                            <tr>
-                                <td>{player.rank}</td>
-                                <td>
-                                    <img
-                                        className="img-leaderboard"
-                                        src="/assets/42.jpg"
-                                        alt=""
-                                    />
-                                    {player.login}
-                                </td>
-                                <td>{player.victories}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </Table>
-                <button onClick={() => this.add()}>+</button>
-            </div>
+            <tr>
+                <td>{player.rank}</td>
+                <td>
+                    <img className="img-leaderboard" src={user.image} alt="" />
+                    {user.nickname}
+                </td>
+                <td>{player.victories}</td>
+            </tr>
         )
-    }
+    else
+        return (
+            <tr>
+                <td>{player.rank}</td>
+                <td>
+                    <img
+                        className="img-leaderboard"
+                        src="/assets/42.jpg"
+                        alt=""
+                    />
+                    ?
+                </td>
+                <td>{player.victories}</td>
+            </tr>
+        )
+}
+
+function LeaderboardTab() {
+    const matches = useMatches()
+    const players = formatTable(matches)
+
+    return (
+        <div>
+            <h1 className="my-4 title-leaderboard">Leaderboard</h1>
+            <Table striped bordered hover variant="dark">
+                <thead>
+                    <tr>
+                        <th>#rank</th>
+                        <th>Login</th>
+                        <th>Victories</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {players.map((player) => (
+                        <LeaderBoardComponent key={player.id} player={player} />
+                    ))}
+                </tbody>
+            </Table>
+        </div>
+    )
 }
 
 export default LeaderboardTab

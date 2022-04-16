@@ -63,7 +63,7 @@ export default class Lobby {
     }
 
     _gameRules = {
-        maxPoints: 3,
+        maxPoints: 1,
         enablePowerUp: false,
     }
 
