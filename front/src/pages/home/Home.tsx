@@ -1,16 +1,9 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import {
-    Button,
-    Table,
-    OverlayTrigger,
-    Tooltip,
-    Container,
-} from "react-bootstrap"
+import { Button, Container } from "react-bootstrap"
 import "./home.scss"
 import { useAuth } from "../../data/use-auth"
 import SectionFriends from "./friends"
-import { Visibility } from "@mui/icons-material"
 import Particles from "react-tsparticles"
 import SectionMatches from "./matches"
 

@@ -19,9 +19,9 @@ function formatTable(matches: Match[]) {
         if (!res.get(p1)) res.set(p1, { id: p1, rank: -1, victories: 0 })
         if (!res.get(p2)) res.set(p2, { id: p2, rank: -1, victories: 0 })
         const winner =
-            match.state == "player_one_won"
+            match.state === "player_one_won"
                 ? p1
-                : match.state == "player_two_won"
+                : match.state === "player_two_won"
                 ? p2
                 : undefined
         if (winner) {
@@ -43,32 +43,33 @@ function formatTable(matches: Match[]) {
 
 function LeaderBoardComponent({ player }: { player: Player }) {
     const user = useUser(player.id)
-    if (user)
-        return (
-            <tr>
-                <td>{player.rank}</td>
-                <td>
-                    <img className="img-leaderboard" src={user.image} alt="" />
-                    {user.nickname}
-                </td>
-                <td>{player.victories}</td>
-            </tr>
-        )
-    else
-        return (
-            <tr>
-                <td>{player.rank}</td>
-                <td>
-                    <img
-                        className="img-leaderboard"
-                        src="/assets/42.jpg"
-                        alt=""
-                    />
-                    ?
-                </td>
-                <td>{player.victories}</td>
-            </tr>
-        )
+    return (
+        <tr>
+            <td>{player.rank}</td>
+            <td>
+                {user ? (
+                    <React.Fragment>
+                        <img
+                            className="img-leaderboard"
+                            src={user.image}
+                            alt=""
+                        />
+                        <React.Fragment>{user.nickname}</React.Fragment>
+                    </React.Fragment>
+                ) : (
+                    <React.Fragment>
+                        <img
+                            className="img-leaderboard"
+                            src="/assets/42.jpg"
+                            alt=""
+                        />
+                        <React.Fragment>?</React.Fragment>
+                    </React.Fragment>
+                )}
+            </td>
+            <td>{player.victories}</td>
+        </tr>
+    )
 }
 
 function LeaderboardTab() {

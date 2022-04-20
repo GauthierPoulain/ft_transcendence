@@ -80,14 +80,14 @@ function formatTable(matches: Match[]) {
         if (!res.get(p2))
             res.set(p2, { id: p2, rank: -1, victories: 0, losses: 0 })
         const winner =
-            match.state == "player_one_won"
+            match.state === "player_one_won"
                 ? p1
-                : match.state == "player_two_won"
+                : match.state === "player_two_won"
                 ? p2
                 : undefined
         if (winner) {
             const currentData = res.get(winner)
-            res.get(p1 == winner ? p2 : p1)!.losses++
+            res.get(p1 === winner ? p2 : p1)!.losses++
             currentData!.victories++
             res.set(winner, currentData!)
         }
@@ -106,7 +106,7 @@ function formatTable(matches: Match[]) {
 function getRank(player: Player[], user: User) {
     for (let index = 0; index < player.length; index++) {
         const current = player[index]
-        if (current.id == user.id) return current.rank
+        if (current.id === user.id) return current.rank
     }
     return "unranked"
 }
@@ -114,7 +114,7 @@ function getRank(player: Player[], user: User) {
 function getWins(player: Player[], user: User) {
     for (let index = 0; index < player.length; index++) {
         const current = player[index]
-        if (current.id == user.id) return current.victories
+        if (current.id === user.id) return current.victories
     }
     return 0
 }
@@ -122,7 +122,7 @@ function getWins(player: Player[], user: User) {
 function getLosses(player: Player[], user: User) {
     for (let index = 0; index < player.length; index++) {
         const current = player[index]
-        if (current.id == user.id) return current.losses
+        if (current.id === user.id) return current.losses
     }
     return 0
 }

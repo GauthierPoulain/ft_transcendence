@@ -109,14 +109,14 @@ const PowerUpTypes = {
         effect: (ctx: PowerUp) => {
             console.log(`template triggered by ${ctx._sender}`)
 
-            if (ctx._sender == ctx._lobbyCtx._currentData.players.one) {
+            if (ctx._sender === ctx._lobbyCtx._currentData.players.one) {
                 ctx._lobbyCtx._currentData.players.two.width = 1
             } else {
                 ctx._lobbyCtx._currentData.players.one.width = 1
             }
         },
         reset: (ctx: PowerUp) => {
-            if (ctx._sender == ctx._lobbyCtx._currentData.players.one) {
+            if (ctx._sender === ctx._lobbyCtx._currentData.players.one) {
                 ctx._lobbyCtx._currentData.players.two.width = 3
             } else {
                 ctx._lobbyCtx._currentData.players.one.width = 3
@@ -269,7 +269,7 @@ class PowerUp {
     }
 
     _destroy() {
-        if (this._actionTimeout != undefined) clearTimeout(this._actionTimeout)
+        if (this._actionTimeout !== undefined) clearTimeout(this._actionTimeout)
         if (this._reset && this._sender) this._reset(true)
         this._ctx.scene.remove(this._mesh)
         this._state = PowerUpStates.DESTROYED
@@ -491,15 +491,6 @@ export default class Game {
 
         player2.position.x = this._currentData.players.two.x
         player2.scale.x = this._currentData.players.two.width
-
-        // {
-        //     let mat = player1.material as THREE.MeshPhongMaterial
-        //     mat.color.setHex(this._currentData.players.one.color)
-        // }
-        // {
-        //     let mat = player2.material as THREE.MeshPhongMaterial
-        //     mat.color.setHex(this._currentData.players.two.color)
-        // }
     }
 
     syncSimulation() {
@@ -574,69 +565,42 @@ export default class Game {
                     }
                 }
             }
-            {
-                if (
-                    collisionBoxCyl(
-                        player1,
-                        quoit,
-                        this._currentData.quoit.radius
-                    )
-                ) {
-                    this._lastHit = this._currentData.players.one
-                    this._currentData.quoit.speed.z = -Math.abs(
-                        this._currentData.quoit.speed.z
-                    )
-                    let xSpeed = -(
-                        this._currentData.players.one.x -
-                        this._currentData.quoit.x
-                    )
-                    this._currentData.quoit.speed.x += xSpeed * 3
-                } else if (
-                    collisionBoxCyl(
-                        player2,
-                        quoit,
-                        this._currentData.quoit.radius
-                    )
-                ) {
-                    this._lastHit = this._currentData.players.two
-                    this._currentData.quoit.speed.z = Math.abs(
-                        this._currentData.quoit.speed.z
-                    )
-                    let xSpeed = -(
-                        this._currentData.players.two.x -
-                        this._currentData.quoit.x
-                    )
-                    this._currentData.quoit.speed.x += xSpeed * 3
-                }
-
-                if (
-                    collisionBoxCyl(
-                        wallP,
-                        quoit,
-                        this._currentData.quoit.radius
-                    )
-                ) {
-                    this._currentData.quoit.speed.x = -Math.abs(
-                        this._currentData.quoit.speed.x
-                    )
-                } else if (
-                    collisionBoxCyl(
-                        wallN,
-                        quoit,
-                        this._currentData.quoit.radius
-                    )
-                ) {
-                    this._currentData.quoit.speed.x = Math.abs(
-                        this._currentData.quoit.speed.x
-                    )
-                }
+            if (
+                collisionBoxCyl(player1, quoit, this._currentData.quoit.radius)
+            ) {
+                this._lastHit = this._currentData.players.one
+                this._currentData.quoit.speed.z = -Math.abs(
+                    this._currentData.quoit.speed.z
+                )
+                let xSpeed = -(
+                    this._currentData.players.one.x - this._currentData.quoit.x
+                )
+                this._currentData.quoit.speed.x += xSpeed * 3
+            } else if (
+                collisionBoxCyl(player2, quoit, this._currentData.quoit.radius)
+            ) {
+                this._lastHit = this._currentData.players.two
+                this._currentData.quoit.speed.z = Math.abs(
+                    this._currentData.quoit.speed.z
+                )
+                let xSpeed = -(
+                    this._currentData.players.two.x - this._currentData.quoit.x
+                )
+                this._currentData.quoit.speed.x += xSpeed * 3
             }
-            {
-                this._currentData.quoit.x +=
-                    this._currentData.quoit.speed.x * delta
-                this._currentData.quoit.z +=
-                    this._currentData.quoit.speed.z * delta
+            if (collisionBoxCyl(wallP, quoit, this._currentData.quoit.radius)) {
+                this._currentData.quoit.speed.x = -Math.abs(
+                    this._currentData.quoit.speed.x
+                )
+            } else if (
+                collisionBoxCyl(wallN, quoit, this._currentData.quoit.radius)
+            ) {
+                this._currentData.quoit.speed.x = Math.abs(
+                    this._currentData.quoit.speed.x
+                )
             }
+            this._currentData.quoit.x += this._currentData.quoit.speed.x * delta
+            this._currentData.quoit.z += this._currentData.quoit.speed.z * delta
             this._simData.last = Date.now()
         } catch (error) {
             console.log(error)
@@ -868,14 +832,12 @@ export default class Game {
         this._engine.renderer.shadowMap.enabled = this._graphicConfig.shadows
         this._engine.renderer.shadowMap.type = THREE.PCFSoftShadowMap
         this._engine.renderer.outputEncoding = THREE.sRGBEncoding
-        {
-            this._gameContainer.appendChild(this._engine.renderer.domElement)
-            if (this._engine.stats) {
-                this._engine.stats.showPanel(0)
-                let dom = this._engine.stats.dom
-                dom.style.position = "absolute"
-                this._gameContainer.appendChild(dom)
-            }
+        this._gameContainer.appendChild(this._engine.renderer.domElement)
+        if (this._engine.stats) {
+            this._engine.stats.showPanel(0)
+            let dom = this._engine.stats.dom
+            dom.style.position = "absolute"
+            this._gameContainer.appendChild(dom)
         }
     }
 
@@ -973,7 +935,7 @@ export default class Game {
             "#gameHud .identity#one .name"
         )!.textContent =
             this._currentData.players.one.name +
-            (this._whoAmI == "one" ? " (you)" : "")
+            (this._whoAmI === "one" ? " (you)" : "")
         this._gameContainer.querySelector(
             "#gameHud .identity#one .score"
         )!.textContent = String(this._currentData.players.one.score)
@@ -981,7 +943,7 @@ export default class Game {
             "#gameHud .identity#two .name"
         )!.textContent =
             this._currentData.players.two.name +
-            (this._whoAmI == "two" ? " (you)" : "")
+            (this._whoAmI === "two" ? " (you)" : "")
         this._gameContainer.querySelector(
             "#gameHud .identity#two .score"
         )!.textContent = String(this._currentData.players.two.score)
@@ -998,7 +960,7 @@ export default class Game {
                     } else {
                         let needHUDUpdate = false
                         if (
-                            this._currentData.players.one.name !=
+                            this._currentData.players.one.name !==
                             data.data.players.one.name
                         ) {
                             this._currentData.players.one.name =
@@ -1006,7 +968,7 @@ export default class Game {
                             needHUDUpdate = true
                         }
                         if (
-                            this._currentData.players.two.name !=
+                            this._currentData.players.two.name !==
                             data.data.players.two.name
                         ) {
                             this._currentData.players.two.name =
@@ -1090,22 +1052,22 @@ export default class Game {
                     !compareArrays(list, getPowerUpInfos(this._engine.powerUp))
                 ) {
                     list.forEach((e) => {
-                        if (this._engine.powerUp.get(e.id) == undefined)
+                        if (this._engine.powerUp.get(e.id) === undefined)
                             this._wsEmit("game:requestPowerup", { id: e.id })
                         else {
                             if (
-                                e.sender !=
+                                e.sender !==
                                 this._engine.powerUp.get(e.id)!._sender?.id
                             ) {
                                 this._engine.powerUp.get(e.id)!._sender =
                                     e.sender
-                                        ? e.sender! == 1
+                                        ? e.sender! === 1
                                             ? this._currentData.players.one
                                             : this._currentData.players.two
                                         : null
                             }
                             if (
-                                e.state !=
+                                e.state !==
                                 this._engine.powerUp.get(e.id)!._state
                             ) {
                                 switch (e.state) {
@@ -1120,7 +1082,7 @@ export default class Game {
                                             this._engine.powerUp
                                                 .get(e.id)!
                                                 .trigger(
-                                                    e.sender! == 1
+                                                    e.sender! === 1
                                                         ? this._currentData
                                                               .players.one
                                                         : this._currentData
@@ -1141,7 +1103,7 @@ export default class Game {
                     })
                     const map = new Map(list.map((obj) => [obj.id, obj]))
                     this._engine.powerUp.forEach((e) => {
-                        if (map.get(e._id) == undefined) {
+                        if (map.get(e._id) === undefined) {
                             e._destroy()
                             this._engine.powerUp.delete(e._id)
                         }
@@ -1161,7 +1123,7 @@ export default class Game {
                     state: PowerUpStates
                     radius: number
                 }
-                if (this._engine.powerUp.get(data.id as number) == undefined)
+                if (this._engine.powerUp.get(data.id as number) === undefined)
                     this._engine.powerUp.set(
                         data.id as number,
                         new PowerUp({

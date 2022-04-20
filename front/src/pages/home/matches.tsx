@@ -1,3 +1,4 @@
+import React from "react"
 import { Table } from "react-bootstrap"
 import { Link } from "react-router-dom"
 import UserAvatar from "../../components/user/UserAvatar"
@@ -8,19 +9,14 @@ function getMatchStatus(str: string, pOneNick: string, pTwoNick: string) {
     switch (str) {
         case "waiting":
             return "waiting"
-            break
         case "playing":
             return "playing"
-            break
         case "player_one_won":
             return pOneNick + " won"
-            break
         case "player_two_won":
             return pTwoNick + " won"
-            break
         default:
             return "bizarre"
-            break
     }
 }
 
@@ -52,16 +48,21 @@ function MatchComponent({ match }: { match: Match }) {
                 )
             </td>
             <td>
-                <Link className="btn btn-light" to={`/game/${match.id}`}>
-                    View
-                </Link>
+                {match.state !== "player_one_won" &&
+                match.state !== "player_two_won" ? (
+                    <Link className="btn btn-light" to={`/game/${match.id}`}>
+                        View
+                    </Link>
+                ) : (
+                    <React.Fragment />
+                )}
             </td>
         </tr>
     )
 }
 
 function Matches() {
-    const matches = useMatches()
+    const matches = useMatches().reverse()
 
     return (
         <Table striped bordered hover variant="dark">

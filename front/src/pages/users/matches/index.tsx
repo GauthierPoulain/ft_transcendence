@@ -56,13 +56,13 @@ export default function Matches() {
                 <tbody>
                     {matches.map((match) => {
                         if (
-                            match.playerOneId != user.id &&
-                            match.playerTwoId != user.id
+                            match.playerOneId !== user.id &&
+                            match.playerTwoId !== user.id
                         )
                             return <React.Fragment />
                         if (
-                            match.state != "player_one_won" &&
-                            match.state != "player_two_won"
+                            match.state !== "player_one_won" &&
+                            match.state !== "player_two_won"
                         )
                             return <React.Fragment />
 
@@ -70,22 +70,22 @@ export default function Matches() {
                             <GetRow
                                 key={match.id}
                                 oponnent={
-                                    match.playerOneId == user.id
+                                    match.playerOneId === user.id
                                         ? match.playerTwoId
                                         : match.playerOneId
                                 }
                                 winner={
-                                    match.state == "player_one_won"
+                                    match.state === "player_one_won"
                                         ? match.playerOneId
                                         : match.playerTwoId
                                 }
                                 scoreYou={
-                                    match.playerOneId == user.id
+                                    match.playerOneId === user.id
                                         ? match.scorePOne
                                         : match.scorePTwo
                                 }
                                 scoreOponnent={
-                                    match.playerOneId == user.id
+                                    match.playerOneId === user.id
                                         ? match.scorePTwo
                                         : match.scorePOne
                                 }
