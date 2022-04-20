@@ -14,7 +14,6 @@
         "react-error-boundary": "^3.1.4",
         "react-router-dom": "^6.3.0",
         "react-scripts": "5.0.1",
-        "react-tsparticles": "^2.0.6",
         "react-use-websocket": "^3.0.0",
         "sass": "^1.50.1",
         "stats.js": "^0.17.0",

@@ -61,7 +61,7 @@ function Thisisatest() {
     )
 }
 
-export default function App() {
+export default function App({ tab }: { tab: any }) {
     return (
         <RootProvider>
             <ErrorBoundary
