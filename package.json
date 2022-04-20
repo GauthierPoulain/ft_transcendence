@@ -1,9 +1,9 @@
 {
-  "scripts": {
-    "format": "prettier --write \"{front,app}/src/**/*.{ts,tsx}\"",
-    "format:check": "prettier --check \"{front,app}/src/**/*.{ts,tsx}\""
-  },
-  "devDependencies": {
-    "prettier": "^2.5.1"
-  }
+    "scripts": {
+        "format": "prettier --write \"{front,app}/src/**/*.{ts,tsx}\"",
+        "format:check": "prettier --check \"{front,app}/src/**/*.{ts,tsx}\""
+    },
+    "devDependencies": {
+        "prettier": "^2.6.2"
+    }
 }
