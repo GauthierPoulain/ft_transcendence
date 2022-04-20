@@ -1,5 +1,6 @@
 import { Link, Outlet, useParams } from "react-router-dom"
 import useUser from "../../data/use-user"
+import { User } from "../../data/users"
 import { useAuth } from "../../data/use-auth"
 import UserAvatar from "../../components/user/UserAvatar"
 import {
@@ -13,6 +14,7 @@ import {
 import { statusColor, statusText, useStatus } from "../../data/status"
 import { Button, OverlayTrigger, Tooltip } from "react-bootstrap"
 import { useRelation } from "../../data/relations"
+import { Match, useMatches } from "../../data/matches"
 
 function BlockButton({ userId }) {
     const { isBlocking, block, unblock } = useRelation(userId)
@@ -60,10 +62,76 @@ function FriendButton({ userId }) {
     )
 }
 
+interface Player {
+    id: number
+    rank: number
+    victories: number
+    losses: number
+}
+
+function formatTable(matches: Match[]) {
+    const res = new Map<number, Player>()
+
+    matches.forEach((match) => {
+        const p1 = match.playerOneId
+        const p2 = match.playerTwoId
+        if (!res.get(p1))
+            res.set(p1, { id: p1, rank: -1, victories: 0, losses: 0 })
+        if (!res.get(p2))
+            res.set(p2, { id: p2, rank: -1, victories: 0, losses: 0 })
+        const winner =
+            match.state == "player_one_won"
+                ? p1
+                : match.state == "player_two_won"
+                ? p2
+                : undefined
+        if (winner) {
+            const currentData = res.get(winner)
+            res.get(p1 == winner ? p2 : p1)!.losses++
+            currentData!.victories++
+            res.set(winner, currentData!)
+        }
+    })
+    const final = Array.from(res.values())
+    final.sort((a, b) => {
+        if (a.victories > b.victories) return -1
+        else if (a.victories < b.victories) return 1
+        else return 0
+    })
+    for (let index = 0; index < final.length; index++)
+        final[index].rank = index + 1
+    return final
+}
+
+function getRank(player: Player[], user: User) {
+    for (let index = 0; index < player.length; index++) {
+        const current = player[index]
+        if (current.id == user.id) return current.rank
+    }
+    return "unranked"
+}
+
+function getWins(player: Player[], user: User) {
+    for (let index = 0; index < player.length; index++) {
+        const current = player[index]
+        if (current.id == user.id) return current.victories
+    }
+    return 0
+}
+
+function getLosses(player: Player[], user: User) {
+    for (let index = 0; index < player.length; index++) {
+        const current = player[index]
+        if (current.id == user.id) return current.losses
+    }
+    return 0
+}
+
 function Banner() {
     const { userId } = useParams()
     const user = useUser(parseInt(userId as string, 10))
     const auth = useAuth()
+    const players = formatTable(useMatches())
 
     const status = useStatus(user.id)
     const isCurrentUser =
@@ -81,13 +149,22 @@ function Banner() {
 
             <div className="d-flex flex-grow-1 justify-content-evenly flex-wrap">
                 <p className="fs-3 m-2 text-dark">
-                    Victories: <span style={{ color: "brown" }}>13</span>
+                    Victories:{" "}
+                    <span style={{ color: "brown" }}>
+                        {getWins(players, user)}
+                    </span>
                 </p>
                 <p className="fs-3 m-2 text-dark">
-                    Losses: <span style={{ color: "brown" }}>2</span>
+                    Losses:{" "}
+                    <span style={{ color: "brown" }}>
+                        {getLosses(players, user)}
+                    </span>
                 </p>
                 <p className="fs-3 m-2 text-dark">
-                    Rank: <span style={{ color: "brown" }}>#4</span>
+                    Rank:{" "}
+                    <span style={{ color: "brown" }}>
+                        #{getRank(players, user)}
+                    </span>
                 </p>
             </div>
             {!isCurrentUser && <FriendButton userId={user.id} />}
