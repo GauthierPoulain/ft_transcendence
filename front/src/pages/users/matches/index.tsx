@@ -1,5 +1,4 @@
-import React from "react"
-import { Container, Image, Table } from "react-bootstrap"
+import { Container, Table } from "react-bootstrap"
 import { useParams } from "react-router-dom"
 import UserAvatar from "../../../components/user/UserAvatar"
 import { useMatches } from "../../../data/matches"
@@ -23,11 +22,11 @@ function GetRow({
     return (
         <tr>
             <td>
-                <UserAvatar userId={userOponnent.id} className="w-16" />{" "}
+                <UserAvatar userId={userOponnent.id} className="w-8 h-8 me-2" />
                 {userOponnent.nickname}
             </td>
             <td>
-                <UserAvatar userId={userWin.id} className="w-16" />{" "}
+                <UserAvatar userId={userWin.id} className="w-8 h-8 me-2" />
                 {userWin.nickname}
             </td>
             <td>{scoreYou}</td>
@@ -59,12 +58,12 @@ export default function Matches() {
                             match.playerOneId !== user.id &&
                             match.playerTwoId !== user.id
                         )
-                            return <React.Fragment />
+                            return null
                         if (
                             match.state !== "player_one_won" &&
                             match.state !== "player_two_won"
                         )
-                            return <React.Fragment />
+                            return null
 
                         return (
                             <GetRow
