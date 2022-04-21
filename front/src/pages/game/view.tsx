@@ -18,5 +18,9 @@ export default function GameView() {
         return <GameViewWaiting matchId={match.id} />
     }
 
-    return <Pong />
+    if (match.state === "playing") {
+        return <Pong />
+    }
+
+    return <p>Match ended, maybe add some text and do something clean? ({ match.state })</p>
 }
