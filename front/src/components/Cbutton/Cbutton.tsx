@@ -46,11 +46,9 @@ function test(event: any, id: any) {
 
 function Cbutton(props: any) {
     return (
-        <React.Fragment>
-            <button id={props.id} onClick={(event) => test(event, props.id)}>
-                {props.children}
-            </button>
-        </React.Fragment>
+        <button id={props.id} onClick={(event) => test(event, props.id)}>
+            {props.children}
+        </button>
     )
 }
 

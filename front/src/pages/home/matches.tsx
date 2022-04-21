@@ -49,13 +49,11 @@ function MatchComponent({ match }: { match: Match }) {
             </td>
             <td>
                 {match.state !== "player_one_won" &&
-                match.state !== "player_two_won" ? (
+                match.state !== "player_two_won" &&
                     <Link className="btn btn-light" to={`/game/${match.id}`}>
                         View
                     </Link>
-                ) : (
-                    <React.Fragment />
-                )}
+                }
             </td>
         </tr>
     )

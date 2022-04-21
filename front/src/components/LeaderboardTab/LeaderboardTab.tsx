@@ -3,6 +3,7 @@ import React from "react"
 import { Table } from "react-bootstrap"
 import { useUser } from "../../data/users"
 import { Match, useMatches } from "../../data/matches"
+import UserAvatar from "../user/UserAvatar"
 
 interface Player {
     id: number
@@ -42,30 +43,14 @@ function formatTable(matches: Match[]) {
 }
 
 function LeaderBoardComponent({ player }: { player: Player }) {
-    const user = useUser(player.id)
+    const user = useUser(player.id)!
+
     return (
         <tr>
             <td>{player.rank}</td>
             <td>
-                {user ? (
-                    <React.Fragment>
-                        <img
-                            className="img-leaderboard"
-                            src={user.image}
-                            alt=""
-                        />
-                        <React.Fragment>{user.nickname}</React.Fragment>
-                    </React.Fragment>
-                ) : (
-                    <React.Fragment>
-                        <img
-                            className="img-leaderboard"
-                            src="/assets/42.jpg"
-                            alt=""
-                        />
-                        <React.Fragment>?</React.Fragment>
-                    </React.Fragment>
-                )}
+                <UserAvatar userId={user.id} className="w-8 h-8 me-2" />
+                {user.nickname}
             </td>
             <td>{player.victories}</td>
         </tr>
