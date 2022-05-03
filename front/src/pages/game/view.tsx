@@ -4,6 +4,7 @@ import Pong from "../../components/Pong/Pong"
 import { useMatch } from "../../data/matches"
 import { HttpError } from "../../errors/HttpError"
 import GameViewWaiting from "./view/waiting"
+import GameViewWon from "./view/won"
 
 export default function GameView() {
     const params = useParams()
@@ -22,5 +23,5 @@ export default function GameView() {
         return <Pong />
     }
 
-    return <p>Match ended, maybe add some text and do something clean? ({ match.state })</p>
+    return <GameViewWon gameId={match.id} />
 }

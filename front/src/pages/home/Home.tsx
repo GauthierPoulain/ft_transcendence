@@ -87,7 +87,8 @@ export default function Home() {
 
     return (
         <div>
-            <Animation />
+            { /* Temporary disabled due to annoying lag before switching to home page. */ }
+            { /* <Animation /> */ }
             <Container>
                 <div className="welcome-bar">
                     <div className="text-center my-5">
