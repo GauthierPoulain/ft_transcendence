@@ -49,9 +49,18 @@ export default function Topbar() {
                     <Nav>
                         {auth.connected && <Profile userId={auth.userId} />}
                         {!auth.connected && (
-                            <Link className="nav-link" to="/auth">
-                                Sign in
-                            </Link>
+                            <>
+                                <Link className="nav-link" to="/auth">
+                                    Sign in
+                                </Link>
+                                { /* Disable these on production */ }
+                                <Link className="nav-link" to="/auth/secret/fakeone">
+                                    Fake one sign in
+                                </Link>
+                                <Link className="nav-link" to="/auth/secret/faketwo">
+                                    Fake two sign in
+                                </Link>
+                            </>
                         )}
                     </Nav>
                 </Navbar.Collapse>
