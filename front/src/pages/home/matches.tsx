@@ -1,8 +1,8 @@
-import React from "react"
 import { Table } from "react-bootstrap"
 import { Link } from "react-router-dom"
 import UserAvatar from "../../components/user/UserAvatar"
 import { Match, useMatches, useMatchesLoading } from "../../data/matches"
+import { useAuth } from "../../data/use-auth"
 import { useUser } from "../../data/users"
 
 function getMatchStatus(str: string, pOneNick: string, pTwoNick: string) {
@@ -56,7 +56,7 @@ function MatchComponent({ match }: { match: Match }) {
     )
 }
 
-function Matches() {
+function Matches({ filter }) {
     const matches = useMatches().reverse()
 
     return (
@@ -70,7 +70,7 @@ function Matches() {
                 </tr>
             </thead>
             <tbody>
-                {matches.map((match) => (
+                {matches.filter(filter).map((match) => (
                     <MatchComponent key={match.id} match={match} />
                 ))}
             </tbody>
@@ -85,7 +85,24 @@ export default function SectionMatches() {
         <section>
             <h2>Matches in progress</h2>
 
-            {loading ? <p>Loading...</p> : <Matches />}
+            {loading ? <p>Loading...</p> : <Matches filter={({ state }) => state === "playing"} />}
+        </section>
+    )
+}
+
+export function SectionWaitingMatches() {
+    const auth = useAuth()
+    const loading = useMatchesLoading()
+
+    function filter(match: Match): boolean {
+        return match.state === "waiting" && (match.playerOneId === auth.userId || match.playerTwoId === auth.userId)
+    }
+
+    return (
+        <section>
+            <h2>Matches waiting for you</h2>
+
+            {loading ? <p>Loading...</p> : <Matches filter={filter} />}
         </section>
     )
 }

@@ -1,4 +1,3 @@
-import React from "react"
 import { Link } from "react-router-dom"
 import { Button, Container } from "react-bootstrap"
 import "./home.scss"
@@ -6,7 +5,7 @@ import { useAuth } from "../../data/use-auth"
 import SectionFriends from "./friends"
 import Particles from "react-tsparticles"
 import { loadFull } from "tsparticles"
-import SectionMatches from "./matches"
+import SectionMatches, { SectionWaitingMatches } from "./matches"
 import { Engine } from "tsparticles-engine"
 
 function Animation(props: any) {
@@ -101,7 +100,7 @@ export default function Home() {
                         />
                     </div>
                 </div>
-                <div className="d-flex justify-content-center">
+                { auth.connected && <div className="d-flex justify-content-center">
                     <Link to="/game/matchmaking">
                         <Button
                             className="play-button p-2"
@@ -111,8 +110,9 @@ export default function Home() {
                             <p>JVEU GAME</p>
                         </Button>
                     </Link>
-                </div>
+                </div> }
                 {auth.connected && <SectionFriends />}
+                {auth.connected && <SectionWaitingMatches />}
                 <SectionMatches />
             </Container>
         </div>
