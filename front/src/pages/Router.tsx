@@ -2,7 +2,6 @@ import { useAuth } from "../data/use-auth"
 
 import Home from "../pages/home/Home"
 import Leaderboard from "../pages/leaderboard/Leaderboard"
-import { Page as Authentication } from "../pages/authentication"
 import { Outlet, Route, Routes, Navigate } from "react-router-dom"
 import Topbar from "../components/topbar/Topbar"
 
@@ -20,6 +19,9 @@ import Matchmaking from "./game/matchmaking"
 import GameLayout from "./game/layout"
 import GameView from "./game/view"
 import ChallengeUser from "./users/challenge"
+import LoginIntra from "./authentication/login-intra"
+import LoginFake from "./authentication/login-fake"
+import Authentication from "../pages/authentication"
 
 // import TwoFactorAuth from "./twoFactorAuth"
 
@@ -83,7 +85,11 @@ export default function Router() {
                     <Route path="settings" element={<ProfileSettings />} />
                     <Route path="challenge" element={<ChallengeUser />} />
                 </Route>
-                <Route path="auth" element={<Authentication />} />
+                <Route path="auth" element={<Authentication />}>
+                    <Route index element={<LoginIntra />} />
+                    <Route path="secret/fakeone" element={<LoginFake user="one" />} />
+                    <Route path="secret/faketwo" element={<LoginFake user="two" />} />
+                </Route>
                 <Route path="*" element={<Navigate to="/" />} />
             </Route>
         </Routes>
