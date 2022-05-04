@@ -1,12 +1,11 @@
+import { Container } from "react-bootstrap"
 import LeaderboardTab from "../../components/LeaderboardTab/LeaderboardTab"
-import "./leaderboard.scss"
 
-function Leaderboard() {
+export default function Leaderboard() {
     return (
-        <div className="container">
+        <Container className="mt-3">
+            <h2>Leaderboard</h2>
             <LeaderboardTab />
-        </div>
+        </Container>
     )
 }
-
-export default Leaderboard

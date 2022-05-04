@@ -57,7 +57,7 @@ function GameComponent(user: User | null) {
 }
 
 function AuthComponent(auth: AuthState) {
-    const user = useUser(auth.userId!)
+    const user = useUser(auth.userId!)!
     return GameComponent(user)
 }
 

@@ -13,8 +13,8 @@ import { useMatch } from "../../../../data/matches"
 import { Link } from "react-router-dom"
 
 function KnownGameCard({ game }) {
-    const playerOne = useUser(game.playerOneId)
-    const playerTwo = useUser(game.playerTwoId)
+    const playerOne = useUser(game.playerOneId)!
+    const playerTwo = useUser(game.playerTwoId)!
 
     return (
         <Card className="bg-dark">
@@ -66,7 +66,7 @@ function MessageContent({ content }) {
 
 export default function Message({ message }: { message: MessageType }) {
     const auth = useAuth()
-    const author = useUser(message.authorId)
+    const author = useUser(message.authorId)!
     const channel = useChannel(message.channelId)!
     const self = useMemberByUser(auth.userId!)!
     const [show, setShow] = useState(false)

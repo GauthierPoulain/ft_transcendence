@@ -159,7 +159,7 @@ function Options({ member }) {
 }
 
 export default function Member({ member }) {
-    const user = useUser(member.userId)
+    const user = useUser(member.userId)!
 
     return (
         <div className="d-flex align-items-center justify-content-between gap-x-2">

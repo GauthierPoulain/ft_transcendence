@@ -1,6 +1,6 @@
 import { Brightness1 } from "@mui/icons-material"
 import { Container } from "react-bootstrap"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { useUser } from "../../../data/users"
 import { useRelations } from "../../../data/relations"
 import { useStatus } from "../../../data/status"
@@ -9,9 +9,12 @@ import { statusColor } from "../../../data/status"
 import UserAvatar from "../../../components/user/UserAvatar"
 
 import "./index.scss"
+import { useAuth } from "../../../data/use-auth"
+import { ErrorBox } from "../../../components/error/ErrorBox"
+import { HttpError } from "../../../errors/HttpError"
 
 function User({ userId }) {
-    const user = useUser(userId)
+    const user = useUser(userId)!
     const status = useStatus(user.id)
 
     return (
@@ -47,7 +50,15 @@ function Users({ relations }) {
 }
 
 export default function Relations() {
+    const params = useParams()
+    const auth = useAuth()
+    const userId = parseInt(params.userId as string, 10)
+    const user = useUser(userId)!
     const { friends, blocked } = useRelations()
+
+    if (!auth.connected || auth.userId !== user.id) {
+        return <ErrorBox error={new HttpError(401)} />
+    }
 
     return (
         <Container>

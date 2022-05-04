@@ -15,6 +15,8 @@ import { statusColor, statusText, useStatus } from "../../data/status"
 import { Button, OverlayTrigger, Tooltip } from "react-bootstrap"
 import { useRelation } from "../../data/relations"
 import { Match, useMatches } from "../../data/matches"
+import { ErrorBox } from "../../components/error/ErrorBox"
+import { HttpError } from "../../errors/HttpError"
 
 function BlockButton({ userId }) {
     const { isBlocking, block, unblock } = useRelation(userId)
@@ -127,15 +129,13 @@ function getLosses(player: Player[], user: User) {
     return 0
 }
 
-function Banner() {
-    const { userId } = useParams()
-    const user = useUser(parseInt(userId as string, 10))
+function Banner({ userId }) {
+    const user = useUser(userId)!
     const auth = useAuth()
     const players = formatTable(useMatches())
 
     const status = useStatus(user.id)
-    const isCurrentUser =
-        auth.connected && auth.userId === parseInt(userId as string)
+    const isCurrentUser = auth.connected && auth.userId === userId
 
     return (
         <div
@@ -167,8 +167,8 @@ function Banner() {
                     </span>
                 </p>
             </div>
-            {!isCurrentUser && <FriendButton userId={user.id} />}
-            {!isCurrentUser && <BlockButton userId={user.id} />}
+            {auth.connected && !isCurrentUser && <FriendButton userId={user.id} />}
+            {auth.connected && !isCurrentUser && <BlockButton userId={user.id} />}
             <p className="text-dark text-uppercase m-3 my-1">
                 {statusText(status)}
                 <Brightness1
@@ -180,12 +180,10 @@ function Banner() {
     )
 }
 
-function Navigation() {
+function Navigation({ userId }) {
     const auth = useAuth()
-    const { userId } = useParams()
 
-    const isCurrentUser =
-        auth.connected && auth.userId === parseInt(userId as string)
+    const isCurrentUser = auth.connected && auth.userId === userId
 
     return (
         <div className="btn-group mb-3">
@@ -235,10 +233,18 @@ function Navigation() {
 }
 
 export default function Users() {
+    const params = useParams()
+    const userId = parseInt(params.userId as string, 10)
+    const user = useUser(userId)
+
+    if (!user) {
+        return <ErrorBox error={new HttpError(404)} />
+    }
+
     return (
         <>
-            <Banner />
-            <Navigation />
+            <Banner userId={user.id} />
+            <Navigation userId={user.id} />
             <Outlet />
         </>
     )

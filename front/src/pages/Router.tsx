@@ -62,22 +62,8 @@ export default function Router() {
                     <Route path="create" element={<ChannelCreate />} />
                     <Route path="room/:channelId" element={<RoomView />} />
                 </Route>
-                <Route
-                    path="leaderboard"
-                    element={
-                        <PrivateRoute>
-                            <Leaderboard />
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/users/:userId"
-                    element={
-                        <PrivateRoute>
-                            <Users />
-                        </PrivateRoute>
-                    }
-                >
+                <Route path="leaderboard" element={<Leaderboard />} />
+                <Route path="/users/:userId" element={<Users />}>
                     <Route index element={<Navigate to="matches" replace />} />
                     <Route path="matches" element={<Matches />} />
                     <Route path="achievements" element={<Achievements />} />

@@ -7,7 +7,7 @@ import "./friends.scss"
 import UserAvatar from "../../components/user/UserAvatar"
 
 function Friend({ userId }) {
-    const user = useUser(userId)
+    const user = useUser(userId)!
     const status = useStatus(user.id)
 
     return (

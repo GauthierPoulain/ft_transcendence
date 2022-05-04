@@ -21,8 +21,8 @@ function getMatchStatus(str: string, pOneNick: string, pTwoNick: string) {
 }
 
 function MatchComponent({ match }: { match: Match }) {
-    const userOne = useUser(match.playerOneId)
-    const userTwo = useUser(match.playerTwoId)
+    const userOne = useUser(match.playerOneId)!
+    const userTwo = useUser(match.playerTwoId)!
 
     return (
         <tr>

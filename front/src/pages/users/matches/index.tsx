@@ -17,8 +17,9 @@ function GetRow({
     scoreYou: number
     scoreOponnent: number
 }) {
-    const userOponnent = useUser(oponnent)
-    const userWin = useUser(winner)
+    const userOponnent = useUser(oponnent)!
+    const userWin = useUser(winner)!
+
     return (
         <tr>
             <td>
@@ -37,7 +38,7 @@ function GetRow({
 
 export default function Matches() {
     const { userId } = useParams()
-    const user = useUser(parseInt(userId as string, 10))
+    const user = useUser(parseInt(userId as string, 10))!
     const matches = useMatches()
 
     return (

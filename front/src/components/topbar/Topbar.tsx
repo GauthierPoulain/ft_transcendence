@@ -6,7 +6,7 @@ import UserAvatar from "../user/UserAvatar"
 import "./topbar.scss"
 
 function Profile({ userId }) {
-    const user = useUser(userId)
+    const user = useUser(userId)!
     const auth = useAuth()
 
     return (
@@ -41,9 +41,7 @@ export default function Topbar() {
                         <Link className="nav-link" to="/leaderboard">
                             Leaderboard
                         </Link>
-                        <Link className="nav-link" to="/chat">
-                            Chat
-                        </Link>
+                        { auth.connected && <Link className="nav-link" to="/chat">Chat</Link> }
                     </Nav>
 
                     <Nav>

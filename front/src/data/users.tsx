@@ -36,8 +36,8 @@ export function useUsersLoading(): boolean {
     return useContext(service.Context).loading
 }
 
-export function useUser(id: number): User {
+export function useUser(id: number): User | undefined {
     const { state } = useContext(service.Context)
 
-    return repository.selectById(state, id) as User
+    return repository.selectById(state, id)
 }

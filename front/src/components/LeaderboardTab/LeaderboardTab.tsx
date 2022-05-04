@@ -62,8 +62,6 @@ function LeaderboardTab() {
     const players = formatTable(matches)
 
     return (
-        <div>
-            <h1 className="my-4 title-leaderboard">Leaderboard</h1>
             <Table striped bordered hover variant="dark">
                 <thead>
                     <tr>
@@ -78,7 +76,6 @@ function LeaderboardTab() {
                     ))}
                 </tbody>
             </Table>
-        </div>
     )
 }
 
