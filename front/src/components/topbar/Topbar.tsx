@@ -4,10 +4,12 @@ import useUser from "../../data/use-user"
 import { Container, Nav, Navbar } from "react-bootstrap"
 import UserAvatar from "../user/UserAvatar"
 import "./topbar.scss"
+import { NavLink } from "react-router-dom"
+import { RestrictAnonymous, RestrictAuthenticated } from "../auth"
 
-function Profile({ userId }) {
-    const user = useUser(userId)!
+function Profile() {
     const auth = useAuth()
+    const user = useUser(auth.userId)!
 
     return (
         <div className="d-flex">
@@ -25,9 +27,11 @@ function Profile({ userId }) {
     )
 }
 
-export default function Topbar() {
-    const auth = useAuth()
+function navlinkClassname({ isActive }) {
+    return isActive ? "nav-link active" : "nav-link"
+}
 
+export default function Topbar() {
     return (
         <Navbar bg="light" variant="dark" id="navbar">
             <Container>
@@ -35,31 +39,30 @@ export default function Topbar() {
 
                 <Navbar.Collapse>
                     <Nav className="me-auto">
-                        <Link className="nav-link" to="/">
-                            Home
-                        </Link>
-                        <Link className="nav-link" to="/leaderboard">
-                            Leaderboard
-                        </Link>
-                        { auth.connected && <Link className="nav-link" to="/chat">Chat</Link> }
+                        <NavLink className={navlinkClassname} to="/" end>Home</NavLink>
+                        <NavLink className={navlinkClassname} to="/leaderboard" end>Leaderboard</NavLink>
+                        <RestrictAuthenticated>
+                            <NavLink className={navlinkClassname} to="/chat">Chat</NavLink>
+                        </RestrictAuthenticated>
                     </Nav>
 
                     <Nav>
-                        {auth.connected && <Profile userId={auth.userId} />}
-                        {!auth.connected && (
-                            <>
-                                <Link className="nav-link" to="/auth">
-                                    Sign in
-                                </Link>
-                                { /* Disable these on production */ }
-                                <Link className="nav-link" to="/auth/secret/fakeone">
-                                    Fake one sign in
-                                </Link>
-                                <Link className="nav-link" to="/auth/secret/faketwo">
-                                    Fake two sign in
-                                </Link>
-                            </>
-                        )}
+                        <RestrictAuthenticated>
+                            <Profile />
+                        </RestrictAuthenticated>
+
+                        <RestrictAnonymous>
+                            <Link className="nav-link" to="/auth">
+                                Sign in
+                            </Link>
+                            { /* Disable these on production */ }
+                            <Link className="nav-link" to="/auth/secret/fakeone">
+                                Fake one sign in
+                            </Link>
+                            <Link className="nav-link" to="/auth/secret/faketwo">
+                                Fake two sign in
+                            </Link>
+                        </RestrictAnonymous>
                     </Nav>
                 </Navbar.Collapse>
             </Container>
