@@ -7,22 +7,42 @@ import useUser, { User } from "../../data/use-user"
 
 function GameComponent(user: User | null) {
     const { subscribe, sendMessage } = useWebSocket()
+    const localInstance = useRef<Game | null>(null)
     const gameContainer = useRef<null | HTMLObjectElement>(null)
+    const useEffectOnce = (effect: () => void | (() => void)) => {
+        const destroyFunc = useRef<void | (() => void)>()
+        const calledOnce = useRef(false)
+        const renderAfterCalled = useRef(false)
+        if (calledOnce.current) renderAfterCalled.current = true
+        useEffect(() => {
+            calledOnce.current = true
+            destroyFunc.current = effect()
+            return () => {
+                if (!renderAfterCalled.current) return
+                else if (destroyFunc.current) destroyFunc.current()
+            }
+        }, [])
+    }
 
     useEffect(() => {
-        const localInstance = new Game(sendMessage, gameContainer.current!)
-        const { unsubscribe } = subscribe((event, data) => {
-            localInstance.socketEvents(event, data)
-        })
-        localInstance.setReady({ ws: true })
-
+        localInstance.current = new Game(sendMessage, gameContainer.current!)
         const unmount = () => {
-            localInstance?.killEngine()
-            sendMessage("game:disconnect", null)
-            unsubscribe()
+            localInstance.current?.killEngine()
+            localInstance.current = null
         }
         return unmount
     }, [])
+
+    useEffectOnce(() => {
+        const { unsubscribe } = subscribe((event, data) => {
+            localInstance.current?.socketEvents(event, data)
+        })
+        localInstance.current?.setReady({ ws: true })
+        return () => {
+            sendMessage("game:disconnect", null)
+            unsubscribe()
+        }
+    })
 
     return (
         <React.Fragment>
