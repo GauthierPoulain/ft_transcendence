@@ -5,6 +5,7 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm"
 import { Exclude, Expose } from "class-transformer"
 import { Relation } from "src/relations/relation.entity"
 import { DirectChannel } from "src/channels/entities/channel.entity"
+import { Achievements } from "./achievements.entity"
 
 @Entity()
 export class User {
@@ -53,6 +54,9 @@ export class User {
     get tfa(): boolean {
         return !!this.tfa_secret
     }
+
+    @Column(() => Achievements)
+    achievements: Achievements
 
     @Exclude()
     @OneToMany(() => Member, (member) => member.user)
