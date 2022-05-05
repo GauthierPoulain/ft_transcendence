@@ -16,9 +16,6 @@ type State = {
 
 const wsurl = () => {
     return `ws://${document.location.hostname}:3005`
-    if (process.env["NODE_ENV"] === "production")
-        return `ws://${document.location.hostname}/ws`
-    else return `ws://${document.location.hostname}:3005`
 }
 
 const Context = createContext<State>({} as State)
@@ -26,11 +23,17 @@ const Context = createContext<State>({} as State)
 export function WebsocketProvider({ children }) {
     const [handlers, setHandlers] = useState(new Map())
 
+    console.log("websocket provider")
+
     const {
         sendMessage: send,
         readyState,
         lastJsonMessage,
     } = useInner(wsurl(), {
+        onOpen() {
+            console.debug("Websocket open")
+        },
+
         async onMessage(message) {
             const { event, data } = JSON.parse(message.data)
 

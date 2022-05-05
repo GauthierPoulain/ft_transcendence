@@ -12,7 +12,7 @@ export class AchievementsService {
         const user = await this.users.find(userId)
 
         if (!user.achievements[achievement]) {
-            user.achievements[achievement] = true;
+            user.achievements[achievement] = true
             await this.users.update(user)
         }
     }
