@@ -1,4 +1,4 @@
-import { Link, Outlet, useParams } from "react-router-dom"
+import { Outlet, useParams } from "react-router-dom"
 import useUser from "../../data/use-user"
 import { User } from "../../data/users"
 import { useAuth } from "../../data/use-auth"
@@ -17,6 +17,8 @@ import { useRelation } from "../../data/relations"
 import { Match, useMatches } from "../../data/matches"
 import { ErrorBox } from "../../components/error/ErrorBox"
 import { HttpError } from "../../errors/HttpError"
+import { NavLink } from "react-router-dom"
+import { activeClassName } from "../../utils/active-class-name"
 
 function BlockButton({ userId }) {
     const { isBlocking, block, unblock } = useRelation(userId)
@@ -187,46 +189,42 @@ function Navigation({ userId }) {
 
     return (
         <div className="btn-group mb-3">
-            <Link
-                to="matches"
-                className="btn btn-dark btn-lg rounded-0"
-                replace
-            >
+            <NavLink to="matches" className={activeClassName("btn btn-dark btn-lg rounded-0")} replace>
                 Matches
-            </Link>
-            <Link
+            </NavLink>
+            <NavLink
                 to="achievements"
-                className="btn btn-dark btn-lg rounded-0"
+                className={activeClassName("btn btn-dark btn-lg rounded-0")}
                 replace
             >
                 Achievements
-            </Link>
+            </NavLink>
             {isCurrentUser && (
                 <>
-                    <Link
+                    <NavLink
                         to="relations"
-                        className="btn btn-dark btn-lg rounded-0"
+                        className={activeClassName("btn btn-dark btn-lg rounded-0")}
                         replace
                     >
                         Relations
-                    </Link>
-                    <Link
+                    </NavLink>
+                    <NavLink
                         to="settings"
-                        className="btn btn-warning btn-lg rounded-0"
+                        className={activeClassName("btn btn-warning btn-lg rounded-0")}
                         replace
                     >
                         <Edit />
-                    </Link>
+                    </NavLink>
                 </>
             )}
             {!isCurrentUser && auth.connected && (
-                <Link
+                <NavLink
                     to="challenge"
-                    className="btn btn-dark btn-lg rounded-0"
+                    className={activeClassName("btn btn-dark btn-lg rounded-0")}
                     replace
                 >
                     Challenge
-                </Link>
+                </NavLink>
             )}
         </div>
     )

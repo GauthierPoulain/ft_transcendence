@@ -6,6 +6,7 @@ import UserAvatar from "../user/UserAvatar"
 import "./topbar.scss"
 import { NavLink } from "react-router-dom"
 import { RestrictAnonymous, RestrictAuthenticated } from "../auth"
+import { activeClassName } from "../../utils/active-class-name"
 
 function Profile() {
     const auth = useAuth()
@@ -27,10 +28,6 @@ function Profile() {
     )
 }
 
-function navlinkClassname({ isActive }) {
-    return isActive ? "nav-link active" : "nav-link"
-}
-
 export default function Topbar() {
     return (
         <Navbar bg="light" variant="dark" id="navbar">
@@ -39,10 +36,10 @@ export default function Topbar() {
 
                 <Navbar.Collapse>
                     <Nav className="me-auto">
-                        <NavLink className={navlinkClassname} to="/" end>Home</NavLink>
-                        <NavLink className={navlinkClassname} to="/leaderboard" end>Leaderboard</NavLink>
+                        <NavLink className={activeClassName("nav-link")} to="/" end>Home</NavLink>
+                        <NavLink className={activeClassName("nav-link")} to="/leaderboard" end>Leaderboard</NavLink>
                         <RestrictAuthenticated>
-                            <NavLink className={navlinkClassname} to="/chat">Chat</NavLink>
+                            <NavLink className={activeClassName("nav-link")} to="/chat">Chat</NavLink>
                         </RestrictAuthenticated>
                     </Nav>
 
