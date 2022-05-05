@@ -10,17 +10,18 @@ import Loading from "../../components/Loading"
 
 import "./style.scss"
 import { useAuth } from "../../data/use-auth"
+import { NavLink } from "react-router-dom"
 
 function JoinedChannel({ channel }) {
     return (
         <li>
-            <Link
-                className="text-decoration-none chan-text"
+            <NavLink
+                className={({ isActive }) => `text-decoration-none chan-text ${isActive ? "fw-bold" : ""}`}
                 to={`/chat/room/${channel.id}`}
                 replace
             >
                 {channel.name}
-            </Link>
+            </NavLink>
         </li>
     )
 }
@@ -44,14 +45,14 @@ function Sidebar() {
 
             <ul className="list-unstyled">
                 <li>
-                    <Link className="header-text" to="/chat">
+                    <NavLink className={({ isActive }) => `header-text ${isActive ? "fw-bold" : ""}`} to="/chat" end>
                         Join a channel
-                    </Link>
+                    </NavLink>
                 </li>
                 <li>
-                    <Link className="header-text" to="/chat/create">
+                    <NavLink className={({ isActive }) => `header-text ${isActive ? "fw-bold" : ""}`} to="/chat/create">
                         Create a channel
-                    </Link>
+                    </NavLink>
                 </li>
             </ul>
 
