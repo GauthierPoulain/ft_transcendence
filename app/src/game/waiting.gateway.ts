@@ -72,6 +72,7 @@ export class GameWaitingGateway {
                     data: body,
                 })
             )
+            return
         }
 
         this.sockets.removeRoom(`gamewaiting.${body.id}`)
