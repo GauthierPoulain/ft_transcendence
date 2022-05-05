@@ -200,9 +200,11 @@ function Banner({ userId }) {
                 </p>
             </div>
             <RestrictAuthenticated>
-                {!isCurrentUser && <FriendButton userId={user.id} />}
-                {!isCurrentUser && <BlockButton userId={user.id} />}
-                {!isCurrentUser && <DirectMessagButton userId={user.id} />}
+                {!isCurrentUser && <div className="btn-group" role="group">
+                    <FriendButton userId={user.id} />
+                    <BlockButton userId={user.id} />
+                    <DirectMessagButton userId={user.id} />
+                </div>}
             </RestrictAuthenticated>
             <p className="text-dark text-uppercase m-3 my-1">
                 {statusText(status)}
