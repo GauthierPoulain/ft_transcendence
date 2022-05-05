@@ -1,4 +1,4 @@
-import { Outlet, useParams } from "react-router-dom"
+import { Outlet, useNavigate, useParams } from "react-router-dom"
 import useUser from "../../data/use-user"
 import { User } from "../../data/users"
 import { useAuth } from "../../data/use-auth"
@@ -6,6 +6,7 @@ import UserAvatar from "../../components/user/UserAvatar"
 import {
     Brightness1,
     Edit,
+    Message,
     PersonAdd,
     PersonAddDisabled,
     RemoveCircle,
@@ -19,6 +20,8 @@ import { ErrorBox } from "../../components/error/ErrorBox"
 import { HttpError } from "../../errors/HttpError"
 import { NavLink } from "react-router-dom"
 import { activeClassName } from "../../utils/active-class-name"
+import { useMutateDirectChannel } from "../../data/channels"
+import { RestrictAuthenticated } from "../../components/auth"
 
 function BlockButton({ userId }) {
     const { isBlocking, block, unblock } = useRelation(userId)
@@ -61,6 +64,33 @@ function FriendButton({ userId }) {
                 disabled={isLoading}
             >
                 {isFriendWith ? <PersonAddDisabled /> : <PersonAdd />}
+            </Button>
+        </OverlayTrigger>
+    )
+}
+
+function DirectMessagButton({ userId }) {
+    const navigate = useNavigate()
+    const { submit, isLoading } = useMutateDirectChannel()
+
+    async function directMessage() {
+        const channel = await submit(userId)
+
+        navigate(`/chat/room/${channel.id}`)
+    }
+
+    return (
+        <OverlayTrigger
+            placement="top"
+            overlay={<Tooltip>Direct message</Tooltip>}
+        >
+            <Button
+                variant="dark"
+                size="sm"
+                onClick={directMessage}
+                disabled={isLoading}
+            >
+                <Message />
             </Button>
         </OverlayTrigger>
     )
@@ -169,8 +199,11 @@ function Banner({ userId }) {
                     </span>
                 </p>
             </div>
-            {auth.connected && !isCurrentUser && <FriendButton userId={user.id} />}
-            {auth.connected && !isCurrentUser && <BlockButton userId={user.id} />}
+            <RestrictAuthenticated>
+                {!isCurrentUser && <FriendButton userId={user.id} />}
+                {!isCurrentUser && <BlockButton userId={user.id} />}
+                {!isCurrentUser && <DirectMessagButton userId={user.id} />}
+            </RestrictAuthenticated>
             <p className="text-dark text-uppercase m-3 my-1">
                 {statusText(status)}
                 <Brightness1
