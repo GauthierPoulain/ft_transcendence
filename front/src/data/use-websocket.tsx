@@ -15,6 +15,7 @@ type State = {
 }
 
 const wsurl = () => {
+    return `ws://${document.location.hostname}:3005`
     if (process.env["NODE_ENV"] === "production")
         return `ws://${document.location.hostname}/ws`
     else return `ws://${document.location.hostname}:3005`
