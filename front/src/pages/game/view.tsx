@@ -20,7 +20,7 @@ export default function GameView() {
     }
 
     if (match.state === "playing") {
-        return <Pong />
+        return <Pong gameId={gameId} />
     }
 
     return <GameViewWon gameId={match.id} />

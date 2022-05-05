@@ -5,7 +5,7 @@ import { useWebSocket } from "../../data/use-websocket"
 import { AuthState, useAuth } from "../../data/use-auth"
 import useUser, { User } from "../../data/use-user"
 
-function GameComponent(user: User | null) {
+function GameComponent(user: User | null, gameId: number) {
     const { subscribe, sendMessage } = useWebSocket()
     const localInstance = useRef<Game | null>(null)
     const gameContainer = useRef<null | HTMLObjectElement>(null)
@@ -37,6 +37,7 @@ function GameComponent(user: User | null) {
         const { unsubscribe } = subscribe((event, data) => {
             localInstance.current?.socketEvents(event, data)
         })
+        sendMessage("socket.game.ready", { gameId: gameId })
         localInstance.current?.setReady({ ws: true })
         return () => {
             sendMessage("game:disconnect", null)
@@ -76,12 +77,14 @@ function GameComponent(user: User | null) {
     )
 }
 
-function AuthComponent(auth: AuthState) {
+function AuthComponent(auth: AuthState, gameId: number) {
     const user = useUser(auth.userId!)!
-    return GameComponent(user)
+    return GameComponent(user, gameId)
 }
 
-export default function Pong() {
+export default function Pong(props: { gameId: number }) {
     const auth = useAuth()
-    return auth.connected ? AuthComponent(auth) : GameComponent(null)
+    return auth.connected
+        ? AuthComponent(auth, props.gameId)
+        : GameComponent(null, props.gameId)
 }

@@ -45,6 +45,7 @@ function getPowerUpInfos(list: Map<number, PowerUp>) {
 }
 
 export default class Lobby {
+    _id: number
     _player_one: WebSocket
     _player_two: WebSocket
     _spectators: WebSocket[]
@@ -96,6 +97,7 @@ export default class Lobby {
     private changeScore: (pOne: number, pTwo: number) => void
 
     constructor(
+        id: number,
         player_one: WebSocket,
         pOneName: string,
         player_two: WebSocket,
@@ -104,6 +106,7 @@ export default class Lobby {
         changeState: (state: MatchState) => void,
         changeScore: (pOne: number, pTwo: number) => void
     ) {
+        this._id = id
         this._player_one = player_one
         this._player_two = player_two
         this.unregister = unregister
@@ -156,6 +159,7 @@ export default class Lobby {
 
     joinSpec(socket: WebSocket) {
         this._spectators.push(socket)
+        console.log(this._spectators.length)
     }
 
     leaveSpec(socket: WebSocket) {

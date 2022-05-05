@@ -30,6 +30,7 @@ export class GameService {
         )
 
         const lobby = new Lobby(
+            match.id,
             one,
             this.playerOneInfos.nickname,
             two,
@@ -70,5 +71,9 @@ export class GameService {
 
     lobbyBySocket(socket: WebSocket) {
         return this.players.get(socket)
+    }
+
+    lobbyById(id: number) {
+        return [...this.lobbies.values()].find((lobby) => lobby._id == id)
     }
 }

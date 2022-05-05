@@ -48,4 +48,18 @@ export class GameGateway {
     onDisconnect({ socket }) {
         this.disconnect(socket)
     }
+
+    @SubscribeMessage("socket.game.ready")
+    joinedready(
+        @ConnectedSocket() socket: WebSocket,
+        @MessageBody() body: { gameId: number }
+    ) {
+        console.log(body)
+        const lobby = this.game.lobbyById(body.gameId)
+
+        if (lobby) {
+            if (lobby._player_one !== socket && lobby._player_two !== socket)
+                lobby.joinSpec(socket)
+        }
+    }
 }

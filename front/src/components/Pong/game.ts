@@ -448,10 +448,7 @@ export default class Game {
     setReady({ engine, ws }: { engine?: boolean; ws?: boolean }) {
         if (engine !== undefined) this._engineReady = engine
         if (ws !== undefined) this._wsReady = ws
-        if (this._engineReady && this._wsReady) {
-            this._wsEmit("game:ready", null)
-        }
-    }
+}
 
     private resizeRenderer() {
         this._size = {
