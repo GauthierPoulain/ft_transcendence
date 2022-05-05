@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { instanceToPlain } from "class-transformer"
 import { SocketsService } from "src/sockets/sockets.service"
+import { AchievementsService } from "src/users/achievements.service"
 import { User } from "src/users/entities/user.entity"
 import { FindManyOptions, FindOneOptions, Repository } from "typeorm"
 import { Relation, RelationKind } from "./relation.entity"
@@ -11,7 +12,8 @@ export class RelationsService {
     constructor(
         @InjectRepository(Relation)
         private readonly repository: Repository<Relation>,
-        private sockets: SocketsService
+        private sockets: SocketsService,
+        private achievements: AchievementsService
     ) {}
 
     async get(options: FindOneOptions<Relation>) {
@@ -31,6 +33,9 @@ export class RelationsService {
         relation.current = { id: currentUserId } as User
         relation.target = { id: targetUserId } as User
         relation.kind = kind
+
+        // TODO: Parallel promises
+        await this.achievements.achieve(currentUserId, kind === RelationKind.FRIEND ? "follow_someone" : "block_someone")
 
         relation = await this.repository.save(relation)
         this.publish("created", instanceToPlain(relation, {}))
