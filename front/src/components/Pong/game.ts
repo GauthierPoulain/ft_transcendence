@@ -443,12 +443,13 @@ export default class Game {
         this.render()
         this.startSimulation()
         this.setReady({ engine: true })
+        this._wsEmit("game:whoAmI", null)
     }
 
     setReady({ engine, ws }: { engine?: boolean; ws?: boolean }) {
         if (engine !== undefined) this._engineReady = engine
         if (ws !== undefined) this._wsReady = ws
-}
+    }
 
     private resizeRenderer() {
         this._size = {
@@ -950,6 +951,7 @@ export default class Game {
         switch (event) {
             case "game:syncData":
                 if (this._lastTime < data.time) {
+                    this._roundRunning = data.running
                     if (data.force) {
                         console.log("forced update")
                         this._currentData = data.data
@@ -999,12 +1001,16 @@ export default class Game {
                 break
 
             case "game:youAre":
-                this._whoAmI = data
-                if (data === "one") this._engine.camera.position.set(0, 10, 25)
-                else if (data === "two")
-                    this._engine.camera.position.set(0, 10, -25)
-                this._engine.camera.lookAt(0, 0, 0)
-                this.updateHUD()
+                if (!this._whoAmI) {
+                    console.log("you are", data)
+                    this._whoAmI = data
+                    if (data === "one")
+                        this._engine.camera.position.set(0, 10, 25)
+                    else if (data === "two")
+                        this._engine.camera.position.set(0, 10, -25)
+                    this._engine.camera.lookAt(0, 0, 0)
+                    this.updateHUD()
+                }
                 break
 
             case "game:startRound":

@@ -139,10 +139,17 @@ export default class Lobby {
         socket.send(JSON.stringify({ event: event, data: data }))
     }
 
+    whoAmI(socket: WebSocket) {
+        if (socket === this._player_one) this.emit(socket, "game:youAre", "one")
+        else if (socket === this._player_two)
+            this.emit(socket, "game:youAre", "two")
+        else this.emit(socket, "game:youAre", "spec")
+    }
+
     start() {
         this.sendData()
-        this.emit(this._player_one, "game:youAre", "one")
-        this.emit(this._player_two, "game:youAre", "two")
+        this.whoAmI(this._player_one)
+        this.whoAmI(this._player_two)
 
         this._simData.running = true
         this._simData.last = Date.now()
@@ -403,6 +410,7 @@ export default class Lobby {
             data: this._currentData,
             time: Date.now(),
             force: force,
+            running: this._roundRunning,
         })
         this.broadcast("game:powerupCompare", {
             list: getPowerUpInfos(this._engine.powerUp),

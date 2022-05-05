@@ -73,6 +73,12 @@ export class GameService {
         return this.players.get(socket)
     }
 
+    lobbyBySpec(socket: WebSocket) {
+        return [...this.lobbies.values()].find((lobby) =>
+            lobby._spectators.includes(socket)
+        )
+    }
+
     lobbyById(id: number) {
         return [...this.lobbies.values()].find((lobby) => lobby._id == id)
     }

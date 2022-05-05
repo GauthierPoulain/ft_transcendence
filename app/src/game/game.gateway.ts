@@ -32,12 +32,17 @@ export class GameGateway {
         }
     }
 
+    @SubscribeMessage("game:whoAmI")
+    whoami(@ConnectedSocket() socket: WebSocket) {
+        this.game.lobbyBySocket(socket)?.whoAmI(socket)
+    }
+
     @SubscribeMessage("game:requestPowerup")
     requestPowerup(
         @ConnectedSocket() socket: WebSocket,
         @MessageBody() data: any
     ) {
-        const lobby = this.game.lobbyBySocket(socket)
+        const lobby = this.game.lobbyBySocket(socket) || this.game.lobbyBySpec(socket)
 
         if (lobby) {
             lobby.sendPowerup(socket, data.id)
