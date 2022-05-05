@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { User } from "./entities/user.entity";
+import { Achievements } from "./entities/achievements.entity";
 import { UsersService } from "./users.service";
 
 @Injectable()
@@ -8,7 +8,7 @@ export class AchievementsService {
 
     }
 
-    async achieve(userId: number, achievement: string) {
+    async achieve(userId: number, achievement: keyof Achievements) {
         const user = await this.users.find(userId)
 
         if (!user.achievements[achievement]) {

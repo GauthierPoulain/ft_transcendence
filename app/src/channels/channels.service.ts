@@ -5,6 +5,7 @@ import { instanceToPlain } from "class-transformer"
 import { Role } from "src/members/member.entity"
 import { MembersService } from "src/members/members.service"
 import { SocketsService } from "src/sockets/sockets.service"
+import { AchievementsService } from "src/users/achievements.service"
 import { User } from "src/users/entities/user.entity"
 import { FindManyOptions, Repository } from "typeorm"
 import { CreateChannelDto } from "./dto/create-channel.dto"
@@ -19,7 +20,8 @@ export class ChannelsService {
         @Inject(forwardRef(() => MembersService))
         private members: MembersService,
 
-        private sockets: SocketsService
+        private sockets: SocketsService,
+        private achievements: AchievementsService
     ) {}
 
     async create(input: CreateChannelDto, owner: User): Promise<Channel> {
@@ -45,6 +47,11 @@ export class ChannelsService {
         channel.joinable = joinable
         channel.direct = direct
         channel.password = password ? await hash(password) : ""
+
+        if (owners.length === 1) {
+            await this.achievements.achieve(owners[0].id, "channel_create")
+        }
+
         channel = await this.channelsRepository.save(channel)
 
         this.publish("created", instanceToPlain(channel, {}))

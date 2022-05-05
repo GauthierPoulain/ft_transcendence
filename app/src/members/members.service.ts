@@ -11,6 +11,7 @@ import { instanceToPlain } from "class-transformer"
 import { ChannelsService } from "src/channels/channels.service"
 import { Channel } from "src/channels/entities/channel.entity"
 import { SocketsService } from "src/sockets/sockets.service"
+import { AchievementsService } from "src/users/achievements.service"
 import { User } from "src/users/entities/user.entity"
 import { FindManyOptions, FindOneOptions, Repository } from "typeorm"
 import { Member, Role } from "./member.entity"
@@ -23,7 +24,9 @@ export class MembersService {
         private sockets: SocketsService,
 
         @Inject(forwardRef(() => ChannelsService))
-        private channels: ChannelsService
+        private channels: ChannelsService,
+
+        private achievements: AchievementsService
     ) {}
 
     async create(channel: Channel, user: User, role: Role): Promise<Member> {
@@ -141,6 +144,8 @@ export class MembersService {
         if (member) {
             return member
         }
+
+        await this.achievements.achieve(user.id, "channel_join")
 
         return this.create(channel, user, Role.GUEST)
     }
