@@ -29,13 +29,23 @@ function MatchComponent({ match }: { match: Match }) {
             <td>
                 <div className="d-flex align-items-center">
                     <UserAvatar userId={userOne.id} className="w-8 h-8 me-2" />
-                    {userOne.nickname}
+                    <Link
+                        to={`/users/${userOne.id}`}
+                        className="m-auto mx-3 fs-4 text-decoration-none"
+                    >
+                        {userOne.nickname}
+                    </Link>
                 </div>
             </td>
             <td>
                 <div className="d-flex align-items-center">
                     <UserAvatar userId={userTwo.id} className="w-8 h-8 me-2" />
-                    {userTwo.nickname}
+                    <Link
+                        to={`/users/${userTwo.id}`}
+                        className="m-auto mx-3 fs-4 text-decoration-none"
+                    >
+                        {userTwo.nickname}
+                    </Link>
                 </div>
             </td>
             <td>
@@ -85,7 +95,11 @@ export default function SectionMatches() {
         <section>
             <h2>Matches in progress</h2>
 
-            {loading ? <p>Loading...</p> : <Matches filter={({ state }) => state === "playing"} />}
+            {loading ? (
+                <p>Loading...</p>
+            ) : (
+                <Matches filter={({ state }) => state === "playing"} />
+            )}
         </section>
     )
 }
@@ -95,7 +109,11 @@ export function SectionWaitingMatches() {
     const loading = useMatchesLoading()
 
     function filter(match: Match): boolean {
-        return match.state === "waiting" && (match.playerOneId === auth.userId || match.playerTwoId === auth.userId)
+        return (
+            match.state === "waiting" &&
+            (match.playerOneId === auth.userId ||
+                match.playerTwoId === auth.userId)
+        )
     }
 
     return (

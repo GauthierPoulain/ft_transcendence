@@ -4,14 +4,16 @@ import { InjectRepository } from "@nestjs/typeorm"
 import { instanceToPlain } from "class-transformer"
 import { SocketsService } from "src/sockets/sockets.service"
 import { FindManyOptions, FindOneOptions, Repository } from "typeorm"
-import { Match } from "./match.entity"
+import { Match, MatchState } from "./match.entity"
 
 @Injectable()
 export class MatchesService {
     constructor(
         @InjectRepository(Match) private matches: Repository<Match>,
         private sockets: SocketsService
-    ) {}
+    ) {
+        matches.delete({ state: MatchState.PLAYING })
+    }
 
     async create(match: Match): Promise<Match> {
         match = await this.matches.save(match)

@@ -5,6 +5,7 @@ import { User, useUser } from "../../data/users"
 import { Match, useMatches } from "../../data/matches"
 import UserAvatar from "../user/UserAvatar"
 import { AuthState, useAuth } from "../../data/use-auth"
+import { Link } from "react-router-dom"
 
 interface Player {
     id: number
@@ -57,7 +58,12 @@ function LeaderBoardComponent({
             <td>{player.rank}</td>
             <td>
                 <UserAvatar userId={user.id} className="w-8 h-8 me-2" />
-                {user.nickname}
+                <Link
+                    to={`/users/${player.id}`}
+                    className="m-auto mx-3 fs-4 text-decoration-none"
+                >
+                    {user.nickname}
+                </Link>
             </td>
             <td>{player.victories}</td>
         </tr>
