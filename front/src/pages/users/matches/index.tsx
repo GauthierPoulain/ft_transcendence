@@ -1,4 +1,5 @@
 import { Container, Table } from "react-bootstrap"
+import { Link } from "react-router-dom"
 import { useParams } from "react-router-dom"
 import UserAvatar from "../../../components/user/UserAvatar"
 import { useMatches } from "../../../data/matches"
@@ -28,11 +29,25 @@ function GetRow({
         >
             <td>
                 <UserAvatar userId={userOponnent.id} className="w-8 h-8 me-2" />
-                {userOponnent.nickname}
+                <Link
+                    to={`/users/${userOponnent.id}`}
+                    className="m-auto mx-3 fs-4 text-decoration-none"
+                >
+                    {userOponnent.nickname}
+                </Link>
             </td>
             <td>
                 <UserAvatar userId={userWin.id} className="w-8 h-8 me-2" />
-                {userWin.nickname}
+                {userWin == userOponnent ? (
+                    <Link
+                        to={`/users/${userOponnent.id}`}
+                        className="m-auto mx-3 fs-4 text-decoration-none"
+                    >
+                        {userOponnent.nickname}
+                    </Link>
+                ) : (
+                    userWin.nickname
+                )}
             </td>
             <td>{scoreYou}</td>
             <td>{scoreOponnent}</td>
@@ -58,7 +73,7 @@ export default function Matches() {
                     </tr>
                 </thead>
                 <tbody>
-                    {matches.map((match) => {
+                    {matches.reverse().map((match) => {
                         if (
                             match.playerOneId !== user.id &&
                             match.playerTwoId !== user.id
