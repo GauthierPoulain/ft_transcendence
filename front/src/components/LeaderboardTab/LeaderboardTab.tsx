@@ -1,9 +1,10 @@
 import "./style.css"
 import React from "react"
 import { Table } from "react-bootstrap"
-import { useUser } from "../../data/users"
+import { User, useUser } from "../../data/users"
 import { Match, useMatches } from "../../data/matches"
 import UserAvatar from "../user/UserAvatar"
+import { AuthState, useAuth } from "../../data/use-auth"
 
 interface Player {
     id: number
@@ -42,11 +43,17 @@ function formatTable(matches: Match[]) {
     return final
 }
 
-function LeaderBoardComponent({ player }: { player: Player }) {
+function LeaderBoardComponent({
+    player,
+    className,
+}: {
+    player: Player
+    className: string
+}) {
     const user = useUser(player.id)!
 
     return (
-        <tr>
+        <tr className={className}>
             <td>{player.rank}</td>
             <td>
                 <UserAvatar userId={user.id} className="w-8 h-8 me-2" />
@@ -57,26 +64,40 @@ function LeaderBoardComponent({ player }: { player: Player }) {
     )
 }
 
-function LeaderboardTab() {
+function LeaderboardTabComponent(user: User | null) {
     const matches = useMatches()
     const players = formatTable(matches)
 
     return (
-            <Table striped bordered hover variant="dark">
-                <thead>
-                    <tr>
-                        <th>#rank</th>
-                        <th>Login</th>
-                        <th>Victories</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {players.map((player) => (
-                        <LeaderBoardComponent key={player.id} player={player} />
-                    ))}
-                </tbody>
-            </Table>
+        <Table striped bordered hover variant="dark">
+            <thead>
+                <tr>
+                    <th>#rank</th>
+                    <th>Login</th>
+                    <th>Victories</th>
+                </tr>
+            </thead>
+            <tbody>
+                {players.map((player) => (
+                    <LeaderBoardComponent
+                        key={player.id}
+                        player={player}
+                        className={
+                            player.id == user?.id ? "leaderBoardYou" : ""
+                        }
+                    />
+                ))}
+            </tbody>
+        </Table>
     )
 }
 
-export default LeaderboardTab
+function AuthComponent(auth: AuthState) {
+    const user = useUser(auth.userId!)!
+    return LeaderboardTabComponent(user)
+}
+
+export default function LeaderboardTab() {
+    const auth = useAuth()
+    return auth.connected ? AuthComponent(auth) : LeaderboardTabComponent(null)
+}

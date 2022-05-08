@@ -69,3 +69,24 @@ body,
 .cursor-pointer {
     cursor: pointer;
 }
+
+.MatchTableWin {
+    td {
+        box-shadow: none;
+        background-color: #30492b;
+    }
+}
+
+.MatchTableDefeat {
+    td {
+        box-shadow: none;
+        background-color: #3d2828;
+    }
+}
+
+.leaderBoardYou {
+    td {
+        box-shadow: none;
+        background-color: #575757;
+    }
+}

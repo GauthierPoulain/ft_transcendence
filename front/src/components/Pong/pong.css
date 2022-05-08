@@ -34,6 +34,7 @@
     top: 10%;
     left: calc(50%);
     transform: translateX(-50%);
+    text-shadow: black 0 0 5px;
     text-align: center;
     font-size: xx-large;
     display: flex;
@@ -115,12 +116,6 @@
     font-size: xx-large;
     transform: translateY(-50%) scaleY(0);
     padding: 2rem;
-}
-
-#userIdentity {
-    position: absolute;
-    left: calc(50%);
-    transform: translateX(-50%);
 }
 
 #endGameContainer {

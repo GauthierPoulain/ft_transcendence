@@ -49,11 +49,6 @@ function GameComponent(user: User | null, gameId: number) {
         <React.Fragment>
             <div id="gameContainer" ref={gameContainer}>
                 <div id="gameHud">
-                    {user ? (
-                        <span id="userIdentity">Welcome {user.nickname}</span>
-                    ) : (
-                        <span id="userIdentity">Welcome guest</span>
-                    )}
                     <div className="identity" id="one">
                         <span className="name"></span>
                         <span className="score"></span>

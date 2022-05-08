@@ -960,16 +960,14 @@ export default class Game {
         this._gameContainer.querySelector(
             "#gameHud .identity#one .name"
         )!.textContent =
-            this._currentData.players.one.name +
-            (this._whoAmI === "one" ? " (you)" : "")
+            this._whoAmI === "one" ? "you" : this._currentData.players.one.name
         this._gameContainer.querySelector(
             "#gameHud .identity#one .score"
         )!.textContent = String(this._currentData.players.one.score)
         this._gameContainer.querySelector(
             "#gameHud .identity#two .name"
         )!.textContent =
-            this._currentData.players.two.name +
-            (this._whoAmI === "two" ? " (you)" : "")
+            this._whoAmI === "two" ? "you" : this._currentData.players.two.name
         this._gameContainer.querySelector(
             "#gameHud .identity#two .score"
         )!.textContent = String(this._currentData.players.two.score)

@@ -21,7 +21,11 @@ function GetRow({
     const userWin = useUser(winner)!
 
     return (
-        <tr>
+        <tr
+            className={
+                userWin == userOponnent ? "MatchTableDefeat" : "MatchTableWin"
+            }
+        >
             <td>
                 <UserAvatar userId={userOponnent.id} className="w-8 h-8 me-2" />
                 {userOponnent.nickname}
