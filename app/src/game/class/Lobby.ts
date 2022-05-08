@@ -49,6 +49,7 @@ export default class Lobby {
     _player_one: WebSocket
     _player_two: WebSocket
     _spectators: WebSocket[]
+    _puProb: number
 
     _engine: Iengine
     _lastHit: Player
@@ -64,8 +65,8 @@ export default class Lobby {
     }
 
     _gameRules = {
-        maxPoints: 1,
-        enablePowerUp: false,
+        maxPoints: 5,
+        enablePowerUp: true,
     }
 
     _roundRunning = false
@@ -109,6 +110,7 @@ export default class Lobby {
         this._id = id
         this._player_one = player_one
         this._player_two = player_two
+        this._puProb = 0
         this.unregister = unregister
         this.changeState = changeState
         this.changeScore = changeScore
@@ -228,20 +230,20 @@ export default class Lobby {
 
     startRound() {
         this._roundRunning = true
-        this._currentData.quoit.speed.z = 10
+
+        const p1s = this._currentData.players.one.score
+        const p2s = this._currentData.players.two.score
+
+        let dir = 0
+        if (p1s === 0 && p2s === 0) dir = Math.random() > 0.5 ? -1 : 1
+        else {
+            if (this._lastHit == this._currentData.players.one) dir = -1
+            else dir = 1
+        }
+
+        this._currentData.quoit.speed.z = dir * 10
+
         this.broadcast("game:startRound")
-        this._engine.powerUp.set(
-            1,
-            new PowerUp({
-                ctx: this._engine,
-                lobbyCtx: this,
-                id: 1,
-                type: PowerUpTypes.BIGBAR,
-                x: 3,
-                z: 0,
-                r: 1,
-            })
-        )
     }
 
     checkVictory() {
@@ -272,8 +274,8 @@ export default class Lobby {
             this._currentData.players.one.score,
             this._currentData.players.two.score
         )
-        this.resetRound()
         this.stopRound()
+        this.resetRound()
         this.updateHUD()
         if (this.checkVictory()) {
             this.playerWin(player)
@@ -309,6 +311,40 @@ export default class Lobby {
 
     simulate() {
         if (!this._simData.running) return
+
+        if (this._gameRules.enablePowerUp && this._roundRunning) {
+            this._puProb++
+            let rand = Math.round(Math.random() * 500000)
+            let spawn = rand < this._puProb
+            if (spawn) {
+                this._puProb = 0
+                let lastID = 0
+                this._engine.powerUp.forEach((pu) => {
+                    if (pu._id > lastID) lastID = pu._id
+                })
+                lastID++
+
+                const posX = Math.random() * 12 - 6
+                const posZ = Math.random() * 12 - 6
+
+                const values = Object.values(PowerUpTypes)
+                const type = values[Math.floor(Math.random() * values.length)]
+
+                this._engine.powerUp.set(
+                    lastID,
+                    new PowerUp({
+                        ctx: this._engine,
+                        lobbyCtx: this,
+                        id: lastID,
+                        type: type,
+                        x: posX,
+                        z: posZ,
+                        r: 1,
+                    })
+                )
+            }
+        }
+
         try {
             const delta = (Date.now() - this._simData.last) / 1000
             this.syncMeshs()

@@ -4,30 +4,30 @@ import { Iengine } from "./Interface"
 import Lobby, { collisionBoxBox } from "./Lobby"
 
 const PowerUpTypes = {
-    DEFAULT: {
-        name: "DEFAULT",
-        effect: (ctx: PowerUp) => {
-            console.log(`template triggered by ${ctx._sender}`)
-        },
-        reset: (ctx: PowerUp) => {
-            console.log(`template reset`)
-        },
-        initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => {
-            const geo = new THREE.DodecahedronBufferGeometry(r)
-            const mat = new THREE.MeshPhongMaterial({
-                color: 0xffffff,
-            })
-            let mesh = new THREE.Mesh(geo, mat)
-            mesh.castShadow = true
-            mesh.position.set(x, 0.3, z)
-            ctx._ctx.scene.add(mesh)
-            return mesh
-        },
-        animation: (ctx: PowerUp, delta: number) => {
-            ctx._mesh.rotation.y += 3 * delta
-        },
-        time: 3000,
-    },
+    // DEFAULT: {
+    //     name: "DEFAULT",
+    //     effect: (ctx: PowerUp) => {
+    //         console.log(`template triggered by ${ctx._sender}`)
+    //     },
+    //     reset: (ctx: PowerUp) => {
+    //         console.log(`template reset`)
+    //     },
+    //     initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => {
+    //         const geo = new THREE.DodecahedronBufferGeometry(r)
+    //         const mat = new THREE.MeshPhongMaterial({
+    //             color: 0xffffff,
+    //         })
+    //         let mesh = new THREE.Mesh(geo, mat)
+    //         mesh.castShadow = true
+    //         mesh.position.set(x, 0.3, z)
+    //         ctx._ctx.scene.add(mesh)
+    //         return mesh
+    //     },
+    //     animation: (ctx: PowerUp, delta: number) => {
+    //         ctx._mesh.rotation.y += 3 * delta
+    //     },
+    //     time: 3000,
+    // },
     BIGBAR: {
         name: "BIGBAR",
         effect: (ctx: PowerUp) => {
@@ -139,6 +139,34 @@ const PowerUpTypes = {
             ctx._mesh.rotation.y -= 3 * delta
         },
         time: 7000,
+    },
+    SPEED: {
+        name: "SPEED",
+        effect: (ctx: PowerUp) => {
+            console.log(`template triggered by ${ctx._sender}`)
+
+            ctx._lobbyCtx._currentData.quoit.speed.z =
+                ctx._lobbyCtx._currentData.quoit.speed.z > 0 ? 20 : -20
+        },
+        reset: (ctx: PowerUp) => {
+            ctx._lobbyCtx._currentData.quoit.speed.z =
+                ctx._lobbyCtx._currentData.quoit.speed.z > 0 ? 10 : -10
+        },
+        initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => {
+            const geo = new THREE.DodecahedronBufferGeometry(r)
+            const mat = new THREE.MeshPhongMaterial({
+                color: 0xff0000,
+            })
+            let mesh = new THREE.Mesh(geo, mat)
+            mesh.castShadow = true
+            mesh.position.set(x, 0.3, z)
+            ctx._ctx.scene.add(mesh)
+            return mesh
+        },
+        animation: (ctx: PowerUp, delta: number) => {
+            ctx._mesh.rotation.y -= 3 * delta
+        },
+        time: 5000,
     },
     // SPEED = "speed",
     // SMALL = "small",

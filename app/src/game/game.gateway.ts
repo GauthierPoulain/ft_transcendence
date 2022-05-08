@@ -42,7 +42,8 @@ export class GameGateway {
         @ConnectedSocket() socket: WebSocket,
         @MessageBody() data: any
     ) {
-        const lobby = this.game.lobbyBySocket(socket) || this.game.lobbyBySpec(socket)
+        const lobby =
+            this.game.lobbyBySocket(socket) || this.game.lobbyBySpec(socket)
 
         if (lobby) {
             lobby.sendPowerup(socket, data.id)
@@ -59,9 +60,7 @@ export class GameGateway {
         @ConnectedSocket() socket: WebSocket,
         @MessageBody() body: { gameId: number }
     ) {
-        console.log(body)
         const lobby = this.game.lobbyById(body.gameId)
-
         if (lobby) {
             if (lobby._player_one !== socket && lobby._player_two !== socket)
                 lobby.joinSpec(socket)
