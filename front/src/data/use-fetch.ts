@@ -91,8 +91,9 @@ export function useSubmit<Request, Response>(
     }
 
     useEffect(
-        () => () => {
-            setActive(false)
+        () => {
+            setActive(true)
+            return () => setActive(false)
         },
         []
     )

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { Form } from "react-bootstrap"
 import { useChannel } from "../../../data/channels"
 import { useMembers } from "../../../data/members"
+import { useMutateSendMessage } from "../../../data/messages"
 import { useRelations } from "../../../data/relations"
 import { useAuth } from "../../../data/use-auth"
 import { fetcherPost, useSubmit } from "../../../data/use-fetch"
@@ -30,12 +31,7 @@ export default function MessageInput({ channelId }) {
     const [content, setContent] = useState("")
     const canSend = useCanSendMessage(channelId)
     const inputElement = useRef<HTMLInputElement>(null)
-
-    // Message sending hook.
-    const { submit, isError, isLoading } = useSubmit(
-        ({ channelId, content }: { channelId: number; content: string }) =>
-            fetcherPost(`/channels/${channelId}/messages`, { content })
-    )
+    const { submit, isError, isLoading } = useMutateSendMessage()
 
     async function onSubmit(event: any) {
         event.preventDefault()

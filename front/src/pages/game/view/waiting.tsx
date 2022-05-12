@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import { Button, Container } from "react-bootstrap"
+import { useMutateDirectChannel } from "../../../data/channels"
 import { useMatch } from "../../../data/matches"
+import { useMutateSendMessage } from "../../../data/messages"
 import { useAuth } from "../../../data/use-auth"
 import { useWebSocket } from "../../../data/use-websocket"
 import { useUser } from "../../../data/users"
@@ -42,6 +44,26 @@ function ReadyButton({ matchId }) {
     return <Button onClick={() => setReady(true)}>Ready</Button>
 }
 
+function MessageButton({ matchId, targetUserId }) {
+    const mutateDirect = useMutateDirectChannel()
+    const mutateMessage = useMutateSendMessage()
+    const loading = mutateDirect.isLoading || mutateMessage.isLoading
+
+    async function sendMessage() {
+        const channel = await mutateDirect.submit(targetUserId)
+        
+        await mutateMessage.submit({ channelId: channel.id, content: `#game:${matchId}#` })
+    }
+
+    console.log(mutateDirect.isLoading, mutateMessage.isLoading, loading)
+
+    return (
+        <Button disabled={loading} onClick={sendMessage}>
+            { loading ? "Sending..." : "Send message to opponent" }
+        </Button>
+    )
+}
+
 export default function GameViewWaiting({ matchId }) {
     const auth = useAuth()
     const match = useMatch(matchId)!
@@ -58,7 +80,10 @@ export default function GameViewWaiting({ matchId }) {
 
             {auth.connected &&
                 [playerOne.id, playerTwo.id].includes(auth.userId) && (
-                    <ReadyButton matchId={match.id} />
+                    <div className="d-flex gap-2">
+                        <ReadyButton matchId={match.id} />
+                        <MessageButton matchId={match.id} targetUserId={playerOne.id === auth.userId ? playerTwo.id : playerOne.id} />
+                    </div>
                 )}
         </Container>
     )

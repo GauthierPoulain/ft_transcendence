@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { fetcher } from "./use-fetch"
+import { fetcher, fetcherPost, useSubmit } from "./use-fetch"
 import { createRepository } from "./repository"
 import { createService } from "./service"
 
@@ -41,4 +41,10 @@ export function useMessages(): Message[] {
 
 export function useMessagesLoading(): boolean {
     return useContext(service.Context).loading
+}
+
+export function useMutateSendMessage() {
+    return useSubmit(({ channelId, content }: { channelId: number; content: string }) =>
+        fetcherPost(`/channels/${channelId}/messages`, { content })
+    )
 }
