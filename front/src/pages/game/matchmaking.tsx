@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { Container } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
 import { useWebSocket } from "../../data/use-websocket"
 
@@ -26,9 +27,11 @@ export default function Matchmaking() {
         }
     }, [])
 
-    if (error) {
-        return <p>Already subscribed to matchmaking on another window</p>
-    }
+    return (
+        <Container className="mt-3">
+            <h2>Matchmaking</h2>
 
-    return <p>Waiting for another player!</p>
+            <p>{ error ? "You're already subscribed to a matchmaking on another window" : "Waiting another player to start a match! You can go back to the home page to stop waiting." }</p>
+        </Container>
+    )
 }
