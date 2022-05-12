@@ -96,6 +96,7 @@ export default class Lobby {
     private unregister: (lobby: Lobby) => void
     private changeState: (state: MatchState) => void
     private changeScore: (pOne: number, pTwo: number) => void
+    private onGameWon: (winner: number) => void
 
     constructor(
         id: number,
@@ -105,7 +106,8 @@ export default class Lobby {
         pTwoName: string,
         unregister: (lobby: Lobby) => void,
         changeState: (state: MatchState) => void,
-        changeScore: (pOne: number, pTwo: number) => void
+        changeScore: (pOne: number, pTwo: number) => void,
+        onGameWon: (winner: number) => void
     ) {
         this._id = id
         this._player_one = player_one
@@ -115,6 +117,7 @@ export default class Lobby {
         this.changeState = changeState
         this.changeScore = changeScore
         this._spectators = new Array<WebSocket>()
+        this.onGameWon = onGameWon
         this._currentData = {
             players: {
                 one: new Player(1, pOneName, 0xffffff, "player1"),
@@ -266,6 +269,7 @@ export default class Lobby {
                 ? MatchState.PLAYER_ONE_WON
                 : MatchState.PLAYER_TWO_WON
         )
+        this.onGameWon(player.id)
     }
 
     playerScore(player: Player) {

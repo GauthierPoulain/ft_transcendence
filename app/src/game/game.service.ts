@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { Match, MatchState } from "src/matches/match.entity"
 import { MatchesService } from "src/matches/matches.service"
+import { AchievementsService } from "src/users/achievements.service"
 import { User } from "src/users/entities/user.entity"
 import { UsersService } from "src/users/users.service"
 import { WebSocket } from "ws"
@@ -16,7 +17,8 @@ export class GameService {
 
     constructor(
         private readonly users: UsersService,
-        private matches: MatchesService
+        private matches: MatchesService,
+        private achievements: AchievementsService
     ) {}
 
     async open(one: WebSocket, two: WebSocket, match: Match) {
@@ -37,7 +39,8 @@ export class GameService {
             this.playerTwoInfos.nickname,
             this.close.bind(this),
             this.updateEntityState.bind(this),
-            this.updateScore.bind(this)
+            this.updateScore.bind(this),
+            this.onGameWin.bind(this)
         )
         this.lobbies.add(lobby)
         this.players.set(one, lobby)
@@ -67,6 +70,10 @@ export class GameService {
         this.matchEntity.scorePOne = pOne
         this.matchEntity.scorePTwo = pTwo
         this.matchEntity = await this.matches.update(this.matchEntity)
+    }
+
+    async onGameWin(winner: number) {
+        await this.achievements.achieve(winner, "win_one_match")
     }
 
     lobbyBySocket(socket: WebSocket) {

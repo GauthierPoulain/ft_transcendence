@@ -11,7 +11,7 @@ export class AchievementsService {
     async achieve(userId: number, achievement: keyof Achievements) {
         const user = await this.users.find(userId)
 
-        if (!user.achievements[achievement]) {
+        if (user && !user.achievements[achievement]) {
             user.achievements[achievement] = true
             await this.users.update(user)
         }
