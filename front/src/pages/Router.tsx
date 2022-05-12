@@ -47,7 +47,7 @@ export default function Router() {
             <Route path="/" element={<Layout />}>
                 <Route index element={<Home />} />
                 <Route path="game" element={<GameLayout />}>
-                    <Route path="matchmaking" element={<Matchmaking />} />
+                    <Route path="matchmaking" element={<PrivateRoute><Matchmaking /></PrivateRoute>} />
                     <Route path=":gameId" element={<GameView />} />
                 </Route>
                 <Route
