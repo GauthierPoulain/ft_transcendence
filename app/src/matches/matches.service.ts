@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common"
+import { Injectable, OnModuleInit } from "@nestjs/common"
 import { OnEvent } from "@nestjs/event-emitter"
 import { InjectRepository } from "@nestjs/typeorm"
 import { instanceToPlain } from "class-transformer"
@@ -7,12 +7,14 @@ import { FindManyOptions, FindOneOptions, Repository } from "typeorm"
 import { Match, MatchState } from "./match.entity"
 
 @Injectable()
-export class MatchesService {
+export class MatchesService implements OnModuleInit {
     constructor(
         @InjectRepository(Match) private matches: Repository<Match>,
         private sockets: SocketsService
-    ) {
-        matches.delete({ state: MatchState.PLAYING })
+    ) {}
+
+    async onModuleInit() {
+        await this.matches.update({ state: MatchState.PLAYING }, { state: MatchState.WAITING })
     }
 
     async create(match: Match): Promise<Match> {
