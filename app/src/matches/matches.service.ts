@@ -14,7 +14,12 @@ export class MatchesService implements OnModuleInit {
     ) {}
 
     async onModuleInit() {
-        await this.matches.update({ state: MatchState.PLAYING }, { state: MatchState.WAITING })
+        // Delete matchmaking games
+        await this.matches.delete({ state: MatchState.PLAYING, matchmaking: true })
+
+        // Set other games as waiting and reset their score.
+        // TODO: Do not reset score needs some change inside the game lobby class.
+        await this.matches.update({ state: MatchState.PLAYING }, { state: MatchState.WAITING, scorePOne: 0, scorePTwo: 0 })
     }
 
     async create(match: Match): Promise<Match> {

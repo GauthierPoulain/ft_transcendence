@@ -36,7 +36,7 @@ function ReadyButton({ matchId }) {
     }
 
     if (ready) {
-        return <Button disabled>Waiting...</Button>
+        return <Button onClick={() => setReady(false)}>Unready</Button>
     }
 
     return <Button onClick={() => setReady(true)}>Ready</Button>
