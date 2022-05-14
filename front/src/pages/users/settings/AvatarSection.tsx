@@ -53,7 +53,9 @@ export default function AvatarSection() {
                             setFile(event.target.files[0])
                         }
                     />
-                    { error && <Form.Text className="text-danger">{ error }</Form.Text> }
+                    {error && (
+                        <Form.Text className="text-danger">{error}</Form.Text>
+                    )}
                 </Form.Group>
 
                 <Button

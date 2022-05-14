@@ -31,10 +31,10 @@ export const fetcher = async (
     })
 
     if (!response.ok) {
-        let error: HttpError;
+        let error: HttpError
 
         try {
-            const body = await response.json();
+            const body = await response.json()
             error = new HttpError(response.status, body.message)
         } catch {
             // If for example, the body is not json

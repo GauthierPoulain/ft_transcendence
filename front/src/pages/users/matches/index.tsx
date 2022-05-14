@@ -25,7 +25,7 @@ function GetRow({
     return (
         <tr
             className={
-                userWin == userOponnent ? "MatchTableDefeat" : "MatchTableWin"
+                userWin === userOponnent ? "MatchTableDefeat" : "MatchTableWin"
             }
         >
             <td>
@@ -39,7 +39,7 @@ function GetRow({
             </td>
             <td>
                 <UserAvatar userId={userWin.id} className="w-8 h-8 me-2" />
-                {userWin == userOponnent ? (
+                {userWin === userOponnent ? (
                     <Link
                         to={`/users/${userOponnent.id}`}
                         className="m-auto mx-3 fs-4 text-decoration-none"

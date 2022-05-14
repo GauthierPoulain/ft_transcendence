@@ -113,16 +113,24 @@ export class SettingsController {
             }),
 
             fileFilter(_req, file, cb) {
-                if (file.size > (2 * 1024 * 1024)) {
-                    return cb(new PayloadTooLargeException("The file is too big"), false);
+                if (file.size > 2 * 1024 * 1024) {
+                    return cb(
+                        new PayloadTooLargeException("The file is too big"),
+                        false
+                    )
                 }
 
                 if (!MIME_TYPE_MAP[file.mimetype]) {
-                    return cb(new BadRequestException("This type of file is not allowed for an avatar"), false);
+                    return cb(
+                        new BadRequestException(
+                            "This type of file is not allowed for an avatar"
+                        ),
+                        false
+                    )
                 }
 
-                return cb(null, true);
-            }
+                return cb(null, true)
+            },
         })
     )
     async uploadAvatar(

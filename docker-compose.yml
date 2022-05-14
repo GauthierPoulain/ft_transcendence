@@ -1,20 +1,15 @@
-# Use postgres/postgres user/password credentials
 version: '3.4'
 
 services:
   db:
     image: postgres:latest
     restart: always
-    # REMOVE PORTS FOR PROD
-    ports:
-      - 5432:5432
     environment:
       - POSTGRES_DB=ft_transcendance
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./db:/docker-entrypoint-initdb.d/
 
   adminer:
     image: adminer:latest
@@ -30,7 +25,6 @@ services:
       - avatars:/usr/share/nginx/avatars
     ports:
       - 80:80
-      - 443:443
 
   app:
     build:

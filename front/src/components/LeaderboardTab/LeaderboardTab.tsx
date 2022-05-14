@@ -89,7 +89,7 @@ function LeaderboardTabComponent(user: User | null) {
                         key={player.id}
                         player={player}
                         className={
-                            player.id == user?.id ? "leaderBoardYou" : ""
+                            player.id === user?.id ? "leaderBoardYou" : ""
                         }
                     />
                 ))}

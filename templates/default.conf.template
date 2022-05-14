@@ -19,10 +19,8 @@ server {
         proxy_set_header Connection "";
         proxy_pass http://app:3005/api/;
     }
-  
 
     location /avatars/ {
-        autoindex on;
         alias /usr/share/nginx/avatars/;
     }
 

@@ -1,5 +1,21 @@
-import * as THREE from "three"
 import Stats from "stats.js"
+import {
+    AmbientLight,
+    BoxGeometry,
+    Clock,
+    CylinderGeometry,
+    DodecahedronBufferGeometry,
+    Mesh,
+    MeshPhongMaterial,
+    PCFSoftShadowMap,
+    PerspectiveCamera,
+    PointLight,
+    REVISION,
+    Scene,
+    Sphere,
+    sRGBEncoding,
+    WebGLRenderer,
+} from "three"
 
 class Player {
     name: string
@@ -20,27 +36,22 @@ class Player {
     }
 }
 
-function collisionBoxCyl(box: THREE.Mesh, cyl: THREE.Mesh, cylR: number) {
+function collisionBoxCyl(box: Mesh, cyl: Mesh, cylR: number) {
     box.geometry.computeBoundingBox()
     box.updateMatrixWorld()
     const Cbox = box.geometry.boundingBox?.clone()
     Cbox?.applyMatrix4(box.matrixWorld)
-    const Csphere = new THREE.Sphere(cyl.position, cylR)
+    const Csphere = new Sphere(cyl.position, cylR)
     return Cbox?.intersectsSphere(Csphere)
 }
 
-function collisionCylCyl(
-    cyl1: THREE.Mesh,
-    cyl1R: number,
-    cyl2: THREE.Mesh,
-    cyl2R: number
-) {
-    const Csp1 = new THREE.Sphere(cyl1.position, cyl1R)
-    const Csp2 = new THREE.Sphere(cyl2.position, cyl2R)
+function collisionCylCyl(cyl1: Mesh, cyl1R: number, cyl2: Mesh, cyl2R: number) {
+    const Csp1 = new Sphere(cyl1.position, cyl1R)
+    const Csp2 = new Sphere(cyl2.position, cyl2R)
     return Csp1.intersectsSphere(Csp2)
 }
 
-function collisionBoxBox(box1: THREE.Mesh, box2: THREE.Mesh) {
+function collisionBoxBox(box1: Mesh, box2: Mesh) {
     box1.geometry.computeBoundingBox()
     box1.updateMatrixWorld()
     box2.geometry.computeBoundingBox()
@@ -63,11 +74,11 @@ const PowerUpTypes = {
     //         console.log(`template reset`)
     //     },
     //     initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => {
-    //         const geo = new THREE.DodecahedronBufferGeometry(r)
-    //         const mat = new THREE.MeshPhongMaterial({
+    //         const geo = new DodecahedronBufferGeometry(r)
+    //         const mat = new MeshPhongMaterial({
     //             color: 0xffffff,
     //         })
-    //         let mesh = new THREE.Mesh(geo, mat)
+    //         let mesh = new Mesh(geo, mat)
     //         mesh.castShadow = true
     //         mesh.position.set(x, 0.3, z)
     //         ctx._ctx.scene.add(mesh)
@@ -89,11 +100,11 @@ const PowerUpTypes = {
             ctx._sender!.width = 3
         },
         initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => {
-            const geo = new THREE.DodecahedronBufferGeometry(r)
-            const mat = new THREE.MeshPhongMaterial({
+            const geo = new DodecahedronBufferGeometry(r)
+            const mat = new MeshPhongMaterial({
                 color: 0x00ffff,
             })
-            let mesh = new THREE.Mesh(geo, mat)
+            let mesh = new Mesh(geo, mat)
             mesh.castShadow = true
             mesh.position.set(x, 0.3, z)
             ctx._ctx.scene.add(mesh)
@@ -123,11 +134,11 @@ const PowerUpTypes = {
             }
         },
         initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => {
-            const geo = new THREE.DodecahedronBufferGeometry(r)
-            const mat = new THREE.MeshPhongMaterial({
+            const geo = new DodecahedronBufferGeometry(r)
+            const mat = new MeshPhongMaterial({
                 color: 0x00ff00,
             })
-            let mesh = new THREE.Mesh(geo, mat)
+            let mesh = new Mesh(geo, mat)
             mesh.castShadow = true
             mesh.position.set(x, 0.3, z)
             ctx._ctx.scene.add(mesh)
@@ -151,11 +162,11 @@ const PowerUpTypes = {
                 ctx._lobbyCtx._currentData.quoit.speed.z > 0 ? 10 : -10
         },
         initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => {
-            const geo = new THREE.DodecahedronBufferGeometry(r)
-            const mat = new THREE.MeshPhongMaterial({
+            const geo = new DodecahedronBufferGeometry(r)
+            const mat = new MeshPhongMaterial({
                 color: 0xff0000,
             })
-            let mesh = new THREE.Mesh(geo, mat)
+            let mesh = new Mesh(geo, mat)
             mesh.castShadow = true
             mesh.position.set(x, 0.3, z)
             ctx._ctx.scene.add(mesh)
@@ -183,7 +194,7 @@ class PowerUp {
         name: string
         effect: (ctx: PowerUp) => void
         reset: (ctx: PowerUp) => void
-        initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => THREE.Mesh
+        initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => Mesh
         animation: (ctx: PowerUp, delta: number) => void
         time: number
     }
@@ -193,7 +204,7 @@ class PowerUp {
     _animation: (delta: number) => void
     _sender: Player | null = null
     _notsender: Player | null = null
-    _mesh: THREE.Mesh
+    _mesh: Mesh
     _ctx: Iengine
     _radius: number = 0
     _actionTimeout: any | undefined = undefined
@@ -236,12 +247,7 @@ class PowerUp {
             name: string
             effect: (ctx: PowerUp) => void
             reset: (ctx: PowerUp) => void
-            initMesh: (
-                ctx: PowerUp,
-                x: number,
-                z: number,
-                r?: number
-            ) => THREE.Mesh
+            initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => Mesh
             animation: (ctx: PowerUp, delta: number) => void
             time: number
         }
@@ -281,7 +287,7 @@ class PowerUp {
         this._animation(delta)
     }
 
-    collisionCheck(quoitMesh: THREE.Mesh, quoitRadius: number) {
+    collisionCheck(quoitMesh: Mesh, quoitRadius: number) {
         return collisionCylCyl(this._mesh, this._radius, quoitMesh, quoitRadius)
     }
 
@@ -337,14 +343,13 @@ function compareArrays(a1: Array<any>, a2: Array<any>): boolean {
 }
 
 interface Iengine {
-    scene: THREE.Scene
-    renderer: THREE.WebGLRenderer
-    camera: THREE.PerspectiveCamera
+    scene: Scene
+    renderer: WebGLRenderer
+    camera: PerspectiveCamera
     objects: Map<string, any>
     powerUp: Map<number, PowerUp>
-    clock: THREE.Clock
+    clock: Clock
     animationFrame: number
-    animationActions: Map<string, THREE.AnimationAction>
     stats: Stats | null
 }
 
@@ -417,12 +422,12 @@ export default class Game {
         this._lastTime = Date.now()
 
         this._engine = {
-            scene: new THREE.Scene(),
-            renderer: new THREE.WebGLRenderer({
+            scene: new Scene(),
+            renderer: new WebGLRenderer({
                 antialias: this._graphicConfig.antiAliasing,
                 powerPreference: "high-performance",
             }),
-            camera: new THREE.PerspectiveCamera(
+            camera: new PerspectiveCamera(
                 50,
                 this._size.x / this._size.y,
                 0.1,
@@ -430,9 +435,8 @@ export default class Game {
             ),
             objects: new Map<string, any>(),
             powerUp: new Map<number, PowerUp>(),
-            clock: new THREE.Clock(),
+            clock: new Clock(),
             animationFrame: 0,
-            animationActions: new Map<string, THREE.AnimationAction>(),
             stats: this._graphicConfig.performanceMonitor ? new Stats() : null,
         }
 
@@ -466,7 +470,6 @@ export default class Game {
         this.initScene()
         this.syncSimulation()
         this.updateHUD()
-        this.registerAnimations()
         this.initKeyControl()
         this.render()
         this.startSimulation()
@@ -503,9 +506,9 @@ export default class Game {
     }
 
     syncMeshs() {
-        const quoit = this._engine.objects.get("quoit") as THREE.Mesh
-        const player1 = this._engine.objects.get("player1") as THREE.Mesh
-        const player2 = this._engine.objects.get("player2") as THREE.Mesh
+        const quoit = this._engine.objects.get("quoit") as Mesh
+        const player1 = this._engine.objects.get("player1") as Mesh
+        const player2 = this._engine.objects.get("player2") as Mesh
 
         quoit.position.x = this._currentData.quoit.x
         quoit.position.z = this._currentData.quoit.z
@@ -539,16 +542,16 @@ export default class Game {
         try {
             const delta = (Date.now() - this._simData.last) / 1000
             this.syncMeshs()
-            const quoit = this._engine.objects.get("quoit") as THREE.Mesh
-            const wallP = this._engine.objects.get("map_border1") as THREE.Mesh
-            const wallN = this._engine.objects.get("map_border2") as THREE.Mesh
-            const player1 = this._engine.objects.get("player1") as THREE.Mesh
-            const player2 = this._engine.objects.get("player2") as THREE.Mesh
+            const quoit = this._engine.objects.get("quoit") as Mesh
+            const wallP = this._engine.objects.get("map_border1") as Mesh
+            const wallN = this._engine.objects.get("map_border2") as Mesh
+            const player1 = this._engine.objects.get("player1") as Mesh
+            const player2 = this._engine.objects.get("player2") as Mesh
 
             if (this._whoAmI === "one" || this._whoAmI === "two") {
                 const player = this._engine.objects.get(
                     this._currentData.players[this._whoAmI!].meshName
-                ) as THREE.Mesh
+                ) as Mesh
 
                 if (
                     this._roundRunning &&
@@ -636,9 +639,6 @@ export default class Game {
     }
 
     animate(delta: number) {
-        this._engine.animationActions.forEach((action) => {
-            action.getMixer().update(delta)
-        })
         this._engine.powerUp.forEach((pu) => {
             pu.animate(delta)
         })
@@ -664,23 +664,23 @@ export default class Game {
         this._engine.camera.position.set(15, 20, 0)
         this._engine.camera.lookAt(0, 0, 0)
         {
-            const light = new THREE.AmbientLight(0xffffff, 0.3)
+            const light = new AmbientLight(0xffffff, 0.3)
             this.addObj("ambientLight", light)
         }
         {
-            const light = new THREE.PointLight(0xffffff, 1, 40)
+            const light = new PointLight(0xffffff, 1, 40)
             light.position.set(12, 6, 0)
             light.castShadow = this._graphicConfig.shadows
             this.addObj("light", light)
         }
         {
-            const geo = new THREE.BoxGeometry(
+            const geo = new BoxGeometry(
                 this._map.width,
                 this._map.height,
                 this._map.depth / 2 - this._map.separator.depth / 2
             )
-            const mat = new THREE.MeshPhongMaterial({ color: this._map.color })
-            const obj = new THREE.Mesh(geo, mat)
+            const mat = new MeshPhongMaterial({ color: this._map.color })
+            const obj = new Mesh(geo, mat)
             obj.position.set(
                 0,
                 -(this._map.height / 2),
@@ -691,13 +691,13 @@ export default class Game {
             this.addObj("mapPannel_player1", obj)
         }
         {
-            const geo = new THREE.BoxGeometry(
+            const geo = new BoxGeometry(
                 this._map.width,
                 this._map.height,
                 this._map.depth / 2 - this._map.separator.depth / 2
             )
-            const mat = new THREE.MeshPhongMaterial({ color: this._map.color })
-            const obj = new THREE.Mesh(geo, mat)
+            const mat = new MeshPhongMaterial({ color: this._map.color })
+            const obj = new Mesh(geo, mat)
             obj.position.set(
                 0,
                 -(this._map.height / 2),
@@ -710,29 +710,29 @@ export default class Game {
             this.addObj("mapPannel_player2", obj)
         }
         {
-            const geo = new THREE.BoxGeometry(
+            const geo = new BoxGeometry(
                 this._map.width,
                 this._map.height,
                 this._map.separator.depth
             )
-            const mat = new THREE.MeshPhongMaterial({
+            const mat = new MeshPhongMaterial({
                 color: this._map.separator.color,
             })
-            const obj = new THREE.Mesh(geo, mat)
+            const obj = new Mesh(geo, mat)
             obj.position.set(0, -(this._map.height / 2), 0)
             obj.receiveShadow = true
             this.addObj("map_separator", obj)
         }
         {
-            const geo = new THREE.BoxGeometry(
+            const geo = new BoxGeometry(
                 this._map.borders.width,
                 this._map.borders.height,
                 this._map.depth
             )
-            const mat = new THREE.MeshPhongMaterial({
+            const mat = new MeshPhongMaterial({
                 color: this._map.borders.color,
             })
-            const obj = new THREE.Mesh(geo, mat)
+            const obj = new Mesh(geo, mat)
             obj.position.set(
                 this._map.width / 2 + this._map.borders.width / 2,
                 this._map.borders.height / 2 - this._map.height,
@@ -743,15 +743,15 @@ export default class Game {
             this.addObj("map_border1", obj)
         }
         {
-            const geo = new THREE.BoxGeometry(
+            const geo = new BoxGeometry(
                 this._map.borders.width,
                 this._map.borders.height,
                 this._map.depth
             )
-            const mat = new THREE.MeshPhongMaterial({
+            const mat = new MeshPhongMaterial({
                 color: this._map.borders.color,
             })
-            const obj = new THREE.Mesh(geo, mat)
+            const obj = new Mesh(geo, mat)
             obj.position.set(
                 -(this._map.width / 2 + this._map.borders.width / 2),
                 this._map.borders.height / 2 - this._map.height,
@@ -763,101 +763,40 @@ export default class Game {
         }
         {
             let player = this._currentData.players.one
-            const geo = new THREE.BoxGeometry(1, 0.3, 0.4)
-            const mat = new THREE.MeshPhongMaterial({ color: player.color })
-            const obj = new THREE.Mesh(geo, mat)
+            const geo = new BoxGeometry(1, 0.3, 0.4)
+            const mat = new MeshPhongMaterial({ color: player.color })
+            const obj = new Mesh(geo, mat)
             obj.position.set(0, 0.3, 11.5)
             obj.castShadow = true
             this.addObj("player1", obj)
         }
         {
             let player = this._currentData.players.two
-            const geo = new THREE.BoxGeometry(1, 0.3, 0.4)
-            const mat = new THREE.MeshPhongMaterial({ color: player.color })
-            const obj = new THREE.Mesh(geo, mat)
+            const geo = new BoxGeometry(1, 0.3, 0.4)
+            const mat = new MeshPhongMaterial({ color: player.color })
+            const obj = new Mesh(geo, mat)
             obj.position.set(0, 0.3, -11.5)
             obj.castShadow = true
             this.addObj("player2", obj)
         }
         {
-            const geo = new THREE.CylinderGeometry(1, 1, 0.3, 20)
-            const mat = new THREE.MeshPhongMaterial({ color: 0xffffff })
-            const obj = new THREE.Mesh(geo, mat)
+            const geo = new CylinderGeometry(1, 1, 0.3, 20)
+            const mat = new MeshPhongMaterial({ color: 0xffffff })
+            const obj = new Mesh(geo, mat)
             obj.position.set(0, 0.3, 0)
             obj.castShadow = true
             this.addObj("quoit", obj)
         }
     }
 
-    registerAnimations() {
-        {
-            let obj = this._engine.objects.get(
-                "mapPannel_player1"
-            ) as THREE.Mesh
-            let mat = obj.material as THREE.MeshPhongMaterial
-            let blinkColor = hexToRgb(0x000aff)
-            let colorsKF = new THREE.ColorKeyframeTrack(
-                ".material.color",
-                [0, 1],
-                [
-                    blinkColor.r,
-                    blinkColor.g,
-                    blinkColor.b,
-                    mat.color.r,
-                    mat.color.g,
-                    mat.color.b,
-                ],
-                THREE.InterpolateDiscrete
-            )
-            const clip = new THREE.AnimationClip("blink", 2, [colorsKF])
-            const mixer = new THREE.AnimationMixer(obj)
-            const clipAction = mixer.clipAction(clip)
-            clipAction.setLoop(THREE.LoopRepeat, 4)
-            clipAction.timeScale = 3
-            this._engine.animationActions.set(
-                "mapPannel_player1:blink",
-                clipAction
-            )
-        }
-        {
-            let obj = this._engine.objects.get(
-                "mapPannel_player2"
-            ) as THREE.Mesh
-            let mat = obj.material as THREE.MeshPhongMaterial
-            let blinkColor = hexToRgb(0x000aff)
-            let colorsKF = new THREE.ColorKeyframeTrack(
-                ".material.color",
-                [0, 1],
-                [
-                    blinkColor.r,
-                    blinkColor.g,
-                    blinkColor.b,
-                    mat.color.r,
-                    mat.color.g,
-                    mat.color.b,
-                ],
-                THREE.InterpolateDiscrete
-            )
-            const clip = new THREE.AnimationClip("blink", 2, [colorsKF])
-            const mixer = new THREE.AnimationMixer(obj)
-            const clipAction = mixer.clipAction(clip)
-            clipAction.setLoop(THREE.LoopRepeat, 4)
-            clipAction.timeScale = 3
-            this._engine.animationActions.set(
-                "mapPannel_player2:blink",
-                clipAction
-            )
-        }
-    }
-
     initEngine() {
-        console.log(`Three.js r${THREE.REVISION}`)
+        console.log(`Three.js r${REVISION}`)
 
         this._engine.renderer.setPixelRatio(devicePixelRatio)
         this.resizeRenderer()
         this._engine.renderer.shadowMap.enabled = this._graphicConfig.shadows
-        this._engine.renderer.shadowMap.type = THREE.PCFSoftShadowMap
-        this._engine.renderer.outputEncoding = THREE.sRGBEncoding
+        this._engine.renderer.shadowMap.type = PCFSoftShadowMap
+        this._engine.renderer.outputEncoding = sRGBEncoding
         this._gameContainer.appendChild(this._engine.renderer.domElement)
         if (this._engine.stats) {
             this._engine.stats.showPanel(0)
@@ -877,12 +816,6 @@ export default class Game {
                 case "Digit2":
                     this.playerScore(this._currentData.players.two)
                     break
-                case "Digit3":
-                    this.startSimulation()
-                    break
-                case "Digit4":
-                    this.stopSimulation()
-                    break
 
                 default:
                     // console.log("keydown", e.code)
@@ -895,15 +828,6 @@ export default class Game {
     }
 
     playerScore(winner: Player) {
-        var looser =
-            winner === this._currentData.players.one
-                ? this._currentData.players.two
-                : this._currentData.players.one
-        const clip = this._engine.animationActions.get(
-            "mapPannel_" + looser.meshName + ":blink"
-        )
-        clip?.reset()
-        // clip?.play()
         if (winner.name === this.currentPlayer()?.name)
             this.gameAlert(`<span style="color: green">You</span> have scored`)
         else
@@ -1192,7 +1116,6 @@ export default class Game {
         this.stopSimulation()
         cancelAnimationFrame(this._engine.animationFrame)
         this._engine.objects.clear()
-        this._engine.animationActions.clear()
         this._gameContainer.querySelectorAll("canvas").forEach((canvas) => {
             canvas.parentElement?.removeChild(canvas)
         })

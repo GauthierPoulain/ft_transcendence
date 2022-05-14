@@ -1,7 +1,12 @@
 import Player from "./Player"
-import * as THREE from "three"
 import { Iengine } from "./Interface"
 import Lobby, { collisionBoxBox } from "./Lobby"
+import {
+    DodecahedronBufferGeometry,
+    Mesh,
+    MeshPhongMaterial,
+    Sphere,
+} from "three"
 
 const PowerUpTypes = {
     // DEFAULT: {
@@ -13,11 +18,11 @@ const PowerUpTypes = {
     //         console.log(`template reset`)
     //     },
     //     initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => {
-    //         const geo = new THREE.DodecahedronBufferGeometry(r)
-    //         const mat = new THREE.MeshPhongMaterial({
+    //         const geo = new DodecahedronBufferGeometry(r)
+    //         const mat = new MeshPhongMaterial({
     //             color: 0xffffff,
     //         })
-    //         let mesh = new THREE.Mesh(geo, mat)
+    //         let mesh = new Mesh(geo, mat)
     //         mesh.castShadow = true
     //         mesh.position.set(x, 0.3, z)
     //         ctx._ctx.scene.add(mesh)
@@ -33,8 +38,8 @@ const PowerUpTypes = {
         effect: (ctx: PowerUp) => {
             console.log(`bigbar triggered by ${ctx._sender}`)
             {
-                const wallP = ctx._ctx.objects.get("map_border1") as THREE.Mesh
-                const wallN = ctx._ctx.objects.get("map_border2") as THREE.Mesh
+                const wallP = ctx._ctx.objects.get("map_border1") as Mesh
+                const wallN = ctx._ctx.objects.get("map_border2") as Mesh
                 ctx._sender.width = 5
                 ctx._lobbyCtx.syncMeshs()
                 let to: number
@@ -64,11 +69,11 @@ const PowerUpTypes = {
             ctx._sender!.width = 3
         },
         initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => {
-            const geo = new THREE.DodecahedronBufferGeometry(r)
-            const mat = new THREE.MeshPhongMaterial({
+            const geo = new DodecahedronBufferGeometry(r)
+            const mat = new MeshPhongMaterial({
                 color: 0x00ffff,
             })
-            let mesh = new THREE.Mesh(geo, mat)
+            let mesh = new Mesh(geo, mat)
             mesh.castShadow = true
             mesh.position.set(x, 0.3, z)
             ctx._ctx.scene.add(mesh)
@@ -98,8 +103,8 @@ const PowerUpTypes = {
                 _target = ctx._lobbyCtx._currentData.players.one
             }
             {
-                const wallP = ctx._ctx.objects.get("map_border1") as THREE.Mesh
-                const wallN = ctx._ctx.objects.get("map_border2") as THREE.Mesh
+                const wallP = ctx._ctx.objects.get("map_border1") as Mesh
+                const wallN = ctx._ctx.objects.get("map_border2") as Mesh
                 _target.width = 3
                 ctx._lobbyCtx.syncMeshs()
                 let to: number
@@ -125,11 +130,11 @@ const PowerUpTypes = {
             }
         },
         initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => {
-            const geo = new THREE.DodecahedronBufferGeometry(r)
-            const mat = new THREE.MeshPhongMaterial({
+            const geo = new DodecahedronBufferGeometry(r)
+            const mat = new MeshPhongMaterial({
                 color: 0x00ff00,
             })
-            let mesh = new THREE.Mesh(geo, mat)
+            let mesh = new Mesh(geo, mat)
             mesh.castShadow = true
             mesh.position.set(x, 0.3, z)
             ctx._ctx.scene.add(mesh)
@@ -153,11 +158,11 @@ const PowerUpTypes = {
                 ctx._lobbyCtx._currentData.quoit.speed.z > 0 ? 10 : -10
         },
         initMesh: (ctx: PowerUp, x: number, z: number, r?: number) => {
-            const geo = new THREE.DodecahedronBufferGeometry(r)
-            const mat = new THREE.MeshPhongMaterial({
+            const geo = new DodecahedronBufferGeometry(r)
+            const mat = new MeshPhongMaterial({
                 color: 0xff0000,
             })
-            let mesh = new THREE.Mesh(geo, mat)
+            let mesh = new Mesh(geo, mat)
             mesh.castShadow = true
             mesh.position.set(x, 0.3, z)
             ctx._ctx.scene.add(mesh)
@@ -292,14 +297,9 @@ class PowerUp {
     }
 }
 
-function collisionCylCyl(
-    cyl1: THREE.Mesh,
-    cyl1R: number,
-    cyl2: THREE.Mesh,
-    cyl2R: number
-) {
-    const Csp1 = new THREE.Sphere(cyl1.position, cyl1R)
-    const Csp2 = new THREE.Sphere(cyl2.position, cyl2R)
+function collisionCylCyl(cyl1: Mesh, cyl1R: number, cyl2: Mesh, cyl2R: number) {
+    const Csp1 = new Sphere(cyl1.position, cyl1R)
+    const Csp2 = new Sphere(cyl2.position, cyl2R)
     return Csp1.intersectsSphere(Csp2)
 }
 
