@@ -3,10 +3,9 @@ import useUser from "../../data/use-user"
 
 export default function UserAvatar({ userId, className }) {
     const user = useUser(userId)!
-
-    // TODO: Use exposed image folder with nginx
+    
     const src = user.has_custom_image
-        ? "https://via.placeholder.com/150"
+        ? `http://${document.location.hostname}/avatars/${user.image}`
         : user.image
 
     return (

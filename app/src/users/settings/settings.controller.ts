@@ -93,7 +93,7 @@ export class SettingsController {
         FileInterceptor("avatar", {
             storage: diskStorage({
                 destination(_req, _file, cb) {
-                    cb(null, "/tmp/lol")
+                    cb(null, "/avatars")
                 },
 
                 filename(_req, file, cb) {

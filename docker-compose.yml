@@ -27,6 +27,7 @@ services:
     restart: always
     volumes:
       - ./templates:/etc/nginx/templates
+      - avatars:/usr/share/nginx/avatars
     ports:
       - 80:80
       - 443:443
@@ -38,6 +39,8 @@ services:
     depends_on:
       - db
     restart: always
+    volumes:
+      - avatars:/avatars
     env_file:
       - .env
 
@@ -53,3 +56,4 @@ services:
 
 volumes:
   pgdata:
+  avatars:
