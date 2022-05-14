@@ -30,14 +30,16 @@ export const fetcher = async (
     })
 
     if (!response.ok) {
+        const body = await response.json();
         console.log(
             "response not ok",
             url,
             accessToken,
             response.ok,
-            response.status
+            response.status,
+            body.message
         )
-        throw new HttpError(response.status)
+        throw new HttpError(response.status, body.message)
     }
 
     return jsonResponse ? response.json() : response

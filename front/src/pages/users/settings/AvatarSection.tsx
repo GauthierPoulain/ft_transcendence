@@ -1,10 +1,12 @@
 import { useState } from "react"
 import { Button, Form } from "react-bootstrap"
 import { fetcher, fetcherDelete, useSubmit } from "../../../data/use-fetch"
+import { HttpError } from "../../../errors/HttpError"
 import "./style.scss"
 
 export default function AvatarSection() {
     const [file, setFile] = useState<File | undefined>(undefined)
+    const [error, setError] = useState("")
 
     const upload = useSubmit<File, void>((file) => {
         const body = new FormData()
@@ -20,8 +22,18 @@ export default function AvatarSection() {
     async function submitForm(event: any) {
         event.preventDefault()
 
+        setError("")
+
         if (file) {
-            await upload.submit(file)
+            try {
+                await upload.submit(file)
+            } catch (error) {
+                if (error instanceof HttpError) {
+                    setError(error.api_message || "")
+                } else {
+                    throw error
+                }
+            }
         }
     }
 
@@ -40,6 +52,7 @@ export default function AvatarSection() {
                             setFile(event.target.files[0])
                         }
                     />
+                    { error && <Form.Text className="text-danger">{ error }</Form.Text> }
                 </Form.Group>
 
                 <Button

@@ -4,6 +4,7 @@ import {
     Controller,
     Delete,
     Get,
+    PayloadTooLargeException,
     Post,
     UnauthorizedException,
     UploadedFile,
@@ -19,6 +20,12 @@ import { User } from "../entities/user.entity"
 import { CurrentUser, CurrentUserId } from "../user.decorator"
 import { UsersService } from "../users.service"
 import { EnableTfaDto, SetNameDto } from "./settings.dto"
+
+const MIME_TYPE_MAP = {
+    "image/png": "png",
+    "image/jpeg": "jpg",
+    "image/jpg": "jpg",
+}
 
 @Controller("/settings")
 export class SettingsController {
@@ -92,16 +99,10 @@ export class SettingsController {
         FileInterceptor("avatar", {
             storage: diskStorage({
                 destination(_req, _file, cb) {
-                    cb(null, "/avatars")
+                    cb(null, "/srv/avatars")
                 },
 
                 filename(_req, file, cb) {
-                    const MIME_TYPE_MAP = {
-                        "image/png": "png",
-                        "image/jpeg": "jpg",
-                        "image/jpg": "jpg",
-                    }
-
                     cb(
                         null,
                         `${file.fieldname}-${Date.now()}-${Math.round(
@@ -110,6 +111,18 @@ export class SettingsController {
                     )
                 },
             }),
+
+            fileFilter(_req, file, cb) {
+                if (file.size > (2 * 1024 * 1024)) {
+                    return cb(new PayloadTooLargeException("The file is too big"), false);
+                }
+
+                if (!MIME_TYPE_MAP[file.mimetype]) {
+                    return cb(new BadRequestException("This type of file is not allowed for an avatar"), false);
+                }
+
+                return cb(null, true);
+            }
         })
     )
     async uploadAvatar(

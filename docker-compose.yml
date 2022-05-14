@@ -40,7 +40,7 @@ services:
       - db
     restart: always
     volumes:
-      - avatars:/avatars
+      - avatars:/srv/avatars
     env_file:
       - .env
 
