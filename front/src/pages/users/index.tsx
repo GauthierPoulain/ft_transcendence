@@ -140,7 +140,7 @@ function formatTable(matches: Match[]) {
 function getRank(player: Player[], user: User) {
     for (let index = 0; index < player.length; index++) {
         const current = player[index]
-        if (current.id === user.id) return current.rank
+        if (current.id === user.id) return "#" + current.rank
     }
     return "unranked"
 }
@@ -172,30 +172,30 @@ function Banner({ userId }) {
     return (
         <div
             className="d-flex justify-content-center align-items-center flex-wrap"
-            style={{ backgroundColor: "#c47e7e" }}
+            style={{ backgroundColor: "#1a1e21" }}
         >
             <div className="d-flex flex-column justify-content-center align-items-center m-3">
                 <UserAvatar userId={user.id} className="w-32" />
-                <p className="mb-0 text-dark fw-bold fs-5">{user.nickname}</p>
+                <p className="mb-0 fw-bold fs-5">{user.nickname}</p>
             </div>
 
             <div className="d-flex flex-grow-1 justify-content-evenly flex-wrap">
-                <p className="fs-3 m-2 text-dark">
+                <p className="fs-3 m-2">
                     Victories:{" "}
-                    <span style={{ color: "brown" }}>
+                    <span style={{ color: "lawngreen" }}>
                         {getWins(players, user)}
                     </span>
                 </p>
-                <p className="fs-3 m-2 text-dark">
+                <p className="fs-3 m-2">
                     Losses:{" "}
-                    <span style={{ color: "brown" }}>
+                    <span style={{ color: "red" }}>
                         {getLosses(players, user)}
                     </span>
                 </p>
-                <p className="fs-3 m-2 text-dark">
+                <p className="fs-3 m-2">
                     Rank:{" "}
-                    <span style={{ color: "brown" }}>
-                        #{getRank(players, user)}
+                    <span style={{ color: "darkgrey" }}>
+                        {getRank(players, user)}
                     </span>
                 </p>
             </div>
@@ -208,7 +208,7 @@ function Banner({ userId }) {
                     </div>
                 )}
             </RestrictAuthenticated>
-            <p className="text-dark text-uppercase m-3 my-1">
+            <p className="text-uppercase m-3 my-1">
                 {statusText(status)}
                 <Brightness1
                     className="mx-2 mb-1"

@@ -93,7 +93,6 @@ export class SettingsController {
         await this.users.update(user)
     }
 
-    // TODO: Check if the file is valid (mimetype and max size)
     @Post("avatar")
     @UseGuards(ConnectedGuard)
     @UseInterceptors(
