@@ -46,6 +46,7 @@ export default function AvatarSection() {
                     <Form.Label>Your custom avatar</Form.Label>
                     <Form.Control
                         type="file"
+                        accept=".jpeg, .jpg, .gif, .png"
                         className="border-dark bg-dark"
                         placeholder="Enter custom username"
                         onChange={(event: any) =>
