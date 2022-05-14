@@ -8,6 +8,7 @@ export function setAccessToken(token: string) {
 }
 
 const apiurl = (url: string) => {
+    return `http://${document.location.hostname}/api${url}`
     if (process.env["NODE_ENV"] === "production")
         return `http://${document.location.hostname}/api${url}`
     else return `http://${document.location.hostname}:3005/api${url}`
@@ -30,16 +31,17 @@ export const fetcher = async (
     })
 
     if (!response.ok) {
-        const body = await response.json();
-        console.log(
-            "response not ok",
-            url,
-            accessToken,
-            response.ok,
-            response.status,
-            body.message
-        )
-        throw new HttpError(response.status, body.message)
+        let error: HttpError;
+
+        try {
+            const body = await response.json();
+            error = new HttpError(response.status, body.message)
+        } catch {
+            // If for example, the body is not json
+            error = new HttpError(response.status, response.statusText)
+        }
+
+        throw error
     }
 
     return jsonResponse ? response.json() : response
