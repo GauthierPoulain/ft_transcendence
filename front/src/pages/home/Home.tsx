@@ -86,8 +86,8 @@ export default function Home() {
 
     return (
         <div>
-            { /* Temporary disabled due to annoying lag before switching to home page. */ }
-            { /* <Animation /> */ }
+            {/* Temporary disabled due to annoying lag before switching to home page. */}
+            {/* <Animation /> */}
             <Container>
                 <div className="welcome-bar">
                     <div className="text-center my-5">
@@ -100,17 +100,19 @@ export default function Home() {
                         />
                     </div>
                 </div>
-                { auth.connected && <div className="d-flex justify-content-center">
-                    <Link to="/game/matchmaking">
-                        <Button
-                            className="play-button p-2"
-                            size="lg"
-                            variant="warning"
-                        >
-                            <p>JVEU GAME</p>
-                        </Button>
-                    </Link>
-                </div> }
+                {auth.connected && (
+                    <div className="d-flex justify-content-center">
+                        <Link to="/game/matchmaking">
+                            <Button
+                                className="play-button p-2"
+                                size="lg"
+                                variant="warning"
+                            >
+                                <p>JVEU GAME</p>
+                            </Button>
+                        </Link>
+                    </div>
+                )}
                 {auth.connected && <SectionFriends />}
                 {auth.connected && <SectionWaitingMatches />}
                 <SectionMatches />

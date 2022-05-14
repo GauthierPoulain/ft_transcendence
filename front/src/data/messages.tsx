@@ -44,7 +44,8 @@ export function useMessagesLoading(): boolean {
 }
 
 export function useMutateSendMessage() {
-    return useSubmit(({ channelId, content }: { channelId: number; content: string }) =>
-        fetcherPost(`/channels/${channelId}/messages`, { content })
+    return useSubmit(
+        ({ channelId, content }: { channelId: number; content: string }) =>
+            fetcherPost(`/channels/${channelId}/messages`, { content })
     )
 }

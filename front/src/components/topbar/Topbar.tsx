@@ -36,10 +36,27 @@ export default function Topbar() {
 
                 <Navbar.Collapse>
                     <Nav className="me-auto">
-                        <NavLink className={activeClassName("nav-link")} to="/" end>Home</NavLink>
-                        <NavLink className={activeClassName("nav-link")} to="/leaderboard" end>Leaderboard</NavLink>
+                        <NavLink
+                            className={activeClassName("nav-link")}
+                            to="/"
+                            end
+                        >
+                            Home
+                        </NavLink>
+                        <NavLink
+                            className={activeClassName("nav-link")}
+                            to="/leaderboard"
+                            end
+                        >
+                            Leaderboard
+                        </NavLink>
                         <RestrictAuthenticated>
-                            <NavLink className={activeClassName("nav-link")} to="/chat">Chat</NavLink>
+                            <NavLink
+                                className={activeClassName("nav-link")}
+                                to="/chat"
+                            >
+                                Chat
+                            </NavLink>
                         </RestrictAuthenticated>
                     </Nav>
 
@@ -52,11 +69,17 @@ export default function Topbar() {
                             <Link className="nav-link" to="/auth">
                                 Sign in
                             </Link>
-                            { /* Disable these on production */ }
-                            <Link className="nav-link" to="/auth/secret/fakeone">
+                            {/* Disable these on production */}
+                            <Link
+                                className="nav-link"
+                                to="/auth/secret/fakeone"
+                            >
                                 Fake one sign in
                             </Link>
-                            <Link className="nav-link" to="/auth/secret/faketwo">
+                            <Link
+                                className="nav-link"
+                                to="/auth/secret/faketwo"
+                            >
                                 Fake two sign in
                             </Link>
                         </RestrictAnonymous>

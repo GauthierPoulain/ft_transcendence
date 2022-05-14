@@ -51,15 +51,18 @@ function MessageButton({ matchId, targetUserId }) {
 
     async function sendMessage() {
         const channel = await mutateDirect.submit(targetUserId)
-        
-        await mutateMessage.submit({ channelId: channel.id, content: `#game:${matchId}#` })
+
+        await mutateMessage.submit({
+            channelId: channel.id,
+            content: `#game:${matchId}#`,
+        })
     }
 
     console.log(mutateDirect.isLoading, mutateMessage.isLoading, loading)
 
     return (
         <Button disabled={loading} onClick={sendMessage}>
-            { loading ? "Sending..." : "Send message to opponent" }
+            {loading ? "Sending..." : "Send message to opponent"}
         </Button>
     )
 }
@@ -82,7 +85,14 @@ export default function GameViewWaiting({ matchId }) {
                 [playerOne.id, playerTwo.id].includes(auth.userId) && (
                     <div className="d-flex gap-2">
                         <ReadyButton matchId={match.id} />
-                        <MessageButton matchId={match.id} targetUserId={playerOne.id === auth.userId ? playerTwo.id : playerOne.id} />
+                        <MessageButton
+                            matchId={match.id}
+                            targetUserId={
+                                playerOne.id === auth.userId
+                                    ? playerTwo.id
+                                    : playerOne.id
+                            }
+                        />
                     </div>
                 )}
         </Container>

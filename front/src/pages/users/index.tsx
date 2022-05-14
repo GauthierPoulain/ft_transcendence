@@ -200,11 +200,13 @@ function Banner({ userId }) {
                 </p>
             </div>
             <RestrictAuthenticated>
-                {!isCurrentUser && <div className="btn-group" role="group">
-                    <FriendButton userId={user.id} />
-                    <BlockButton userId={user.id} />
-                    <DirectMessagButton userId={user.id} />
-                </div>}
+                {!isCurrentUser && (
+                    <div className="btn-group" role="group">
+                        <FriendButton userId={user.id} />
+                        <BlockButton userId={user.id} />
+                        <DirectMessagButton userId={user.id} />
+                    </div>
+                )}
             </RestrictAuthenticated>
             <p className="text-dark text-uppercase m-3 my-1">
                 {statusText(status)}
@@ -224,7 +226,11 @@ function Navigation({ userId }) {
 
     return (
         <div className="btn-group mb-3">
-            <NavLink to="matches" className={activeClassName("btn btn-dark btn-lg rounded-0")} replace>
+            <NavLink
+                to="matches"
+                className={activeClassName("btn btn-dark btn-lg rounded-0")}
+                replace
+            >
                 Matches
             </NavLink>
             <NavLink
@@ -238,14 +244,18 @@ function Navigation({ userId }) {
                 <>
                     <NavLink
                         to="relations"
-                        className={activeClassName("btn btn-dark btn-lg rounded-0")}
+                        className={activeClassName(
+                            "btn btn-dark btn-lg rounded-0"
+                        )}
                         replace
                     >
                         Relations
                     </NavLink>
                     <NavLink
                         to="settings"
-                        className={activeClassName("btn btn-warning btn-lg rounded-0")}
+                        className={activeClassName(
+                            "btn btn-warning btn-lg rounded-0"
+                        )}
                         replace
                     >
                         <Edit />

@@ -6,20 +6,49 @@ import "./achievements.scss"
 const logos = [
     "/assets/achievements-bronze.png",
     "/assets/achievements-silver.png",
-    "/assets/achievements-gold.png"
+    "/assets/achievements-gold.png",
 ]
 
 const achievements = [
-    { name: "win_one_match", title: "Pong rookie", description: "Win your first match", level: 2 },
-    { name: "channel_join", title: "Speaker", description: "Join your first channel", level: 0 },
-    { name: "channel_create", title: "Owner", description: "Create your first channel", level: 1 },
-    { name: "follow_someone", title: "Hey my friend!", description: "Follow your first friend", level: 0 },
-    { name: "block_someone", title: "Block someone!", description: "Block someone", level: 0 },
+    {
+        name: "win_one_match",
+        title: "Pong rookie",
+        description: "Win your first match",
+        level: 2,
+    },
+    {
+        name: "channel_join",
+        title: "Speaker",
+        description: "Join your first channel",
+        level: 0,
+    },
+    {
+        name: "channel_create",
+        title: "Owner",
+        description: "Create your first channel",
+        level: 1,
+    },
+    {
+        name: "follow_someone",
+        title: "Hey my friend!",
+        description: "Follow your first friend",
+        level: 0,
+    },
+    {
+        name: "block_someone",
+        title: "Block someone!",
+        description: "Block someone",
+        level: 0,
+    },
 ]
 
 function Achievement({ title, desc, logo, unlocked }) {
     return (
-        <div className={`d-flex border border-dark border-2 m-2 p-2 achievements-card ${unlocked ? "bg-dark" : ""}`}>
+        <div
+            className={`d-flex border border-dark border-2 m-2 p-2 achievements-card ${
+                unlocked ? "bg-dark" : ""
+            }`}
+        >
             <Image
                 src={logo}
                 className="img"
@@ -44,9 +73,15 @@ export default function Achivements() {
         <Container>
             <h2>Achievements</h2>
             <div className="d-flex flex-wrap">
-                { achievements.map(({ name, title, description, level }) => 
-                    <Achievement key={name} title={title} desc={description} logo={logos[level]} unlocked={user.achievements[name]} />
-                ) }
+                {achievements.map(({ name, title, description, level }) => (
+                    <Achievement
+                        key={name}
+                        title={title}
+                        desc={description}
+                        logo={logos[level]}
+                        unlocked={user.achievements[name]}
+                    />
+                ))}
             </div>
         </Container>
     )

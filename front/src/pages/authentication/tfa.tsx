@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Button, Form } from "react-bootstrap";
-import ReactCodeInput from "react-code-input";
-import { ExchangeCodeResponse, useAuth } from "../../data/use-auth";
+import { useState } from "react"
+import { Button, Form } from "react-bootstrap"
+import ReactCodeInput from "react-code-input"
+import { ExchangeCodeResponse, useAuth } from "../../data/use-auth"
 import { fetcherPost, useSubmit } from "../../data/use-fetch"
 
 export default function LoginTfa({ token }) {
@@ -12,9 +12,7 @@ export default function LoginTfa({ token }) {
     const { submit, isLoading } = useSubmit<
         { token: string; tfa: string },
         ExchangeCodeResponse
-    >(({ token, tfa }) =>
-        fetcherPost("/auth/upgrade", { token, tfa }, true)
-    )
+    >(({ token, tfa }) => fetcherPost("/auth/upgrade", { token, tfa }, true))
 
     async function submitForm(event: any) {
         event.preventDefault()
@@ -44,7 +42,11 @@ export default function LoginTfa({ token }) {
                                 onChange={(event) => setTfa(event)}
                             />
                         </div>
-                        { error && <Form.Text className="text-danger">{error}</Form.Text> }
+                        {error && (
+                            <Form.Text className="text-danger">
+                                {error}
+                            </Form.Text>
+                        )}
                     </Form.Group>
 
                     <Button
@@ -55,7 +57,6 @@ export default function LoginTfa({ token }) {
                     >
                         Submit token
                     </Button>
-
                 </Form>
             </div>
         </div>

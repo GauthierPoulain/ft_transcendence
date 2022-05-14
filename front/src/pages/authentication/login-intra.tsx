@@ -20,7 +20,7 @@ export default function LoginIntra() {
     useEffect(() => {
         if (!code) {
             window.location = authorize_uri.toString() as any
-            return;
+            return
         }
 
         auth.exchange({ code, redirect_uri }).then((response) => {

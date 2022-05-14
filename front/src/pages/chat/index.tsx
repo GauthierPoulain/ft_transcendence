@@ -16,7 +16,11 @@ function JoinedChannel({ channel }) {
     return (
         <li>
             <NavLink
-                className={({ isActive }) => `text-decoration-none chan-text ${isActive ? "fw-bold" : ""}`}
+                className={({ isActive }) =>
+                    `text-decoration-none chan-text ${
+                        isActive ? "fw-bold" : ""
+                    }`
+                }
                 to={`/chat/room/${channel.id}`}
                 replace
             >
@@ -45,12 +49,23 @@ function Sidebar() {
 
             <ul className="list-unstyled">
                 <li>
-                    <NavLink className={({ isActive }) => `header-text ${isActive ? "fw-bold" : ""}`} to="/chat" end>
+                    <NavLink
+                        className={({ isActive }) =>
+                            `header-text ${isActive ? "fw-bold" : ""}`
+                        }
+                        to="/chat"
+                        end
+                    >
                         Join a channel
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink className={({ isActive }) => `header-text ${isActive ? "fw-bold" : ""}`} to="/chat/create">
+                    <NavLink
+                        className={({ isActive }) =>
+                            `header-text ${isActive ? "fw-bold" : ""}`
+                        }
+                        to="/chat/create"
+                    >
                         Create a channel
                     </NavLink>
                 </li>

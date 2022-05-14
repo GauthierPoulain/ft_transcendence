@@ -16,5 +16,5 @@ export default function LoginFake({ user }) {
         })
     })
 
-    return <p>Trying to login with a fake account { user }</p>
+    return <p>Trying to login with a fake account {user}</p>
 }

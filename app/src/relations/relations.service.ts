@@ -35,7 +35,10 @@ export class RelationsService {
         relation.kind = kind
 
         // TODO: Parallel promises
-        await this.achievements.achieve(currentUserId, kind === RelationKind.FRIEND ? "follow_someone" : "block_someone")
+        await this.achievements.achieve(
+            currentUserId,
+            kind === RelationKind.FRIEND ? "follow_someone" : "block_someone"
+        )
 
         relation = await this.repository.save(relation)
         this.publish("created", instanceToPlain(relation, {}))

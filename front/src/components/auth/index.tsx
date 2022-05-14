@@ -1,4 +1,4 @@
-import { useAuth } from "../../data/use-auth";
+import { useAuth } from "../../data/use-auth"
 
 export function RestrictAuthenticated({ children }) {
     return useAuth().connected && children

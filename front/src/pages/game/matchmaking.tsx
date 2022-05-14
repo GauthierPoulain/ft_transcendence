@@ -31,7 +31,11 @@ export default function Matchmaking() {
         <Container className="mt-3">
             <h2>Matchmaking</h2>
 
-            <p>{ error ? "You're already subscribed to a matchmaking on another window" : "Waiting another player to start a match! You can go back to the home page to stop waiting." }</p>
+            <p>
+                {error
+                    ? "You're already subscribed to a matchmaking on another window"
+                    : "Waiting another player to start a match! You can go back to the home page to stop waiting."}
+            </p>
         </Container>
     )
 }

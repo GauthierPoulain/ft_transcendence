@@ -121,7 +121,9 @@ function CommonOptions({ member }) {
             >
                 Message
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => navigate(`/users/${member.userId}/challenge`)}>
+            <Dropdown.Item
+                onClick={() => navigate(`/users/${member.userId}/challenge`)}
+            >
                 Game Request
             </Dropdown.Item>
         </>

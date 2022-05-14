@@ -22,34 +22,34 @@ services:
     ports:
       - 8080:8080
 
-  # nginx:
-  #   image: nginx:latest
-  #   restart: always
-  #   volumes:
-  #     - ./templates:/etc/nginx/templates
-  #   ports:
-  #     - 80:80
-  #     - 443:443
+  nginx:
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ./templates:/etc/nginx/templates
+    ports:
+      - 80:80
+      - 443:443
 
-  # app:
-  #   build:
-  #     context: app
-  #     network: host
-  #   depends_on:
-  #     - db
-  #   restart: always
-  #   env_file:
-  #     - .env
+  app:
+    build:
+      context: app
+      network: host
+    depends_on:
+      - db
+    restart: always
+    env_file:
+      - .env
 
-  # front:
-  #   build:
-  #     context: front
-  #     network: host
-  #     args:
-  #       - REACT_APP_API42UID=${REACT_APP_API42UID}
-  #   restart: always
-  #   env_file:
-  #     - .env
+  front:
+    build:
+      context: front
+      network: host
+      args:
+        - REACT_APP_API42UID=${REACT_APP_API42UID}
+    restart: always
+    env_file:
+      - .env
 
 volumes:
   pgdata:

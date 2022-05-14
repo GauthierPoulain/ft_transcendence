@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { useParams } from "react-router-dom"
 import UserAvatar from "../../../components/user/UserAvatar"
 import { useMatches } from "../../../data/matches"
+import { useAuth } from "../../../data/use-auth"
 import { useUser } from "../../../data/users"
 
 import "./styles.scss"
@@ -59,6 +60,9 @@ export default function Matches() {
     const { userId } = useParams()
     const user = useUser(parseInt(userId as string, 10))!
     const matches = useMatches()
+    const auth = useAuth()
+    const isCurrentUser =
+        auth.connected && userId && auth.userId === parseInt(userId)
 
     return (
         <Container>
@@ -68,7 +72,10 @@ export default function Matches() {
                     <tr>
                         <th>Against</th>
                         <th>Winner</th>
-                        <th>Your score</th>
+                        <th>
+                            {isCurrentUser ? "Your" : user.nickname + "'s"}{" "}
+                            score
+                        </th>
                         <th>Opponent score</th>
                     </tr>
                 </thead>

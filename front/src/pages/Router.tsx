@@ -47,7 +47,14 @@ export default function Router() {
             <Route path="/" element={<Layout />}>
                 <Route index element={<Home />} />
                 <Route path="game" element={<GameLayout />}>
-                    <Route path="matchmaking" element={<PrivateRoute><Matchmaking /></PrivateRoute>} />
+                    <Route
+                        path="matchmaking"
+                        element={
+                            <PrivateRoute>
+                                <Matchmaking />
+                            </PrivateRoute>
+                        }
+                    />
                     <Route path=":gameId" element={<GameView />} />
                 </Route>
                 <Route
@@ -73,8 +80,14 @@ export default function Router() {
                 </Route>
                 <Route path="auth" element={<Authentication />}>
                     <Route index element={<LoginIntra />} />
-                    <Route path="secret/fakeone" element={<LoginFake user="one" />} />
-                    <Route path="secret/faketwo" element={<LoginFake user="two" />} />
+                    <Route
+                        path="secret/fakeone"
+                        element={<LoginFake user="one" />}
+                    />
+                    <Route
+                        path="secret/faketwo"
+                        element={<LoginFake user="two" />}
+                    />
                 </Route>
                 <Route path="*" element={<Navigate to="/" />} />
             </Route>
