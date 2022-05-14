@@ -61,8 +61,7 @@ export default function Matches() {
     const user = useUser(parseInt(userId as string, 10))!
     const matches = useMatches()
     const auth = useAuth()
-    const isCurrentUser =
-        auth.connected && userId && auth.userId === parseInt(userId)
+    const isCurrentUser = auth.connected && auth.userId === (userId as any)
 
     return (
         <Container>

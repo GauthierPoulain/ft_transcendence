@@ -221,7 +221,6 @@ function Banner({ userId }) {
 
 function Navigation({ userId }) {
     const auth = useAuth()
-
     const isCurrentUser = auth.connected && auth.userId === userId
 
     return (
