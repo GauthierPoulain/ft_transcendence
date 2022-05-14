@@ -86,7 +86,6 @@ export class SettingsController {
     }
 
     // TODO: Check if the file is valid (mimetype and max size)
-    // TODO: Use docker volume
     @Post("avatar")
     @UseGuards(ConnectedGuard)
     @UseInterceptors(
