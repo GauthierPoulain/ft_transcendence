@@ -37,6 +37,10 @@ export class GameService {
             this.playerOneInfos.nickname,
             two,
             this.playerTwoInfos.nickname,
+            {
+                enablePowerUp: false,
+                maxPoints: 5,
+            },
             this.close.bind(this),
             this.updateEntityState.bind(this),
             this.updateScore.bind(this),

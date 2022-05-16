@@ -64,9 +64,9 @@ export default class Lobby {
         }
     }
 
-    _gameRules = {
-        maxPoints: 5,
-        enablePowerUp: true,
+    _gameRules: {
+        maxPoints: number
+        enablePowerUp: boolean
     }
 
     _roundRunning = false
@@ -104,11 +104,24 @@ export default class Lobby {
         pOneName: string,
         player_two: WebSocket,
         pTwoName: string,
+        gameSettings: {
+            enablePowerUp?: boolean
+            maxPoints?: number
+        } = {
+            enablePowerUp: true,
+            maxPoints: 5,
+        },
         unregister: (lobby: Lobby) => void,
         changeState: (state: MatchState) => void,
         changeScore: (pOne: number, pTwo: number) => void,
         onGameWon: (winner: number) => void
     ) {
+        console.log(gameSettings)
+
+        this._gameRules = {
+            enablePowerUp: gameSettings.enablePowerUp,
+            maxPoints: gameSettings.maxPoints,
+        }
         this._id = id
         this._player_one = player_one
         this._player_two = player_two
