@@ -38,7 +38,7 @@ export class GameService {
             two,
             this.playerTwoInfos.nickname,
             {
-                enablePowerUp: false,
+                enablePowerUp: match.powerups,
                 maxPoints: 5,
             },
             this.close.bind(this),
