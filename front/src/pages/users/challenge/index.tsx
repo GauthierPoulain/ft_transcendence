@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Button, Container, Form } from "react-bootstrap"
 import { useNavigate, useParams } from "react-router-dom"
 import { ErrorBox } from "../../../components/error/ErrorBox"
@@ -7,31 +8,27 @@ import { fetcherPost, useSubmit } from "../../../data/use-fetch"
 import { useUser } from "../../../data/users"
 import { HttpError } from "../../../errors/HttpError"
 
-type MatchCreation = {
-    opponent: number
-}
+function ChallengeForm({ userId }) {
+    const [powerups, setPowerups] = useState(false)
+    const navigate = useNavigate()
 
-function useMutateChallenge() {
-    return useSubmit<MatchCreation, Match>((match) =>
+    const { submit, isLoading } = useSubmit<{ opponent: number, powerups: boolean }, Match>((match) =>
         fetcherPost("/matches", match, true)
     )
-}
-
-function ChallengeForm({ userId }) {
-    const { submit, isLoading } = useMutateChallenge()
-    const navigate = useNavigate()
 
     async function submitForm(event: any) {
         event.preventDefault()
 
-        const match = await submit({ opponent: userId })
+        const match = await submit({ opponent: userId, powerups })
 
         navigate(`/game/${match.id}`, { replace: true })
     }
 
     return (
         <Form className="mb-3" onSubmit={submitForm}>
-            <p>TODO: Form with game options such as powerups</p>
+            <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                <Form.Check type="checkbox" label="Enable powerups" checked={powerups} onChange={(event) => setPowerups(event.target.checked)} />
+            </Form.Group>
             <Button
                 size="sm"
                 variant="primary"

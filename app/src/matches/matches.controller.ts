@@ -56,6 +56,7 @@ export class MatchesController {
 
             match.playerOne = { id: playerOneId } as any
             match.playerTwo = playerTwo
+            match.powerups = body.powerups
             return this.matches.create(match)
         }
     }

@@ -43,6 +43,9 @@ export class Match {
     @Column({ default: false })
     matchmaking: boolean
 
+    @Column({ default: false })
+    powerups: boolean
+
     @Column({ default: 0 })
     scorePOne: number
 
