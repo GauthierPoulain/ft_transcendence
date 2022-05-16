@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react"
 import { Button, Container } from "react-bootstrap"
+import { useNavigate } from "react-router-dom"
 import { useMutateDirectChannel } from "../../../data/channels"
 import { useMatch } from "../../../data/matches"
 import { useMutateSendMessage } from "../../../data/messages"
 import { useAuth } from "../../../data/use-auth"
+import { fetcherDelete, useSubmit } from "../../../data/use-fetch"
 import { useWebSocket } from "../../../data/use-websocket"
 import { useUser } from "../../../data/users"
 
@@ -67,6 +69,25 @@ function MessageButton({ matchId, targetUserId }) {
     )
 }
 
+function CancelButton({ matchId }) {
+    const navigate = useNavigate()
+    const mutate = useSubmit<{ id: number }, void>((match) =>
+        fetcherDelete(`/matches/${match.id}`)
+    )
+
+    async function deleteMatch() {
+        await mutate.submit({ id: matchId })
+
+        navigate("/")
+    }
+
+    return (
+        <Button disabled={mutate.isLoading} onClick={deleteMatch} variant="danger">
+            {mutate.isLoading ? "Cancelling..." : "Cancel the match"}
+        </Button>
+    )
+}
+
 export default function GameViewWaiting({ matchId }) {
     const auth = useAuth()
     const match = useMatch(matchId)!
@@ -74,12 +95,9 @@ export default function GameViewWaiting({ matchId }) {
     const playerTwo = useUser(match.playerTwoId)!
 
     return (
-        <Container>
+        <Container className="mt-3">
             <h2>Game waiting</h2>
-            <p>Waiting for the match to start</p>
-            <p>
-                {playerOne.nickname} vs {playerTwo.nickname}
-            </p>
+            <p>Waiting for the match to start with {playerOne.nickname} vs {playerTwo.nickname}.</p>
 
             {auth.connected &&
                 [playerOne.id, playerTwo.id].includes(auth.userId) && (
@@ -93,6 +111,7 @@ export default function GameViewWaiting({ matchId }) {
                                     : playerOne.id
                             }
                         />
+                        <CancelButton matchId={match.id} />
                     </div>
                 )}
         </Container>
