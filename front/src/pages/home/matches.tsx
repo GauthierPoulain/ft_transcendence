@@ -67,7 +67,7 @@ function MatchComponent({ match }: { match: Match }) {
 }
 
 function Matches({ filter }) {
-    const matches = useMatches().reverse()
+    const matches = [...useMatches()].reverse()
 
     return (
         <Table striped bordered hover variant="dark">

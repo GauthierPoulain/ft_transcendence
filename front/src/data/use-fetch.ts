@@ -8,7 +8,6 @@ export function setAccessToken(token: string) {
 }
 
 const apiurl = (url: string) => {
-    return `http://${document.location.hostname}/api${url}`
     if (process.env["NODE_ENV"] === "production")
         return `http://${document.location.hostname}/api${url}`
     else return `http://${document.location.hostname}:3005/api${url}`

@@ -6,18 +6,18 @@ import { useMatches } from "../../../data/matches"
 import { useAuth } from "../../../data/use-auth"
 import { useUser } from "../../../data/users"
 
-import "./styles.scss"
-
 function GetRow({
     oponnent,
     winner,
     scoreYou,
     scoreOponnent,
+    matchmaking
 }: {
     oponnent: number
     winner: number
     scoreYou: number
-    scoreOponnent: number
+    scoreOponnent: number,
+    matchmaking: boolean
 }) {
     const userOponnent = useUser(oponnent)!
     const userWin = useUser(winner)!
@@ -28,30 +28,31 @@ function GetRow({
                 userWin === userOponnent ? "MatchTableDefeat" : "MatchTableWin"
             }
         >
-            <td>
+            <td className="align-middle fs-5">
                 <UserAvatar userId={userOponnent.id} className="w-8 h-8 me-2" />
                 <Link
                     to={`/users/${userOponnent.id}`}
-                    className="m-auto mx-3 fs-4 text-decoration-none"
+                    className="text-decoration-none align-middle"
                 >
-                    {userOponnent.nickname}
+                    <span className="align-middle">{ userOponnent.nickname }</span>
                 </Link>
             </td>
-            <td>
+            <td className="align-middle fs-5">
                 <UserAvatar userId={userWin.id} className="w-8 h-8 me-2" />
                 {userWin === userOponnent ? (
                     <Link
                         to={`/users/${userOponnent.id}`}
-                        className="m-auto mx-3 fs-4 text-decoration-none"
+                        className="text-decoration-none align-middle"
                     >
                         {userOponnent.nickname}
                     </Link>
                 ) : (
-                    userWin.nickname
+                    <span className="align-middle">{ userWin.nickname }</span>
                 )}
             </td>
-            <td>{scoreYou}</td>
-            <td>{scoreOponnent}</td>
+            <td className="align-middle fs-5 text-center">{scoreYou}</td>
+            <td className="align-middle fs-5 text-center">{scoreOponnent}</td>
+            <td className="align-middle fs-5 text-center">{matchmaking ? "Yes" : "No"}</td>
         </tr>
     )
 }
@@ -76,47 +77,38 @@ export default function Matches() {
                             score
                         </th>
                         <th>Opponent score</th>
+                        <th>Matchmaking</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {matches.reverse().map((match) => {
-                        if (
-                            match.playerOneId !== user.id &&
-                            match.playerTwoId !== user.id
-                        )
-                            return null
-                        if (
-                            match.state !== "player_one_won" &&
-                            match.state !== "player_two_won"
-                        )
-                            return null
-
-                        return (
-                            <GetRow
-                                key={match.id}
-                                oponnent={
-                                    match.playerOneId === user.id
-                                        ? match.playerTwoId
-                                        : match.playerOneId
-                                }
-                                winner={
-                                    match.state === "player_one_won"
-                                        ? match.playerOneId
-                                        : match.playerTwoId
-                                }
-                                scoreYou={
-                                    match.playerOneId === user.id
-                                        ? match.scorePOne
-                                        : match.scorePTwo
-                                }
-                                scoreOponnent={
-                                    match.playerOneId === user.id
-                                        ? match.scorePTwo
-                                        : match.scorePOne
-                                }
-                            />
-                        )
-                    })}
+                    {[...matches].reverse().filter(
+                        (match) => [match.playerOneId, match.playerTwoId].includes(user.id) && ["player_two_won", "player_one_won"].includes(match.state)
+                    ).map((match) => (
+                        <GetRow
+                            key={match.id}
+                            oponnent={
+                                match.playerOneId === user.id
+                                    ? match.playerTwoId
+                                    : match.playerOneId
+                            }
+                            winner={
+                                match.state === "player_one_won"
+                                    ? match.playerOneId
+                                    : match.playerTwoId
+                            }
+                            scoreYou={
+                                match.playerOneId === user.id
+                                    ? match.scorePOne
+                                    : match.scorePTwo
+                            }
+                            scoreOponnent={
+                                match.playerOneId === user.id
+                                    ? match.scorePTwo
+                                    : match.scorePOne
+                            }
+                            matchmaking={match.matchmaking}
+                        />
+                    ))}
                 </tbody>
             </Table>
         </Container>
