@@ -9,7 +9,12 @@ export default function Authentication() {
     const location = useLocation()
 
     if (auth.connected) {
-        return <Navigate to="/" replace />
+        return (
+            <Navigate
+                to={auth.created ? `/users/${auth.userId}/settings` : "/"}
+                replace
+            />
+        )
     }
 
     const state = location.state as { twofactortoken?: string }

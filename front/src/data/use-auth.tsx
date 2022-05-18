@@ -17,6 +17,7 @@ export type AuthState = {
     connected: boolean
     token: string
     userId: number
+    created: boolean
 
     exchange: (request: ExchangeCodeRequest) => Promise<ExchangeCodeResponse>
     fakeExchange: (name: "one" | "two") => Promise<ExchangeCodeResponse>
@@ -30,6 +31,7 @@ const Context = createContext<AuthState>({} as AuthState)
 export function AuthProvider({ children }) {
     const [token, setToken] = useState<string>("")
     const [userId, setUserId] = useState<number>(0)
+    const [created, setCreated] = useState<boolean>(false)
 
     const exchange = async (request: ExchangeCodeRequest) => {
         const response: ExchangeCodeResponse = await fetcher(`/auth/login`, {
@@ -44,6 +46,7 @@ export function AuthProvider({ children }) {
         setAccessToken(response.token)
         setUserId(response.user.id)
         setToken(response.token)
+        setCreated(response.created)
     }
 
     const fakeExchange = async (name: "one" | "two") => {
@@ -68,6 +71,7 @@ export function AuthProvider({ children }) {
             connected: !!token,
             userId,
             token,
+            created,
             exchange,
             fakeExchange,
             login,
