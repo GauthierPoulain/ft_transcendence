@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { Match, MatchState } from "src/matches/match.entity"
 import { MatchesService } from "src/matches/matches.service"
+import { StatusService } from "src/status/status.service"
 import { AchievementsService } from "src/users/achievements.service"
 import { User } from "src/users/entities/user.entity"
 import { UsersService } from "src/users/users.service"
@@ -18,7 +19,8 @@ export class GameService {
     constructor(
         private readonly users: UsersService,
         private matches: MatchesService,
-        private achievements: AchievementsService
+        private achievements: AchievementsService,
+        private statusService: StatusService
     ) {}
 
     async open(one: WebSocket, two: WebSocket, match: Match) {
@@ -50,6 +52,9 @@ export class GameService {
         this.players.set(one, lobby)
         this.players.set(two, lobby)
 
+        this.statusService.setInGame(match.playerOne.id, match.id)
+        this.statusService.setInGame(match.playerTwo.id, match.id)
+
         lobby.start()
     }
 
@@ -57,6 +62,8 @@ export class GameService {
         console.log("Close lobby", this.lobbies.size)
         if (this.lobbies.has(lobby)) {
             lobby.stop(false)
+            this.statusService.setNotInGame(lobby._currentData.players.one.id)
+            this.statusService.setNotInGame(lobby._currentData.players.two.id)
             this.players.delete(lobby._player_one)
             this.players.delete(lobby._player_two)
             this.lobbies.delete(lobby)

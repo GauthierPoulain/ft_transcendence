@@ -62,25 +62,27 @@ export function useStatus(userId: number) {
 }
 
 export function statusText(status) {
-    if (status.isOffline) {
-        return "Offline"
+    if (status.isInGame) {
+        return "Playing"
     }
 
     if (status.isOnline) {
         return "Online"
     }
 
-    return "Playing"
+    return "Offline"
 }
 
 export function statusColor(status) {
-    if (status.isOffline) {
-        return "red"
+    console.log(status.gameId, status.isInGame);
+    
+    if (status.isInGame) {
+        return "purple"
     }
-
+    
     if (status.isOnline) {
         return "lime"
     }
-
-    return "purple"
+    
+    return "red"
 }

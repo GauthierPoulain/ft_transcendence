@@ -26,6 +26,20 @@ export class StatusService {
         }
     }
 
+    setInGame(userId: number, gameId: number) {
+        if (this.users.has(userId)) {
+            this.users.set(userId, gameId)
+            this.publish("updated", { id: userId, status: gameId })
+        }
+    }
+
+    setNotInGame(userId: number) {
+        if (this.users.has(userId)) {
+            this.users.set(userId, 0)
+            this.publish("updated", { id: userId, status: 0 })
+        }
+    }
+
     @OnEvent("socket.auth")
     onAuthentication({ userId }) {
         if (!this.users.has(userId)) {
