@@ -52,8 +52,8 @@ export class GameService {
         this.players.set(one, lobby)
         this.players.set(two, lobby)
 
-        this.status.setInGame(match.playerOne.id, match.id)
-        this.status.setInGame(match.playerTwo.id, match.id)
+        this.status.setInGame(this.playerOneInfos.id, match.id)
+        this.status.setInGame(this.playerTwoInfos.id, match.id)
 
         lobby.start()
     }
