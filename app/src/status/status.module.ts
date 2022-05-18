@@ -7,5 +7,6 @@ import { StatusService } from "./status.service"
     imports: [SocketsModule],
     providers: [StatusService],
     controllers: [StatusController],
+    exports: [StatusService],
 })
 export class StatusModule {}

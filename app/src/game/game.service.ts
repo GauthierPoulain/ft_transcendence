@@ -20,7 +20,7 @@ export class GameService {
         private readonly users: UsersService,
         private matches: MatchesService,
         private achievements: AchievementsService,
-        private statusService: StatusService
+        private status: StatusService
     ) {}
 
     async open(one: WebSocket, two: WebSocket, match: Match) {
@@ -52,8 +52,8 @@ export class GameService {
         this.players.set(one, lobby)
         this.players.set(two, lobby)
 
-        this.statusService.setInGame(match.playerOne.id, match.id)
-        this.statusService.setInGame(match.playerTwo.id, match.id)
+        this.status.setInGame(match.playerOne.id, match.id)
+        this.status.setInGame(match.playerTwo.id, match.id)
 
         lobby.start()
     }
@@ -62,8 +62,8 @@ export class GameService {
         console.log("Close lobby", this.lobbies.size)
         if (this.lobbies.has(lobby)) {
             lobby.stop(false)
-            this.statusService.setNotInGame(lobby._currentData.players.one.id)
-            this.statusService.setNotInGame(lobby._currentData.players.two.id)
+            this.status.setNotInGame(lobby._currentData.players.one.id)
+            this.status.setNotInGame(lobby._currentData.players.two.id)
             this.players.delete(lobby._player_one)
             this.players.delete(lobby._player_two)
             this.lobbies.delete(lobby)

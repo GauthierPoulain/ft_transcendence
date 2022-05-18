@@ -20,9 +20,7 @@ function Friend({ userId }) {
                 {user.nickname}
             </Link>
             <div className="m-auto d-flex">
-                <span className="text-white text-uppercase m-auto">
-                    {statusText(status)}
-                </span>
+                {statusText(status)}
                 <Brightness1
                     className="mx-2 mb-1"
                     style={{ color: statusColor(status) }}

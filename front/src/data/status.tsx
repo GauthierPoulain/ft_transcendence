@@ -1,4 +1,5 @@
 import { useContext } from "react"
+import { Link } from "react-router-dom"
 import { createRepository } from "./repository"
 import { createService } from "./service"
 import { fetcher } from "./use-fetch"
@@ -63,26 +64,31 @@ export function useStatus(userId: number) {
 
 export function statusText(status) {
     if (status.isInGame) {
-        return "Playing"
+        return (
+            <Link
+                to={`/game/${status.gameId}`}
+                className="m-auto text-uppercase text-decoration-none"
+            >
+                Playing
+            </Link>
+        )
     }
 
     if (status.isOnline) {
-        return "Online"
+        return <span className="text-white text-uppercase m-auto">Online</span>
     }
 
-    return "Offline"
+    return <span className="text-white text-uppercase m-auto">Offline</span>
 }
 
 export function statusColor(status) {
-    console.log(status.gameId, status.isInGame);
-    
     if (status.isInGame) {
         return "purple"
     }
-    
+
     if (status.isOnline) {
         return "lime"
     }
-    
+
     return "red"
 }

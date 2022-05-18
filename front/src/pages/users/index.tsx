@@ -208,13 +208,13 @@ function Banner({ userId }) {
                     </div>
                 )}
             </RestrictAuthenticated>
-            <p className="text-uppercase m-3 my-1">
+            <div className="m-auto d-flex">
                 {statusText(status)}
                 <Brightness1
                     className="mx-2 mb-1"
                     style={{ color: statusColor(status) }}
                 />
-            </p>
+            </div>
         </div>
     )
 }
