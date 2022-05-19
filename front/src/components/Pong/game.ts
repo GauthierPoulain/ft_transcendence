@@ -357,8 +357,6 @@ export default class Game {
     _size: { x: number; y: number }
     _gameContainer: HTMLObjectElement
 
-    _lastTime: number
-
     _wsEmit: (event: string, data: any) => void
 
     _wsReady = false
@@ -418,8 +416,6 @@ export default class Game {
             y: gameContainer.clientWidth,
         }
         this._wsEmit = sendMessage
-
-        this._lastTime = Date.now()
 
         this._engine = {
             scene: new Scene(),
@@ -900,54 +896,34 @@ export default class Game {
     socketEvents(event: string, data: any) {
         switch (event) {
             case "game:syncData":
-                if (this._lastTime < data.time) {
-                    this._roundRunning = data.running
-                    if (data.force) {
-                        console.log("forced update")
-                        this._currentData = data.data
-                        this.updateHUD()
-                    } else {
-                        let needHUDUpdate = false
-                        if (
-                            this._currentData.players.one.name !==
-                            data.data.players.one.name
-                        ) {
-                            this._currentData.players.one.name =
-                                data.data.players.one.name
-                            needHUDUpdate = true
-                        }
-                        if (
-                            this._currentData.players.two.name !==
-                            data.data.players.two.name
-                        ) {
-                            this._currentData.players.two.name =
-                                data.data.players.two.name
-                            needHUDUpdate = true
-                        }
-                        if (needHUDUpdate) this.updateHUD()
-                        this._currentData.quoit = data.data.quoit
-                        if (
-                            this._whoAmI !== "one" ||
-                            Math.abs(
-                                data.data.players.one.x -
-                                    this._currentData.players.one.x
-                            ) > 0.5
-                        )
-                            this._currentData.players.one =
-                                data.data.players.one
-                        if (
-                            this._whoAmI !== "two" ||
-                            Math.abs(
-                                data.data.players.two.x -
-                                    this._currentData.players.two.x
-                            ) > 0.5
-                        )
-                            this._currentData.players.two =
-                                data.data.players.two
-                    }
-                    this.syncMeshs()
-                    this._lastTime = data.time
+                this._roundRunning = data.data.running
+                if (data.force) {
+                    console.log("forced update")
+                    this._currentData = data.data
+                    this.updateHUD()
+                } else {
+                    this._currentData.quoit.x = data.data.quoit.x
+                    this._currentData.quoit.z = data.data.quoit.z
+                    this._currentData.quoit.speed = data.data.quoit.speed
+
+                    if (
+                        this._whoAmI !== "one" ||
+                        Math.abs(
+                            data.data.players.one.x -
+                                this._currentData.players.one.x
+                        ) > 0.5
+                    )
+                        this._currentData.players.one.x = data.data.players.one.x
+                    if (
+                        this._whoAmI !== "two" ||
+                        Math.abs(
+                            data.data.players.two.x -
+                                this._currentData.players.two.x
+                        ) > 0.5
+                    )
+                        this._currentData.players.two.x = data.data.players.two.x
                 }
+                this.syncMeshs()
                 break
 
             case "game:youAre":
@@ -1076,7 +1052,9 @@ export default class Game {
                     state: PowerUpStates
                     radius: number
                 }
-                if (this._engine.powerUp.get(data.id as number) === undefined)
+                if (
+                    this._engine.powerUp.get(data.id as number) === undefined
+                )
                     this._engine.powerUp.set(
                         data.id as number,
                         new PowerUp({

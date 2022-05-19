@@ -458,12 +458,36 @@ export default class Lobby {
         }
     }
 
+    private cleanCurrentData() {
+        return {
+            players: {
+                one: {
+                    score: this._currentData.players.one.score,
+                    x: this._currentData.players.one.x,
+                    width: this._currentData.players.one.width,
+                },
+                two: {
+                    score: this._currentData.players.two.score,
+                    x: this._currentData.players.two.x,
+                    width: this._currentData.players.two.width,
+                },
+            },
+            quoit: {
+                x: Math.round(this._currentData.quoit.x * 100) / 100,
+                z: Math.round(this._currentData.quoit.z * 100) / 100,
+                speed: {
+                    x: Math.round(this._currentData.quoit.speed.x * 100) / 100,
+                    z: Math.round(this._currentData.quoit.speed.z * 100) / 100,
+                },
+            },
+            running: this._roundRunning,
+        }
+    }
+
     sendData(force: boolean = false) {
         this.broadcast("game:syncData", {
-            data: this._currentData,
-            time: Date.now(),
+            data: force ? this._currentData : this.cleanCurrentData(),
             force: force,
-            running: this._roundRunning,
         })
         this.broadcast("game:powerupCompare", {
             list: getPowerUpInfos(this._engine.powerUp),
