@@ -39,6 +39,7 @@ export function WebsocketProvider({ children }) {
         },
 
         shouldReconnect: () => true,
+        filter: () => false
     })
 
     function sendMessage(event: string, data?: any) {
