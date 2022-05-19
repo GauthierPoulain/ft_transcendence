@@ -49,7 +49,7 @@ function Thisisatest() {
     const auth = useAuth()
 
     if (loading) {
-        return <p>Loading lol</p>
+        return <Loading />
     }
 
     return (
