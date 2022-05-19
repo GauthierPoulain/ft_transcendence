@@ -2,48 +2,26 @@ import React, { useEffect, useRef } from "react"
 import Game from "./game"
 import "./pong.css"
 import { useWebSocket } from "../../data/use-websocket"
-import { AuthState, useAuth } from "../../data/use-auth"
-import useUser, { User } from "../../data/use-user"
 
-function GameComponent(user: User | null, gameId: number) {
+function GameComponent(gameId: number) {
     const { subscribe, sendMessage } = useWebSocket()
-    const localInstance = useRef<Game | null>(null)
     const gameContainer = useRef<null | HTMLObjectElement>(null)
-    const useEffectOnce = (effect: () => void | (() => void)) => {
-        const destroyFunc = useRef<void | (() => void)>()
-        const calledOnce = useRef(false)
-        const renderAfterCalled = useRef(false)
-        if (calledOnce.current) renderAfterCalled.current = true
-        useEffect(() => {
-            calledOnce.current = true
-            destroyFunc.current = effect()
-            return () => {
-                if (!renderAfterCalled.current) return
-                else if (destroyFunc.current) destroyFunc.current()
-            }
-        }, [])
-    }
 
     useEffect(() => {
-        localInstance.current = new Game(sendMessage, gameContainer.current!)
-        const unmount = () => {
-            localInstance.current?.killEngine()
-            localInstance.current = null
-        }
-        return unmount
-    }, [])
+        const instance = new Game(sendMessage, gameContainer.current!)
 
-    useEffectOnce(() => {
         const { unsubscribe } = subscribe((event, data) => {
-            localInstance.current?.socketEvents(event, data)
+            if (event === "game:youAre") console.log("received who am i", instance)
+            instance.socketEvents(event, data)
         })
         sendMessage("socket.game.ready", { gameId: gameId })
-        localInstance.current?.setReady({ ws: true })
+        instance.setReady({ ws: true })
         return () => {
             sendMessage("game:disconnect", null)
             unsubscribe()
+            instance.killEngine()
         }
-    })
+    }, [gameId])
 
     return (
         <React.Fragment>
@@ -72,14 +50,6 @@ function GameComponent(user: User | null, gameId: number) {
     )
 }
 
-function AuthComponent(auth: AuthState, gameId: number) {
-    const user = useUser(auth.userId!)!
-    return GameComponent(user, gameId)
-}
-
 export default function Pong(props: { gameId: number }) {
-    const auth = useAuth()
-    return auth.connected
-        ? AuthComponent(auth, props.gameId)
-        : GameComponent(null, props.gameId)
+    return GameComponent(props.gameId)
 }

@@ -1,5 +1,5 @@
 import { ErrorBoundary } from "react-error-boundary"
-import { StrictMode, Suspense, useEffect } from "react"
+import { Suspense, useEffect } from "react"
 import { BrowserRouter } from "react-router-dom"
 import { AuthProvider, useAuth } from "./data/use-auth"
 import { useWebSocket, WebsocketProvider } from "./data/use-websocket"
@@ -15,13 +15,11 @@ import { MatchesProvider } from "./data/matches"
 
 function RootProvider({ children }) {
     return (
-        <StrictMode>
-            <AuthProvider>
-                <WebsocketProvider>
-                    <BrowserRouter>{children}</BrowserRouter>
-                </WebsocketProvider>
-            </AuthProvider>
-        </StrictMode>
+        <AuthProvider>
+            <WebsocketProvider>
+                <BrowserRouter>{children}</BrowserRouter>
+            </WebsocketProvider>
+        </AuthProvider>
     )
 }
 
