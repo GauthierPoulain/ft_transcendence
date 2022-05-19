@@ -175,7 +175,7 @@ function Banner({ userId }) {
             style={{ backgroundColor: "#1a1e21" }}
         >
             <div className="d-flex flex-column justify-content-center align-items-center m-3">
-                <UserAvatar userId={user.id} className="w-32" />
+                <UserAvatar userId={user.id} className="w-32 h-32" />
                 <p className="mb-0 fw-bold fs-5">{user.nickname}</p>
             </div>
 

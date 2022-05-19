@@ -22,7 +22,7 @@ function Profile() {
             </span>
             <Link className="nav-link d-flex" to={`/users/${user.id}`}>
                 <span className="m-auto">{user.nickname}</span>
-                <UserAvatar userId={user.id} className="w-8 ms-2" />
+                <UserAvatar userId={user.id} className="w-8 h-8 ms-2" />
             </Link>
         </div>
     )

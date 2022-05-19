@@ -169,7 +169,7 @@ export default function Member({ member }) {
                 className="member-links text-decoration-none d-flex align-items-center"
                 to={`/users/${user.id}`}
             >
-                <UserAvatar className="me-2 w-8" userId={user.id} />
+                <UserAvatar className="me-2 w-8 h-8" userId={user.id} />
                 <span className="ms-0">
                     {user.nickname} - {member.role}
                 </span>
