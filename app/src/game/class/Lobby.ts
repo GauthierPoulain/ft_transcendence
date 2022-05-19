@@ -165,7 +165,7 @@ export default class Lobby {
     }
 
     start() {
-        this.sendData()
+        this.sendData(true)
         this.whoAmI(this._player_one)
         this.whoAmI(this._player_two)
 
@@ -293,7 +293,6 @@ export default class Lobby {
         )
         this.stopRound()
         this.resetRound()
-        this.updateHUD()
         if (this.checkVictory()) {
             this.playerWin(player)
         } else {
@@ -302,11 +301,6 @@ export default class Lobby {
                 this.startRound()
             }, 4000)
         }
-    }
-
-    updateHUD() {
-        this.sendData(true)
-        this.broadcast("game:updateHUD")
     }
 
     syncMeshs() {
@@ -462,12 +456,10 @@ export default class Lobby {
         return {
             players: {
                 one: {
-                    score: this._currentData.players.one.score,
                     x: this._currentData.players.one.x,
                     width: this._currentData.players.one.width,
                 },
                 two: {
-                    score: this._currentData.players.two.score,
                     x: this._currentData.players.two.x,
                     width: this._currentData.players.two.width,
                 },

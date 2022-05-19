@@ -448,8 +448,8 @@ export default class Game {
 
         this._currentData = {
             players: {
-                one: new Player(1, "pl1", 0xffffff, "player1"),
-                two: new Player(2, "pl2", 0xffffff, "player2"),
+                one: new Player(1, "", 0xffffff, "player1"),
+                two: new Player(2, "", 0xffffff, "player2"),
             },
             quoit: {
                 x: 0,
@@ -465,7 +465,6 @@ export default class Game {
         this.initEngine()
         this.initScene()
         this.syncSimulation()
-        this.updateHUD()
         this.initKeyControl()
         this.render()
         this.startSimulation()
@@ -878,23 +877,6 @@ export default class Game {
             }`
     }
 
-    updateHUD() {
-        this._gameContainer.querySelector(
-            "#gameHud .identity#one .name"
-        )!.textContent =
-            this._whoAmI === "one" ? "you" : this._currentData.players.one.name
-        this._gameContainer.querySelector(
-            "#gameHud .identity#one .score"
-        )!.textContent = String(this._currentData.players.one.score)
-        this._gameContainer.querySelector(
-            "#gameHud .identity#two .name"
-        )!.textContent =
-            this._whoAmI === "two" ? "you" : this._currentData.players.two.name
-        this._gameContainer.querySelector(
-            "#gameHud .identity#two .score"
-        )!.textContent = String(this._currentData.players.two.score)
-    }
-
     socketEvents(event: string, data: any) {
         switch (event) {
             case "game:syncData":
@@ -902,7 +884,6 @@ export default class Game {
                 if (data.force) {
                     console.log("forced update")
                     this._currentData = data.data
-                    this.updateHUD()
                 } else {
                     this._currentData.quoit.x = data.data.quoit.x
                     this._currentData.quoit.z = data.data.quoit.z
@@ -915,7 +896,8 @@ export default class Game {
                                 this._currentData.players.one.x
                         ) > 0.5
                     )
-                        this._currentData.players.one.x = data.data.players.one.x
+                        this._currentData.players.one.x =
+                            data.data.players.one.x
                     if (
                         this._whoAmI !== "two" ||
                         Math.abs(
@@ -923,7 +905,8 @@ export default class Game {
                                 this._currentData.players.two.x
                         ) > 0.5
                     )
-                        this._currentData.players.two.x = data.data.players.two.x
+                        this._currentData.players.two.x =
+                            data.data.players.two.x
                 }
                 this.syncMeshs()
                 break
@@ -936,7 +919,6 @@ export default class Game {
                     else if (data === "two")
                         this._engine.camera.position.set(0, 10, -25)
                     this._engine.camera.lookAt(0, 0, 0)
-                    this.updateHUD()
                 }
                 break
 
@@ -955,10 +937,6 @@ export default class Game {
             case "game:score":
                 console.log(data)
                 this.playerScore(data.player)
-                break
-
-            case "game:updateHUD":
-                this.updateHUD()
                 break
 
             case "game:win":
@@ -1053,9 +1031,7 @@ export default class Game {
                     state: PowerUpStates
                     radius: number
                 }
-                if (
-                    this._engine.powerUp.get(data.id as number) === undefined
-                )
+                if (this._engine.powerUp.get(data.id as number) === undefined)
                     this._engine.powerUp.set(
                         data.id as number,
                         new PowerUp({

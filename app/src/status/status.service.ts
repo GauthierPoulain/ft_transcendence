@@ -34,6 +34,8 @@ export class StatusService {
     }
 
     setNotInGame(userId: number) {
+        console.log("setNotInGame", userId)
+
         if (this.users.has(userId)) {
             this.users.set(userId, 0)
             this.publish("updated", { id: userId, status: 0 })
