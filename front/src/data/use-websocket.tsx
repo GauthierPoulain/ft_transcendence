@@ -1,14 +1,9 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext } from "react"
 import useInner, { ReadyState } from "react-use-websocket"
 
 type State = {
     sendMessage: (event: string, data?: any) => void
     readyState: ReadyState
-    lastJsonMessage?: {
-        event: string
-        data: any
-    }
-    setHandlers: any
     subscribe: (fn: (key: string, value: any) => void) => {
         unsubscribe: () => void
     }
@@ -22,15 +17,12 @@ const wsurl = () => {
 
 const Context = createContext<State>({} as State)
 
+const handlers = new Map()
+
 export function WebsocketProvider({ children }) {
-    const [handlers, setHandlers] = useState(new Map())
-
-    console.log("websocket provider")
-
     const {
         sendMessage: send,
         readyState,
-        lastJsonMessage,
     } = useInner(wsurl(), {
         onOpen() {
             console.debug("Websocket open")
@@ -38,8 +30,6 @@ export function WebsocketProvider({ children }) {
 
         async onMessage(message) {
             const { event, data } = JSON.parse(message.data)
-
-            // console.debug("websocket message", event, data, handlers)
 
             handlers.forEach((value) => value(event, data))
         },
@@ -58,19 +48,11 @@ export function WebsocketProvider({ children }) {
     function subscribe(fn: (event: string, data: any) => void) {
         const key = Symbol()
 
-        setHandlers((map) => {
-            const copy = new Map(map)
-            copy.set(key, fn)
-            return copy
-        })
+        handlers.set(key, fn)
 
         return {
             unsubscribe() {
-                setHandlers((map) => {
-                    const copy = new Map(map)
-                    copy.delete(key)
-                    return copy
-                })
+                handlers.delete(key)
             },
         }
     }
@@ -79,10 +61,8 @@ export function WebsocketProvider({ children }) {
         <Context.Provider
             value={{
                 subscribe,
-                setHandlers,
                 sendMessage,
-                readyState,
-                lastJsonMessage,
+                readyState
             }}
         >
             {children}

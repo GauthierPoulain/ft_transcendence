@@ -474,12 +474,14 @@ export default class Game {
         this.render()
         this.startSimulation()
         this.setReady({ engine: true })
-        this._wsEmit("game:whoAmI", null)
     }
 
     setReady({ engine, ws }: { engine?: boolean; ws?: boolean }) {
         if (engine !== undefined) this._engineReady = engine
-        if (ws !== undefined) this._wsReady = ws
+        if (ws !== undefined) {
+            this._wsReady = ws
+            this._wsEmit("game:whoAmI", null)
+        }
     }
 
     private resizeRenderer() {
@@ -952,7 +954,6 @@ export default class Game {
 
             case "game:youAre":
                 if (!this._whoAmI) {
-                    console.log("you are", data)
                     this._whoAmI = data
                     if (data === "one")
                         this._engine.camera.position.set(0, 10, 25)
